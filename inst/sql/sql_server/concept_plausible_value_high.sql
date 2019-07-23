@@ -15,7 +15,7 @@ plausibleValueHigh = @plausibleValueHigh
 SELECT num_violated_rows, CASE WHEN denominator.num_rows = 0 THEN 0 ELSE 1.0*num_violated_rows/denominator.num_rows END  AS pct_violated_rows
 FROM
 (
-	SELECT COUNT(*) AS num_violated_rows
+	SELECT COUNT_BIG(*) AS num_violated_rows
 	FROM
 	(
 		SELECT measurement.* 
@@ -27,7 +27,7 @@ FROM
 	) violated_rows
 ) violated_row_count,
 ( 
-	SELECT COUNT(*) AS num_rows
+	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.measurement
 	WHERE measurement_concept_id = @conceptId
 	AND unit_concept_id = @unitConceptId
