@@ -173,7 +173,7 @@ NOTE,note_title,No,varchar(250),,,No,No,,,,,No,Yes,No,,,,,,,,No
 NOTE,note_text,Yes,varchar(MAX),,,No,No,,,,,No,Yes,No,,,,,,,,No
 NOTE,encoding_concept_id,Yes,integer,,,No,Yes,CONCEPT,CONCEPT_ID,,,Yes,Yes,No,,,,,,,,No
 NOTE,language_concept_id,Yes,integer,,,No,Yes,CONCEPT,CONCEPT_ID,,,Yes,Yes,No,,,,,,,,No
-NOTE,provider_id,No,integer,,,No,Yes,,,,,No,Yes,No,,,,,,,,No
+NOTE,provider_id,No,integer,,,No,Yes,PROVIDER,PROVIDER_ID,,,No,Yes,No,,,,,,,,No
 NOTE,visit_occurrence_id,No,integer,,,No,Yes,VISIT_OCCURRENCE,VISIT_OCCURRENCE_ID,,,No,Yes,No,,,,,,,,No
 NOTE,visit_detail_id,No,integer,,,No,Yes,VISIT_DETAIL,VISIT_DETAIL_ID,,,No,Yes,No,,,,,,,,No
 NOTE,note_source_value,No,varchar(50),,,No,No,,,,,No,Yes,No,,,,,,,,No
