@@ -16,7 +16,7 @@ Features
 
 Technology
 ==========
-FeatureExtraction is an R package that wraps a Java library for integration of data quality checks in the OHDSI WebAPI as well as stand-alone R work.
+DataQualityDashboard is an R package that wraps a Java library for integration of data quality checks in the OHDSI WebAPI as well as stand-alone R processing.
 
 System Requirements
 ===================
