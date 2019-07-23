@@ -7,8 +7,6 @@ Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
-fkTableName = @fkTableName
-fkFieldName = @fkFieldName
 fkDomain = @fkDomain
 fkClass = @fkClass
 **********/
@@ -22,9 +20,9 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.* 
 		FROM @cdmDatabaseSchema.@cdmTableName
-		LEFT JOIN @cdmDatabaseSchema.@fkTableName 
-		ON @cdmTableName.@cdmFieldName = @fkTableName.@fkFieldName
-        WHERE @fkTableName.@fkDomain != '@fkClass'
+		LEFT JOIN @cdmDatabaseSchema.CONCEPT 
+		ON @cdmTableName.@cdmFieldName = CONCEPT.CONCEPT_ID
+        WHERE CONCEPT.DOMAIN_ID != '@fkDomain' OR CONCEPT.CONCEPT_CLASS_ID != '@fkClass' 
 	) violated_rows
 ) violated_row_count,
 ( 
