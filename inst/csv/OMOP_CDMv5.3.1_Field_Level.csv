@@ -93,7 +93,7 @@ PROCEDURE_OCCURRENCE,procedure_concept_id,Yes,integer,,,No,Yes,CONCEPT,CONCEPT_I
 PROCEDURE_OCCURRENCE,procedure_date,Yes,date,,,No,No,,,,,No,Yes,No,,,,''1950-01-01'',"DATEADD(dd,1,GETDATE())",,BIRTH_DATETIME,Yes
 PROCEDURE_OCCURRENCE,procedure_datetime,No,datetime,,,No,No,,,,,No,Yes,No,,,,''1950-01-01'',"DATEADD(dd,1,GETDATE())",,BIRTH_DATETIME,Yes
 PROCEDURE_OCCURRENCE,procedure_type_concept_id,Yes,integer,,,No,Yes,CONCEPT,CONCEPT_ID,Type Concept,,Yes,Yes,Yes,,,,,,,,No
-PROCEDURE_OCCURRENCE,modifier_concept_id,No,integer,"These concepts are typically distinguished by 'Modifier' concept classes (e.g., 'CPT4 Modifier' as part of the 'CPT4' vocabulary).",,No,Yes,CONCEPT,CONCEPT_ID,,modifier,Yes,Yes,No,,,,,,,,No
+PROCEDURE_OCCURRENCE,modifier_concept_id,No,integer,"These concepts are typically distinguished by 'Modifier' concept classes (e.g., 'CPT4 Modifier' as part of the 'CPT4' vocabulary).",,No,Yes,CONCEPT,CONCEPT_ID,,,Yes,Yes,No,,,,,,,,No
 PROCEDURE_OCCURRENCE,quantity,No,integer,"If the quantity value is omitted, a single procedure is assumed.","If a Procedure has a quantity of '0' in the source, this should default to '1' in the ETL. If there is a record in the source it can be assumed the exposure occurred at least once (THEMIS issue #26).",No,No,,,,,No,Yes,No,,,,1,,,,No
 PROCEDURE_OCCURRENCE,provider_id,No,integer,,,No,No,PROVIDER,PROVIDER_ID,,,No,Yes,No,,,,,,,,No
 PROCEDURE_OCCURRENCE,visit_occurrence_id,No,integer,,,No,No,VISIT_OCCURRENCE,VISIT_OCCURRENCE_ID,,,No,Yes,No,,,,,,,,No
