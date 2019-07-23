@@ -151,7 +151,7 @@ VISIT_DETAIL,visit_detail_start_date,Yes,date,,,No,No,,,,,No,Yes,No,,,,''1950-01
 VISIT_DETAIL,visit_detail_start_datetime,No,datetime,,,No,No,,,,,No,Yes,No,,,,''1950-01-01'',"DATEADD(dd,1,GETDATE())",,BIRTH_DATETIME,Yes
 VISIT_DETAIL,visit_detail_end_date,Yes,date,,,No,No,,,,,No,Yes,No,,,,''1950-01-01'',"DATEADD(dd,1,GETDATE())",,VISIT_DETAIL_START_DATE,Yes
 VISIT_DETAIL,visit_detail_end_datetime,No,datetime,,,No,No,,,,,No,Yes,No,,,,''1950-01-01'',"DATEADD(dd,1,GETDATE())",,VISIT_DETAIL_START_DATETIME,Yes
-VISIT_DETAIL,visit_detail_type_concept_id,Yes,Integer,,,No,Yes,,,Type Concept,,Yes,Yes,Yes,,,,,,,,No
+VISIT_DETAIL,visit_detail_type_concept_id,Yes,Integer,,,No,Yes,CONCEPT,CONCEPT_ID,Type Concept,,Yes,Yes,Yes,,,,,,,,No
 VISIT_DETAIL,provider_id,No,integer,,,No,Yes,PROVIDER,PROVIDER_ID,,,No,Yes,No,,,,,,,,No
 VISIT_DETAIL,care_site_id,No,integer,,,No,Yes,CARE_SITE,CARE_SITE_ID,,,No,Yes,No,,,,,,,,No
 VISIT_DETAIL,visit_detail_source_value,No,string(50),,,No,No,,,,,No,Yes,No,,,,,,,,No
