@@ -1,12 +1,13 @@
+library("dplyr")
 
-checkDescriptions <- read.csv("inst/csv/OMOP_CDMv5.3.1_Check_Descriptions.csv", stringsAsFactors = FALSE)
-fieldChecks <- read.csv("inst/csv/OMOP_CDMv5.3.1_Field_Level.csv", stringsAsFactors = FALSE)
+checkDescriptions <- read.csv("inst/csv/OMOP_CDMv5.3.1_Check_Descriptions.csv", stringsAsFactors = F)
+fieldChecks <- read.csv("inst/csv/OMOP_CDMv5.3.1_Field_Level.csv", stringsAsFactors = F)
 
 # populate with your details
-connectionDetails <- DatabaseConnector::createConnectionDetails(
-)
+# connectionDetails <-
 
 connection <- DatabaseConnector::connect(connectionDetails)
+
 cdmDatabaseSchema <- "cdm"
 packageName <- "DataQualityDashboard"
 
@@ -31,8 +32,8 @@ processCheck <- function(checkId, checkDescription, sql) {
 
 for (i in 1:nrow(checkDescriptions)) {
   checkDescription <- checkDescriptions[i,]
-  
-  filterExpression <- paste0("fieldChecks[fieldChecks$", checkDescription$EVALUATION_FILTER,",]")
+ 
+  filterExpression <- paste0("fieldChecks %>% filter(", checkDescription$EVALUATION_FILTER, ")")
   checks <- eval(parse(text=filterExpression))
   
   if (nrow(checks) > 0) {
@@ -60,7 +61,9 @@ for (i in 1:nrow(checkDescriptions)) {
         },
         error = function(e) {
           result <- list(ERROR = e$message)
-          recordResult(result, checkId, checkDescription, sql)          
+          recordResult(result, checkId, checkDescription, sql)  
+          # redshift specific fix 
+          DatabaseConnector::executeSql(connection, "ROLLBACK;")
         }
       )
     }

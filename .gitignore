@@ -15,6 +15,9 @@
 statement_*.sql
 errorReport.txt
 
+# output files
+inst/results.json
+
 # Java compiled files
 /bin
 
