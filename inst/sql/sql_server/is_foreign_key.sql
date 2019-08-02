@@ -22,7 +22,7 @@ FROM
 		FROM @cdmDatabaseSchema.@cdmTableName p1
 		LEFT JOIN @cdmDatabaseSchema.@fkTableName f1
 		ON p1.@cdmFieldName = f1.@fkFieldName
-		WHERE f1.@fkFieldName IS NULL
+		WHERE f1.@fkFieldName IS NULL AND p1.@cdmFieldName IS NOT NULL 
 	) violated_rows
 ) violated_row_count,
 ( 
