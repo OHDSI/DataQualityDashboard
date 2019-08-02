@@ -1,20 +1,20 @@
 class DqDashboard extends HTMLElement {
   static getTemplate() {
     return `
-      <h1>
-        Overview
-      </h1>
+      <h2>
+        Data Quality Check Summary
+      </h2>
       <div>
-        Total: {{Overview.countPassed}} / {{Overview.countTotal}}
+        Total: {{countPassed}} / {{countTotal}}
       </div>
       <div>
-        Plausibility: {{Overview.countPassedPlausibility}} / {{Overview.countTotalPlausibility}}
+        Plausibility: {{countPassedPlausibility}} / {{countTotalPlausibility}}
       </div>
       <div>
-        Completeness:  {{Overview.countPassedCompleteness}} / {{Overview.countTotalCompleteness}}
+        Completeness:  {{countPassedCompleteness}} / {{countTotalCompleteness}}
       </div>
       <div>
-        Conformance: {{Overview.countPassedConformance}} /  {{Overview.countTotalConformance}}
+        Conformance: {{countPassedConformance}} /  {{countTotalConformance}}
       </div>
     `;
   }

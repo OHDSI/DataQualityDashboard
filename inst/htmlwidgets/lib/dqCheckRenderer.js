@@ -2,9 +2,15 @@ class DqCheckRenderer extends HTMLElement {
     static getTemplate() {
         return `
         {{#each checks}}
-          <div>{{this.QUERY_TEXT}}</div>
+          <div><b>Check Details</b></div>        
+          <div>{{this.CHECK_NAME}} - {{this.CHECK_LEVEL}} - {{this.CDM_TABLE}} - {{this.CDM_FIELD}}</div>
+          <div><b>Check Description</b></div>
+          <div>{{this.CHECK_DESCRIPTION}}</div>
+          <div><b>Query</b></div>          
+          <div><pre>{{this.QUERY_TEXT}}</pre></div>
+          <div><b>Errror</b></div>
           <div>{{this.ERROR}}</div>     
-          <div>{{this.CHECK_ID}}</div>               
+          <hr></hr>
         {{/each}}
     `;
     }
