@@ -4,7 +4,7 @@ checkDescriptions <- read.csv("inst/csv/OMOP_CDMv5.3.1_Check_Descriptions.csv", 
 fieldChecks <- read.csv("inst/csv/OMOP_CDMv5.3.1_Field_Level.csv", stringsAsFactors = F)
 
 # populate with your details
-# connectionDetails <-
+# connectionDetails 
 
 connection <- DatabaseConnector::connect(connectionDetails)
 
@@ -72,15 +72,52 @@ for (i in 1:nrow(checkDescriptions)) {
   }
 }
 
+# capture metadata
+# cdmSourceData <- DatabaseConnector::querySql(connection, "select * from cdm_source")
+
+# create metadata component dq web component
+
+# prepare output
+
 metadata <- list(CDMName = "CDM Name", CDMVersion = "CDM Version", ETLDetails="ETL used to convert native to CDM", VocabularyVersion = "Vocabulary 2019.1")
+
+countTotal <- nrow(checkResults)
+countFailed <- nrow(checkResults[(!is.na(checkResults$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0) | !is.na(checkResults$ERROR),])
+countThresholdFailure <- nrow(checkResults[(!is.na(checkResults$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS>0),])
+countErrorFailure <- nrow(checkResults[!is.na(checkResults$ERROR),])
+countPassed <- countTotal - countFailed
+
+countTotalPlausibility = nrow(checkResults[checkResults$CATEGORY=='Plausibility',])
+countTotalConformance = nrow(checkResults[checkResults$CATEGORY=='Conformance',])
+countTotalCompleteness = nrow(checkResults[checkResults$CATEGORY=='Completeness',])
+countFailedPlausibility = nrow(checkResults[checkResults$CATEGORY=='Plausibility' & (!is.na(checkResults$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0 | !is.na(checkResults$ERROR)),])
+countFailedConformance = nrow(checkResults[checkResults$CATEGORY=='Conformance' & (!is.na(checkResults$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0 | !is.na(checkResults$ERROR)),])
+countFailedCompleteness = nrow(checkResults[checkResults$CATEGORY=='Completeness' & (!is.na(checkResults$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0 | !is.na(checkResults$ERROR)),])
+countPassedPlausibility = countTotalPlausibility - countFailedPlausibility
+countPassedConformance = countTotalConformance - countFailedConformance
+countPassedCompleteness = countTotalCompleteness - countFailedCompleteness
+
 overview <- list(
-  total = nrow(checkResults), 
-  passed = nrow(checkResults[checkResults$NUM_VIOLATED_ROWS==0,]), 
-  passedPercent = round(nrow(checkResults[checkResults$NUM_VIOLATED_ROWS==0,])/nrow(checkResults) * 100)
+  countTotal = countTotal, 
+  countPassed = countPassed, 
+  countFailed = countFailed,
+  percentPassed = round(countPassed / countTotal * 100),
+  percentFailed = round(countFailed / countTotal * 100),
+  countTotalPlausibility = countTotalPlausibility,
+  countTotalConformance = countTotalConformance,
+  countTotalCompleteness = countTotalCompleteness,
+  countFailedPlausibility = countFailedPlausibility,
+  countFailedConformance = countFailedConformance,
+  countFailedCompleteness = countFailedCompleteness,
+  countPassedPlausibility = countPassedPlausibility,
+  countPassedConformance = countPassedConformance,
+  countPassedCompleteness = countPassedCompleteness
 )
+
 result <- list(CheckResults = checkResults, Metadata = cdmDatabaseSchema, Overview = overview)
-resultJson <- RJSONIO::toJSON(result)
+resultJson <-jsonlite::toJSON(result)
 write(resultJson,file.path(getwd(), "inst", "results.json"))
 
+# TODO - Write out data frame to table
 
-
+dqDashPOC(data = result)

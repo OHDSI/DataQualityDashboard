@@ -1,17 +1,20 @@
-const RESULTS_ATTR = 'data-results';
-
 class DqDashboard extends HTMLElement {
-
   static getTemplate() {
     return `
       <h1>
         Overview
       </h1>
-      <h2>
-        Checks
-      </h2>
       <div>
-        Passed: {{Overview.passed}} / {{Overview.total}}
+        Total: {{Overview.countPassed}} / {{Overview.countTotal}}
+      </div>
+      <div>
+        Plausibility: {{Overview.countPassedPlausibility}} / {{Overview.countTotalPlausibility}}
+      </div>
+      <div>
+        Completeness:  {{Overview.countPassedCompleteness}} / {{Overview.countTotalCompleteness}}
+      </div>
+      <div>
+        Conformance: {{Overview.countPassedConformance}} /  {{Overview.countTotalConformance}}
       </div>
     `;
   }
@@ -22,7 +25,7 @@ class DqDashboard extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return [RESULTS_ATTR];
+    return ['data-results'];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -32,7 +35,7 @@ class DqDashboard extends HTMLElement {
   }
 
   get results() {
-    return JSON.parse(this.getAttribute(RESULTS_ATTR));
+    return JSON.parse(this.getAttribute('data-results'));
   }
 
   render() {
