@@ -1,16 +1,17 @@
 
-.recordResult <- function(result = NULL, checkId, check, 
+.recordResult <- function(result = NULL, check, 
                           checkDescription, sql, 
                           warning = NA, error = NA) {
   if (is.null(result)) {
     result <- data.frame(
       NUM_VIOLATED_ROWS = NA,
       PCT_VIOLATED_ROWS = NA,
-      CHECK_ID = checkId,
+     # CHECK_ID = checkId,
       QUERY_TEXT = sql,
       CHECK_NAME = checkDescription$CHECK_NAME,
       CHECK_LEVEL = checkDescription$CHECK_LEVEL,
-      CHECK_DESCRIPTION = checkDescription$CHECK_DESCRIPTION,
+      CHECK_DESCRIPTION = SqlRender::render(checkDescription$CHECK_DESCRIPTION, CDM_FIELD = check["CDM_FIELD"], 
+                                            CDM_TABLE = check["CDM_TABLE"], warnOnMissingParameters = FALSE),
       CDM_TABLE = check["CDM_TABLE"],
       CDM_FIELD = check["CDM_FIELD"],
       CATEGORY = checkDescription$KAHN_CATEGORY,
@@ -20,11 +21,12 @@
       ERROR = error
     )  
   } else {
-    result$CHECK_ID <- checkId
+    #result$CHECK_ID <- checkId
     result$QUERY_TEXT <- sql
     result$CHECK_NAME <- checkDescription$CHECK_NAME
     result$CHECK_LEVEL <- checkDescription$CHECK_LEVEL
-    result$CHECK_DESCRIPTION <- checkDescription$CHECK_DESCRIPTION
+    result$CHECK_DESCRIPTION = SqlRender::render(checkDescription$CHECK_DESCRIPTION, CDM_FIELD = check["CDM_FIELD"], 
+                                                 CDM_TABLE = check["CDM_TABLE"], warnOnMissingParameters = FALSE)
     result$CDM_TABLE <- check["CDM_TABLE"]
     result$CDM_FIELD <- check["CDM_FIELD"]
     result$CATEGORY <- checkDescription$KAHN_CATEGORY
@@ -37,11 +39,11 @@
   #checkResults <<- dplyr::bind_rows(checkResults,result)  
 }
 
-.processCheck <- function(connectionDetails, checkId, check, checkDescription, sql) {
+  .processCheck <- function(connectionDetails, check, checkDescription, sql) {
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection = connection))
   result <- DatabaseConnector::querySql(connection = connection, sql = sql)
-  .recordResult(result, checkId, check, checkDescription, sql)
+  .recordResult(result, check, checkDescription, sql)
 }
 
 #' Execute DQ checks
@@ -84,7 +86,7 @@ execute <- function(connectionDetails,
   
   # load CSVs ----------------------------------------------------------------------------------------
   
-  startTime <- proc.time()
+  startTime <- Sys.time()
   
   checkDescriptionsDf <- read.csv(system.file("csv", "OMOP_CDMv5.3.1_Check_Descriptions.csv", 
                                             package = "DataQualityDashboard"), 
@@ -92,6 +94,7 @@ execute <- function(connectionDetails,
   fieldChecks <- read.csv(system.file("csv", "OMOP_CDMv5.3.1_Field_Level.csv",
                                       package = "DataQualityDashboard"), 
                           stringsAsFactors = FALSE)
+  library(magrittr)
   fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   
   checkDescriptionsDf <- checkDescriptionsDf[checkDescriptionsDf$CHECK_LEVEL=="FIELD" & checkDescriptionsDf$EVALUATION_FILTER != "",]
@@ -106,6 +109,7 @@ execute <- function(connectionDetails,
   
   if (!sqlOnly) {
     checkResults <- do.call("rbind", resultsList)
+    checkResults$checkId <- seq.int(nrow(checkResults))
     
     .summarizeResults(connectionDetails = connectionDetails, 
                       cdmDatabaseSchema = cdmDatabaseSchema, 
@@ -137,9 +141,7 @@ execute <- function(connectionDetails,
   }
   
   if (nrow(checks) > 0) {
-    checkId <- 0
     dfs <- apply(X = checks, MARGIN = 1, function(check) {
-      checkId <- checkId + 1
       sql <- SqlRender::loadRenderTranslateSql(
         dbms = connectionDetails$dbms,
         sqlFilename = checkDescription$SQL_FILE, 
@@ -160,13 +162,13 @@ execute <- function(connectionDetails,
         # need to capture the result status
         tryCatch(
           expr = .processCheck(connectionDetails = connectionDetails,
-                               checkId = checkId, check = check, 
+                               check = check, 
                                checkDescription = checkDescription, sql = sql),
           warning = function(w) {
-            .recordResult(checkId = checkId, check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
+            .recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
           },
           error = function(e) {
-            .recordResult(checkId = checkId, check = check, checkDescription = checkDescription, sql = sql, error = e$message)  
+            .recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message)  
           }
         ) 
       }    
@@ -182,7 +184,8 @@ execute <- function(connectionDetails,
                               cdmDatabaseSchema,
                               checkResults,
                               cdmSourceName,
-                              outputFolder) {
+                              outputFolder,
+                              startTime) {
   
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection = connection))
@@ -234,10 +237,13 @@ execute <- function(connectionDetails,
     countPassedCompleteness = countPassedCompleteness
   )
   
-  executionTime <- proc.time() - ptm
+  result <- list(startTimestamp = startTime, 
+                 endTimestamp = Sys.time(),
+                 executionTime = gsub(pattern = "Time difference of ", replacement = "", x = Sys.time() - startTime),
+                 CheckResults = checkResults, 
+                 Metadata = metadata, 
+                 Overview = overview)
   
-  result <- list(timestamp = Sys.time(), executionTime = executionTime,
-                 CheckResults = checkResults, Metadata = metadata, Overview = overview)
   resultJson <- jsonlite::toJSON(result)
   
   # TODO - add timestamp to result file output?
