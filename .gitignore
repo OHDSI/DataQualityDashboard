@@ -6,6 +6,8 @@
 
 # R data files from past sessions
 .Rdata
+.RData
+.Rhistory
 
 # RStudio files
 .Rproj.user/
@@ -25,3 +27,6 @@ inst/results.json
 
 # Other
 .DS_Store
+
+errorReport.txt
+output/

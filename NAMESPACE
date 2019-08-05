@@ -2,5 +2,6 @@
 
 export(dqDashPOC)
 export(dqDashPOCOutput)
+export(execute)
 export(renderDqDashPOC)
 import(htmlwidgets)
