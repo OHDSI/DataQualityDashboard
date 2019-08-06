@@ -57,8 +57,8 @@
                                         errorReportFile = errorReportFile)
   
   delta <- Sys.time() - start
-  .recordResult(result, check, checkDescription, sql, executionTime, 
-                executionTime = gsub(pattern = "Time difference of ", replacement = "", x = delta))
+  .recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
+                executionTime = sprintf("%f %s", delta, attr(delta, "units")))
 }
 
 #' Execute DQ checks
@@ -286,9 +286,12 @@ execute <- function(connectionDetails,
     countPassedCompleteness = countPassedCompleteness
   )
   
+  endTime <- Sys.time()
+  delta <- endTime - startTime
+  
   result <- list(startTimestamp = startTime, 
-                 endTimestamp = Sys.time(),
-                 executionTime = gsub(pattern = "Time difference of ", replacement = "", x = Sys.time() - startTime),
+                 endTimestamp = endTime,
+                 executionTime = sprintf("%f %s", delta, attr(delta, "units")),
                  CheckResults = checkResults, 
                  Metadata = metadata, 
                  Overview = overview)
