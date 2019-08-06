@@ -23,6 +23,9 @@ execute(connectionDetails, cdmDatabaseSchema, cdmSourceName,
 
 \item{verboseMode}{Boolean to determine if the console will show all execution steps. Default = FALSE}
 }
+\value{
+If sqlOnly = FALSE, a list object of results
+}
 \description{
 Execute DQ checks
 }

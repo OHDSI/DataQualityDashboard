@@ -65,6 +65,8 @@
 #' @param outputFolder              The folder to output logs and SQL files to
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' 
+#' @return If sqlOnly = FALSE, a list object of results
+#' 
 #' @export
 execute <- function(connectionDetails,
                     cdmDatabaseSchema,
@@ -129,11 +131,12 @@ execute <- function(connectionDetails,
                                               outputFolder, sqlOnly)
   ParallelLogger::stopCluster(cluster = cluster)
   
+  allResults <- NULL
   if (!sqlOnly) {
     checkResults <- do.call("rbind", resultsList)
     checkResults$checkId <- seq.int(nrow(checkResults))
     
-    .summarizeResults(connectionDetails = connectionDetails, 
+    allResults <- .summarizeResults(connectionDetails = connectionDetails, 
                       cdmDatabaseSchema = cdmDatabaseSchema, 
                       checkResults = checkResults,
                       cdmSourceName = cdmSourceName, 
@@ -143,6 +146,8 @@ execute <- function(connectionDetails,
   }
   
   ParallelLogger::unregisterLogger("DqDashboard")
+  
+  allResults
 }
 
 .runCheck <- function(checkDescription, 
@@ -284,6 +289,8 @@ execute <- function(connectionDetails,
   
   # TODO - add timestamp to result file output?
   write(resultJson, file.path(outputFolder, sprintf("results_%s.json", cdmSourceName)))
+  
+  result
 }
 
 
