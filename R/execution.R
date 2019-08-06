@@ -3,41 +3,31 @@
                           checkDescription, sql, 
                           executionTime = NA,
                           warning = NA, error = NA) {
-  if (is.null(result)) {
-    result <- data.frame(
-      NUM_VIOLATED_ROWS = NA,
-      PCT_VIOLATED_ROWS = NA,
-      EXECUTION_TIME = executionTime,
-      QUERY_TEXT = sql,
-      CHECK_NAME = checkDescription$CHECK_NAME,
-      CHECK_LEVEL = checkDescription$CHECK_LEVEL,
-      CHECK_DESCRIPTION = SqlRender::render(checkDescription$CHECK_DESCRIPTION, CDM_FIELD = check["CDM_FIELD"], 
-                                            CDM_TABLE = check["CDM_TABLE"], warnOnMissingParameters = FALSE),
-      CDM_TABLE = check["CDM_TABLE"],
-      CDM_FIELD = check["CDM_FIELD"],
-      CATEGORY = checkDescription$KAHN_CATEGORY,
-      SUBCATEGORY = checkDescription$KAHN_SUBCATEGORY,
-      CONTEXT = checkDescription$KAHN_CONTEXT,
-      WARNING = warning,
-      ERROR = error
-    )  
-  } else {
-    result$EXECUTION_TIME <- executionTime
-    result$QUERY_TEXT <- sql
-    result$CHECK_NAME <- checkDescription$CHECK_NAME
-    result$CHECK_LEVEL <- checkDescription$CHECK_LEVEL
-    result$CHECK_DESCRIPTION = SqlRender::render(checkDescription$CHECK_DESCRIPTION, CDM_FIELD = check["CDM_FIELD"], 
-                                                 CDM_TABLE = check["CDM_TABLE"], warnOnMissingParameters = FALSE)
-    result$CDM_TABLE <- check["CDM_TABLE"]
-    result$CDM_FIELD <- check["CDM_FIELD"]
-    result$CATEGORY <- checkDescription$KAHN_CATEGORY
-    result$SUBCATEGORY <- checkDescription$KAHN_SUBCATEGORY
-    result$CONTEXT <- checkDescription$KAHN_CONTEXT
-    result$WARNING <- warning
-    result$ERROR <- error
+  
+  reportResult <- data.frame(
+    NUM_VIOLATED_ROWS = NA,
+    PCT_VIOLATED_ROWS = NA,
+    EXECUTION_TIME = executionTime,
+    QUERY_TEXT = sql,
+    CHECK_NAME = checkDescription$CHECK_NAME,
+    CHECK_LEVEL = checkDescription$CHECK_LEVEL,
+    CHECK_DESCRIPTION = SqlRender::render(checkDescription$CHECK_DESCRIPTION, CDM_FIELD = check["CDM_FIELD"], 
+                                          CDM_TABLE = check["CDM_TABLE"], warnOnMissingParameters = FALSE),
+    CDM_TABLE = check["CDM_TABLE"],
+    CDM_FIELD = check["CDM_FIELD"],
+    SQL_FILE = checkDescription$SQL_FILE,
+    CATEGORY = checkDescription$KAHN_CATEGORY,
+    SUBCATEGORY = checkDescription$KAHN_SUBCATEGORY,
+    CONTEXT = checkDescription$KAHN_CONTEXT,
+    WARNING = warning,
+    ERROR = error, row.names = NULL, stringsAsFactors = FALSE
+  )
+  
+  if (!is.null(result)) {
+    reportResult$NUM_VIOLATED_ROWS <- result$NUM_VIOLATED_ROWS
+    reportResult$PCT_VIOLATED_ROWS <- result$PCT_VIOLATED_ROWS
   }
-  result
-  #checkResults <<- dplyr::bind_rows(checkResults,result)  
+  reportResult
 }
 
 .processCheck <- function(connectionDetails, check, checkDescription, sql, outputFolder) {
