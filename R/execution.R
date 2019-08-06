@@ -6,7 +6,6 @@
     result <- data.frame(
       NUM_VIOLATED_ROWS = NA,
       PCT_VIOLATED_ROWS = NA,
-     # CHECK_ID = checkId,
       QUERY_TEXT = sql,
       CHECK_NAME = checkDescription$CHECK_NAME,
       CHECK_LEVEL = checkDescription$CHECK_LEVEL,
@@ -21,7 +20,6 @@
       ERROR = error
     )  
   } else {
-    #result$CHECK_ID <- checkId
     result$QUERY_TEXT <- sql
     result$CHECK_NAME <- checkDescription$CHECK_NAME
     result$CHECK_LEVEL <- checkDescription$CHECK_LEVEL
@@ -39,10 +37,21 @@
   #checkResults <<- dplyr::bind_rows(checkResults,result)  
 }
 
-  .processCheck <- function(connectionDetails, check, checkDescription, sql) {
+.processCheck <- function(connectionDetails, check, checkDescription, sql, outputFolder) {
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection = connection))
-  result <- DatabaseConnector::querySql(connection = connection, sql = sql)
+
+  errorReportFile <- file.path(outputFolder, "errors", 
+                               checkDescription$CHECK_LEVEL, 
+                               checkDescription$CHECK_NAME, 
+                               sprintf("%s_%s.txt", check["CDM_TABLE"], check["CDM_FIELD"]))
+  
+  if (!dir.exists(dirname(errorReportFile))) {
+    dir.create(dirname(errorReportFile), recursive = TRUE)
+  }
+  
+  result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
+                                        errorReportFile = errorReportFile)
   .recordResult(result, check, checkDescription, sql)
 }
 
@@ -54,6 +63,7 @@
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #' @param outputFolder              The folder to output logs and SQL files to
+#' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' 
 #' @export
 execute <- function(connectionDetails,
@@ -61,7 +71,8 @@ execute <- function(connectionDetails,
                     cdmSourceName,
                     numThreads = 1,
                     sqlOnly = FALSE,
-                    outputFolder = "output") {
+                    outputFolder = "output",
+                    verboseMode = FALSE) {
   
   outputFolder <- file.path(outputFolder, cdmSourceName)
   
@@ -69,15 +80,24 @@ execute <- function(connectionDetails,
     dir.create(path = outputFolder, recursive = TRUE)
   }
   
+  if (dir.exists(file.path(outputFolder, "errors"))) {
+    unlink(file.path(outputFolder, "errors"), recursive = TRUE)
+  }
+  
   # Log execution -----------------------------------------------------------------------------------------------------------------
   ParallelLogger::clearLoggers()
   logFileName <- sprintf("log_DqDashboard_%s.txt", cdmSourceName)
   unlink(file.path(outputFolder, logFileName))
   
+  if (verboseMode) {
+    appenders <- list(ParallelLogger::createConsoleAppender(),
+                      ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
+                                                         fileName = file.path(outputFolder, logFileName)))    
+  } else {
+    appenders <- list(ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
+                                                         fileName = file.path(outputFolder, logFileName)))    
+  }
   
-  appenders <- list(ParallelLogger::createConsoleAppender(),
-                    ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
-                                                       fileName = file.path(outputFolder, logFileName)))    
 
   logger <- ParallelLogger::createLogger(name = "DqDashboard",
                                          threshold = "INFO",
@@ -97,7 +117,9 @@ execute <- function(connectionDetails,
   library(magrittr)
   fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   
-  checkDescriptionsDf <- checkDescriptionsDf[checkDescriptionsDf$CHECK_LEVEL=="FIELD" & checkDescriptionsDf$EVALUATION_FILTER != "",]
+  checkDescriptionsDf <- checkDescriptionsDf[checkDescriptionsDf$CHECK_LEVEL=="FIELD" & 
+                                               checkDescriptionsDf$EVALUATION_FILTER != "",]
+  
   checkDescriptions <- split(checkDescriptionsDf, seq(nrow(checkDescriptionsDf)))
   
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
@@ -150,6 +172,13 @@ execute <- function(connectionDetails,
         cdmFieldName = check["CDM_FIELD"],
         fkTableName = check["FK_TABLE"],
         fkFieldName = check["FK_FIELD"],
+        fkDomain = check["FK_DOMAIN"],
+        fkClass = check["FK_CLASS"],
+        plausibleTemporalAfterTableName = check["PLAUSIBLE_TEMPORAL_AFTER_TABLE"],
+        plausibleTemporalAfterFieldName = check["PLAUSIBLE_TEMPORAL_AFTER"],
+        plausibleValueHighThreshold = check["PLAUSIBLE_VALUE_HIGH_THRESHOLD"],
+        plausibleValueLowThreshold = check["PLAUSIBLE_VALUE_LOW_THRESHOLD"],
+        standardConceptFieldName = check["STANDARD_CONCEPT_FIELD_NAME"],
         cdmDatabaseSchema = cdmDatabaseSchema,
         warnOnMissingParameters = FALSE
       )
@@ -163,11 +192,18 @@ execute <- function(connectionDetails,
         tryCatch(
           expr = .processCheck(connectionDetails = connectionDetails,
                                check = check, 
-                               checkDescription = checkDescription, sql = sql),
+                               checkDescription = checkDescription, sql = sql,
+                               outputFolder = outputFolder),
           warning = function(w) {
+            ParallelLogger::logWarn(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
+                                            checkDescription$CHECK_LEVEL,
+                                            checkDescription$CHECK_NAME, check["CDM_TABLE"], check["CDM_FIELD"], w$message))
             .recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
           },
           error = function(e) {
+            ParallelLogger::logError(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
+                                             checkDescription$CHECK_LEVEL,
+                                             checkDescription$CHECK_NAME, check["CDM_TABLE"], check["CDM_FIELD"], e$message))
             .recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message)  
           }
         ) 

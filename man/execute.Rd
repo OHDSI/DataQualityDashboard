@@ -5,7 +5,8 @@
 \title{Execute DQ checks}
 \usage{
 execute(connectionDetails, cdmDatabaseSchema, cdmSourceName,
-  numThreads = 1, sqlOnly = FALSE, outputFolder = "output")
+  numThreads = 1, sqlOnly = FALSE, outputFolder = "output",
+  verboseMode = FALSE)
 }
 \arguments{
 \item{connectionDetails}{A connectionDetails object for connecting to the CDM database}
@@ -19,6 +20,8 @@ execute(connectionDetails, cdmDatabaseSchema, cdmSourceName,
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
 
 \item{outputFolder}{The folder to output logs and SQL files to}
+
+\item{verboseMode}{Boolean to determine if the console will show all execution steps. Default = FALSE}
 }
 \description{
 Execute DQ checks
