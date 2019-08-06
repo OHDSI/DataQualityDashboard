@@ -1,58 +1,54 @@
 
 .recordResult <- function(result = NULL, check, 
                           checkDescription, sql, 
+                          executionTime = NA,
                           warning = NA, error = NA) {
-  if (is.null(result)) {
-    result <- data.frame(
-      NUM_VIOLATED_ROWS = NA,
-      PCT_VIOLATED_ROWS = NA,
-      QUERY_TEXT = sql,
-      CHECK_NAME = checkDescription$CHECK_NAME,
-      CHECK_LEVEL = checkDescription$CHECK_LEVEL,
-      CHECK_DESCRIPTION = SqlRender::render(checkDescription$CHECK_DESCRIPTION, CDM_FIELD = check["CDM_FIELD"], 
-                                            CDM_TABLE = check["CDM_TABLE"], warnOnMissingParameters = FALSE),
-      CDM_TABLE = check["CDM_TABLE"],
-      CDM_FIELD = check["CDM_FIELD"],
-      CATEGORY = checkDescription$KAHN_CATEGORY,
-      SUBCATEGORY = checkDescription$KAHN_SUBCATEGORY,
-      CONTEXT = checkDescription$KAHN_CONTEXT,
-      WARNING = warning,
-      ERROR = error
-    )  
-  } else {
-    result$QUERY_TEXT <- sql
-    result$CHECK_NAME <- checkDescription$CHECK_NAME
-    result$CHECK_LEVEL <- checkDescription$CHECK_LEVEL
-    result$CHECK_DESCRIPTION = SqlRender::render(checkDescription$CHECK_DESCRIPTION, CDM_FIELD = check["CDM_FIELD"], 
-                                                 CDM_TABLE = check["CDM_TABLE"], warnOnMissingParameters = FALSE)
-    result$CDM_TABLE <- check["CDM_TABLE"]
-    result$CDM_FIELD <- check["CDM_FIELD"]
-    result$CATEGORY <- checkDescription$KAHN_CATEGORY
-    result$SUBCATEGORY <- checkDescription$KAHN_SUBCATEGORY
-    result$CONTEXT <- checkDescription$KAHN_CONTEXT
-    result$WARNING <- warning
-    result$ERROR <- error
+  
+  reportResult <- data.frame(
+    NUM_VIOLATED_ROWS = NA,
+    PCT_VIOLATED_ROWS = NA,
+    EXECUTION_TIME = executionTime,
+    QUERY_TEXT = sql,
+    CHECK_NAME = checkDescription$CHECK_NAME,
+    CHECK_LEVEL = checkDescription$CHECK_LEVEL,
+    CHECK_DESCRIPTION = SqlRender::render(checkDescription$CHECK_DESCRIPTION, CDM_FIELD = check["CDM_FIELD"], 
+                                          CDM_TABLE = check["CDM_TABLE"], warnOnMissingParameters = FALSE),
+    CDM_TABLE = check["CDM_TABLE"],
+    CDM_FIELD = check["CDM_FIELD"],
+    SQL_FILE = checkDescription$SQL_FILE,
+    CATEGORY = checkDescription$KAHN_CATEGORY,
+    SUBCATEGORY = checkDescription$KAHN_SUBCATEGORY,
+    CONTEXT = checkDescription$KAHN_CONTEXT,
+    WARNING = warning,
+    ERROR = error, row.names = NULL, stringsAsFactors = FALSE
+  )
+  
+  if (!is.null(result)) {
+    reportResult$NUM_VIOLATED_ROWS <- result$NUM_VIOLATED_ROWS
+    reportResult$PCT_VIOLATED_ROWS <- result$PCT_VIOLATED_ROWS
   }
-  result
-  #checkResults <<- dplyr::bind_rows(checkResults,result)  
+  reportResult
 }
 
 .processCheck <- function(connectionDetails, check, checkDescription, sql, outputFolder) {
+  start <- Sys.time()
+  
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection = connection))
 
   errorReportFile <- file.path(outputFolder, "errors", 
-                               checkDescription$CHECK_LEVEL, 
-                               checkDescription$CHECK_NAME, 
-                               sprintf("%s_%s.txt", check["CDM_TABLE"], check["CDM_FIELD"]))
-  
-  if (!dir.exists(dirname(errorReportFile))) {
-    dir.create(dirname(errorReportFile), recursive = TRUE)
-  }
+                               sprintf("%s_%s_%s_%s.txt",
+                                       checkDescription$CHECK_LEVEL,
+                                       checkDescription$CHECK_NAME,
+                                       check["CDM_TABLE"],
+                                       check["CDM_FIELD"]))
   
   result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
                                         errorReportFile = errorReportFile)
-  .recordResult(result, check, checkDescription, sql)
+  
+  delta <- Sys.time() - start
+  .recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
+                executionTime = sprintf("%f %s", delta, attr(delta, "units")))
 }
 
 #' Execute DQ checks
@@ -64,6 +60,8 @@
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #' @param outputFolder              The folder to output logs and SQL files to
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
+#' 
+#' @return If sqlOnly = FALSE, a list object of results
 #' 
 #' @export
 execute <- function(connectionDetails,
@@ -83,6 +81,8 @@ execute <- function(connectionDetails,
   if (dir.exists(file.path(outputFolder, "errors"))) {
     unlink(file.path(outputFolder, "errors"), recursive = TRUE)
   }
+  
+  dir.create(file.path(outputFolder, "errors"), recursive = TRUE)
   
   # Log execution -----------------------------------------------------------------------------------------------------------------
   ParallelLogger::clearLoggers()
@@ -129,11 +129,12 @@ execute <- function(connectionDetails,
                                               outputFolder, sqlOnly)
   ParallelLogger::stopCluster(cluster = cluster)
   
+  allResults <- NULL
   if (!sqlOnly) {
     checkResults <- do.call("rbind", resultsList)
     checkResults$checkId <- seq.int(nrow(checkResults))
     
-    .summarizeResults(connectionDetails = connectionDetails, 
+    allResults <- .summarizeResults(connectionDetails = connectionDetails, 
                       cdmDatabaseSchema = cdmDatabaseSchema, 
                       checkResults = checkResults,
                       cdmSourceName = cdmSourceName, 
@@ -143,6 +144,8 @@ execute <- function(connectionDetails,
   }
   
   ParallelLogger::unregisterLogger("DqDashboard")
+  
+  allResults
 }
 
 .runCheck <- function(checkDescription, 
@@ -273,9 +276,12 @@ execute <- function(connectionDetails,
     countPassedCompleteness = countPassedCompleteness
   )
   
+  endTime <- Sys.time()
+  delta <- endTime - startTime
+  
   result <- list(startTimestamp = startTime, 
-                 endTimestamp = Sys.time(),
-                 executionTime = gsub(pattern = "Time difference of ", replacement = "", x = Sys.time() - startTime),
+                 endTimestamp = endTime,
+                 executionTime = sprintf("%f %s", delta, attr(delta, "units")),
                  CheckResults = checkResults, 
                  Metadata = metadata, 
                  Overview = overview)
@@ -284,6 +290,8 @@ execute <- function(connectionDetails,
   
   # TODO - add timestamp to result file output?
   write(resultJson, file.path(outputFolder, sprintf("results_%s.json", cdmSourceName)))
+  
+  result
 }
 
 
