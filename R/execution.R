@@ -1,11 +1,13 @@
 
 .recordResult <- function(result = NULL, check, 
                           checkDescription, sql, 
+                          executionTime = NA,
                           warning = NA, error = NA) {
   if (is.null(result)) {
     result <- data.frame(
       NUM_VIOLATED_ROWS = NA,
       PCT_VIOLATED_ROWS = NA,
+      EXECUTION_TIME = executionTime,
       QUERY_TEXT = sql,
       CHECK_NAME = checkDescription$CHECK_NAME,
       CHECK_LEVEL = checkDescription$CHECK_LEVEL,
@@ -20,6 +22,7 @@
       ERROR = error
     )  
   } else {
+    result$EXECUTION_TIME <- executionTime
     result$QUERY_TEXT <- sql
     result$CHECK_NAME <- checkDescription$CHECK_NAME
     result$CHECK_LEVEL <- checkDescription$CHECK_LEVEL
@@ -38,6 +41,8 @@
 }
 
 .processCheck <- function(connectionDetails, check, checkDescription, sql, outputFolder) {
+  start <- Sys.time()
+  
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection = connection))
 
@@ -50,7 +55,10 @@
   
   result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
                                         errorReportFile = errorReportFile)
-  .recordResult(result, check, checkDescription, sql)
+  
+  delta <- Sys.time() - start
+  .recordResult(result, check, checkDescription, sql, executionTime, 
+                executionTime = gsub(pattern = "Time difference of ", replacement = "", x = delta))
 }
 
 #' Execute DQ checks
