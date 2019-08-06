@@ -42,13 +42,11 @@
   on.exit(DatabaseConnector::disconnect(connection = connection))
 
   errorReportFile <- file.path(outputFolder, "errors", 
-                               checkDescription$CHECK_LEVEL, 
-                               checkDescription$CHECK_NAME, 
-                               sprintf("%s_%s.txt", check["CDM_TABLE"], check["CDM_FIELD"]))
-  
-  if (!dir.exists(dirname(errorReportFile))) {
-    dir.create(dirname(errorReportFile), recursive = TRUE)
-  }
+                               sprintf("%s_%s_%s_%s.txt",
+                                       checkDescription$CHECK_LEVEL,
+                                       checkDescription$CHECK_NAME,
+                                       check["CDM_TABLE"],
+                                       check["CDM_FIELD"]))
   
   result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
                                         errorReportFile = errorReportFile)
@@ -85,6 +83,8 @@ execute <- function(connectionDetails,
   if (dir.exists(file.path(outputFolder, "errors"))) {
     unlink(file.path(outputFolder, "errors"), recursive = TRUE)
   }
+  
+  dir.create(file.path(outputFolder, "errors"), recursive = TRUE)
   
   # Log execution -----------------------------------------------------------------------------------------------------------------
   ParallelLogger::clearLoggers()

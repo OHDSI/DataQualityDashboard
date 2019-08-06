@@ -13,9 +13,17 @@ numThreads <- 1 # on Redshift, 3 seems to work well
 # specify if you want to execute the queries or inspect them ------------------------------------------
 sqlOnly <- FALSE # set to TRUE if you just want to get the SQL scripts and not actually run the queries
 
+# where should the logs go? -------------------------------------------------------------------------
+outputFolder <- "output"
+
+# logging type -------------------------------------------------------------------------------------
+verboseMode <- FALSE # set to TRUE if you want to see activity written to the console
+
 # run the job --------------------------------------------------------------------------------------
 DataQualityDashboard::execute(connectionDetails = connectionDetails, 
                               cdmDatabaseSchema = cdmDatabaseSchema, 
                               cdmSourceName = cdmSourceName, 
                               numThreads = numThreads,
-                              sqlOnly = sqlOnly)
+                              sqlOnly = sqlOnly, 
+                              outputFolder = outputFolder, 
+                              verboseMode = verboseMode)
