@@ -7,8 +7,8 @@ Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
-temoralComparatorTableName = @temoralComparatorTableName
-temporalComparatorFieldName = @temporalComparatorFieldName
+plausibleTemporalAfterTableName = @plausibleTemporalAfterTableName
+plausibleTemporalAfterFieldName = @plausibleTemporalAfterFieldName
 **********/
 
 SELECT num_violated_rows, CASE WHEN denominator.num_rows = 0 THEN 0 ELSE 1.0*num_violated_rows/denominator.num_rows END  AS pct_violated_rows
@@ -19,9 +19,9 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.*
     from @cdmDatabaseSchema.@cdmTableName
-		join @cdmDatabaseSchema.@temoralComparatorTableName
-			on @cdmDatabaseSchema.@cdmTableName.person_id = @cdmDatabaseSchema.@temoralComparatorTableName.person_id
-    where @temporalComparatorFieldName > @cdmFieldName
+		join @cdmDatabaseSchema.@plausibleTemporalAfterTableName
+			on @cdmDatabaseSchema.@cdmTableName.person_id = @cdmDatabaseSchema.@plausibleTemporalAfterTableName.person_id
+    where @plausibleTemporalAfterFieldName > @cdmFieldName
 	) violated_rows
 ) violated_row_count,
 (
