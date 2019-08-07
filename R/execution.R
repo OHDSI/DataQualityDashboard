@@ -55,22 +55,27 @@
 #' 
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema
+#' @param resultsDatabaseSchema     The fully qualified database name of the results schema
 #' @param numThreads                The number of concurrent threads to use to execute the queries
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #' @param outputFolder              The folder to output logs and SQL files to
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
+#' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
+#'                                  in the resultsDatabaseSchema. Default is TRUE.
 #' 
 #' @return If sqlOnly = FALSE, a list object of results
 #' 
 #' @export
 execute <- function(connectionDetails,
                     cdmDatabaseSchema,
+                    resultsDatabaseSchema,
                     cdmSourceName,
                     numThreads = 1,
                     sqlOnly = FALSE,
                     outputFolder = "output",
-                    verboseMode = FALSE) {
+                    verboseMode = FALSE,
+                    writeToTable = TRUE) {
   
   outputFolder <- file.path(outputFolder, cdmSourceName)
   
@@ -145,7 +150,19 @@ execute <- function(connectionDetails,
   
   ParallelLogger::unregisterLogger("DqDashboard")
   
-  allResults
+  # write to table ----------------------------------------------------------------------
+  
+  if (!sqlOnly & writeToTable) {
+    .writeResultsToTable(connectionDetails = connectionDetails,
+                         resultsDatabaseSchema = resultsDatabaseSchema,
+                         checkResults = allResults$CheckResults)
+  }
+  
+  if (sqlOnly) {
+    invisible(allResults)
+  } else {
+    allResults  
+  }
 }
 
 .runCheck <- function(checkDescription, 
@@ -292,6 +309,52 @@ execute <- function(connectionDetails,
   write(resultJson, file.path(outputFolder, sprintf("results_%s.json", cdmSourceName)))
   
   result
+}
+
+
+#' Execute DQ checks
+#' 
+#' @param connectionDetails         A connectionDetails object for connecting to the CDM database
+#' @param resultsDatabaseSchema     The fully qualified database name of the results schema
+#' @param jsonFilePath              Path to the JSON results file generated using the execute function
+#' 
+#' @export
+writeJsonResultsToTable <- function(connectionDetails,
+                                    resultsDatabaseSchema,
+                                    jsonFilePath) {
+  
+  jsonData <- jsonlite::read_json(jsonFilePath)
+  checkResults <- lapply(jsonData$CheckResults, function(cr) {
+    cr[sapply(cr, is.null)] <- NA
+    as.data.frame(cr)
+  })
+  library(plyr)
+  df <- do.call("rbind.fill", checkResults)
+  .writeResultsToTable(connectionDetails = connectionDetails,
+                       resultsDatabaseSchema = resultsDatabaseSchema,
+                       checkResults = df)
+}
+
+.writeResultsToTable <- function(connectionDetails,
+                                 resultsDatabaseSchema,
+                                 checkResults) {
+  
+  connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection = connection))
+  tableName <- sprintf("%s.dqdashboard_results", resultsDatabaseSchema)
+
+  ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
+  
+  tryCatch(
+    expr = {
+      DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = checkResults, 
+                                   dropTableIfExists = TRUE, createTable = TRUE, tempTable = FALSE)
+      ParallelLogger::logInfo("Finished writing table")
+    },
+    error = function(e) {
+      ParallelLogger::logError(sprintf("Writing table failed: %s", e$message))
+    }
+  )
 }
 
 
