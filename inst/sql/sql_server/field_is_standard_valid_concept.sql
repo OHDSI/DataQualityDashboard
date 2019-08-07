@@ -22,7 +22,7 @@ FROM
 		                                          FROM @cdmDatabaseSchema.@cdmTableName t   
 												  LEFT JOIN @cdmDatabaseSchema.CONCEPT c
 												    ON t.@cdmFieldName = c.CONCEPT_ID 
-											     WHERE c.STANDARD_CONCEPT != 'S' OR c.INVALID_REASON IS NOT NULL ) 
+											     WHERE c.CONCEPT_ID != 0 AND (c.STANDARD_CONCEPT != 'S' OR c.INVALID_REASON IS NOT NULL ) 
 	) violated_rows
 ) violated_row_count,
 ( 
