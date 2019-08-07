@@ -7,7 +7,7 @@ Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
-plausibleValueHighThreshold = @plausibleValueHighThreshold
+plausibleValueLow = @plausibleValueLow
 **********/
 
 SELECT num_violated_rows, CASE WHEN denominator.num_rows = 0 THEN 0 ELSE 1.0*num_violated_rows/denominator.num_rows END  AS pct_violated_rows
@@ -18,7 +18,7 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.*
 		from @cdmDatabaseSchema.@cdmTableName
-    where @cdmFieldName < @plausibleValueHighThreshold
+    where @cdmFieldName < @plausibleValueLow
 	) violated_rows
 ) violated_row_count,
 (
