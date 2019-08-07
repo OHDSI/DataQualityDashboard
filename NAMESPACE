@@ -2,5 +2,7 @@
 
 export(dqDashPOC)
 export(dqDashPOCOutput)
+export(execute)
 export(renderDqDashPOC)
+export(writeJsonResultsToTable)
 import(htmlwidgets)
