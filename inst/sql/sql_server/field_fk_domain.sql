@@ -21,7 +21,7 @@ FROM
 		  FROM @cdmDatabaseSchema.@cdmTableName t
 		  LEFT JOIN @cdmDatabaseSchema.CONCEPT c
 		    ON t.@cdmFieldName = c.CONCEPT_ID
-		 WHERE c.DOMAIN_ID = '@fkDomain'
+		 WHERE c.CONCEPT_ID != 0 AND c.DOMAIN_ID != '@fkDomain'
 		  
 	) violated_rows
 ) violated_row_count,
