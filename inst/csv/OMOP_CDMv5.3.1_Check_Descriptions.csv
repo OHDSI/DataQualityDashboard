@@ -1,5 +1,6 @@
 CHECK_LEVEL,CHECK_NAME,CHECK_DESCRIPTION,NUMERATOR,DENOMINATOR,KAHN_CONTEXT,KAHN_CATEGORY,KAHN_SUBCATEGORY,SQL_FILE,EVALUATION_FILTER,
-TABLE,IS_TEMPORALLY_CONSTANT,Count of records per person per month. ,,,Verification,,,dontknow.sql,IS_TEMPORALLY_CONSTANT=='Yes',
+TABLE,IS_TEMPORALLY_CONSTANT,Count of records per person per month. ,,,Verification,,,,IS_TEMPORALLY_CONSTANT=='Yes',
+TABLE,MEASURE_PERSON_COMPLETENESS,The number and percent of persons in the CDM that do not have at least one record in the @CDM_TABLE table,,,,Completeness,,table_person_completeness.sql,MEASURE_PERSON_COMPLETENESS=='Yes',
 FIELD,CDM_FIELD,A yes or no value indicating if all fields are present in the @CDM_TABLE table as expected based on the specification. ,,,Verification,Conformance,Relational,,,
 FIELD,IS_REQUIRED,The number and percent of records with a NULL value in the @CDM_FIELD of the @CDM_TABLE that is considered not nullable.,,,Validation,Conformance,Relational,field_is_not_nullable.sql,IS_REQUIRED=='Yes',
 FIELD,CDM_DATATYPE,A yes or no value indicating if the @CDM_FIELD in the @CDM_TABLE is the expected data type based on the specification.,,,Verification,Conformance,Value,field_cdm_datatype.sql,CDM_DATATYPE=='integer',
