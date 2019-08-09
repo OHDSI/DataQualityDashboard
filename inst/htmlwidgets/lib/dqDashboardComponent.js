@@ -37,26 +37,29 @@ class DqDashboard extends HTMLElement {
         }
     </style>
 
-    <h2>Overall Assessment: {{Total.Total.PercentPassing}}</h2>
+    <h2>Overall Assessment: {{Total.Total.PercentPass}}</h2>
     <table>
         <thead>
             <tr>
                 <td></td>
-                <td colspan="3">Verification</td>
-                <td colspan="3">Validation</td>
-                <td colspan="3">Total</td>
+                <td colspan="4">Verification</td>
+                <td colspan="4">Validation</td>
+                <td colspan="4">Total</td>
             </tr>
             <tr>
                 <td></td>
-                <td>Passing</td>
+                <td>Pass</td>
+                <td>Fail</td>
                 <td>Total</td>
-                <td>% Passing</td>
-                <td>Passing</td>
+                <td>% Pass</td>
+                <td>Pass</td>
+                <td>Fail</td>
                 <td>Total</td>
-                <td>% Passing</td>
-                <td>Passing</td>
+                <td>% Pass</td>
+                <td>Pass</td>
+                <td>Fail</td>
                 <td>Total</td>
-                <td>% Passing</td>
+                <td>% Pass</td>
             </tr>
         </thead>
         <tbody>
@@ -64,51 +67,63 @@ class DqDashboard extends HTMLElement {
                 <td>
                     Plausibility
                 </td>
-                <td>{{Verification.Plausibility.Passing}}</td>
+                <td>{{Verification.Plausibility.Pass}}</td>
+                <td>{{Verification.Plausibility.Fail}}</td>
                 <td>{{Verification.Plausibility.Total}}</td>
-                <td>{{Verification.Plausibility.PercentPassing}}</td>
-                <td>{{Validation.Plausibility.Passing}}</td>
+                <td>{{Verification.Plausibility.PercentPass}}</td>
+                <td>{{Validation.Plausibility.Pass}}</td>
+                <td>{{Validation.Plausibility.Fail}}</td>
                 <td>{{Validation.Plausibility.Total}}</td>
-                <td>{{Validation.Plausibility.PercentPassing}}</td>
-                <td>{{Total.Plausibility.Passing}}</td>
+                <td>{{Validation.Plausibility.PercentPass}}</td>
+                <td>{{Total.Plausibility.Pass}}</td>
+                <td>{{Total.Plausibility.Fail}}</td>                
                 <td>{{Total.Plausibility.Total}}</td>
-                <td>{{Total.Plausibility.PercentPassing}}</td>
+                <td>{{Total.Plausibility.PercentPass}}</td>
             </tr>
             <tr>
                 <td>Conformance</td>
-                <td>{{Verification.Conformance.Passing}}</td>
+                <td>{{Verification.Conformance.Pass}}</td>
+                <td>{{Verification.Conformance.Fail}}</td>
                 <td>{{Verification.Conformance.Total}}</td>
-                <td>{{Verification.Conformance.PercentPassing}}</td>
-                <td>{{Validation.Conformance.Passing}}</td>
+                <td>{{Verification.Conformance.PercentPass}}</td>
+                <td>{{Validation.Conformance.Pass}}</td>
+                <td>{{Validation.Conformance.Fail}}</td>
                 <td>{{Validation.Conformance.Total}}</td>
-                <td>{{Validation.Conformance.PercentPassing}}</td>
-                <td>{{Total.Conformance.Passing}}</td>
+                <td>{{Validation.Conformance.PercentPass}}</td>
+                <td>{{Total.Conformance.Pass}}</td>
+                <td>{{Total.Conformance.Fail}}</td>                
                 <td>{{Total.Conformance.Total}}</td>
-                <td>{{Total.Conformance.PercentPassing}}</td>
+                <td>{{Total.Conformance.PercentPass}}</td>
             </tr>
             <tr>
                 <td>Completeness</td>
-                <td>{{Verification.Completeness.Passing}}</td>
+                <td>{{Verification.Completeness.Pass}}</td>
+                <td>{{Verification.Completeness.Fail}}</td>
                 <td>{{Verification.Completeness.Total}}</td>
-                <td>{{Verification.Completeness.PercentPassing}}</td>
-                <td>{{Validation.Completeness.Passing}}</td>
+                <td>{{Verification.Completeness.PercentPass}}</td>
+                <td>{{Validation.Completeness.Pass}}</td>
+                <td>{{Validation.Completeness.Fail}}</td>                
                 <td>{{Validation.Completeness.Total}}</td>
-                <td>{{Validation.Completeness.PercentPassing}}</td>
-                <td>{{Total.Completeness.Passing}}</td>
+                <td>{{Validation.Completeness.PercentPass}}</td>
+                <td>{{Total.Completeness.Pass}}</td>
+                <td>{{Total.Completeness.Fail}}</td>
                 <td>{{Total.Completeness.Total}}</td>
-                <td>{{Total.Completeness.PercentPassing}}</td>
+                <td>{{Total.Completeness.PercentPass}}</td>
             </tr>
             <tr>
                 <td>Total</td>
-                <td>{{Verification.Total.Passing}}</td>
+                <td>{{Verification.Total.Pass}}</td>
+                <td>{{Verification.Total.Fail}}</td>
                 <td>{{Verification.Total.Total}}</td>
-                <td>{{Verification.Total.PercentPassing}}</td>
-                <td>{{Validation.Total.Passing}}</td>
+                <td>{{Verification.Total.PercentPass}}</td>
+                <td>{{Validation.Total.Pass}}</td>
+                <td>{{Validation.Total.Fail}}</td>
                 <td>{{Validation.Total.Total}}</td>
-                <td>{{Validation.Total.PercentPassing}}</td>
-                <td>{{Total.Total.Passing}}</td>
+                <td>{{Validation.Total.PercentPass}}</td>
+                <td>{{Total.Total.Pass}}</td>
+                <td>{{Total.Total.Fail}}</td>                
                 <td>{{Total.Total.Total}}</td>
-                <td>{{Total.Total.PercentPassing}}</td>
+                <td>{{Total.Total.PercentPass}}</td>
             </tr>
         </tbody>
     </table>
@@ -139,8 +154,14 @@ class DqDashboard extends HTMLElement {
       return;
 
     // Verification Plausibility
-    const VerificationPlausibilityPassing = this.results.filter(
+    const VerificationPlausibilityPass = this.results.filter(
       c => c.FAILED == 0 &&
+        c.CONTEXT == "Verification"
+        && c.CATEGORY == "Plausibility"
+    ).length;
+
+    const VerificationPlausibilityFail = this.results.filter(
+      c => c.FAILED == 1 &&
         c.CONTEXT == "Verification"
         && c.CATEGORY == "Plausibility"
     ).length;
@@ -150,11 +171,17 @@ class DqDashboard extends HTMLElement {
         && c.CATEGORY == "Plausibility"
     ).length;
 
-    const VerificationPlausibilityPercentPassing = VerificationPlausibilityTotal == 0 ? "-" : Math.round(VerificationPlausibilityPassing / VerificationPlausibilityTotal * 100) + "%";
+    const VerificationPlausibilityPercentPass = VerificationPlausibilityTotal == 0 ? "-" : Math.round(VerificationPlausibilityPass / VerificationPlausibilityTotal * 100) + "%";
 
     // Verification Conformance
-    const VerificationConformancePassing = this.results.filter(
+    const VerificationConformancePass = this.results.filter(
       c => c.FAILED == 0 &&
+        c.CONTEXT == "Verification"
+        && c.CATEGORY == "Conformance"
+    ).length;
+
+    const VerificationConformanceFail = this.results.filter(
+      c => c.FAILED == 1 &&
         c.CONTEXT == "Verification"
         && c.CATEGORY == "Conformance"
     ).length;
@@ -164,11 +191,17 @@ class DqDashboard extends HTMLElement {
         && c.CATEGORY == "Conformance"
     ).length;
 
-    const VerificationConformancePercentPassing = VerificationConformanceTotal == 0 ? "-" : Math.round(VerificationConformancePassing / VerificationConformanceTotal * 100) + "%";
+    const VerificationConformancePercentPass = VerificationConformanceTotal == 0 ? "-" : Math.round(VerificationConformancePass / VerificationConformanceTotal * 100) + "%";
 
     // Verification Completeness
-    const VerificationCompletenessPassing = this.results.filter(
+    const VerificationCompletenessPass = this.results.filter(
       c => c.FAILED == 0 &&
+        c.CONTEXT == "Verification"
+        && c.CATEGORY == "Completeness"
+    ).length;
+
+    const VerificationCompletenessFail = this.results.filter(
+      c => c.FAILED == 1 &&
         c.CONTEXT == "Verification"
         && c.CATEGORY == "Completeness"
     ).length;
@@ -178,11 +211,16 @@ class DqDashboard extends HTMLElement {
         && c.CATEGORY == "Completeness"
     ).length;
 
-    const VerificationCompletenessPercentPassing = VerificationCompletenessTotal == 0 ? "-" : Math.round(VerificationCompletenessPassing / VerificationCompletenessTotal * 100) + "%";
+    const VerificationCompletenessPercentPass = VerificationCompletenessTotal == 0 ? "-" : Math.round(VerificationCompletenessPass / VerificationCompletenessTotal * 100) + "%";
 
     // Verification Totals
-    const VerificationPassing = this.results.filter(
+    const VerificationPass = this.results.filter(
       c => c.FAILED == 0 &&
+        c.CONTEXT == "Verification"
+    ).length;
+
+    const VerificationFail = this.results.filter(
+      c => c.FAILED == 1 &&
         c.CONTEXT == "Verification"
     ).length;
 
@@ -190,11 +228,17 @@ class DqDashboard extends HTMLElement {
       c => c.CONTEXT == "Verification"
     ).length;
 
-    const VerificationPercentPassing = VerificationTotal == 0 ? "-" : Math.round(VerificationPassing / VerificationTotal * 100) + "%";
+    const VerificationPercentPass = VerificationTotal == 0 ? "-" : Math.round(VerificationPass / VerificationTotal * 100) + "%";
 
     // Validation Plausibility
-    const ValidationPlausibilityPassing = this.results.filter(
+    const ValidationPlausibilityPass = this.results.filter(
       c => c.FAILED == 0 &&
+        c.CONTEXT == "Validation"
+        && c.CATEGORY == "Plausibility"
+    ).length;
+
+    const ValidationPlausibilityFail = this.results.filter(
+      c => c.FAILED == 1 &&
         c.CONTEXT == "Validation"
         && c.CATEGORY == "Plausibility"
     ).length;
@@ -204,11 +248,17 @@ class DqDashboard extends HTMLElement {
         && c.CATEGORY == "Plausibility"
     ).length;
 
-    const ValidationPlausibilityPercentPassing = ValidationPlausibilityTotal == 0 ? "-" : Math.round(ValidationPlausibilityPassing / ValidationPlausibilityTotal * 100) + "%";
+    const ValidationPlausibilityPercentPass = ValidationPlausibilityTotal == 0 ? "-" : Math.round(ValidationPlausibilityPass / ValidationPlausibilityTotal * 100) + "%";
 
     // Validation Conformance
-    const ValidationConformancePassing = this.results.filter(
+    const ValidationConformancePass = this.results.filter(
       c => c.FAILED == 0 &&
+        c.CONTEXT == "Validation"
+        && c.CATEGORY == "Conformance"
+    ).length;
+
+    const ValidationConformanceFail = this.results.filter(
+      c => c.FAILED == 1 &&
         c.CONTEXT == "Validation"
         && c.CATEGORY == "Conformance"
     ).length;
@@ -218,11 +268,17 @@ class DqDashboard extends HTMLElement {
         && c.CATEGORY == "Conformance"
     ).length;
 
-    const ValidationConformancePercentPassing = ValidationConformanceTotal == 0 ? "-" : Math.round(ValidationConformancePassing / ValidationConformanceTotal * 100) + "%";
+    const ValidationConformancePercentPass = ValidationConformanceTotal == 0 ? "-" : Math.round(ValidationConformancePass / ValidationConformanceTotal * 100) + "%";
 
     // Validation Completeness
-    const ValidationCompletenessPassing = this.results.filter(
+    const ValidationCompletenessPass = this.results.filter(
       c => c.FAILED == 0 &&
+        c.CONTEXT == "Validation"
+        && c.CATEGORY == "Completeness"
+    ).length;
+
+    const ValidationCompletenessFail = this.results.filter(
+      c => c.FAILED == 1 &&
         c.CONTEXT == "Validation"
         && c.CATEGORY == "Completeness"
     ).length;
@@ -232,11 +288,16 @@ class DqDashboard extends HTMLElement {
         && c.CATEGORY == "Completeness"
     ).length;
 
-    const ValidationCompletenessPercentPassing = ValidationCompletenessTotal == 0 ? "-" : Math.round(ValidationCompletenessPassing / ValidationCompletenessTotal * 100) + "%";
+    const ValidationCompletenessPercentPass = ValidationCompletenessTotal == 0 ? "-" : Math.round(ValidationCompletenessPass / ValidationCompletenessTotal * 100) + "%";
 
     // Validation
-    const ValidationPassing = this.results.filter(
+    const ValidationPass = this.results.filter(
       c => c.FAILED == 0 &&
+        c.CONTEXT == "Validation"
+    ).length;
+
+    const ValidationFail = this.results.filter(
+      c => c.FAILED == 1 &&
         c.CONTEXT == "Validation"
     ).length;
 
@@ -244,11 +305,16 @@ class DqDashboard extends HTMLElement {
       c => c.CONTEXT == "Validation"
     ).length;
 
-    const ValidationPercentPassing = ValidationTotal == 0 ? "-" : Math.round(ValidationPassing / ValidationTotal * 100) + "%";
+    const ValidationPercentPass = ValidationTotal == 0 ? "-" : Math.round(ValidationPass / ValidationTotal * 100) + "%";
 
     // Plausibility
-    const PlausibilityPassing = this.results.filter(
+    const PlausibilityPass = this.results.filter(
       c => c.FAILED == 0 &&
+        c.CATEGORY == "Plausibility"
+    ).length;
+
+    const PlausibilityFail = this.results.filter(
+      c => c.FAILED == 1 &&
         c.CATEGORY == "Plausibility"
     ).length;
 
@@ -256,11 +322,16 @@ class DqDashboard extends HTMLElement {
       c => c.CATEGORY == "Plausibility"
     ).length;
 
-    const PlausibilityPercentPassing = PlausibilityTotal == 0 ? "-" : Math.round(PlausibilityPassing / PlausibilityTotal * 100) + "%";
+    const PlausibilityPercentPass = PlausibilityTotal == 0 ? "-" : Math.round(PlausibilityPass / PlausibilityTotal * 100) + "%";
 
     // Conformance
-    const ConformancePassing = this.results.filter(
+    const ConformancePass = this.results.filter(
       c => c.FAILED == 0
+        && c.CATEGORY == "Conformance"
+    ).length;
+
+    const ConformanceFail = this.results.filter(
+      c => c.FAILED == 1
         && c.CATEGORY == "Conformance"
     ).length;
 
@@ -268,11 +339,16 @@ class DqDashboard extends HTMLElement {
       c => c.CATEGORY == "Conformance"
     ).length;
 
-    const ConformancePercentPassing = ConformanceTotal == 0 ? "-" : Math.round(ConformancePassing / ConformanceTotal * 100) + "%";
+    const ConformancePercentPass = ConformanceTotal == 0 ? "-" : Math.round(ConformancePass / ConformanceTotal * 100) + "%";
 
     // Completeness
-    const CompletenessPassing = this.results.filter(
+    const CompletenessPass = this.results.filter(
       c => c.FAILED == 0
+        && c.CATEGORY == "Completeness"
+    ).length;
+
+    const CompletenessFail = this.results.filter(
+      c => c.FAILED == 1
         && c.CATEGORY == "Completeness"
     ).length;
 
@@ -280,82 +356,98 @@ class DqDashboard extends HTMLElement {
       c => c.CATEGORY == "Completeness"
     ).length;
 
-    const CompletenessPercentPassing = CompletenessTotal == 0 ? "-" : Math.round(CompletenessPassing / CompletenessTotal * 100) + "%";
+    const CompletenessPercentPass = CompletenessTotal == 0 ? "-" : Math.round(CompletenessPass / CompletenessTotal * 100) + "%";
 
     // All
-    const AllPassing = this.results.filter(
+    const AllPass = this.results.filter(
       c => c.FAILED == 0
+    ).length;
+
+    const AllFail = this.results.filter(
+      c => c.FAILED == 1
     ).length;
 
     const AllTotal = this.results.length;
 
-    const AllPercentPassing = AllTotal == 0 ? "-" : Math.round(AllPassing / AllTotal * 100) + "%";
+    const AllPercentPass = AllTotal == 0 ? "-" : Math.round(AllPass / AllTotal * 100) + "%";
 
     const derivedResults = {
       "Verification": {
         "Plausibility": {
-          "Passing": VerificationPlausibilityPassing,
+          "Pass": VerificationPlausibilityPass,
+          "Fail": VerificationPlausibilityFail,
           "Total": VerificationPlausibilityTotal,
-          "PercentPassing": VerificationPlausibilityPercentPassing
+          "PercentPass": VerificationPlausibilityPercentPass
         },
         "Conformance": {
-          "Passing": VerificationConformancePassing,
+          "Pass": VerificationConformancePass,
+          "Fail": VerificationConformanceFail,
           "Total": VerificationConformanceTotal,
-          "PercentPassing": VerificationConformancePercentPassing
+          "PercentPass": VerificationConformancePercentPass
         },
         "Completeness": {
-          "Passing": VerificationCompletenessPassing,
+          "Pass": VerificationCompletenessPass,
+          "Fail": VerificationCompletenessFail,
           "Total": VerificationCompletenessTotal,
-          "PercentPassing": VerificationCompletenessPercentPassing
+          "PercentPass": VerificationCompletenessPercentPass
         },
         "Total": {
-          "Passing": VerificationPassing,
+          "Pass": VerificationPass,
+          "Fail": VerificationFail,
           "Total": VerificationTotal,
-          "PercentPassing": VerificationPercentPassing
+          "PercentPass": VerificationPercentPass
         }
       },
       "Validation": {
         "Plausibility": {
-          "Passing": ValidationPlausibilityPassing,
+          "Pass": ValidationPlausibilityPass,
+          "Fail": ValidationPlausibilityFail,
           "Total": ValidationPlausibilityTotal,
-          "PercentPassing": ValidationPlausibilityPercentPassing
+          "PercentPass": ValidationPlausibilityPercentPass
         },
         "Conformance": {
-          "Passing": ValidationConformancePassing,
+          "Pass": ValidationConformancePass,
+          "Fail": ValidationConformanceFail,
           "Total": ValidationConformanceTotal,
-          "PercentPassing": ValidationConformancePercentPassing
+          "PercentPass": ValidationConformancePercentPass
         },
         "Completeness": {
-          "Passing": ValidationCompletenessPassing,
+          "Pass": ValidationCompletenessPass,
+          "Fail": ValidationCompletenessFail,
           "Total": ValidationCompletenessTotal,
-          "PercentPassing": ValidationCompletenessPercentPassing
+          "PercentPass": ValidationCompletenessPercentPass
         },
         "Total": {
-          "Passing": ValidationPassing,
+          "Pass": ValidationPass,
+          "Fail": ValidationFail,
           "Total": ValidationTotal,
-          "PercentPassing": ValidationPercentPassing
+          "PercentPass": ValidationPercentPass
         }
       },
       "Total": {
         "Plausibility": {
-          "Passing": PlausibilityPassing,
+          "Pass": PlausibilityPass,
+          "Fail": PlausibilityFail,
           "Total": PlausibilityTotal,
-          "PercentPassing": PlausibilityPercentPassing
+          "PercentPass": PlausibilityPercentPass
         },
         "Conformance": {
-          "Passing": ConformancePassing,
+          "Pass": ConformancePass,
+          "Pass": ConformanceFail,
           "Total": ConformanceTotal,
-          "PercentPassing": ConformancePercentPassing
+          "PercentPass": ConformancePercentPass
         },
         "Completeness": {
-          "Passing": CompletenessPassing,
+          "Pass": CompletenessPass,
+          "Fail": CompletenessFail,
           "Total": CompletenessTotal,
-          "PercentPassing": CompletenessPercentPassing
+          "PercentPass": CompletenessPercentPass
         },
         "Total": {
-          "Passing": AllPassing,
+          "Pass": AllPass,
+          "Fail": AllFail,
           "Total": AllTotal,
-          "PercentPassing": AllPercentPassing
+          "PercentPass": AllPercentPass
         }
       }
     }

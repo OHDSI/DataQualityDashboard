@@ -6,6 +6,10 @@ class DqCheckRenderer extends HTMLElement {
           <div>{{this.CHECK_NAME}} - {{this.CHECK_LEVEL}} - {{this.CDM_TABLE}} - {{this.CDM_FIELD}}</div>
           <div><b>Check Description</b></div>
           <div>{{this.CHECK_DESCRIPTION}}</div>
+          <div><b>Violated Rows</b></div>
+          <div>{{this.NUM_VIOLATED_ROWS}}</div>
+          <div><b>Proportion Violated Rows</b></div>
+          <div>{{this.PCT_VIOLATED_ROWS}}</div>
           <div><b>Query</b></div>          
           <div><pre>{{this.QUERY_TEXT}}</pre></div>
           <div><b>Errror</b></div>

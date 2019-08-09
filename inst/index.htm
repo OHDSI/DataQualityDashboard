@@ -139,7 +139,7 @@
   <script type="text/javascript">
     $.ajax({
       dataType: "json",
-      url: "results_FlatIron.json",
+      url: "results.json",
       success: function (results) {
         $('dq-metadata-heading').attr('data-results', JSON.stringify(results));
         $('dq-dashboard').attr('data-results', JSON.stringify(results.CheckResults));
