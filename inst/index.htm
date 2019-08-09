@@ -39,6 +39,9 @@
           <a class="nav-link js-scroll-trigger" href="#overview">Overview</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#metadata">Metadata</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link js-scroll-trigger" href="#conformance">Conformance</a>
         </li>
         <li class="nav-item">
@@ -59,17 +62,21 @@
       <div class="w-100">
         <h1 class="mb-0">Data
           <span class="text-primary">Quality</span>
+          Assessment
         </h1>
         <div class="w-100">
-          <p class="lead mb-5">This is the Data Quality Dashboard the Clair will present from the main stage of the
-            OHDSI
-            Symposium. Her presentation will reverberate through the community and bring about a new age of data quality
-            maturity.</p>
+          <p class="lead mb-5">Data Quality Assessment on OMOP Common Data Model Data Sources</p>
         </div>
-        <dq-dashboard data-results="{}">
-        </dq-dashboard>
-        <dq-metadata data-results="{}"></dq-metadata>
+        <dq-metadata-heading></dq-metadata-heading>
+        <dq-dashboard></dq-dashboard>
       </div>
+    </section>
+
+    <hr class="m-0">
+
+    <section class="resume-section p-3 p-lg-5" id="metadata">
+      <h2 class="mb-5">Metadata</h2>
+      <dq-metadata id="dq-metadata"></dq-metadata>
     </section>
 
     <hr class="m-0">
@@ -98,6 +105,10 @@
     <section class="resume-section p-3 p-lg-5" id="about">
       <div class="w-100">
         <h2 class="mb-5">About</h2>
+        <h3>
+          Apache 2.0 Open Source Software - Brought to you by OHDSI.org
+        </h3>
+        <br />
         <ul class="fa-ul mb-0">
           <li>
             <i class="fab fa-r-project"></i>
@@ -123,13 +134,15 @@
   <script src="htmlwidgets/lib/dqDashboardComponent.js"></script>
   <script src="htmlwidgets/lib/dqCheckRenderer.js"></script>
   <script src="htmlwidgets/lib/dqMetadataComponent.js"></script>
+  <script src="htmlwidgets/lib/dqMetadataHeading.js"></script>
 
   <script type="text/javascript">
     $.ajax({
       dataType: "json",
       url: "results.json",
       success: function (results) {
-        $('dq-dashboard').attr('data-results', JSON.stringify(results.Overview));
+        $('dq-metadata-heading').attr('data-results', JSON.stringify(results));
+        $('dq-dashboard').attr('data-results', JSON.stringify(results.CheckResults));
 
         checksCompleteness = { 'checks': results.CheckResults.filter(d => d.CATEGORY == 'Completeness' && d.FAILED == 1) };
         $('#dq-checks-completeness').attr('data-results', JSON.stringify(checksCompleteness));

@@ -1,0 +1,92 @@
+<style>
+    table thead tr td {
+        text-align: center;
+        color: #000;
+        background-color: #888;
+        empty-cells: hide;
+        border-spacing: 0px;
+        border: 0px;
+    }
+
+    table tbody tr td {
+        text-align: right;
+    }
+
+    td {
+        padding: 3px;
+    }
+</style>
+<table>
+    <thead>
+        <tr>
+            <td></td>
+            <td colspan="3">Verification</td>
+            <td colspan="3">Validation</td>
+            <td colspan="3">Total</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Passing</td>
+            <td>Total</td>
+            <td>% Passing</td>
+            <td>Passing</td>
+            <td>Total</td>
+            <td>% Passing</td>
+            <td>Passing</td>
+            <td>Total</td>
+            <td>% Passing</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                Plausibility
+            </td>
+            <td>{{Verification.Plausibility.Passing}}</td>
+            <td>{{Verification.Plausibility.Total}}</td>
+            <td>{{Verification.Plausibility.PercentPassing}}</td>
+            <td>{{Validation.Plausibility.Passing}}</td>
+            <td>{{Validation.Plausibility.Total}}</td>
+            <td>{{Validation.Plausibility.PercentPassing}}</td>
+            <td>{{Total.Plausibility.Passing}}</td>
+            <td>{{Total.Plausibility.Total}}</td>
+            <td>{{Total.Plausibility.PercentPassing}}</td>
+        </tr>
+        <tr>
+            <td>Conformance</td>
+            <td>{{Verification.Conformance.Passing}}</td>
+            <td>{{Verification.Conformance.Total}}</td>
+            <td>{{Verification.Conformance.PercentPassing}}</td>
+            <td>{{Validation.Conformance.Passing}}</td>
+            <td>{{Validation.Conformance.Total}}</td>
+            <td>{{Validation.Conformance.PercentPassing}}</td>
+            <td>{{Total.Conformance.Passing}}</td>
+            <td>{{Total.Conformance.Total}}</td>
+            <td>{{Total.Conformance.PercentPassing}}</td>
+        </tr>
+        <tr>
+            <td>Completeness</td>
+            <td>{{Verification.Completeness.Passing}}</td>
+            <td>{{Verification.Completeness.Total}}</td>
+            <td>{{Verification.Completeness.PercentPassing}}</td>
+            <td>{{Validation.Completeness.Passing}}</td>
+            <td>{{Validation.Completeness.Total}}</td>
+            <td>{{Validation.Completeness.PercentPassing}}</td>
+            <td>{{Total.Completeness.Passing}}</td>
+            <td>{{Total.Completeness.Total}}</td>
+            <td>{{Total.Completeness.PercentPassing}}</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td>{{Verification.Total.Passing}}</td>
+            <td>{{Verification.Total.Total}}</td>
+            <td>{{Verification.Total.PercentPassing}}</td>
+            <td>{{Validation.Total.Passing}}</td>
+            <td>{{Validation.Total.Total}}</td>
+            <td>{{Validation.Total.PercentPassing}}</td>
+            <td>{{Total.Total.Passing}}</td>
+            <td>{{Total.Total.Total}}</td>
+            <td>{{Total.Total.PercentPassing}}</td>
+        </tr>
+    </tbody>
+</table>
