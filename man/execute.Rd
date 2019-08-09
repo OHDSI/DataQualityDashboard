@@ -6,7 +6,8 @@
 \usage{
 execute(connectionDetails, cdmDatabaseSchema, resultsDatabaseSchema,
   cdmSourceName, numThreads = 1, sqlOnly = FALSE,
-  outputFolder = "output", verboseMode = FALSE, writeToTable = TRUE)
+  outputFolder = "output", verboseMode = FALSE, writeToTable = TRUE,
+  checkLevels = c("TABLE", "FIELD", "CONCEPT"))
 }
 \arguments{
 \item{connectionDetails}{A connectionDetails object for connecting to the CDM database}
@@ -27,6 +28,8 @@ execute(connectionDetails, cdmDatabaseSchema, resultsDatabaseSchema,
 
 \item{writeToTable}{Boolean to indicate if the check results will be written to the dqdashboard_results table
 in the resultsDatabaseSchema. Default is TRUE.}
+
+\item{checkLevels}{Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)}
 }
 \value{
 If sqlOnly = FALSE, a list object of results

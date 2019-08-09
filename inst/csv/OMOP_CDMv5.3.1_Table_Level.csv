@@ -1,4 +1,4 @@
-CDM_TABLE,Schema,IS_REQUIRED,IS_TEMPORALLY_CONSTANT,CONCEPT_PREFIX,MEASURE_PERSON_COMPLETENESS,MEASURE_PERSON_COMPLETENESS_THRESHOLD,Validation,Table Description,User guidance,ETL conventions,,,,,,,,,,,,,,,,,,,
+CDM_TABLE_NAME,Schema,IS_REQUIRED,IS_TEMPORALLY_CONSTANT,CONCEPT_PREFIX,MEASURE_PERSON_COMPLETENESS,MEASURE_PERSON_COMPLETENESS_THRESHOLD,Validation,Table Description,User guidance,ETL conventions,,,,,,,,,,,,,,,,,,,
 PERSON,CDM,Yes,Yes,,No,,,,,,,,,,,,,,,,,,,,,,,,
 OBSERVATION_PERIOD,CDM,Yes,Yes,,Yes,100,,,,,,,,,,,,,,,,,,,,,,,
 VISIT_OCCURRENCE,CDM,No,"DATEADD(MONTH,DATEDIFF(MONTH,0,visit_start_date),0)",VISIT_,Yes,0,,,,,,,,,,,,,,,,,,,,,,,

@@ -26,9 +26,11 @@ Imports:
   dplyr,
   jsonlite,
   SqlRender (>= 1.6.0),
+  plyr
 Suggests:
   testthat,
   knitr,
-  rmarkdown
+  rmarkdown,
+  shiny
 RoxygenNote: 6.1.1
 Encoding: UTF-8

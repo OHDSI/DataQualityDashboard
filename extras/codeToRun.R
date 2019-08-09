@@ -1,4 +1,6 @@
 
+
+
 # fill out the connection details -----------------------------------------------------------------------
 connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "", user = "", 
                                                                 password = "", server = "", 
@@ -23,6 +25,19 @@ verboseMode <- FALSE # set to TRUE if you want to see activity written to the co
 # write results to table? -----------------------------------------------------------------------
 writeToTable <- TRUE # set to FALSE if you want to skip writing to results table
 
+# if writing to table and using Redshift, bulk loading can be initialized -------------------------------
+
+# Sys.setenv("AWS_ACCESS_KEY_ID" = "",
+#            "AWS_SECRET_ACCESS_KEY" = "",
+#            "AWS_DEFAULT_REGION" = "",
+#            "AWS_BUCKET_NAME" = "",
+#            "AWS_OBJECT_KEY" = "",
+#            "AWS_SSE_TYPE" = "AES256",
+#            "USE_MPP_BULK_LOAD" = TRUE)
+
+# which DQ check levels to run -------------------------------------------------------------------
+checkLevels <- c("TABLE", "FIELD", "CONCEPT")
+
 # run the job --------------------------------------------------------------------------------------
 DataQualityDashboard::execute(connectionDetails = connectionDetails, 
                               cdmDatabaseSchema = cdmDatabaseSchema, 
@@ -32,4 +47,15 @@ DataQualityDashboard::execute(connectionDetails = connectionDetails,
                               sqlOnly = sqlOnly, 
                               outputFolder = outputFolder, 
                               verboseMode = verboseMode,
-                              writeToTable = writeToTable)
+                              writeToTable = writeToTable,
+                              checkLevels = checkLevels)
+
+# inspect logs ----------------------------------------------------------------------------
+ParallelLogger::launchLogViewer(logFileName = file.path(outputFolder, cdmSourceName, 
+                                                        sprintf("log_DqDashboard_%s.txt", cdmSourceName)))
+
+# (OPTIONAL) if you want to write the JSON file to the results table separately -----------------------------
+jsonFilePath <- ""
+DataQualityDashboard::writeJsonResultsToTable(connectionDetails = connectionDetails, 
+                                              resultsDatabaseSchema = resultsDatabaseSchema, 
+                                              jsonFilePath = jsonFilePath)
