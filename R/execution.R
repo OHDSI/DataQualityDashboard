@@ -188,27 +188,6 @@ execute <- function(connectionDetails,
   }
 }
 
-.getSqlParameters <- function(check) {
-  params <- c("cdmTableName",
-              "cdmFieldName",
-              "fkTableName",
-              "fkFieldName",
-              "fkDomain",
-              "fkClass",
-              "plausibleTemporalAfterTableName",
-              "plausibleTemporalAfterFieldName",
-              "plausibleValueHigh",
-              "plausibleValueLow",
-              "standardConceptFieldName",
-              "cdmSourceFieldName",
-              "conceptId",
-              "plausibleGender",
-              "unitConceptId")
-  lapply(params, function(p) {
-    setNames(toupper(SqlRender::camelCaseToSnakeCase(p)), p)
-  })
-}
-
 .runCheck <- function(checkDescription, 
                       tableChecks,
                       fieldChecks,
