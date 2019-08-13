@@ -7,7 +7,7 @@
 execute(connectionDetails, cdmDatabaseSchema, resultsDatabaseSchema,
   cdmSourceName, numThreads = 1, sqlOnly = FALSE,
   outputFolder = "output", verboseMode = FALSE, writeToTable = TRUE,
-  checkLevels = c("TABLE", "FIELD", "CONCEPT"))
+  checkLevels = c("TABLE", "FIELD", "CONCEPT"), checkNames = c())
 }
 \arguments{
 \item{connectionDetails}{A connectionDetails object for connecting to the CDM database}
@@ -30,6 +30,8 @@ execute(connectionDetails, cdmDatabaseSchema, resultsDatabaseSchema,
 in the resultsDatabaseSchema. Default is TRUE.}
 
 \item{checkLevels}{Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)}
+
+\item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv}
 }
 \value{
 If sqlOnly = FALSE, a list object of results
