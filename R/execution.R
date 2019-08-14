@@ -38,10 +38,17 @@
   reportResult
 }
 
-.processCheck <- function(connectionDetails, check, checkDescription, sql, outputFolder) {
+.processCheck <- function(connection,
+                          connectionDetails, 
+                          check, 
+                          checkDescription, 
+                          sql, 
+                          outputFolder) {
   start <- Sys.time()
-  connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
-  on.exit(DatabaseConnector::disconnect(connection = connection))
+  if (is.null(connection)) {
+    connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+    on.exit(DatabaseConnector::disconnect(connection = connection))  
+  }
   
   errorReportFile <- file.path(outputFolder, "errors", 
                                sprintf("%s_%s_%s_%s.txt",
@@ -95,17 +102,17 @@
 #' @return If sqlOnly = FALSE, a list object of results
 #' 
 #' @export
-execute <- function(connectionDetails,
-                    cdmDatabaseSchema,
-                    resultsDatabaseSchema,
-                    cdmSourceName,
-                    numThreads = 1,
-                    sqlOnly = FALSE,
-                    outputFolder = "output",
-                    verboseMode = FALSE,
-                    writeToTable = TRUE,
-                    checkLevels = c("TABLE", "FIELD", "CONCEPT"),
-                    checkNames = c()) {
+executeDqChecks <- function(connectionDetails,
+                            cdmDatabaseSchema,
+                            resultsDatabaseSchema,
+                            cdmSourceName,
+                            numThreads = 1,
+                            sqlOnly = FALSE,
+                            outputFolder = "output",
+                            verboseMode = FALSE,
+                            writeToTable = TRUE,
+                            checkLevels = c("TABLE", "FIELD", "CONCEPT"),
+                            checkNames = c()) {
   
   outputFolder <- file.path(outputFolder, cdmSourceName)
   
@@ -171,7 +178,10 @@ execute <- function(connectionDetails,
   
   checkDescriptions <- split(checkDescriptionsDf, seq(nrow(checkDescriptionsDf)))
   
-  
+  connection <- NULL
+  if (numThreads == 1) {
+    connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+  }
   
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
   resultsList <- ParallelLogger::clusterApply(cluster = cluster, x = checkDescriptions,
@@ -180,9 +190,14 @@ execute <- function(connectionDetails,
                                               fieldChecks,
                                               conceptChecks,
                                               connectionDetails, 
+                                              connection,
                                               cdmDatabaseSchema, 
                                               outputFolder, sqlOnly)
   ParallelLogger::stopCluster(cluster = cluster)
+  
+  if (numThreads == 1) {
+    DatabaseConnector::disconnect(connection = connection)
+  }
   
   allResults <- NULL
   if (!sqlOnly) {
@@ -223,7 +238,8 @@ execute <- function(connectionDetails,
                       tableChecks,
                       fieldChecks,
                       conceptChecks,
-                      connectionDetails, 
+                      connectionDetails,
+                      connection,
                       cdmDatabaseSchema, 
                       outputFolder, 
                       sqlOnly) {
@@ -261,9 +277,11 @@ execute <- function(connectionDetails,
                                         sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
         data.frame()
       } else {
-        .processCheck(connectionDetails = connectionDetails,
+        .processCheck(connection = connection,
+                      connectionDetails = connectionDetails,
                       check = check, 
-                      checkDescription = checkDescription, sql = sql,
+                      checkDescription = checkDescription, 
+                      sql = sql,
                       outputFolder = outputFolder)
         }    
     })

@@ -2,7 +2,7 @@
 
 export(dqDashPOC)
 export(dqDashPOCOutput)
-export(execute)
+export(executeDqChecks)
 export(renderDqDashPOC)
 export(writeJsonResultsToTable)
 import(htmlwidgets)

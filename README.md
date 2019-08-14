@@ -26,6 +26,9 @@ Getting Started
 ===============
   ```r
 
+
+
+
 # fill out the connection details -----------------------------------------------------------------------
 connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "", user = "", 
                                                                 password = "", server = "", 
@@ -63,8 +66,12 @@ writeToTable <- TRUE # set to FALSE if you want to skip writing to results table
 # which DQ check levels to run -------------------------------------------------------------------
 checkLevels <- c("TABLE", "FIELD", "CONCEPT")
 
+# which DQ checks to run? ------------------------------------
+
+checkNames <- c() #Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv
+
 # run the job --------------------------------------------------------------------------------------
-DataQualityDashboard::execute(connectionDetails = connectionDetails, 
+DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails, 
                               cdmDatabaseSchema = cdmDatabaseSchema, 
                               resultsDatabaseSchema = resultsDatabaseSchema,
                               cdmSourceName = cdmSourceName, 
@@ -73,7 +80,8 @@ DataQualityDashboard::execute(connectionDetails = connectionDetails,
                               outputFolder = outputFolder, 
                               verboseMode = verboseMode,
                               writeToTable = writeToTable,
-                              checkLevels = checkLevels)
+                              checkLevels = checkLevels,
+                              checkNames = checkNames)
 
 # inspect logs ----------------------------------------------------------------------------
 ParallelLogger::launchLogViewer(logFileName = file.path(outputFolder, cdmSourceName, 
