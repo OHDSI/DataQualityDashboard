@@ -20,8 +20,9 @@
     CHECK_NAME = checkDescription$checkName,
     CHECK_LEVEL = checkDescription$checkLevel,
     CHECK_DESCRIPTION = do.call(SqlRender::render, params),
-    CDM_TABLE = check["cdmTableName"],
-    CDM_FIELD = check["cdmFieldName"],
+    CDM_TABLE_NAME = check["cdmTableName"],
+    CDM_FIELD_NAME = check["cdmFieldName"],
+    CONCEPT_ID = check["conceptId"],
     SQL_FILE = checkDescription$sqlFile,
     CATEGORY = checkDescription$kahnCategory,
     SUBCATEGORY = checkDescription$kahnSubcategory,
@@ -193,7 +194,11 @@ execute <- function(connectionDetails,
                       checkResults = checkResults,
                       cdmSourceName = cdmSourceName, 
                       outputFolder = outputFolder,
-                      startTime = startTime)
+                      startTime = startTime,
+                      tableChecks = tableChecks, 
+                      fieldChecks = fieldChecks,
+                      conceptChecks = conceptChecks)
+    
     ParallelLogger::logInfo("Execution Complete")  
   }
   
@@ -269,12 +274,78 @@ execute <- function(connectionDetails,
   }
 }
 
+.evaluateThresholds <- function(checkResults,
+                                tableChecks,
+                                fieldChecks,
+                                conceptChecks) {
+  
+  checkResults$FAILED <- 0
+  
+  for (i in 1:nrow(checkResults)) {
+    thresholdField <- sprintf("%sThreshold", checkResults[i,]$CHECK_NAME)
+    
+    # find if field exists -----------------------------------------------
+    thresholdFieldExists <- eval(parse(text = 
+                                         sprintf("'%s' %%in%% colnames(%sChecks)", 
+                                                 thresholdField, 
+                                                 tolower(checkResults[i,]$CHECK_LEVEL))))
+    
+    if (!thresholdFieldExists) {
+      thresholdValue <- NA
+    } else {
+      if (checkResults[i,]$CHECK_LEVEL == "TABLE") {
+        
+        thresholdFilter <- sprintf("tableChecks$%s[tableChecks$cdmTableName == '%s']",
+                                   thresholdField, checkResults[i,]$CDM_TABLE_NAME)
+        
+      } else if (checkResults[i,]$CHECK_LEVEL == "FIELD") {
+        
+        thresholdFilter <- sprintf("fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
+                                fieldChecks$cdmFieldName == '%s']",
+                                   thresholdField, 
+                                   checkResults[i,]$CDM_TABLE_NAME,
+                                   checkResults[i,]$CDM_FIELD_NAME)
+        
+        
+      } else if (checkResults[i,]$CHECK_LEVEL == "CONCEPT") {
+        
+        thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                conceptChecks$cdmFieldName == '%s' &
+                                conceptChecks$conceptId == %s]",
+                                   thresholdField, 
+                                   checkResults[i,]$CDM_TABLE_NAME,
+                                   checkResults[i,]$CDM_FIELD_NAME,
+                                   checkResults[i,]$CONCEPT_ID)
+      }
+      
+      thresholdValue <- eval(parse(text = thresholdFilter))
+    }
+    
+    
+    if (!is.na(checkResults[i,]$ERROR)) {
+      checkResults[i,]$FAILED <- 1
+    } else if (is.na(thresholdValue)) {
+      
+      if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0) {
+        checkResults[i,]$FAILED <- 1
+      }
+    } else if (checkResults[i,]$PCT_VIOLATED_ROWS * 100 > thresholdValue) {
+        checkResults[i,]$FAILED <- 1  
+    }  
+  }
+  
+  checkResults
+}
+
 .summarizeResults <- function(connectionDetails,
                               cdmDatabaseSchema,
                               checkResults,
                               cdmSourceName,
                               outputFolder,
-                              startTime) {
+                              startTime,
+                              tableChecks,
+                              fieldChecks,
+                              conceptChecks) {
   
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection = connection))
@@ -288,33 +359,46 @@ execute <- function(connectionDetails,
   # prepare output ------------------------------------------------------------------------
   metadata <- cdmSourceData
   
+  # evaluate thresholds-------------------------------------------------------------------
+  
+  checkResults <- .evaluateThresholds(checkResults = checkResults, 
+                                      tableChecks = tableChecks, 
+                                      fieldChecks = fieldChecks,
+                                      conceptChecks = conceptChecks)
+  
   countTotal <- nrow(checkResults)
-  countFailed <- nrow(checkResults[(!is.na(checkResults$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0) | !is.na(checkResults$ERROR),])
+  countThresholdFailed <- nrow(checkResults[checkResults$FAILED == 1 & 
+                                               is.na(checkResults$ERROR),])
+  countErrorFailed <- nrow(checkResults[!is.na(checkResults$ERROR),])
+  countOverallFailed <- nrow(checkResults[checkResults$FAILED == 1,])
   
-  # set a flag for when the check has failed
-  checkResults[,"FAILED"] <- 0
-  checkResults[(!is.na(checkResults$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0) | !is.na(checkResults$ERROR),"FAILED"]<- 1
+  countPassed <- countTotal - countOverallFailed
   
-  countThresholdFailure <- nrow(checkResults[(!is.na(checkResults$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS>0),])
-  countErrorFailure <- nrow(checkResults[!is.na(checkResults$ERROR),])
-  countPassed <- countTotal - countFailed
+  countTotalPlausibility <- nrow(checkResults[checkResults$CATEGORY=='Plausibility',])
+  countTotalConformance <- nrow(checkResults[checkResults$CATEGORY=='Conformance',])
+  countTotalCompleteness <- nrow(checkResults[checkResults$CATEGORY=='Completeness',])
   
-  countTotalPlausibility = nrow(checkResults[checkResults$CATEGORY=='Plausibility',])
-  countTotalConformance = nrow(checkResults[checkResults$CATEGORY=='Conformance',])
-  countTotalCompleteness = nrow(checkResults[checkResults$CATEGORY=='Completeness',])
-  countFailedPlausibility = nrow(checkResults[checkResults$CATEGORY=='Plausibility' & (!is.na(checkResults$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0 | !is.na(checkResults$ERROR)),])
-  countFailedConformance = nrow(checkResults[checkResults$CATEGORY=='Conformance' & (!is.na(checkResults$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0 | !is.na(checkResults$ERROR)),])
-  countFailedCompleteness = nrow(checkResults[checkResults$CATEGORY=='Completeness' & (!is.na(checkResults$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0 | !is.na(checkResults$ERROR)),])
-  countPassedPlausibility = countTotalPlausibility - countFailedPlausibility
-  countPassedConformance = countTotalConformance - countFailedConformance
-  countPassedCompleteness = countTotalCompleteness - countFailedCompleteness
+  countFailedPlausibility <- nrow(checkResults[checkResults$CATEGORY=='Plausibility' & 
+                                                 checkResults$FAILED == 1,])
+  
+  countFailedConformance <- nrow(checkResults[checkResults$CATEGORY=='Conformance' &
+                                                checkResults$FAILED == 1,])
+  
+  countFailedCompleteness <- nrow(checkResults[checkResults$CATEGORY=='Completeness' &
+                                                 checkResults$FAILED == 1,])
+  
+  countPassedPlausibility <- countTotalPlausibility - countFailedPlausibility
+  countPassedConformance <- countTotalConformance - countFailedConformance
+  countPassedCompleteness <- countTotalCompleteness - countFailedCompleteness
   
   overview <- list(
     countTotal = countTotal, 
     countPassed = countPassed, 
-    countFailed = countFailed,
+    countErrorFailed = countErrorFailed,
+    countThresholdFailed = countThresholdFailed,
+    countOverallFailed = countOverallFailed,
     percentPassed = round(countPassed / countTotal * 100),
-    percentFailed = round(countFailed / countTotal * 100),
+    percentFailed = round(countOverallFailed / countTotal * 100),
     countTotalPlausibility = countTotalPlausibility,
     countTotalConformance = countTotalConformance,
     countTotalCompleteness = countTotalCompleteness,
@@ -337,8 +421,6 @@ execute <- function(connectionDetails,
                  Overview = overview)
   
   resultJson <- jsonlite::toJSON(result)
-  
-  # TODO - add timestamp to result file output?
   write(resultJson, file.path(outputFolder, sprintf("results_%s.json", cdmSourceName)))
   
   result
