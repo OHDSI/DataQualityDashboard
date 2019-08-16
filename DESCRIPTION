@@ -1,0 +1,36 @@
+Package: DataQualityDashboard
+Type: Package
+Title: Execute Data Quality Checks on CDM Database
+Version: 0.0.1
+Date: 2019-08-05
+Authors@R: c(
+  person("Clair", "Blacketer", , "mblacke@its.jnj.com", role = c("aut", "cre")),
+  person("Ajit", "Londhe", role = c("aut")),
+  person("Anthony", "Sena", role = c("aut")),
+  person("Anthony", "Molinaro", role = c("aut")),
+  person("Frank", "DeFalco", role = c("aut")),
+  person("Pavel", "Grafkin", role = c("aut"))
+  )
+Maintainer: Clair Blacketer <mblacke@its.jnj.com>
+Description: An R package for assessing data quality in standardized OMOP common data model data sources.
+License: Apache License 2.0
+VignetteBuilder: knitr
+URL: https://github.com/OHDSI/DataQualityDashboard
+BugReports: https://github.com/OHDSI/DataQualityDashboard/issues
+Depends:
+  R (>= 3.2.2),
+  DatabaseConnector (>= 2.0.2)
+Imports:
+  magrittr,
+  ParallelLogger,
+  dplyr,
+  jsonlite,
+  SqlRender (>= 1.6.0),
+  plyr
+Suggests:
+  testthat,
+  knitr,
+  rmarkdown,
+  shiny
+RoxygenNote: 6.1.1
+Encoding: UTF-8

@@ -1,0 +1,68 @@
+{
+    "Verification": {
+        "Plausibility": {
+            "Passing": 10,
+            "Total": 100,
+            "PercentPassing": "10%"
+        },
+        "Conformance": {
+            "Passing": 10,
+            "Total": 100,
+            "PercentPassing": "10%"
+        },
+        "Completeness": {
+            "Passing": 10,
+            "Total": 100,
+            "PercentPassing": "10%"
+        },
+        "Total": {
+            "Passing": 10,
+            "Total": 100,
+            "PercentPassing": "10%"
+        }
+    },
+    "Validation": {
+        "Plausibility": {
+            "Passing": 10,
+            "Total": 100,
+            "PercentPassing": "10%"
+        },
+        "Conformance": {
+            "Passing": 10,
+            "Total": 100,
+            "PercentPassing": "10%"
+        },
+        "Completeness": {
+            "Passing": 10,
+            "Total": 100,
+            "PercentPassing": "10%"
+        },
+        "Total": {
+            "Passing": 10,
+            "Total": 100,
+            "PercentPassing": "10%"
+        }
+    },
+    "Total": {
+        "Plausibility": {
+            "Passing": 20,
+            "Total": 200,
+            "PercentPassing": "10%"
+        },
+        "Conformance": {
+            "Passing": 10,
+            "Total": 100,
+            "PercentPassing": "10%"
+        },
+        "Completeness": {
+            "Passing": 10,
+            "Total": 100,
+            "PercentPassing": "10%"
+        },
+        "Total": {
+            "Passing": 10,
+            "Total": 100,
+            "PercentPassing": "10%"
+        }
+    }
+}

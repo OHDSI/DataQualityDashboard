@@ -1,0 +1,9 @@
+ dependencies:
+  - name: dashboard
+    version: 0.0.1
+    src: htmlwidgets/lib
+    script: 
+      - handlebars-latest.js
+      - dqDashboardComponent.js
+      - dqCheckRenderer.js
+    stylesheet:
