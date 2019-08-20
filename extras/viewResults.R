@@ -1,0 +1,1 @@
+viewDqDashboard(jsonPath = "full_path_to_json_file.json")
