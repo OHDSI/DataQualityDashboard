@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <script src="js/loadResults.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
@@ -137,26 +138,17 @@
   <script src="htmlwidgets/lib/dqMetadataHeading.js"></script>
 
   <script type="text/javascript">
+    
     $.ajax({
       dataType: "json",
       url: "results.json",
       success: function (results) {
-        $('dq-metadata-heading').attr('data-results', JSON.stringify(results));
-        $('dq-dashboard').attr('data-results', JSON.stringify(results.CheckResults));
-
-        checksCompleteness = { 'checks': results.CheckResults.filter(d => d.CATEGORY == 'Completeness' && d.FAILED == 1) };
-        $('#dq-checks-completeness').attr('data-results', JSON.stringify(checksCompleteness));
-
-        checksPlausibility = { 'checks': results.CheckResults.filter(d => d.CATEGORY == 'Plausibility' && d.FAILED == 1) };
-        $('#dq-checks-plausibility').attr('data-results', JSON.stringify(checksPlausibility));
-
-        checksConformance = { 'checks': results.CheckResults.filter(d => d.CATEGORY == 'Conformance' && d.FAILED == 1) };
-        $('#dq-checks-conformance').attr('data-results', JSON.stringify(checksConformance));
-
-        $('dq-metadata').attr('data-results', JSON.stringify(results.Metadata[0]));
+        loadResults (results);
       }
     });
+  
   </script>
+  
 </body>
 
 </html>
