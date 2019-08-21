@@ -7,13 +7,13 @@ server <- function(input, output, session) {
 }
 
 ui <- fluidPage(
-  shiny::htmlTemplate(filename = "www/index.html"),
+  suppressDependencies("bootstrap"),
+  shiny::htmlTemplate("www/index.html"),
   tags$head(
     tags$script(src = "js/loadResults.js"),
     tags$script("Shiny.addCustomMessageHandler('results', loadResults);")
   )
 )
 
-shiny::shinyApp(ui = ui, 
-                server = server)
+shiny::shinyApp(ui = ui, server = server)
 

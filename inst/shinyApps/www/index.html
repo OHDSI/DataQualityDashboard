@@ -43,6 +43,9 @@
           <a class="nav-link js-scroll-trigger" href="#metadata">Metadata</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#results">Results</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link js-scroll-trigger" href="#conformance">Conformance</a>
         </li>
         <li class="nav-item">
@@ -82,6 +85,27 @@
 
     <hr class="m-0">
 
+    <section class="resume-section p-3 p-lg-5" id="results">
+      <h2 class="mb-5">Results</h2>
+
+      <table id="dt-results" class="display" width="100%">
+        <tfoot>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <hr class="m-0">
+
     <section class="resume-section p-3 p-lg-5" id="conformance">
       <h2 class="mb-5">Conformance</h2>
       <dq-checks id="dq-checks-conformance" data-results="{}"></dq-checks>
@@ -106,15 +130,35 @@
     <section class="resume-section p-3 p-lg-5" id="about">
       <div class="w-100">
         <h2 class="mb-5">About</h2>
-        <h3>
-          Apache 2.0 Open Source Software - Brought to you by OHDSI.org
-        </h3>
+        <div>
+          The Data Quality Dashboard applies a Harmonized Data Quality Assessment Terminology to data that has been
+          standardized in the
+          OMOP Common Data Model.
+        </div>
         <br />
         <ul class="fa-ul mb-0">
           <li>
-            <i class="fab fa-r-project"></i>
-            DataQualityDashboard v0.1
+            <i class="fab fa-github"></i>
+            <a href="https://github.com/ohdsi/DataQualityDashboard">Data Quality Dashboard</a>
           </li>
+          <li>
+            <i class="fab fa-github"></i>
+            <a href="https://github.com/ohdsi/commondatamodel">OMOP Common Data Model Repository</a>
+          </li>
+        </ul>
+
+        <br><br>
+
+        <h3>References</h3>
+        <ul>
+          <li>
+            <a href="https://www.ncbi.nlm.nih.gov/pubmed/27713905">A Harmonized Data Quality Assessment Terminology and
+              Framework for the Secondary Use of Electronic Health Record Data.</a>
+          </li>
+        </ul>
+
+        <hr class="m-0">
+        Apache 2.0 Open Source Software - Brought to you by <a href="http://www.ohdsi.org">OHDSI</a>
       </div>
     </section>
 
@@ -137,18 +181,25 @@
   <script src="htmlwidgets/lib/dqMetadataComponent.js"></script>
   <script src="htmlwidgets/lib/dqMetadataHeading.js"></script>
 
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css" />
+  <link rel="stylesheet" type="text/css"
+    href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css" />
+  <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.colVis.min.js"></script>
+
   <script type="text/javascript">
-    
+
     $.ajax({
       dataType: "json",
       url: "results.json",
       success: function (results) {
-        loadResults (results);
+        loadResults(results);
       }
     });
-  
+
   </script>
-  
+
 </body>
 
 </html>
