@@ -58,6 +58,7 @@
                                        check["cdmFieldName"]))  
   tryCatch(
     expr = {
+      rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
       result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
                                             errorReportFile = errorReportFile)
       
