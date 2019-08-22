@@ -133,16 +133,19 @@
   <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.colVis.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
 
   <script type="text/javascript">
-    // example for running on standalone http server outside of shiny environment
-    $.ajax({
-      dataType: "json",
-      url: "results.json",
-      success: function (results) {
-        loadResults(results);
-      }
-    });
+    // if not running in shiny, try to accomodate web server
+    if (location.port == 80 || location.port == 8080) {
+      $.ajax({
+        dataType: "json",
+        url: "results.json",
+        success: function (results) {
+          loadResults(results);
+        }
+      });
+    }
 
   </script>
 
