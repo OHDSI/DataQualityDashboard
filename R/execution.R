@@ -15,6 +15,7 @@
   reportResult <- data.frame(
     NUM_VIOLATED_ROWS = NA,
     PCT_VIOLATED_ROWS = NA,
+    THRESHOLD_VALUE = NA,
     EXECUTION_TIME = executionTime,
     QUERY_TEXT = sql,
     CHECK_NAME = checkDescription$checkName,
@@ -34,6 +35,7 @@
   if (!is.null(result)) {
     reportResult$NUM_VIOLATED_ROWS <- result$NUM_VIOLATED_ROWS
     reportResult$PCT_VIOLATED_ROWS <- result$PCT_VIOLATED_ROWS
+    reportResult$THRESHOLD_VALUE <- result$THRESHOLD_VALUE
   }
   reportResult
 }
@@ -337,13 +339,12 @@ executeDqChecks <- function(connectionDetails,
       }
       
       thresholdValue <- eval(parse(text = thresholdFilter))
+      checkResults[i,]$THRESHOLD_VALUE <- thresholdValue
     }
-    
-    
+
     if (!is.na(checkResults[i,]$ERROR)) {
       checkResults[i,]$FAILED <- 1
     } else if (is.na(thresholdValue)) {
-      
       if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0) {
         checkResults[i,]$FAILED <- 1
       }
@@ -433,7 +434,7 @@ executeDqChecks <- function(connectionDetails,
   
   result <- list(startTimestamp = startTime, 
                  endTimestamp = endTime,
-                 executionTime = sprintf("%f %s", delta, attr(delta, "units")),
+                 executionTime = sprintf("%.0f %s", delta, attr(delta, "units")),
                  CheckResults = checkResults, 
                  Metadata = metadata, 
                  Overview = overview)

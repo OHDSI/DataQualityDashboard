@@ -11,7 +11,7 @@ resultsDatabaseSchema <- "yourResultsSchema" # the fully qualified database sche
 cdmSourceName <- "Your CDM Source" # a human readable name for your CDM source
 
 # determine how many threads (concurrent SQL sessions) to use ----------------------------------------
-numThreads <- 1 # on Redshift, 3 seems to work well
+numThreads <- 3 # on Redshift, 3 seems to work well
 
 # specify if you want to execute the queries or inspect them ------------------------------------------
 sqlOnly <- FALSE # set to TRUE if you just want to get the SQL scripts and not actually run the queries
@@ -23,7 +23,7 @@ outputFolder <- "output"
 verboseMode <- FALSE # set to TRUE if you want to see activity written to the console
 
 # write results to table? -----------------------------------------------------------------------
-writeToTable <- TRUE # set to FALSE if you want to skip writing to results table
+writeToTable <- FALSE # set to FALSE if you want to skip writing to results table
 
 # if writing to table and using Redshift, bulk loading can be initialized -------------------------------
 
@@ -64,3 +64,5 @@ jsonFilePath <- ""
 DataQualityDashboard::writeJsonResultsToTable(connectionDetails = connectionDetails, 
                                               resultsDatabaseSchema = resultsDatabaseSchema, 
                                               jsonFilePath = jsonFilePath)
+
+DataQualityDashboard::viewDqDashboard(file.path(getwd(),outputFolder, cdmSourceName, paste0("results_", cdmSourceName, ".json")))

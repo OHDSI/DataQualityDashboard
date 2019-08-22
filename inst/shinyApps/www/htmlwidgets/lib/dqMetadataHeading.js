@@ -1,10 +1,24 @@
 class DqMetadataHeadingRenderer extends HTMLElement {
     static getTemplate() {
         return `   
-          <h2>{{CDM_SOURCE_NAME}}</h2>
-          <div>
+          <style>
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6 {
+            font-family: 'Saira Extra Condensed', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #222222;
+          }          
+          </style>
+          <h1>{{CDM_SOURCE_NAME}}</h1>
+          <div class="text-muted">
             Results generated at {{startTimestamp}} in {{executionTime}}
           </div>
+          <br>
     `;
     }
 

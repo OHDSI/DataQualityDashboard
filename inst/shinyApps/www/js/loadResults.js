@@ -1,16 +1,6 @@
 function loadResults(results) {
     $('dq-metadata-heading').attr('data-results', JSON.stringify(results));
     $('dq-dashboard').attr('data-results', JSON.stringify(results.CheckResults));
-
-    checksCompleteness = { 'checks': results.CheckResults.filter(d => d.CATEGORY == 'Completeness' && d.FAILED == 1) };
-    $('#dq-checks-completeness').attr('data-results', JSON.stringify(checksCompleteness));
-
-    checksPlausibility = { 'checks': results.CheckResults.filter(d => d.CATEGORY == 'Plausibility' && d.FAILED == 1) };
-    $('#dq-checks-plausibility').attr('data-results', JSON.stringify(checksPlausibility));
-
-    checksConformance = { 'checks': results.CheckResults.filter(d => d.CATEGORY == 'Conformance' && d.FAILED == 1) };
-    $('#dq-checks-conformance').attr('data-results', JSON.stringify(checksConformance));
-
     $('dq-metadata').attr('data-results', JSON.stringify(results.Metadata[0]));
 
     function format(d) {
@@ -18,7 +8,7 @@ function loadResults(results) {
         if (d.ERROR) {
             errorMessage = d.ERROR;
         }
-        return '<table cellpadding="3" cellspacing="0" border="0" style="padding-left:50px;">' +
+        return '<table class="dtDetails" style="padding-left:25px;">' +
             '<tr>' +
             '<td>Name:</td>' +
             '<td>' + d.CHECK_NAME + '</td>' +
@@ -26,6 +16,22 @@ function loadResults(results) {
             '<tr>' +
             '<td>Description:</td>' +
             '<td>' + d.CHECK_DESCRIPTION + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>Level:</td>' +
+            '<td>' + d.CHECK_LEVEL + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td># Rows Violated:</td>' +
+            '<td>' + d.NUM_VIOLATED_ROWS + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>% Rows Violated:</td>' +
+            '<td>' + d.PCT_VIOLATED_ROWS + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>Execution Time:</td>' +
+            '<td>' + d.EXECUTION_TIME + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>SQL Query:</td>' +
@@ -39,7 +45,7 @@ function loadResults(results) {
     }
 
     var dtResults = $('#dt-results').DataTable({
-        dom: 'B<fr<t>ip>',
+        dom: '<B>l<fr<t>ip>',
         buttons: [
             'colvis'
         ],
@@ -49,14 +55,15 @@ function loadResults(results) {
                 var column = this;
                 if ([0, 6, 7].includes(d))
                     return;
-                console.log(column.footer());
                 var select = $('<select><option value=""></option></select>')
-                    .appendTo($(column.footer()))
+                    .appendTo($(column.header()))
+                    .on('click', function () {
+                        event.cancelBubble = true;
+                    })
                     .on('change', function () {
                         var val = $.fn.dataTable.util.escapeRegex(
                             $(this).val()
                         );
-
                         column
                             .search(val ? '^' + val + '$' : '', true, false)
                             .draw();
@@ -70,18 +77,22 @@ function loadResults(results) {
         columns: [
             {
                 "className": 'details-control',
-                "orderable": false,
                 "data": null,
-                "defaultContent": ''
+                "defaultContent": '',
+                "orderable": false
             },
+            { data: function (d) { if (d.FAILED == 0) { return "PASS" } else { return "FAIL" } }, title: "STATUS", className: 'dt-body-right' },
             { data: function (d) { return d.CONTEXT ? d.CONTEXT : "None"; }, title: "CONTEXT" },
-            { data: "CATEGORY", title: "CATEGORY", searchable: true },
+            { data: "CATEGORY", title: "CATEGORY" },
             { data: function (d) { return d.SUBCATEGORY ? d.SUBCATEGORY : "None" }, title: "SUBCATEGORY" },
-            { data: "CDM_TABLE_NAME", title: "TABLE" },
-            { data: function (d) { if (d.FAILED == 0) { return "PASSED" } else { return "FAILED" } }, title: "STATUS" },
-            { data: function (d) { return d.NUM_VIOLATED_ROWS ? d.NUM_VIOLATED_ROWS : 'n/a' }, title: "# RECORDS", type: "num-fmt" },
-            { data: function (d) { return d.PCT_VIOLATED_ROWS ? d.PCT_VIOLATED_ROWS : 'n/a' }, title: "% RECORDS", type: "num-fmt" }
-        ]
+            { data: "CHECK_LEVEL", title: "LEVEL" },
+            { data: "CHECK_DESCRIPTION", title: "DESCRIPTION", className: "description", width: "40%" },
+            { data: function (d) { return d.PCT_VIOLATED_ROWS ? Math.round(d.PCT_VIOLATED_ROWS * 100) + '%' : 'n/a' }, title: "%&nbsp;RECORDS", type: "num-fmt", className: 'dt-body-right', orderable: true }
+        ],
+        columnDefs: [{
+            targets: [0, 1, 2, 3, 4, 5, 6],
+            orderable: false
+        }]
     });
 
     // Add event listener for opening and closing details

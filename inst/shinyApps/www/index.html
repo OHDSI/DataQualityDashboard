@@ -8,16 +8,13 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <title>OHDSI - Data Quality Dashboard</title>
-
-  <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Custom fonts for this template -->
   <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:500,700" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet">
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-
-  <!-- Custom styles for this template -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css" />
+  <link rel="stylesheet" type="text/css"
+    href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css" />
   <link href="css/resume.css" rel="stylesheet">
 
 </head>
@@ -46,15 +43,6 @@
           <a class="nav-link js-scroll-trigger" href="#results">Results</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#conformance">Conformance</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#completeness">Completeness</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#plausibility">Plausibility</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link js-scroll-trigger" href="#about">About</a>
         </li>
       </ul>
@@ -64,13 +52,10 @@
   <div class="container-fluid p-0">
     <section class="resume-section p-3 p-lg-5 d-flex align-items-center" id="overview">
       <div class="w-100">
-        <h1 class="mb-0">Data
+        <h2 class="mb-0">Data
           <span class="text-primary">Quality</span>
           Assessment
-        </h1>
-        <div class="w-100">
-          <p class="lead mb-5">Data Quality Assessment on OMOP Common Data Model Data Sources</p>
-        </div>
+        </h2>
         <dq-metadata-heading></dq-metadata-heading>
         <dq-dashboard></dq-dashboard>
       </div>
@@ -89,51 +74,15 @@
       <h2 class="mb-5">Results</h2>
 
       <table id="dt-results" class="display" width="100%">
-        <tfoot>
-          <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-        </tfoot>
       </table>
     </section>
-
-    <hr class="m-0">
-
-    <section class="resume-section p-3 p-lg-5" id="conformance">
-      <h2 class="mb-5">Conformance</h2>
-      <dq-checks id="dq-checks-conformance" data-results="{}"></dq-checks>
-    </section>
-
-    <hr class="m-0">
-
-    <section class="resume-section p-3 p-lg-5 " id="completeness">
-      <h2 class="mb-5">Completeness</h2>
-      <dq-checks id="dq-checks-completeness" data-results="{}"></dq-checks>
-    </section>
-
-    <hr class="m-0">
-
-    <section class="resume-section p-3 p-lg-5" id="plausibility">
-      <h2 class="mb-5">Plausibility</h2>
-      <dq-checks id="dq-checks-plausibility" data-results="{}"></dq-checks>
-    </section>
-
-    <hr class="m-0">
 
     <section class="resume-section p-3 p-lg-5" id="about">
       <div class="w-100">
         <h2 class="mb-5">About</h2>
         <div>
           The Data Quality Dashboard applies a Harmonized Data Quality Assessment Terminology to data that has been
-          standardized in the
-          OMOP Common Data Model.
+          standardized in the OMOP Common Data Model.
         </div>
         <br />
         <ul class="fa-ul mb-0">
@@ -181,14 +130,12 @@
   <script src="htmlwidgets/lib/dqMetadataComponent.js"></script>
   <script src="htmlwidgets/lib/dqMetadataHeading.js"></script>
 
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css" />
-  <link rel="stylesheet" type="text/css"
-    href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css" />
   <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.colVis.min.js"></script>
 
   <script type="text/javascript">
+    // example for running on standalone http server outside of shiny environment
     $.ajax({
       dataType: "json",
       url: "results.json",
