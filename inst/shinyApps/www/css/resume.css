@@ -44,6 +44,11 @@ body {
   padding-top: 48px;
 }
 
+div.dt-buttons {
+  clear:both;
+  float:none;
+  text-align:right;
+}
 @media (min-width: 992px) {
   body {
     padding-top: 0;

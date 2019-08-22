@@ -5,6 +5,10 @@ function loadResults(results) {
 
     function format(d) {
         errorMessage = '';
+        thresholdMessage = ''
+        if (d.THRESHOLD_VALUE != undefined) {
+            thresholdMessage = ' (Threshold=' + d.THRESHOLD_VALUE + '%)';
+        }
         if (d.ERROR) {
             errorMessage = d.ERROR;
         }
@@ -15,7 +19,7 @@ function loadResults(results) {
             '</tr>' +
             '<tr>' +
             '<td>Description:</td>' +
-            '<td>' + d.CHECK_DESCRIPTION + '</td>' +
+            '<td>' + d.CHECK_DESCRIPTION + thresholdMessage + '.</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Level:</td>' +
@@ -27,7 +31,7 @@ function loadResults(results) {
             '</tr>' +
             '<tr>' +
             '<td>% Rows Violated:</td>' +
-            '<td>' + d.PCT_VIOLATED_ROWS + '</td>' +
+            '<td>' + (d.PCT_VIOLATED_ROWS * 100).toFixed(2) + '%' + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Execution Time:</td>' +
@@ -46,8 +50,11 @@ function loadResults(results) {
 
     var dtResults = $('#dt-results').DataTable({
         dom: '<B>l<fr<t>ip>',
+        lengthMenu: [[5, 10, -1], [5, 10, "All"]],
+        order: [[7, "desc"]],
         buttons: [
-            'colvis'
+            'colvis',
+            'csvHtml5'
         ],
         data: results.CheckResults,
         initComplete: function () {
@@ -78,16 +85,23 @@ function loadResults(results) {
             {
                 "className": 'details-control',
                 "data": null,
-                "defaultContent": '',
-                "orderable": false
+                "defaultContent": ''
             },
             { data: function (d) { if (d.FAILED == 0) { return "PASS" } else { return "FAIL" } }, title: "STATUS", className: 'dt-body-right' },
             { data: function (d) { return d.CONTEXT ? d.CONTEXT : "None"; }, title: "CONTEXT" },
             { data: "CATEGORY", title: "CATEGORY" },
             { data: function (d) { return d.SUBCATEGORY ? d.SUBCATEGORY : "None" }, title: "SUBCATEGORY" },
             { data: "CHECK_LEVEL", title: "LEVEL" },
-            { data: "CHECK_DESCRIPTION", title: "DESCRIPTION", className: "description", width: "40%" },
-            { data: function (d) { return d.PCT_VIOLATED_ROWS ? Math.round(d.PCT_VIOLATED_ROWS * 100) + '%' : 'n/a' }, title: "%&nbsp;RECORDS", type: "num-fmt", className: 'dt-body-right', orderable: true }
+            {
+                data: function (d) {
+                    thresholdMessage = '';
+                    if (d.THRESHOLD_VALUE != undefined) {
+                        thresholdMessage = ' (Threshold=' + d.THRESHOLD_VALUE + '%).';
+                    }
+                    return d.CHECK_DESCRIPTION + thresholdMessage;
+                }, title: "DESCRIPTION", className: "description", width: "40%"
+            },
+            { data: function (d) { return d.PCT_VIOLATED_ROWS ? (d.PCT_VIOLATED_ROWS * 100).toFixed(2) + '%' : '0%' }, title: "%&nbsp;RECORDS", type: "num-fmt", className: 'dt-body-right', orderable: true }
         ],
         columnDefs: [{
             targets: [0, 1, 2, 3, 4, 5, 6],
