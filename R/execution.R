@@ -15,7 +15,6 @@
   reportResult <- data.frame(
     NUM_VIOLATED_ROWS = NA,
     PCT_VIOLATED_ROWS = NA,
-    THRESHOLD_VALUE = NA,
     EXECUTION_TIME = executionTime,
     QUERY_TEXT = sql,
     CHECK_NAME = checkDescription$checkName,
@@ -35,7 +34,6 @@
   if (!is.null(result)) {
     reportResult$NUM_VIOLATED_ROWS <- result$NUM_VIOLATED_ROWS
     reportResult$PCT_VIOLATED_ROWS <- result$PCT_VIOLATED_ROWS
-    reportResult$THRESHOLD_VALUE <- result$THRESHOLD_VALUE
   }
   reportResult
 }
@@ -300,6 +298,7 @@ executeDqChecks <- function(connectionDetails,
                                 conceptChecks) {
   
   checkResults$FAILED <- 0
+  checkResults$THRESHOLD_VALUE <- NA
   
   for (i in 1:nrow(checkResults)) {
     thresholdField <- sprintf("%sThreshold", checkResults[i,]$CHECK_NAME)
