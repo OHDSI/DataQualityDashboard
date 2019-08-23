@@ -61,8 +61,10 @@
                           checkDescription, 
                           sql, 
                           outputFolder) {
+  singleThreaded <- TRUE
   start <- Sys.time()
   if (is.null(connection)) {
+    singleThreaded <- FALSE
     connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
     on.exit(DatabaseConnector::disconnect(connection = connection))  
   }
@@ -75,11 +77,15 @@
                                        check["cdmFieldName"]))  
   tryCatch(
     expr = {
-      rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
+      if (singleThreaded) {
+        if (.needsAutoCommit(connection)) {
+          rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
+        }  
+      }
       result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
                                             errorReportFile = errorReportFile)
       
-      delta <- Sys.time() - start
+      delta <- difftime(Sys.time(), start, units = "secs")
       .recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
                     executionTime = sprintf("%f %s", delta, attr(delta, "units")))
     },
@@ -509,3 +515,14 @@ writeJsonResultsToTable <- function(connectionDetails,
 }
 
 
+.needsAutoCommit <- function(connection) {
+  autoCommit <- FALSE
+  if (!is.null(connection)) {
+    if (inherits(connection, "DatabaseConnectorJdbcConnection")) {
+      if (connectionDetails$dbms %in% c("postgresql", "redshift")) {
+        autoCommit <- TRUE
+      }
+    }
+  }
+  autoCommit
+}
