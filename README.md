@@ -28,6 +28,14 @@ System Requirements
 ===================
 Requires R (version 3.2.2 or higher). Requires [DatabaseConnector](https://github.com/OHDSI/DatabaseConnector) and [SqlRender](https://github.com/OHDSI/SqlRender).
 
+R Installation
+===============
+
+```r
+install.packages("devtools")
+devtools::install_github("OHDSI/DataQualityDashboard")
+```
+
 Executing Data Quality Checks
 ==============================
   ```r

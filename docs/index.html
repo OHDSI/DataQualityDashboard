@@ -96,83 +96,89 @@
 <a href="#system-requirements" class="anchor"></a>System Requirements</h1>
 <p>Requires R (version 3.2.2 or higher). Requires <a href="https://github.com/OHDSI/DatabaseConnector">DatabaseConnector</a> and <a href="https://github.com/OHDSI/SqlRender">SqlRender</a>.</p>
 </div>
+<div id="r-installation" class="section level1">
+<h1 class="hasAnchor">
+<a href="#r-installation" class="anchor"></a>R Installation</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"devtools"</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"OHDSI/DataQualityDashboard"</span>)</a></code></pre></div>
+</div>
 <div id="executing-data-quality-checks" class="section level1">
 <h1 class="hasAnchor">
 <a href="#executing-data-quality-checks" class="anchor"></a>Executing Data Quality Checks</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co"># fill out the connection details -----------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">connectionDetails &lt;-<span class="st"> </span>DatabaseConnector<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DatabaseConnector/topics/createConnectionDetails">createConnectionDetails</a></span>(<span class="dt">dbms =</span> <span class="st">""</span>, </a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">                                                              <span class="dt">user =</span> <span class="st">""</span>, </a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">                                                              <span class="dt">password =</span> <span class="st">""</span>, </a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">                                                              <span class="dt">server =</span> <span class="st">""</span>, </a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">                                                              <span class="dt">port =</span> <span class="st">""</span>, </a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">                                                              <span class="dt">extraSettings =</span> <span class="st">""</span>)</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">cdmDatabaseSchema &lt;-<span class="st"> "yourCdmSchema"</span> <span class="co"># the fully qualified database schema name of the CDM</span></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11">resultsDatabaseSchema &lt;-<span class="st"> "yourResultsSchema"</span> <span class="co"># the fully qualified database schema name of the results schema (that you can write to)</span></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12">cdmSourceName &lt;-<span class="st"> "Your CDM Source"</span> <span class="co"># a human readable name for your CDM source</span></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co"># determine how many threads (concurrent SQL sessions) to use ----------------------------------------</span></a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">numThreads &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># on Redshift, 3 seems to work well</span></a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co"># specify if you want to execute the queries or inspect them ------------------------------------------</span></a>
-<a class="sourceLine" id="cb1-18" data-line-number="18">sqlOnly &lt;-<span class="st"> </span><span class="ot">FALSE</span> <span class="co"># set to TRUE if you just want to get the SQL scripts and not actually run the queries</span></a>
-<a class="sourceLine" id="cb1-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co"># where should the logs go? -------------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb1-21" data-line-number="21">outputFolder &lt;-<span class="st"> "output"</span></a>
-<a class="sourceLine" id="cb1-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="co"># logging type -------------------------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb1-24" data-line-number="24">verboseMode &lt;-<span class="st"> </span><span class="ot">FALSE</span> <span class="co"># set to TRUE if you want to see activity written to the console</span></a>
-<a class="sourceLine" id="cb1-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb1-26" data-line-number="26"><span class="co"># write results to table? ------------------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb1-27" data-line-number="27">writeToTable &lt;-<span class="st"> </span><span class="ot">TRUE</span> <span class="co"># set to FALSE if you want to skip writing to a SQL table in the results schema</span></a>
-<a class="sourceLine" id="cb1-28" data-line-number="28"></a>
-<a class="sourceLine" id="cb1-29" data-line-number="29"><span class="co"># if writing to table and using Redshift, bulk loading can be initialized -------------------------------</span></a>
-<a class="sourceLine" id="cb1-30" data-line-number="30"></a>
-<a class="sourceLine" id="cb1-31" data-line-number="31"><span class="co"># Sys.setenv("AWS_ACCESS_KEY_ID" = "",</span></a>
-<a class="sourceLine" id="cb1-32" data-line-number="32"><span class="co">#            "AWS_SECRET_ACCESS_KEY" = "",</span></a>
-<a class="sourceLine" id="cb1-33" data-line-number="33"><span class="co">#            "AWS_DEFAULT_REGION" = "",</span></a>
-<a class="sourceLine" id="cb1-34" data-line-number="34"><span class="co">#            "AWS_BUCKET_NAME" = "",</span></a>
-<a class="sourceLine" id="cb1-35" data-line-number="35"><span class="co">#            "AWS_OBJECT_KEY" = "",</span></a>
-<a class="sourceLine" id="cb1-36" data-line-number="36"><span class="co">#            "AWS_SSE_TYPE" = "AES256",</span></a>
-<a class="sourceLine" id="cb1-37" data-line-number="37"><span class="co">#            "USE_MPP_BULK_LOAD" = TRUE)</span></a>
-<a class="sourceLine" id="cb1-38" data-line-number="38"></a>
-<a class="sourceLine" id="cb1-39" data-line-number="39"><span class="co"># which DQ check levels to run -------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb1-40" data-line-number="40">checkLevels &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"TABLE"</span>, <span class="st">"FIELD"</span>, <span class="st">"CONCEPT"</span>)</a>
-<a class="sourceLine" id="cb1-41" data-line-number="41"></a>
-<a class="sourceLine" id="cb1-42" data-line-number="42"><span class="co"># which DQ checks to run? ------------------------------------</span></a>
-<a class="sourceLine" id="cb1-43" data-line-number="43"></a>
-<a class="sourceLine" id="cb1-44" data-line-number="44">checkNames &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>() <span class="co"># Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv</span></a>
-<a class="sourceLine" id="cb1-45" data-line-number="45"></a>
-<a class="sourceLine" id="cb1-46" data-line-number="46"><span class="co"># run the job --------------------------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb1-47" data-line-number="47">DataQualityDashboard<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DataQualityDashboard/topics/executeDqChecks">executeDqChecks</a></span>(<span class="dt">connectionDetails =</span> connectionDetails, </a>
-<a class="sourceLine" id="cb1-48" data-line-number="48">                                    <span class="dt">cdmDatabaseSchema =</span> cdmDatabaseSchema, </a>
-<a class="sourceLine" id="cb1-49" data-line-number="49">                                    <span class="dt">resultsDatabaseSchema =</span> resultsDatabaseSchema,</a>
-<a class="sourceLine" id="cb1-50" data-line-number="50">                                    <span class="dt">cdmSourceName =</span> cdmSourceName, </a>
-<a class="sourceLine" id="cb1-51" data-line-number="51">                                    <span class="dt">numThreads =</span> numThreads,</a>
-<a class="sourceLine" id="cb1-52" data-line-number="52">                                    <span class="dt">sqlOnly =</span> sqlOnly, </a>
-<a class="sourceLine" id="cb1-53" data-line-number="53">                                    <span class="dt">outputFolder =</span> outputFolder, </a>
-<a class="sourceLine" id="cb1-54" data-line-number="54">                                    <span class="dt">verboseMode =</span> verboseMode,</a>
-<a class="sourceLine" id="cb1-55" data-line-number="55">                                    <span class="dt">writeToTable =</span> writeToTable,</a>
-<a class="sourceLine" id="cb1-56" data-line-number="56">                                    <span class="dt">checkLevels =</span> checkLevels,</a>
-<a class="sourceLine" id="cb1-57" data-line-number="57">                                    <span class="dt">checkNames =</span> checkNames)</a>
-<a class="sourceLine" id="cb1-58" data-line-number="58"></a>
-<a class="sourceLine" id="cb1-59" data-line-number="59"><span class="co"># inspect logs ----------------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb1-60" data-line-number="60">ParallelLogger<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/ParallelLogger/topics/launchLogViewer">launchLogViewer</a></span>(<span class="dt">logFileName =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(outputFolder, cdmSourceName, </a>
-<a class="sourceLine" id="cb1-61" data-line-number="61">                                                      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sprintf">sprintf</a></span>(<span class="st">"log_DqDashboard_%s.txt"</span>, cdmSourceName)))</a>
-<a class="sourceLine" id="cb1-62" data-line-number="62"></a>
-<a class="sourceLine" id="cb1-63" data-line-number="63"><span class="co"># (OPTIONAL) if you want to write the JSON file to the results table separately -----------------------------</span></a>
-<a class="sourceLine" id="cb1-64" data-line-number="64">jsonFilePath &lt;-<span class="st"> ""</span></a>
-<a class="sourceLine" id="cb1-65" data-line-number="65">DataQualityDashboard<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DataQualityDashboard/topics/writeJsonResultsToTable">writeJsonResultsToTable</a></span>(<span class="dt">connectionDetails =</span> connectionDetails, </a>
-<a class="sourceLine" id="cb1-66" data-line-number="66">                                            <span class="dt">resultsDatabaseSchema =</span> resultsDatabaseSchema, </a>
-<a class="sourceLine" id="cb1-67" data-line-number="67">                                            <span class="dt">jsonFilePath =</span> jsonFilePath)</a>
-<a class="sourceLine" id="cb1-68" data-line-number="68">                                            </a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co"># fill out the connection details -----------------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">connectionDetails &lt;-<span class="st"> </span>DatabaseConnector<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DatabaseConnector/topics/createConnectionDetails">createConnectionDetails</a></span>(<span class="dt">dbms =</span> <span class="st">""</span>, </a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">                                                              <span class="dt">user =</span> <span class="st">""</span>, </a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">                                                              <span class="dt">password =</span> <span class="st">""</span>, </a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">                                                              <span class="dt">server =</span> <span class="st">""</span>, </a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">                                                              <span class="dt">port =</span> <span class="st">""</span>, </a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">                                                              <span class="dt">extraSettings =</span> <span class="st">""</span>)</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">cdmDatabaseSchema &lt;-<span class="st"> "yourCdmSchema"</span> <span class="co"># the fully qualified database schema name of the CDM</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">resultsDatabaseSchema &lt;-<span class="st"> "yourResultsSchema"</span> <span class="co"># the fully qualified database schema name of the results schema (that you can write to)</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12">cdmSourceName &lt;-<span class="st"> "Your CDM Source"</span> <span class="co"># a human readable name for your CDM source</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co"># determine how many threads (concurrent SQL sessions) to use ----------------------------------------</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15">numThreads &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># on Redshift, 3 seems to work well</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co"># specify if you want to execute the queries or inspect them ------------------------------------------</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18">sqlOnly &lt;-<span class="st"> </span><span class="ot">FALSE</span> <span class="co"># set to TRUE if you just want to get the SQL scripts and not actually run the queries</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co"># where should the logs go? -------------------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21">outputFolder &lt;-<span class="st"> "output"</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co"># logging type -------------------------------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24">verboseMode &lt;-<span class="st"> </span><span class="ot">FALSE</span> <span class="co"># set to TRUE if you want to see activity written to the console</span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co"># write results to table? ------------------------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb2-27" data-line-number="27">writeToTable &lt;-<span class="st"> </span><span class="ot">TRUE</span> <span class="co"># set to FALSE if you want to skip writing to a SQL table in the results schema</span></a>
+<a class="sourceLine" id="cb2-28" data-line-number="28"></a>
+<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co"># if writing to table and using Redshift, bulk loading can be initialized -------------------------------</span></a>
+<a class="sourceLine" id="cb2-30" data-line-number="30"></a>
+<a class="sourceLine" id="cb2-31" data-line-number="31"><span class="co"># Sys.setenv("AWS_ACCESS_KEY_ID" = "",</span></a>
+<a class="sourceLine" id="cb2-32" data-line-number="32"><span class="co">#            "AWS_SECRET_ACCESS_KEY" = "",</span></a>
+<a class="sourceLine" id="cb2-33" data-line-number="33"><span class="co">#            "AWS_DEFAULT_REGION" = "",</span></a>
+<a class="sourceLine" id="cb2-34" data-line-number="34"><span class="co">#            "AWS_BUCKET_NAME" = "",</span></a>
+<a class="sourceLine" id="cb2-35" data-line-number="35"><span class="co">#            "AWS_OBJECT_KEY" = "",</span></a>
+<a class="sourceLine" id="cb2-36" data-line-number="36"><span class="co">#            "AWS_SSE_TYPE" = "AES256",</span></a>
+<a class="sourceLine" id="cb2-37" data-line-number="37"><span class="co">#            "USE_MPP_BULK_LOAD" = TRUE)</span></a>
+<a class="sourceLine" id="cb2-38" data-line-number="38"></a>
+<a class="sourceLine" id="cb2-39" data-line-number="39"><span class="co"># which DQ check levels to run -------------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb2-40" data-line-number="40">checkLevels &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"TABLE"</span>, <span class="st">"FIELD"</span>, <span class="st">"CONCEPT"</span>)</a>
+<a class="sourceLine" id="cb2-41" data-line-number="41"></a>
+<a class="sourceLine" id="cb2-42" data-line-number="42"><span class="co"># which DQ checks to run? ------------------------------------</span></a>
+<a class="sourceLine" id="cb2-43" data-line-number="43"></a>
+<a class="sourceLine" id="cb2-44" data-line-number="44">checkNames &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>() <span class="co"># Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv</span></a>
+<a class="sourceLine" id="cb2-45" data-line-number="45"></a>
+<a class="sourceLine" id="cb2-46" data-line-number="46"><span class="co"># run the job --------------------------------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb2-47" data-line-number="47">DataQualityDashboard<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DataQualityDashboard/topics/executeDqChecks">executeDqChecks</a></span>(<span class="dt">connectionDetails =</span> connectionDetails, </a>
+<a class="sourceLine" id="cb2-48" data-line-number="48">                                    <span class="dt">cdmDatabaseSchema =</span> cdmDatabaseSchema, </a>
+<a class="sourceLine" id="cb2-49" data-line-number="49">                                    <span class="dt">resultsDatabaseSchema =</span> resultsDatabaseSchema,</a>
+<a class="sourceLine" id="cb2-50" data-line-number="50">                                    <span class="dt">cdmSourceName =</span> cdmSourceName, </a>
+<a class="sourceLine" id="cb2-51" data-line-number="51">                                    <span class="dt">numThreads =</span> numThreads,</a>
+<a class="sourceLine" id="cb2-52" data-line-number="52">                                    <span class="dt">sqlOnly =</span> sqlOnly, </a>
+<a class="sourceLine" id="cb2-53" data-line-number="53">                                    <span class="dt">outputFolder =</span> outputFolder, </a>
+<a class="sourceLine" id="cb2-54" data-line-number="54">                                    <span class="dt">verboseMode =</span> verboseMode,</a>
+<a class="sourceLine" id="cb2-55" data-line-number="55">                                    <span class="dt">writeToTable =</span> writeToTable,</a>
+<a class="sourceLine" id="cb2-56" data-line-number="56">                                    <span class="dt">checkLevels =</span> checkLevels,</a>
+<a class="sourceLine" id="cb2-57" data-line-number="57">                                    <span class="dt">checkNames =</span> checkNames)</a>
+<a class="sourceLine" id="cb2-58" data-line-number="58"></a>
+<a class="sourceLine" id="cb2-59" data-line-number="59"><span class="co"># inspect logs ----------------------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb2-60" data-line-number="60">ParallelLogger<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/ParallelLogger/topics/launchLogViewer">launchLogViewer</a></span>(<span class="dt">logFileName =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(outputFolder, cdmSourceName, </a>
+<a class="sourceLine" id="cb2-61" data-line-number="61">                                                      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sprintf">sprintf</a></span>(<span class="st">"log_DqDashboard_%s.txt"</span>, cdmSourceName)))</a>
+<a class="sourceLine" id="cb2-62" data-line-number="62"></a>
+<a class="sourceLine" id="cb2-63" data-line-number="63"><span class="co"># (OPTIONAL) if you want to write the JSON file to the results table separately -----------------------------</span></a>
+<a class="sourceLine" id="cb2-64" data-line-number="64">jsonFilePath &lt;-<span class="st"> ""</span></a>
+<a class="sourceLine" id="cb2-65" data-line-number="65">DataQualityDashboard<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DataQualityDashboard/topics/writeJsonResultsToTable">writeJsonResultsToTable</a></span>(<span class="dt">connectionDetails =</span> connectionDetails, </a>
+<a class="sourceLine" id="cb2-66" data-line-number="66">                                            <span class="dt">resultsDatabaseSchema =</span> resultsDatabaseSchema, </a>
+<a class="sourceLine" id="cb2-67" data-line-number="67">                                            <span class="dt">jsonFilePath =</span> jsonFilePath)</a>
+<a class="sourceLine" id="cb2-68" data-line-number="68">                                            </a></code></pre></div>
 </div>
 <div id="viewing-results" class="section level1">
 <h1 class="hasAnchor">
 <a href="#viewing-results" class="anchor"></a>Viewing Results</h1>
 <p><strong>Launching Dashboard as Shiny App</strong></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">DataQualityDashboard<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DataQualityDashboard/topics/viewDqDashboard">viewDqDashboard</a></span>(<span class="dt">jsonPath =</span> <span class="st">"full_path_to_json_file.json"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">DataQualityDashboard<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DataQualityDashboard/topics/viewDqDashboard">viewDqDashboard</a></span>(<span class="dt">jsonPath =</span> <span class="st">"full_path_to_json_file.json"</span>)</a></code></pre></div>
 <p><strong>Launching on a web server</strong></p>
 <p>If you have npm installed:</p>
 <ol>
