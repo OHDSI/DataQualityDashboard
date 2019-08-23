@@ -7,6 +7,8 @@ DataQualityDashboard
 
 The DataQualityDashboard is a tool to help improve data quality standards in observational data science.
 
+<img src="https://github.com/OHDSI/DataQualityDashboard/raw/master/extras/dqDashboardScreenshot.png"/>
+
 Introduction
 ============
 An R package for characterizing the data quality of a person-level data source that has been converted into the OMOP CDM 5.3.1 format.
