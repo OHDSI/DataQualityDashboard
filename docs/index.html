@@ -94,9 +94,9 @@
 <a href="#system-requirements" class="anchor"></a>System Requirements</h1>
 <p>Requires R (version 3.2.2 or higher). Requires <a href="https://github.com/OHDSI/DatabaseConnector">DatabaseConnector</a> and <a href="https://github.com/OHDSI/SqlRender">SqlRender</a>.</p>
 </div>
-<div id="getting-started" class="section level1">
+<div id="executing-data-quality-checks" class="section level1">
 <h1 class="hasAnchor">
-<a href="#getting-started" class="anchor"></a>Getting Started</h1>
+<a href="#executing-data-quality-checks" class="anchor"></a>Executing Data Quality Checks</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co"># fill out the connection details -----------------------------------------------------------------------</span></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3">connectionDetails &lt;-<span class="st"> </span>DatabaseConnector<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DatabaseConnector/topics/createConnectionDetails">createConnectionDetails</a></span>(<span class="dt">dbms =</span> <span class="st">""</span>, </a>
@@ -164,9 +164,24 @@
 <a class="sourceLine" id="cb1-65" data-line-number="65">DataQualityDashboard<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DataQualityDashboard/topics/writeJsonResultsToTable">writeJsonResultsToTable</a></span>(<span class="dt">connectionDetails =</span> connectionDetails, </a>
 <a class="sourceLine" id="cb1-66" data-line-number="66">                                            <span class="dt">resultsDatabaseSchema =</span> resultsDatabaseSchema, </a>
 <a class="sourceLine" id="cb1-67" data-line-number="67">                                            <span class="dt">jsonFilePath =</span> jsonFilePath)</a>
-<a class="sourceLine" id="cb1-68" data-line-number="68">                                            </a>
-<a class="sourceLine" id="cb1-69" data-line-number="69"><span class="co"># view dashboard --------------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb1-70" data-line-number="70"><span class="kw"><a href="reference/viewDqDashboard.html">viewDqDashboard</a></span>(<span class="dt">jsonPath =</span> <span class="st">"full_path_to_json_file.json"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb1-68" data-line-number="68">                                            </a></code></pre></div>
+</div>
+<div id="viewing-results" class="section level1">
+<h1 class="hasAnchor">
+<a href="#viewing-results" class="anchor"></a>Viewing Results</h1>
+<p><strong>Launching Dashboard as Shiny App</strong></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">DataQualityDashboard<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DataQualityDashboard/topics/viewDqDashboard">viewDqDashboard</a></span>(<span class="dt">jsonPath =</span> <span class="st">"full_path_to_json_file.json"</span>)</a></code></pre></div>
+<p><strong>Launching on a web server</strong></p>
+<p>If you have npm installed:</p>
+<ol>
+<li>Install http-server:</li>
+</ol>
+<pre><code>npm install -g http-server</code></pre>
+<ol>
+<li>Go to inst/shinyApps/www, then run:</li>
+</ol>
+<pre><code>http-server</code></pre>
+<p>A results JSON file for the Synthea synthetic dataset will be shown. You can view your results by replacing the results.json file with your file (with name results.json).</p>
 </div>
 <div id="support" class="section level1">
 <h1 class="hasAnchor">

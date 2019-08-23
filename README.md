@@ -22,8 +22,8 @@ System Requirements
 ===================
 Requires R (version 3.2.2 or higher). Requires [DatabaseConnector](https://github.com/OHDSI/DatabaseConnector) and [SqlRender](https://github.com/OHDSI/SqlRender).
 
-Getting Started
-===============
+Executing Data Quality Checks
+==============================
   ```r
 
 # fill out the connection details -----------------------------------------------------------------------
@@ -93,10 +93,34 @@ DataQualityDashboard::writeJsonResultsToTable(connectionDetails = connectionDeta
                                               resultsDatabaseSchema = resultsDatabaseSchema, 
                                               jsonFilePath = jsonFilePath)
                                               
-# view dashboard --------------------------------------------------------------------------
-viewDqDashboard(jsonPath = "full_path_to_json_file.json")
 
 ```
+
+Viewing Results
+================
+
+**Launching Dashboard as Shiny App**
+```r
+DataQualityDashboard::viewDqDashboard(jsonPath = "full_path_to_json_file.json")
+```
+
+**Launching on a web server**
+
+If you have npm installed:
+
+1. Install http-server:
+
+```
+npm install -g http-server
+```
+
+2. Go to inst/shinyApps/www, then run:
+
+```
+http-server
+```
+
+A results JSON file for the Synthea synthetic dataset will be shown. You can view your results by replacing the results.json file with your file (with name results.json).
 
 
 Support
