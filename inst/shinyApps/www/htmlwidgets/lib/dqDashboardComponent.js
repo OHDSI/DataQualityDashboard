@@ -28,16 +28,27 @@ class DqDashboard extends HTMLElement {
         }
 
         td {
-            padding: 3px;
+            color: #000;
+            padding: 3px 7px 3px 7px;
+            font-size: 20px;
+        }
+
+        td.overall {
+          font-size:28px;
+          font-weight: bold;
         }
 
         td:empty, th:empty {
           border:0;
           background:transparent;
         }
+
+        td.fail {
+          color: #C00;
+          font-weight:bold;
+        }
     </style>
 
-    <h2>Overall Assessment: {{Total.Total.PercentPass}}</h2>
     <table>
         <thead>
             <tr>
@@ -64,66 +75,64 @@ class DqDashboard extends HTMLElement {
         </thead>
         <tbody>
             <tr>
-                <td>
-                    Plausibility
-                </td>
+                <td>Plausibility </td>
                 <td>{{Verification.Plausibility.Pass}}</td>
-                <td>{{Verification.Plausibility.Fail}}</td>
+                <td {{#if Verification.Plausibility.Fail}}class="fail"{{/if}}>{{Verification.Plausibility.Fail}}</td>
                 <td>{{Verification.Plausibility.Total}}</td>
                 <td>{{Verification.Plausibility.PercentPass}}</td>
                 <td>{{Validation.Plausibility.Pass}}</td>
-                <td>{{Validation.Plausibility.Fail}}</td>
+                <td {{#if Validation.Plausibility.Fail}}class="fail"{{/if}}>{{Validation.Plausibility.Fail}}</td>
                 <td>{{Validation.Plausibility.Total}}</td>
                 <td>{{Validation.Plausibility.PercentPass}}</td>
                 <td>{{Total.Plausibility.Pass}}</td>
-                <td>{{Total.Plausibility.Fail}}</td>                
+                <td {{#if Total.Plausibility.Fail}}class="fail"{{/if}}>{{Total.Plausibility.Fail}}</td>                
                 <td>{{Total.Plausibility.Total}}</td>
                 <td>{{Total.Plausibility.PercentPass}}</td>
             </tr>
             <tr>
-                <td>Conformance</td>
+                <td>Conformance </td>
                 <td>{{Verification.Conformance.Pass}}</td>
-                <td>{{Verification.Conformance.Fail}}</td>
+                <td {{#if Verification.Conformance.Fail}}class="fail"{{/if}}>{{Verification.Conformance.Fail}}</td>
                 <td>{{Verification.Conformance.Total}}</td>
                 <td>{{Verification.Conformance.PercentPass}}</td>
                 <td>{{Validation.Conformance.Pass}}</td>
-                <td>{{Validation.Conformance.Fail}}</td>
+                <td {{#if Validation.Conformance.Fail}}class="fail"{{/if}}>{{Validation.Conformance.Fail}}</td>
                 <td>{{Validation.Conformance.Total}}</td>
                 <td>{{Validation.Conformance.PercentPass}}</td>
                 <td>{{Total.Conformance.Pass}}</td>
-                <td>{{Total.Conformance.Fail}}</td>                
+                <td {{#if Total.Conformance.Fail}}class="fail"{{/if}}>{{Total.Conformance.Fail}}</td>                
                 <td>{{Total.Conformance.Total}}</td>
                 <td>{{Total.Conformance.PercentPass}}</td>
             </tr>
             <tr>
-                <td>Completeness</td>
+                <td>Completeness </td>
                 <td>{{Verification.Completeness.Pass}}</td>
-                <td>{{Verification.Completeness.Fail}}</td>
+                <td {{#if Verification.Completeness.Fail}}class="fail"{{/if}}>{{Verification.Completeness.Fail}}</td>
                 <td>{{Verification.Completeness.Total}}</td>
                 <td>{{Verification.Completeness.PercentPass}}</td>
                 <td>{{Validation.Completeness.Pass}}</td>
-                <td>{{Validation.Completeness.Fail}}</td>                
+                <td {{#if Validation.Completeness.Fail}}class="fail"{{/if}}>{{Validation.Completeness.Fail}}</td>                
                 <td>{{Validation.Completeness.Total}}</td>
                 <td>{{Validation.Completeness.PercentPass}}</td>
                 <td>{{Total.Completeness.Pass}}</td>
-                <td>{{Total.Completeness.Fail}}</td>
+                <td {{#if Total.Completeness.Fail}}class="fail"{{/if}}>{{Total.Completeness.Fail}}</td>
                 <td>{{Total.Completeness.Total}}</td>
                 <td>{{Total.Completeness.PercentPass}}</td>
             </tr>
             <tr>
-                <td>Total</td>
+                <td>Total </td>
                 <td>{{Verification.Total.Pass}}</td>
-                <td>{{Verification.Total.Fail}}</td>
+                <td {{#if Verification.Total.Fail}}class="fail"{{/if}}>{{Verification.Total.Fail}}</td>
                 <td>{{Verification.Total.Total}}</td>
                 <td>{{Verification.Total.PercentPass}}</td>
                 <td>{{Validation.Total.Pass}}</td>
-                <td>{{Validation.Total.Fail}}</td>
+                <td {{#if Validation.Total.Fail}}class="fail"{{/if}}>{{Validation.Total.Fail}}</td>
                 <td>{{Validation.Total.Total}}</td>
                 <td>{{Validation.Total.PercentPass}}</td>
                 <td>{{Total.Total.Pass}}</td>
-                <td>{{Total.Total.Fail}}</td>                
+                <td {{#if Total.Total.Fail}}class="fail"{{/if}}>{{Total.Total.Fail}}</td>                
                 <td>{{Total.Total.Total}}</td>
-                <td>{{Total.Total.PercentPass}}</td>
+                <td class="overall">{{Total.Total.PercentPass}}</td>
             </tr>
         </tbody>
     </table>
@@ -433,7 +442,7 @@ class DqDashboard extends HTMLElement {
         },
         "Conformance": {
           "Pass": ConformancePass,
-          "Pass": ConformanceFail,
+          "Fail": ConformanceFail,
           "Total": ConformanceTotal,
           "PercentPass": ConformancePercentPass
         },

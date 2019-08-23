@@ -58,6 +58,7 @@
                                        check["cdmFieldName"]))  
   tryCatch(
     expr = {
+      rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
       result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
                                             errorReportFile = errorReportFile)
       
@@ -298,6 +299,7 @@ executeDqChecks <- function(connectionDetails,
                                 conceptChecks) {
   
   checkResults$FAILED <- 0
+  checkResults$THRESHOLD_VALUE <- NA
   
   for (i in 1:nrow(checkResults)) {
     thresholdField <- sprintf("%sThreshold", checkResults[i,]$CHECK_NAME)
@@ -337,13 +339,12 @@ executeDqChecks <- function(connectionDetails,
       }
       
       thresholdValue <- eval(parse(text = thresholdFilter))
+      checkResults[i,]$THRESHOLD_VALUE <- thresholdValue
     }
-    
-    
+
     if (!is.na(checkResults[i,]$ERROR)) {
       checkResults[i,]$FAILED <- 1
     } else if (is.na(thresholdValue)) {
-      
       if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0) {
         checkResults[i,]$FAILED <- 1
       }
@@ -433,7 +434,7 @@ executeDqChecks <- function(connectionDetails,
   
   result <- list(startTimestamp = startTime, 
                  endTimestamp = endTime,
-                 executionTime = sprintf("%f %s", delta, attr(delta, "units")),
+                 executionTime = sprintf("%.0f %s", delta, attr(delta, "units")),
                  CheckResults = checkResults, 
                  Metadata = metadata, 
                  Overview = overview)
