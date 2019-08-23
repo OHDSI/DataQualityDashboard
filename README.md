@@ -101,7 +101,9 @@ viewDqDashboard(jsonPath = "full_path_to_json_file.json")
 
 Support
 =======
-* We use the <a href="../../issues">GitHub issue tracker</a> for all bugs/issues/enhancements
+
+* Developer questions/comments/feedback: <a href="http://forums.ohdsi.org/c/developers">OHDSI Forum</a>
+* We use the <a href="https://github.com/OHDSI/DataQualityDashboard/issues">GitHub issue tracker</a> for all bugs/issues/enhancements 
  
 License
 =======
