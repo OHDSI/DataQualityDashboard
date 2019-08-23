@@ -7,7 +7,7 @@
 viewDqDashboard(jsonPath)
 }
 \arguments{
-\item{jsonPath}{The path to the JSON file produced by executeDqDashboard}
+\item{jsonPath}{The path to the JSON file produced by  \code{\link{executeDqChecks}}}
 }
 \description{
 View DQ Dashboard
