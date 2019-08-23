@@ -2,7 +2,7 @@
 % Please edit documentation in R/execution.R
 \name{writeJsonResultsToTable}
 \alias{writeJsonResultsToTable}
-\title{Execute DQ checks}
+\title{Write JSON Results to SQL Table}
 \usage{
 writeJsonResultsToTable(connectionDetails, resultsDatabaseSchema,
   jsonFilePath)
@@ -15,5 +15,5 @@ writeJsonResultsToTable(connectionDetails, resultsDatabaseSchema,
 \item{jsonFilePath}{Path to the JSON results file generated using the execute function}
 }
 \description{
-Execute DQ checks
+Write JSON Results to SQL Table
 }

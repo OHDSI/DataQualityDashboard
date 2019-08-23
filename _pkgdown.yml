@@ -1,0 +1,21 @@
+template:
+  params:
+    bootswatch: cosmo
+
+home:
+  links:
+  - text: Ask a question
+    href: http://forums.ohdsi.org
+
+reference:
+  - title: "Execution"
+    desc: >
+      Function for running data quality checks
+    contents:
+      - executeDqChecks
+      - writeJsonResultsToTable
+  - title: "View Dashboard"
+    desc: >
+      Function for viewing the data quality dashboard
+    contents:
+      - viewDqDashboard
