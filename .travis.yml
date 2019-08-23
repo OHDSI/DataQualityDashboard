@@ -9,6 +9,7 @@ branches:
 r_packages:
   - covr
   - drat
+  - devtools
 
 before_script:
   - export PKG_NAME=$(Rscript -e 'cat(paste0(devtools::as.package(".")$package))')
