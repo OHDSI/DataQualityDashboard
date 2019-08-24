@@ -368,7 +368,7 @@ executeDqChecks <- function(connectionDetails,
     if (!is.na(checkResults[i,]$ERROR)) {
       checkResults[i,]$FAILED <- 1
     } else if (is.na(thresholdValue)) {
-      if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0) {
+      if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults[i,]$NUM_VIOLATED_ROWS > 0) {
         checkResults[i,]$FAILED <- 1
       }
     } else if (checkResults[i,]$PCT_VIOLATED_ROWS * 100 > thresholdValue) {
