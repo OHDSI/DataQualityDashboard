@@ -15,12 +15,12 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT DISTINCT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.@cdmFieldName
+		SELECT DISTINCT @cdmTableName.@cdmFieldName AS violating_field, @cdmTableName.@cdmFieldName
 		FROM @cdmDatabaseSchema.@cdmTableName
 		WHERE @cdmDatabaseSchema.@cdmTableName.@standardConceptFieldName = 0
 	) violated_rows
 ) violated_row_count,
-( 
+(
 	SELECT COUNT_BIG(DISTINCT @cdmFieldName) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName
 ) denominator

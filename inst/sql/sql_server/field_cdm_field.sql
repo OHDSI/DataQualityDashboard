@@ -16,14 +16,14 @@ FROM
 (
   select num_violated_rows from
   (
-    select 
-      case when count("@cdmFieldName") = 0 then 0
+    select
+      case when count(@cdmFieldName) = 0 then 0
       else 0
     end as num_violated_rows
     from @cdmDatabaseSchema.@cdmTableName
   ) violated_rows
 ) violated_row_count,
-( 
+(
 	SELECT 1 as num_rows
 ) denominator
 ;

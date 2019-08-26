@@ -17,15 +17,15 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, t.* 
+		SELECT @cdmTableName.@cdmFieldName AS violating_field, t.* 
 		  FROM @cdmDatabaseSchema.@cdmTableName t
 		  LEFT JOIN @cdmDatabaseSchema.CONCEPT c
 		    ON t.@cdmFieldName = c.CONCEPT_ID
 		 WHERE c.CONCEPT_ID != 0 AND c.DOMAIN_ID != '@fkDomain'
-		  
+
 	) violated_rows
 ) violated_row_count,
-( 
+(
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName
 ) denominator

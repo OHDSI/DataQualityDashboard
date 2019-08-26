@@ -16,13 +16,13 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, t.* 
+		SELECT @cdmTableName.@cdmFieldName AS violating_field, t.* 
 		  FROM @cdmDatabaseSchema.@cdmTableName t
-		  join @cdmDatabaseSchema.CONCEPT c ON t.@cdmFieldName = c.CONCEPT_ID 
-		  WHERE c.CONCEPT_ID != 0 AND (c.STANDARD_CONCEPT != 'S' OR c.INVALID_REASON IS NOT NULL ) 
+		  join @cdmDatabaseSchema.CONCEPT c ON t.@cdmFieldName = c.CONCEPT_ID
+		  WHERE c.CONCEPT_ID != 0 AND (c.STANDARD_CONCEPT != 'S' OR c.INVALID_REASON IS NOT NULL )
   ) violated_rows
 ) violated_row_count,
-( 
+(
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName
 ) denominator

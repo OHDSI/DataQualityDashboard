@@ -16,7 +16,7 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.*
+		SELECT @cdmTableName.@cdmFieldName AS violating_field, @cdmTableName.*
     from @cdmDatabaseSchema.@cdmTableName
     join @cdmDatabaseSchema.death on @cdmDatabaseSchema.@cdmTableName.person_id = @cdmDatabaseSchema.death.person_id
     where @cdmFieldName > death_date
