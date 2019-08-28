@@ -122,6 +122,7 @@
 #'                                  in the resultsDatabaseSchema. Default is TRUE.
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
 #' @param checkNames                (OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv
+#' @param tablesToExclude           (OPTIONAL) Choose which CDM tables to exclude from the execution.
 #' 
 #' @return If sqlOnly = FALSE, a list object of results
 #' 
@@ -136,7 +137,8 @@ executeDqChecks <- function(connectionDetails,
                             verboseMode = FALSE,
                             writeToTable = TRUE,
                             checkLevels = c("TABLE", "FIELD", "CONCEPT"),
-                            checkNames = c()) {
+                            checkNames = c(),
+                            tablesToExclude = c()) {
   
   outputFolder <- file.path(outputFolder, cdmSourceName)
   
@@ -186,6 +188,13 @@ executeDqChecks <- function(connectionDetails,
   conceptChecks <- read.csv(system.file("csv", "OMOP_CDMv5.3.1_Concept_Level.csv",
                                       package = "DataQualityDashboard"), 
                           stringsAsFactors = FALSE)
+  
+  if (length(tablesToExclude) > 0) {
+    ParallelLogger::logInfo(sprintf("CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
+    tableChecks <- tableChecks[!tableChecks$cdmTableName %in% tablesToExclude,]
+    fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude,]
+    conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude,]
+  }
   
   library(magrittr)
   tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
