@@ -1,7 +1,10 @@
 function loadResults(results) {
     $('dq-metadata-heading').attr('data-results', JSON.stringify(results));
     $('dq-dashboard').attr('data-results', JSON.stringify(results.CheckResults));
-    $('dq-metadata').attr('data-results', JSON.stringify(results.Metadata[0]));
+    
+    var metadata = results.Metadata[0];
+    $('cdm-source-name').text(metadata.CDM_SOURCE_NAME);
+    $('dq-metadata').attr('data-results', JSON.stringify(metadata));
 
     function format(d) {
         errorMessage = '';
