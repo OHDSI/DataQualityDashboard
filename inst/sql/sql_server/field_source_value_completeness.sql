@@ -21,7 +21,10 @@ FROM
 	) violated_rows
 ) violated_row_count,
 ( 
-	SELECT COUNT_BIG(DISTINCT @cdmFieldName) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName
+	SELECT COUNT_BIG(*) AS num_rows
+	FROM ( 
+		SELECT DISTINCT @cdmTableName.@cdmFieldName
+		FROM @cdmDatabaseSchema.@cdmTableName
+	      ) 
 ) denominator
 ;
