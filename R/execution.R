@@ -62,8 +62,10 @@
                           checkDescription, 
                           sql, 
                           outputFolder) {
+  singleThreaded <- TRUE
   start <- Sys.time()
   if (is.null(connection)) {
+    singleThreaded <- FALSE
     connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
     on.exit(DatabaseConnector::disconnect(connection = connection))  
   }
@@ -76,11 +78,16 @@
                                        check["cdmFieldName"]))  
   tryCatch(
     expr = {
+      if (singleThreaded) {
+        if (.needsAutoCommit(connection)) {
+          rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
+        }  
+      }
       
       result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
                                             errorReportFile = errorReportFile)
       
-      delta <- Sys.time() - start
+      delta <- difftime(Sys.time(), start, units = "secs")
       .recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
                     executionTime = sprintf("%f %s", delta, attr(delta, "units")))
     },
@@ -117,6 +124,7 @@
 #'                                  in the resultsDatabaseSchema. Default is TRUE.
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
 #' @param checkNames                (OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv
+#' @param tablesToExclude           (OPTIONAL) Choose which CDM tables to exclude from the execution.
 #' 
 #' @return If sqlOnly = FALSE, a list object of results
 #' 
@@ -131,7 +139,8 @@ executeDqChecks <- function(connectionDetails,
                             verboseMode = FALSE,
                             writeToTable = TRUE,
                             checkLevels = c("TABLE", "FIELD", "CONCEPT"),
-                            checkNames = c()) {
+                            checkNames = c(),
+                            tablesToExclude = c()) {
   
   outputFolder <- file.path(outputFolder, cdmSourceName)
   
@@ -181,6 +190,14 @@ executeDqChecks <- function(connectionDetails,
   conceptChecks <- read.csv(system.file("csv", "OMOP_CDMv5.3.1_Concept_Level.csv",
                                       package = "DataQualityDashboard"), 
                           stringsAsFactors = FALSE)
+  
+  if (length(tablesToExclude) > 0) {
+    tablesToExclude <- toupper(tablesToExclude)
+    ParallelLogger::logInfo(sprintf("CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
+    tableChecks <- tableChecks[!tableChecks$cdmTableName %in% tablesToExclude,]
+    fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude,]
+    conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude,]
+  }
   
   library(magrittr)
   tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
@@ -377,7 +394,7 @@ executeDqChecks <- function(connectionDetails,
     if (!is.na(checkResults[i,]$ERROR)) {
       checkResults[i,]$FAILED <- 1
     } else if (is.na(thresholdValue)) {
-      if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults$NUM_VIOLATED_ROWS > 0) {
+      if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults[i,]$NUM_VIOLATED_ROWS > 0) {
         checkResults[i,]$FAILED <- 1
       }
     } else if (checkResults[i,]$PCT_VIOLATED_ROWS * 100 > thresholdValue) {
@@ -523,4 +540,14 @@ writeJsonResultsToTable <- function(connectionDetails,
   )
 }
 
-
+.needsAutoCommit <- function(connection) {
+  autoCommit <- FALSE
+  if (!is.null(connection)) {
+    if (inherits(connection, "DatabaseConnectorJdbcConnection")) {
+      if (connectionDetails$dbms %in% c("postgresql", "redshift")) {
+        autoCommit <- TRUE
+      }
+    }
+  }
+  autoCommit
+}
