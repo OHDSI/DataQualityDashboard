@@ -1,4 +1,4 @@
-cdmTableName,cdmFieldName,conceptId,conceptName,unitConceptId,unitConceptName,plausibleValueLow,plausibleValueLowThreshold,plausibleValueHigh,plausibleValueThreshold,plausibleGender,plausibleGenderThreshold,isTemporallyConstant,isTemporallyConstantThreshold,validPrevalenceLow,validPrevalenceLowThreshold,validPrevalenceHigh,validPrevalenceHighThreshold
+cdmTableName,cdmFieldName,conceptId,conceptName,unitConceptId,unitConceptName,plausibleValueLow,plausibleValueLowThreshold,plausibleValueHigh,plausibleValueHighThreshold,plausibleGender,plausibleGenderThreshold,isTemporallyConstant,isTemporallyConstantThreshold,validPrevalenceLow,validPrevalenceLowThreshold,validPrevalenceHigh,validPrevalenceHighThreshold
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3004410,Hemoglobin A1c/Hemoglobin.total in Blood,8554,percent,4,5,15,5,,,Yes,,,,,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3036277,Body height,8582,centimeter,1,5,272,5,,,Yes,,,,,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3016723,Creatinine [Mass/volume] in Serum or Plasma,8840,milligram per deciliter,0.1,5,10,5,,,Yes,,,,,
@@ -475,7 +475,7 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,2212643,Blood count; hemoglobin (Hgb),8840,mi
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,2212643,Blood count; hemoglobin (Hgb),8837,microgram per deciliter,2,5,319,5,,,,,,,,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3036277,Body height,8582,centimeter,20,5,250,5,,,,,,,,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3036277,Body height,9330,inch (US),2,5,275,5,,,,,,,,
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3036277,Body height,9546,meter,0.2,5,2.50,5,,,,,,,,
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3036277,Body height,9546,meter,0.2,5,2.5,5,,,,,,,,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3036277,Body height,9327,inch (international),2,5,275,5,,,,,,,,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3036277,Body height,8588,millimeter,20000,5,250000,5,,,,,,,,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3038553,Body mass index (BMI) [Ratio],9531,kilogram per square meter,16,5,100,5,,,,,,,,
