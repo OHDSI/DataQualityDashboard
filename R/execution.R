@@ -142,6 +142,7 @@ executeDqChecks <- function(connectionDetails,
                             checkNames = c(),
                             tablesToExclude = c()) {
   
+  options(scipen = 999)
   outputFolder <- file.path(outputFolder, cdmSourceName)
   
   if (!dir.exists(outputFolder)) {
