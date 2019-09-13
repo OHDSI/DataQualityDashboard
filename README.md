@@ -115,7 +115,7 @@ Viewing Results
 
 **Launching Dashboard as Shiny App**
 ```r
-DataQualityDashboard::viewDqDashboard(jsonPath = "full_path_to_json_file.json")
+DataQualityDashboard::viewDqDashboard(jsonPath = file.path(getwd(), outputFolder, cdmSourceName, sprintf("results_%s.json", cdmSourceName)))
 ```
 
 **Launching on a web server**
