@@ -128,7 +128,9 @@ If you have npm installed:
 npm install -g http-server
 ```
 
-2. Go to inst/shinyApps/www, then run:
+2. Rename the json file to *results.json* and place it in inst/shinyApps/www
+
+3. Go to inst/shinyApps/www, then run:
 
 ```
 http-server
