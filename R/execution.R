@@ -192,6 +192,8 @@ executeDqChecks <- function(connectionDetails,
                                       package = "DataQualityDashboard"), 
                           stringsAsFactors = FALSE)
   
+  # ensure we use only checks that are intended to be run -----------------------------------------
+  
   if (length(tablesToExclude) > 0) {
     tablesToExclude <- toupper(tablesToExclude)
     ParallelLogger::logInfo(sprintf("CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
@@ -204,13 +206,25 @@ executeDqChecks <- function(connectionDetails,
   tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   conceptChecks <- conceptChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
+
+  
+  checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
+    !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |
+      !is.null(eval(parse(text = sprintf("fieldChecks$%s", check)))) |
+      !is.null(eval(parse(text = sprintf("conceptChecks$%s", check))))
+  })]
   
   checkDescriptionsDf <- checkDescriptionsDf[checkDescriptionsDf$checkLevel %in% checkLevels & 
                                                checkDescriptionsDf$evaluationFilter != "" &
-                                               checkDescriptionsDf$sqlFile != "",]
+                                               checkDescriptionsDf$sqlFile != "" &
+                                               checkDescriptionsDf$checkName %in% checksToInclude, ]
   
   if (length(checkNames) > 0) {
     checkDescriptionsDf <- checkDescriptionsDf[checkDescriptionsDf$checkName %in% checkNames,]
+  }
+  
+  if (nrow(checkDescriptionsDf) == 0) {
+    stop("No checks are available based on excluded tables. Please review tablesToExclude.")
   }
   
   checkDescriptions <- split(checkDescriptionsDf, seq(nrow(checkDescriptionsDf)))
