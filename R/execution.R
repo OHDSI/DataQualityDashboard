@@ -379,7 +379,7 @@ executeDqChecks <- function(connectionDetails,
         
       } else if (checkResults[i,]$CHECK_LEVEL == "CONCEPT") {
         
-        if (is.na(checkResults[i,]$UNIT_CONCEPT_ID)) {
+        if (!is.na(checkResults[i,]$UNIT_CONCEPT_ID)) {
           
           thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
@@ -388,7 +388,7 @@ executeDqChecks <- function(connectionDetails,
                                      checkResults[i,]$CDM_TABLE_NAME,
                                      checkResults[i,]$CDM_FIELD_NAME,
                                      checkResults[i,]$CONCEPT_ID)
-        } else if (is.na(checkResults[i,]$UNIT_CONCEPT_ID)) {
+        } else {
           
           thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
