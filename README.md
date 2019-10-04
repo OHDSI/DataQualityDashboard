@@ -139,6 +139,15 @@ http-server
 A results JSON file for the Synthea synthetic dataset will be shown. You can view your results by replacing the results.json file with your file (with name results.json).
 
 
+
+View checks
+===========
+To see description of checks using R, execute the command bellow:
+```
+View(read.csv(system.file("csv","OMOP_CDMv5.3.1_Check_Descriptions.csv",package="DataQualityDashboard"),as.is=T))
+```
+
+
 Support
 =======
 
