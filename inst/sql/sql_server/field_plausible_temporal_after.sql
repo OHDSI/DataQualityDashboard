@@ -23,11 +23,21 @@ FROM
 		join @cdmDatabaseSchema.@plausibleTemporalAfterTableName
 			on @cdmDatabaseSchema.@cdmTableName.person_id = @cdmDatabaseSchema.@plausibleTemporalAfterTableName.person_id
 		}
+		{@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT 
+    	ON @cdmTableName.PERSON_ID = COHORT.SUBJECT_ID
+    	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
     where @plausibleTemporalAfterFieldName > @cdmFieldName
 	) violated_rows
 ) violated_row_count,
 (
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName
+	{@cohort & '@runForCohort' == 'Yes'}?{
+  	JOIN @cohortDatabaseSchema.COHORT 
+  	ON @cdmTableName.PERSON_ID = COHORT.SUBJECT_ID
+  	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+  	}
 ) denominator
 ;

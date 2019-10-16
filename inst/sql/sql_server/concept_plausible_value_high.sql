@@ -20,6 +20,13 @@ FROM
 	(
 		SELECT measurement.* 
 		FROM @cdmDatabaseSchema.measurement
+		
+  	{@cohort & '@runForCohort' == 'Yes'}?{
+  	JOIN @cohortDatabaseSchema.COHORT 
+  	ON measurement.PERSON_ID = COHORT.SUBJECT_ID
+  	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+  	}
+		
 		WHERE measurement_concept_id = @conceptId
 		AND unit_concept_id = @unitConceptId
 		AND value_as_number IS NOT NULL
@@ -29,6 +36,13 @@ FROM
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.measurement
+	
+	{@cohort & '@runForCohort' == 'Yes'}?{
+	JOIN @cohortDatabaseSchema.COHORT 
+	ON measurement.PERSON_ID = COHORT.SUBJECT_ID
+	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+	}
+	
 	WHERE measurement_concept_id = @conceptId
 	AND unit_concept_id = @unitConceptId
 	AND value_as_number IS NOT NULL

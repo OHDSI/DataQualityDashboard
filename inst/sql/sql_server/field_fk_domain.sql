@@ -17,10 +17,17 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, t.* 
-		  FROM @cdmDatabaseSchema.@cdmTableName t
+		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.* 
+		  FROM @cdmDatabaseSchema.@cdmTableName 
 		  LEFT JOIN @cdmDatabaseSchema.CONCEPT c
-		    ON t.@cdmFieldName = c.CONCEPT_ID
+		    ON @cdmTableName.@cdmFieldName = c.CONCEPT_ID
+		  
+		  {@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT 
+    	ON @cdmTableName.PERSON_ID = COHORT.SUBJECT_ID
+    	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
+		    
 		 WHERE c.CONCEPT_ID != 0 AND c.DOMAIN_ID != '@fkDomain'
 		  
 	) violated_rows
@@ -28,5 +35,12 @@ FROM
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName
+	
+	{@cohort & '@runForCohort' == 'Yes'}?{
+	JOIN @cohortDatabaseSchema.COHORT 
+	ON @cdmTableName.PERSON_ID = COHORT.SUBJECT_ID
+	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+	}
+	
 ) denominator
 ;

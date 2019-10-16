@@ -22,6 +22,7 @@
 #' @param jsonPath       The path to the JSON file produced by  \code{\link{executeDqChecks}}
 #' 
 #' @export
+
 viewDqDashboard <- function(jsonPath) {
   Sys.setenv(jsonPath = jsonPath)
   appDir <- system.file("shinyApps", package = "DataQualityDashboard")

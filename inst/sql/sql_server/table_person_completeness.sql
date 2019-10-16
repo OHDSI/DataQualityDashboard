@@ -19,6 +19,11 @@ FROM
 	(
 		SELECT person.* 
 		FROM @cdmDatabaseSchema.person
+		{@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT 
+    	ON person.PERSON_ID = COHORT.SUBJECT_ID
+    	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
 		LEFT JOIN @cdmDatabaseSchema.@cdmTableName 
 		ON person.person_id = @cdmTableName.person_id
 		WHERE @cdmTableName.person_id IS NULL
@@ -27,5 +32,10 @@ FROM
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.person
+	{@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT 
+    	ON person.PERSON_ID = COHORT.SUBJECT_ID
+    	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
 ) denominator
 ;

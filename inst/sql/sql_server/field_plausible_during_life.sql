@@ -18,14 +18,25 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.*
     from @cdmDatabaseSchema.@cdmTableName
-    join @cdmDatabaseSchema.death on @cdmDatabaseSchema.@cdmTableName.person_id = @cdmDatabaseSchema.death.person_id
+    join @cdmDatabaseSchema.death 
+      on @cdmDatabaseSchema.@cdmTableName.person_id = @cdmDatabaseSchema.death.person_id
+    {@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT 
+    	ON @cdmTableName.PERSON_ID = COHORT.SUBJECT_ID
+    	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
     where @cdmFieldName > dateadd(day,60,death_date) 
 	) violated_rows
 ) violated_row_count,
 (
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName
-	where person_id in
+	{@cohort & '@runForCohort' == 'Yes'}?{
+	JOIN @cohortDatabaseSchema.COHORT 
+	ON @cdmTableName.PERSON_ID = COHORT.SUBJECT_ID
+	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+	}
+	where @cdmTableName.person_id in
 	( select person_id from @cdmDatabaseSchema.death )
 ) denominator
 ;

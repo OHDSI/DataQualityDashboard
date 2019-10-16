@@ -19,11 +19,22 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.* 
 		  FROM @cdmDatabaseSchema.@cdmTableName
+		  {@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT 
+    	ON @cdmTableName.PERSON_ID = COHORT.SUBJECT_ID
+    	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
+		  
 		 WHERE @cdmTableName.@cdmFieldName IS NULL
 	) violated_rows
 ) violated_row_count,
 ( 
 	SELECT COUNT(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName
+	{@cohort & '@runForCohort' == 'Yes'}?{
+  	JOIN @cohortDatabaseSchema.COHORT 
+  	ON @cdmTableName.PERSON_ID = COHORT.SUBJECT_ID
+  	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+  	}
 ) denominator
 ;

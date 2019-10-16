@@ -5,10 +5,11 @@
 \title{Execute DQ checks}
 \usage{
 executeDqChecks(connectionDetails, cdmDatabaseSchema,
-  resultsDatabaseSchema, cdmSourceName, numThreads = 1,
-  sqlOnly = FALSE, outputFolder = "output", verboseMode = FALSE,
-  writeToTable = TRUE, checkLevels = c("TABLE", "FIELD", "CONCEPT"),
-  checkNames = c(), tablesToExclude = c())
+  resultsDatabaseSchema, cdmSourceName, cohort = FALSE,
+  cohortDefinitionId = c(), cohortDatabaseSchema = "",
+  numThreads = 1, sqlOnly = FALSE, outputFolder = "output",
+  verboseMode = FALSE, writeToTable = TRUE, checkLevels = c("TABLE",
+  "FIELD", "CONCEPT"), checkNames = c(), tablesToExclude = c())
 }
 \arguments{
 \item{connectionDetails}{A connectionDetails object for connecting to the CDM database}

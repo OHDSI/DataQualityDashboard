@@ -23,6 +23,12 @@ FROM
 		FROM @cdmDatabaseSchema.@cdmTableName
 			INNER JOIN @cdmDatabaseSchema.person
 			ON @cdmTableName.person_id = person.person_id
+			
+    	{@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT 
+    	ON @cdmTableName.PERSON_ID = COHORT.SUBJECT_ID
+    	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}		
 		WHERE @cdmTableName.@cdmFieldName = @conceptId
 		AND person.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
 	) violated_rows
@@ -30,6 +36,13 @@ FROM
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName
+	
+	{@cohort & '@runForCohort' == 'Yes'}?{
+	JOIN @cohortDatabaseSchema.COHORT 
+	ON @cdmTableName.PERSON_ID = COHORT.SUBJECT_ID
+	AND COHORT.COHORT_DEFINITION_ID = @cohortDefinitionId
+	}
+	
 	WHERE @cdmTableName.@cdmFieldName = @conceptId
 ) denominator
 ;
