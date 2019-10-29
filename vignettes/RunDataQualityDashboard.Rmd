@@ -1,0 +1,127 @@
+---
+title: "RunDataQualityDashboard"
+author: "Clair Blacketer"
+date: "10/24/2019"
+output:
+  html_document: 
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+The question of data quality (DQ) has been almost constant as real-world data (RWD) and real-world evidence (RWE) have become popular tools with which to influence regulatory decision making. An [FDA guidance document](https://www.regulations.gov/contentStreamer?documentId=FDA-2011-D-0057-0021&contentType=pdf) from 2013 recommends certain topics that should be addressed by investigators such as any updates in coding practices during the course of the study and evaluation of missingness over time. These recommendations are helpful to understand what the FDA considers important to understand when it comes to observation data but they do not give any specifics on how this information should be collected or presented. A document released in 2018 known as ['Framework for FDA's Real-World Evidence Program'](https://www.google.com/url?q=https://www.fda.gov/media/120060/download&sa=D&ust=1571940855946000&usg=AFQjCNH2VGyzGFlrw6aMdIK_MBU0Dd4ynw) details the FDA's RWE program under the 21st Century Cures Act. The program is intended to evaluate the potential of real world data to satisfy post-marketing requests and to support approval of new indications for drugs. Included in the document is a section describing the need to assess RWD for reliability and relevance but the details are hazy as to what the agency will be looking for when it comes to data quality and regulatory submissions. Similarly, the EMA's Big Data Task Force issued a [summary report](https://www.ema.europa.eu/en/documents/minutes/hma/ema-joint-task-force-big-data-summary-report_en.pdf) that calls for defining the minimal data quality requirements necessary for observational data based on the intended regulatory purpose. 
+
+  The goal of the Data Quality Dashboard (DQD) project was to design and develop an open-source tool to expose and evaluate observational data quality in response to the needs of global regulatory agencies. To organize the data quality checks covered by the tool the [Kahn Framework](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/) was chosen as it is widely accepted as the terminology to use when discussing data quality. #NEED REFERENCES AND MAYBE TO FIX THIS STATEMENT#. Based on the framework, checks fall into categories, subcategories, and contexts. 
+
+# DQ Framework
+
+As described by Kahn, et al, there are three categories into which data quality checks can be organized. Each category can be interpreted within two different contexts that represent strategies for assessing data quality.
+
+**Verification** relates to how well data conform to local knowledge, metadata descriptions, and system assumptions. 
+
+**Validation** relates to how well data align with external benchmarks with expectations derived from known true standards. 
+
+## Category 1: Conformance
+
+Conformance focuses on DQ checks that describe the compliance of the representation of data against internal or external formatting, relational, or computational definitions. Typically the "data dictionary" describes the expected conformance values and whether there are internal formatting constraints imposed or if an external standard was used to represent the data values. Conformance can be divided into three subcategories: value conformance, relational conformance, and computational conformance.  
+
+### Subcategory 1: Value Conformance
+Determines if recorded data elements are in agreement with the data architecture as expected or as described in the data dictionary or external standards. For example, here is how value conformance can be interpreted through the lens of verification and validation:
+
+**VERIFICATION**
+
+|Definition|Example|
+|---------------------------------|------------------------------------------------------|
+|Data values conform to internal constraints | GENDER_SOURCE_VALUE is only one ASCII character as is stated in the native data dictionary|
+|Data values conform to allowable values or ranges | GENDER_CONCEPT_ID only has values 8532 or 8507|
+
+**VALIDATION**
+
+|Definition|Example|
+|---------------------------------|------------------------------------------------------|
+|Data values conform to representational constraints based on external values| Values for ETHNICITY_CONCEPT_ID conform to US OMB standards|
+
+### Subcategory 2: Relational Conformance
+Determines if recorded data elements are in agreement with the structural constraints inposed by the physical database structures. In this category are conformance to primary key and foreign key relationships and nullability constraints. For example, here is how relational conformance can be interpreted through the lens of verification and validation:
+
+**VERIFICATION**
+
+|Definition|Example|
+|---------------------------------|------------------------------------------------------|
+|Data values conform to relational constraints |PERSON_ID links to other tables as described in the CDM specifications |
+|Unique (key) data values are not duplicated |A VISIT_OCCURRENCE_ID is assigned to a single healthcare encounter |
+|Changes to the data model or data model versioning |Version 6.0 includes death_datetime in the PERSON table |
+
+**VALIDATION**
+
+|Definition|Example|
+|---------------------------------|------------------------------------------------------|
+|Data values conform to relational constraints based on external standards| Data values conform to all not-NULL requirements|
+
+### Subcategory 3: Computational Conformance EDIT
+Determines if recorded data elements are in agreement with the structural constraints inposed by the physical database structures. In this category are conformance to primary key and foreign key relationships and nullability constraints. For example, here is how relational conformance can be interpreted through the lens of verification and validation:
+
+**VERIFICATION**
+
+|Definition|Example|
+|---------------------------------|------------------------------------------------------|
+|Data values conform to relational constraints |PERSON_ID links to other tables as described in the CDM specifications |
+|Unique (key) data values are not duplicated |A VISIT_OCCURRENCE_ID is assigned to a single healthcare encounter |
+|Changes to the data model or data model versioning |Version 6.0 includes death_datetime in the PERSON table |
+
+**VALIDATION**
+
+|Definition|Example|
+|---------------------------------|------------------------------------------------------|
+|Data values conform to relational constraints based on external standards| Data values conform to all not-NULL requirements|
+EDIT
+
+ADD OTHER KAHN CATEGORIES
+
+# DQ Checks
+
+The Data Quality Dashboard takes a systematic-based approach to running data quality checks. Instead of writing thousands of individual checks, we use what we call "data quality check types". These "check types" are more general, parameterized data qualty checks into which OMOP tables, fields, and concepts can be substituted to represent a singular data quality idea. For example one check type might be written as
+
+> The number and percent of records with a value in the *@cdmFieldName* field of the *@cdmTableName* table less than *@plausibleValueLow*.
+
+We can then substitute in values for *@cdmFieldName*, *@cdmTableName*, and *@plausibleValueLow* to create a unique data quality check looking for implausibly low values in a specific field of a specific OMOP table. If we apply it to PERSON.year_of_birth here is how that might look
+
+> The number and percent of records with a value in the *year_of_birth* field of the *PERSON* table less than *1850*.
+
+And, since it is parameterized, we can similarly apply it to DRUG_EXPOSURE.days_supply
+
+> The number and percent of records with a value in the *days_supply* field of the *DRUG_EXPOSURE* table less than *0*.
+
+Version 1 of the tool includes 20 different check types organized into Kahn contexts and categories. Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs. The below table lists all check types, the check level (table, field, concept), a description of the check, and Kahn category and context it fits into.
+
+|checkLevel|	checkName|	checkDescription|	kahnContext	|kahnCategory|	kahnSubcategory|
+|--------|---------------------|---------------------------------------------|------------|------------|--------------|
+|TABLE|	measurePersonCompleteness|	The number and percent of persons in the CDM that do not have at least one record in the @cdmTableName table|	Validation|	Completeness	||
+|FIELD|	cdmField|	A yes or no value indicating if all fields are present in the @cdmTableName table as expected based on the specification. 	|Verification	|Conformance|	Relational|
+|FIELD|	isRequired|	The number and percent of records with a NULL value in the @cdmFieldName of the @cdmTableName that is considered not nullable.|	Validation|	Conformance|	Relational|
+|FIELD|	cdmDatatype|	A yes or no value indicating if the @cdmFieldName in the @cdmTableName is the expected data type based on the specification.|	Verification|	Conformance	|Value|
+|FIELD|	isPrimaryKey|	The number and percent of records that have a duplicate value in the @cdmFieldName field of the @cdmTableName.	|Verification	|Conformance|	Relational|
+|FIELD|	isForeignKey	|The number and percent of records that have a value in the @cdmFieldName field in the @cdmTableName table that does not exist in the @fkTableName table.|	Verification|	Conformance	|Relational|
+|FIELD|	fkDomain|	The number and percent of records that have a value in the @cdmFieldName field in the @cdmTableName table that do not conform to the @fkDomain domain.|	Verification|	Conformance	|Value|
+|FIELD|	fkClass|	The number and percent of records that have a value in the @cdmFieldName field in the @cdmTableName table that do not conform to the @fkClass class.|	Verification|	Conformance|	Computational|
+|FIELD|	isStandardValidConcept|	The number and percent of records that do not have a standard, valid concept in the @cdmFieldName field in the @cdmTableName table.|	Verification|	Conformance	||
+|FIELD|	measureValueCompleteness|	The number and percent of records with a NULL value in the @cdmFieldName of the @cdmTableName.|	Verification	|Completeness	||
+|FIELD|	standardConceptRecordCompleteness|	The number and percent of records with a value of 0 in the standard concept field @cdmFieldName in the @cdmTableName table.|	Verification|	Completeness	||
+|FIELD|	sourceConceptRecordCompleteness|	The number and percent of records with a value of 0 in the source concept field @cdmFieldName in the @cdmTableName table.|	Verification|	Completeness	||
+|FIELD|	sourceValueCompleteness	|The number and percent of distinct source values in the @cdmFieldName field of the @cdmTableName table mapped to 0.|	Verification	|Completeness	||
+|FIELD|	plausibleValueLow|	The number and percent of records with a value in the @cdmFieldName field of the @cdmTableName table less than @plausibleValueLow.|	Verification|	Plausibility	|Atemporal|
+|FIELD|	plausibleValueHigh|	The number and percent of records with a value in the @cdmFieldName field of the @cdmTableName table greater than @plausibleValueHigh.|	Verification|	Plausibility|	Atemporal|
+|FIELD|	plausibleTemporalAfter|	The number and percent of records with a value in the @cdmFieldName field of the @cdmTableName that occurs prior to the date in the @plausibleTemporalAfterFieldName field of the @plausibleTemporalAfterTableName table.|	Verification|	Plausibility	|Temporal|
+|FIELD|	plausibleDuringLife	|If yes, the number and percent of records with a date value in the @cdmFieldName field of the @cdmTableName table that occurs after death.|	Verification|	Plausibility|	Temporal|
+|CONCEPT|	plausibleValueLow|	For the combination of CONCEPT_ID @conceptId (@conceptName) and UNIT_CONCEPT_ID @unitConceptId (@unitConceptName), the number and percent of records that have a value less than @plausibleValueLow.	|Verification|	Plausibility|	Atemporal|
+|CONCEPT|	plausibleValueHigh	|For the combination of CONCEPT_ID @conceptId (@conceptName) and UNIT_CONCEPT_ID @unitConceptId (@unitConceptName), the number and percent of records that have a value higher than @plausibleValueHigh.|	Verification|	Plausibility|	Atemporal|
+|CONCEPT|	plausibleGender|	For a CONCEPT_ID @conceptId (@conceptName), the number and percent of records associated with patients with an implausible gender (correct gender = @plausibleGender).|	Validation	|Plausibility	|Atemporal|
+
+
+
+
+

@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Execute DQ checks — executeDqChecks • DataQualityDashboard</title>
+<title>SUPPORT FUNCTION 
+referenced in execution.R — .evaluateThresholds • DataQualityDashboard</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,9 +33,11 @@
 
 
 
-<meta property="og:title" content="Execute DQ checks — executeDqChecks" />
+<meta property="og:title" content="SUPPORT FUNCTION 
+referenced in execution.R — .evaluateThresholds" />
 
-<meta property="og:description" content="Execute DQ checks" />
+<meta property="og:description" content="This function will take the data quality check results and evaluate them against the thresholds determined
+apriori in the csv files" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -115,81 +118,41 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Execute DQ checks</h1>
-    <small class="dont-index">Source: <a href='https://github.com/OHDSI/DataQualityDashboard/blob/master/R/execution.R'><code>R/execution.R</code></a></small>
-    <div class="hidden name"><code>executeDqChecks.Rd</code></div>
+    <h1>SUPPORT FUNCTION 
+referenced in execution.R</h1>
+    <small class="dont-index">Source: <a href='https://github.com/OHDSI/DataQualityDashboard/blob/master/R/evaluateThresholds.R'><code>R/evaluateThresholds.R</code></a></small>
+    <div class="hidden name"><code>dot-evaluateThresholds.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Execute DQ checks</p>
+    <p>This function will take the data quality check results and evaluate them against the thresholds determined
+apriori in the csv files</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>executeDqChecks</span>(<span class='no'>connectionDetails</span>, <span class='no'>cdmDatabaseSchema</span>,
-  <span class='no'>resultsDatabaseSchema</span>, <span class='no'>cdmSourceName</span>, <span class='kw'>cohort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>cohortDefinitionId</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>cohortDatabaseSchema</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>numThreads</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>sqlOnly</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>outputFolder</span> <span class='kw'>=</span> <span class='st'>"output"</span>,
-  <span class='kw'>verboseMode</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>writeToTable</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>checkLevels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"TABLE"</span>,
-  <span class='st'>"FIELD"</span>, <span class='st'>"CONCEPT"</span>), <span class='kw'>checkNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>tablesToExclude</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>())</pre>
+    <pre class="usage"><span class='fu'>.evaluateThresholds</span>(<span class='no'>checkResults</span>, <span class='no'>tableChecks</span>, <span class='no'>fieldChecks</span>, <span class='no'>conceptChecks</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>connectionDetails</th>
-      <td><p>A connectionDetails object for connecting to the CDM database</p></td>
+      <th>checkResults</th>
+      <td><p>The data frame with the results of the data quality checks</p></td>
     </tr>
     <tr>
-      <th>cdmDatabaseSchema</th>
-      <td><p>The fully qualified database name of the CDM schema</p></td>
+      <th>tableChecks</th>
+      <td><p>The name of the R object containing the table checks</p></td>
     </tr>
     <tr>
-      <th>resultsDatabaseSchema</th>
-      <td><p>The fully qualified database name of the results schema</p></td>
+      <th>fieldChecks</th>
+      <td><p>The name of the R object containing the field checks</p></td>
     </tr>
     <tr>
-      <th>cdmSourceName</th>
-      <td><p>The name of the CDM data source</p></td>
-    </tr>
-    <tr>
-      <th>numThreads</th>
-      <td><p>The number of concurrent threads to use to execute the queries</p></td>
-    </tr>
-    <tr>
-      <th>sqlOnly</th>
-      <td><p>Should the SQLs be executed (FALSE) or just returned (TRUE)?</p></td>
-    </tr>
-    <tr>
-      <th>outputFolder</th>
-      <td><p>The folder to output logs and SQL files to</p></td>
-    </tr>
-    <tr>
-      <th>verboseMode</th>
-      <td><p>Boolean to determine if the console will show all execution steps. Default = FALSE</p></td>
-    </tr>
-    <tr>
-      <th>writeToTable</th>
-      <td><p>Boolean to indicate if the check results will be written to the dqdashboard_results table
-in the resultsDatabaseSchema. Default is TRUE.</p></td>
-    </tr>
-    <tr>
-      <th>checkLevels</th>
-      <td><p>Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)</p></td>
-    </tr>
-    <tr>
-      <th>checkNames</th>
-      <td><p>(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv</p></td>
-    </tr>
-    <tr>
-      <th>tablesToExclude</th>
-      <td><p>(OPTIONAL) Choose which CDM tables to exclude from the execution.</p></td>
+      <th>conceptChecks</th>
+      <td><p>The name of the R object containing the concept checks</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>If sqlOnly = FALSE, a list object of results</p>
     
 
   </div>
@@ -197,9 +160,7 @@ in the resultsDatabaseSchema. Default is TRUE.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>

@@ -7,6 +7,24 @@ home:
   - text: Ask a question
     href: http://forums.ohdsi.org
 
+navbar:
+  structure:
+    left:
+      -home
+      -reference
+      -articles
+    right: github
+  components: 
+    home: 
+      icon: fa-home fa-lg
+      href: index.html
+    reference: 
+      text: Reference
+      href: reference/index.html
+    github:
+      icon: fa-github fa-lg
+      href: https://github.com/OHDSI/DataQualityDashboard
+
 reference:
   - title: "Execution"
     desc: >
