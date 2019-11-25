@@ -123,7 +123,7 @@
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
 #'                                  in the resultsDatabaseSchema. Default is TRUE.
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
-#' @param checkNames                (OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv
+#' @param checkNames                (OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv
 #' @param tablesToExclude           (OPTIONAL) Choose which CDM tables to exclude from the execution.
 #' 
 #' @return If sqlOnly = FALSE, a list object of results
@@ -140,7 +140,8 @@ executeDqChecks <- function(connectionDetails,
                             writeToTable = TRUE,
                             checkLevels = c("TABLE", "FIELD", "CONCEPT"),
                             checkNames = c(),
-                            tablesToExclude = c()) {
+                            tablesToExclude = c(),
+                            cdmVersion = "5.3.1") {
   
   options(scipen = 999)
   outputFolder <- file.path(outputFolder, cdmSourceName)
@@ -179,16 +180,16 @@ executeDqChecks <- function(connectionDetails,
   
   startTime <- Sys.time()
   
-  checkDescriptionsDf <- read.csv(system.file("csv", "OMOP_CDMv5.3.1_Check_Descriptions.csv", 
+  checkDescriptionsDf <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion), 
                                             package = "DataQualityDashboard"), 
                                 stringsAsFactors = FALSE)
-  tableChecks <- read.csv(system.file("csv", "OMOP_CDMv5.3.1_Table_Level.csv",
+  tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
                                       package = "DataQualityDashboard"), 
                           stringsAsFactors = FALSE)
-  fieldChecks <- read.csv(system.file("csv", "OMOP_CDMv5.3.1_Field_Level.csv",
+  fieldChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
                                       package = "DataQualityDashboard"), 
                           stringsAsFactors = FALSE)
-  conceptChecks <- read.csv(system.file("csv", "OMOP_CDMv5.3.1_Concept_Level.csv",
+  conceptChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion),
                                       package = "DataQualityDashboard"), 
                           stringsAsFactors = FALSE)
   
