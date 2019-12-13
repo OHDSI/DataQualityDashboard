@@ -16,7 +16,7 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.* 
 		FROM @cdmDatabaseSchema.@cdmTableName
-		WHERE @cdmDatabaseSchema.@cdmTableName.@cdmFieldName = 0
+		WHERE @cdmFieldName = 0
 	) violated_rows
 ) violated_row_count,
 ( 
