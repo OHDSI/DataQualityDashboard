@@ -171,7 +171,7 @@ executeDqChecks <- function(connectionDetails,
   
 
   logger <- ParallelLogger::createLogger(name = "DqDashboard",
-                                         threshold = "INFO",
+                                         threshold = "ERROR",
                                          appenders = appenders)
   ParallelLogger::registerLogger(logger)   
   
