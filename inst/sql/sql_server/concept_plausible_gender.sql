@@ -23,13 +23,13 @@ FROM
 		FROM @cdmDatabaseSchema.@cdmTableName
 			INNER JOIN @cdmDatabaseSchema.person
 			ON @cdmTableName.person_id = person.person_id
-		WHERE @cdmTableName.@cdmFieldName = @conceptId
+		WHERE @cdmFieldName = @conceptId
 		AND person.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
 	) violated_rows
 ) violated_row_count,
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName
-	WHERE @cdmTableName.@cdmFieldName = @conceptId
+	WHERE @cdmFieldName = @conceptId
 ) denominator
 ;

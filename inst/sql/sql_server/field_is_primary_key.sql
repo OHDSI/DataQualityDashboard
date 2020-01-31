@@ -19,10 +19,10 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.* 
 		  FROM @cdmDatabaseSchema.@cdmTableName
-		 WHERE @cdmTableName.@cdmFieldName IN ( SELECT @cdmTableName.@cdmFieldName 
-		                                          FROM @cdmDatabaseSchema.@cdmTableName
-												 GROUP BY @cdmTableName.@cdmFieldName
-												HAVING COUNT_BIG(*) > 1 ) 
+		 WHERE @cdmFieldName IN ( SELECT @cdmTableName.@cdmFieldName 
+		                          FROM @cdmDatabaseSchema.@cdmTableName
+								  GROUP BY @cdmFieldName
+								  HAVING COUNT_BIG(*) > 1 ) 
 	) violated_rows
 ) violated_row_count,
 ( 

@@ -18,7 +18,7 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.*
     from @cdmDatabaseSchema.@cdmTableName
-    join @cdmDatabaseSchema.death on @cdmDatabaseSchema.@cdmTableName.person_id = @cdmDatabaseSchema.death.person_id
+    join @cdmDatabaseSchema.death on @cdmTableName.person_id = death.person_id
     where @cdmFieldName > dateadd(day,60,death_date) 
 	) violated_rows
 ) violated_row_count,

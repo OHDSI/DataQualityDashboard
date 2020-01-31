@@ -17,7 +17,7 @@ FROM
 	(
 		SELECT DISTINCT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.@cdmFieldName
 		FROM @cdmDatabaseSchema.@cdmTableName
-		WHERE @cdmDatabaseSchema.@cdmTableName.@standardConceptFieldName = 0
+		WHERE @cdmTableName.@standardConceptFieldName = 0
 	) violated_rows
 ) violated_row_count,
 ( 

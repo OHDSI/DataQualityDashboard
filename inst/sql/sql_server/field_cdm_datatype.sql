@@ -19,7 +19,7 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.* 
 		  FROM @cdmDatabaseSchema.@cdmTableName
-		 WHERE ISNUMERIC(abs(@cdmTableName.@cdmFieldName)) = 0 AND @cdmTableName.@cdmFieldName IS NOT NULL
+		 WHERE ISNUMERIC(abs(@cdmFieldName)) = 0 AND @cdmFieldName IS NOT NULL
 	) violated_rows
 ) violated_row_count,
 ( 

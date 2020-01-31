@@ -18,12 +18,12 @@ FROM
 	FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmTableName.*
-    from @cdmDatabaseSchema.@cdmTableName
+    FROM @cdmDatabaseSchema.@cdmTableName
     {@cdmDatabaseSchema.@cdmTableName != @cdmDatabaseSchema.@plausibleTemporalAfterTableName}?{
-		join @cdmDatabaseSchema.@plausibleTemporalAfterTableName
-			on @cdmDatabaseSchema.@cdmTableName.person_id = @cdmDatabaseSchema.@plausibleTemporalAfterTableName.person_id
+		JOIN @cdmDatabaseSchema.@plausibleTemporalAfterTableName
+			ON @cdmDatabaseSchema.@cdmTableName.person_id = @cdmDatabaseSchema.@plausibleTemporalAfterTableName.person_id
 		}
-    where @plausibleTemporalAfterFieldName > @cdmFieldName
+    WHERE @plausibleTemporalAfterFieldName > @cdmFieldName
 	) violated_rows
 ) violated_row_count,
 (
