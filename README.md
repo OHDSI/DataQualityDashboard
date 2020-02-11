@@ -160,7 +160,7 @@ DataQualityDashboard is licensed under Apache License 2.0
 
 ### Development status
 
-In early development phase. Not ready for use.
+V1.0 ready for use. 
 
 # Acknowledgements
 
