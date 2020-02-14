@@ -37,6 +37,10 @@ function loadResults(results) {
             '<td>' + (d.PCT_VIOLATED_ROWS * 100).toFixed(2) + '%' + '</td>' +
             '</tr>' +
             '<tr>' +
+            '<td># Denominator Rows:</td>' +
+            '<td>' + d.NUM_DENOMINATOR_ROWS + '</td>' +
+            '</tr>' +
+            '<tr>' +
             '<td>Execution Time:</td>' +
             '<td>' + d.EXECUTION_TIME + '</td>' +
             '</tr>' +
@@ -95,6 +99,8 @@ function loadResults(results) {
             { data: "CATEGORY", title: "CATEGORY" },
             { data: function (d) { return d.SUBCATEGORY ? d.SUBCATEGORY : "None" }, title: "SUBCATEGORY" },
             { data: "CHECK_LEVEL", title: "LEVEL" },
+            { data: "CDM_TABLE_NAME", title: "TABLE" },
+            { data: "CDM_FIELD_NAME", title: "FIELD" },
             {
                 data: function (d) {
                     thresholdMessage = '';

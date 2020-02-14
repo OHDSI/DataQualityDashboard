@@ -13,23 +13,24 @@ plausibleGender = @plausibleGender
 **********/
 
 
-SELECT num_violated_rows, CASE WHEN denominator.num_rows = 0 THEN 0 ELSE 1.0*num_violated_rows/denominator.num_rows END AS pct_violated_rows
+SELECT num_violated_rows, CASE WHEN denominator.num_rows = 0 THEN 0 ELSE 1.0*num_violated_rows/denominator.num_rows END AS pct_violated_rows, 
+  denominator.num_rows as num_denominator_rows
 FROM
 (
 	SELECT COUNT_BIG(*) AS num_violated_rows
 	FROM
 	(
-		SELECT @cdmTableName.* 
-		FROM @cdmDatabaseSchema.@cdmTableName
-			INNER JOIN @cdmDatabaseSchema.person
-			ON @cdmTableName.person_id = person.person_id
-		WHERE @cdmTableName.@cdmFieldName = @conceptId
-		AND person.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
+		SELECT A.* 
+		FROM @cdmDatabaseSchema.@cdmTableName A
+			INNER JOIN @cdmDatabaseSchema.person B
+			ON A.person_id = B.person_id
+		WHERE A.@cdmFieldName = @conceptId
+		AND B.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
 	) violated_rows
 ) violated_row_count,
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName
-	WHERE @cdmTableName.@cdmFieldName = @conceptId
+	WHERE @cdmFieldName = @conceptId
 ) denominator
 ;
