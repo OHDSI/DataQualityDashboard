@@ -20,7 +20,7 @@ FROM
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, A.*
     from @cdmDatabaseSchema.@cdmTableName A
     join @cdmDatabaseSchema.death B on A.person_id = B.person_id
-    where @cdmFieldName > dateadd(day,60,death_date) 
+    where @cdmFieldName > dateadd(day,60,B.death_date) 
 	) violated_rows
 ) violated_row_count,
 (

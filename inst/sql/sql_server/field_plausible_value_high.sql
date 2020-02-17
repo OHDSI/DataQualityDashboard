@@ -19,7 +19,7 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, A.*
     from @cdmDatabaseSchema.@cdmTableName A
-    where @cdmFieldName > @plausibleValueHigh
+    where A.@cdmFieldName > @plausibleValueHigh
 	) violated_rows
 ) violated_row_count,
 (

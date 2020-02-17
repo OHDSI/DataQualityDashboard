@@ -24,7 +24,7 @@ FROM
 		join @cdmDatabaseSchema.@plausibleTemporalAfterTableName B
 			on A.person_id = B.person_id
 		}
-    where @plausibleTemporalAfterFieldName > @cdmFieldName
+    where B.@plausibleTemporalAfterFieldName > A.@cdmFieldName
 	) violated_rows
 ) violated_row_count,
 (
