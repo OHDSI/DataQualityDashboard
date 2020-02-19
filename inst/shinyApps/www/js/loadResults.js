@@ -29,6 +29,22 @@ function loadResults(results) {
             '<td>' + d.CHECK_LEVEL + '</td>' +
             '</tr>' +
             '<tr>' +
+            '<td>Table:</td>' +
+            '<td>' + d.CDM_TABLE_NAME + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>Field:</td>' +
+            '<td>' + d.CDM_FIELD_NAME + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>Concept Id:</td>' +
+            '<td>' + d.CONCEPT_ID + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>Unit Concept Id:</td>' +
+            '<td>' + d.UNIT_CONCEPT_ID + '</td>' +
+            '</tr>' +
+            '<tr>' +
             '<td># Rows Violated:</td>' +
             '<td>' + d.NUM_VIOLATED_ROWS + '</td>' +
             '</tr>' +
@@ -99,8 +115,8 @@ function loadResults(results) {
             { data: "CATEGORY", title: "CATEGORY" },
             { data: function (d) { return d.SUBCATEGORY ? d.SUBCATEGORY : "None" }, title: "SUBCATEGORY" },
             { data: "CHECK_LEVEL", title: "LEVEL" },
-            { data: "CDM_TABLE_NAME", title: "TABLE" },
-            { data: "CDM_FIELD_NAME", title: "FIELD" },
+            /*{ data: function (d) { return d.CDM_TABLE_NAME ? d.CDM_TABLE_NAME : "None" }, title: "TABLE" },
+            { data: function (d) { return d.CDM_FIELD_NAME ? d.CDM_FIELD_NAME : "None" }, title: "FIELD" },*/
             {
                 data: function (d) {
                     thresholdMessage = '';
