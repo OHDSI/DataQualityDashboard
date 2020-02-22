@@ -196,7 +196,7 @@ Rule_out = true
 Uncertain = very low certainty or any lower certainties
 A complete lack of modifiers would make Term_exists true.
 ",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
-NOTE_NLP,term_temporal,No,,varchar(50),0,,"Term_temporal is to indicate if a condition is �present� or just in the �past�. The following would be past:
+NOTE_NLP,term_temporal,No,,varchar(50),0,,"Term_temporal is to indicate if a condition is present or just in the past. The following would be past:
 History = true
 Concept_date = anything before the time of the report",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
 NOTE_NLP,term_modifiers,No,,varchar(2000),0,,"For the modifiers that are there, they would have to have these values:

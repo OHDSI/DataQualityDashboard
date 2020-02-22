@@ -321,7 +321,8 @@ executeDqChecks <- function(connectionDetails,
                   list(packageName = "DataQualityDashboard"),
                   list(warnOnMissingParameters = FALSE),
                   list(cdmDatabaseSchema = cdmDatabaseSchema),
-                  unlist(columns, recursive = FALSE))
+                  unlist(columns, recursive = FALSE),
+                  list(isPostgresql = connectionDetails$dbms == "postgresql"))
       
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)
       
@@ -439,13 +440,9 @@ executeDqChecks <- function(connectionDetails,
   sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
                            cdmDatabaseSchema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
-  cdmSourceData <- DatabaseConnector::querySql(connection = connection, sql = sql)
+  metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
   
-  pkgVersion <- sprintf("DataQualityDashboard package version: %s",
-                        packageVersion("DataQualityDashboard"))
-  
-  # prepare output ------------------------------------------------------------------------
-  metadata <- c(cdmSourceData, pkgVersion)
+  metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
   
   # evaluate thresholds-------------------------------------------------------------------
   

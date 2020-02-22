@@ -16,6 +16,7 @@ class DqMetadataHeadingRenderer extends HTMLElement {
           </style>
           <h1>{{CDM_SOURCE_NAME}}</h1>
           <div class="text-muted">
+            <div>DataQualityDashboard Version: {{DQD_VERSION}}</div>
             Results generated at {{startTimestamp}} in {{executionTime}}
           </div>
           <br>
@@ -48,7 +49,8 @@ class DqMetadataHeadingRenderer extends HTMLElement {
             "startTimestamp": this.results.startTimestamp,
             "executionTime": this.results.executionTime,
             "CDM_SOURCE_NAME": this.results.Metadata[0].CDM_SOURCE_NAME,
-            "SOURCE_DESCRIPTION": this.results.Metadata[0].SOURCE_DESCRIPTION
+            "SOURCE_DESCRIPTION": this.results.Metadata[0].SOURCE_DESCRIPTION,
+            "DQD_VERSION": this.results.Metadata[0].DQD_VERSION
         }
         const hbTemplate = Handlebars.compile(DqMetadataHeadingRenderer.getTemplate());
         const html = hbTemplate(derivedResults);
