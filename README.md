@@ -36,9 +36,37 @@ install.packages("devtools")
 devtools::install_github("OHDSI/DataQualityDashboard")
 ```
 
+Docker Usage
+============
+
+If you want to use the library via a Docker container, you can clone the repository
+
+```bash
+$ git clone https://github.com/OHDSI/DataQualityDashboard
+cd DataQualityDashboard
+```
+
+and build the provided [Dockerfile](Dockerfile) as follows:
+
+```bash
+$ docker build -t data-quality-dashboard .
+```
+
+If you don't want to clone the repository, you can create a local Dockerfile that
+will build the same container, but install the package from GitHub:
+
+```dockerfile
+FROM rocker/tidyverse
+# docker build -t data-quality-dashboard .
+RUN apt-get update && apt-get install -y default-jdk
+WORKDIR /code
+COPY . /code
+RUN Rscript -e "devtools::install_github('OHDSI/DataQualityDashboard')"
+```
+
 Executing Data Quality Checks
 ==============================
-  ```r
+```r
 
 # fill out the connection details -----------------------------------------------------------------------
 connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "", 
