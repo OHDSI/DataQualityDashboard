@@ -52,17 +52,35 @@ and build the provided [Dockerfile](Dockerfile) as follows:
 $ docker build -t data-quality-dashboard .
 ```
 
-If you don't want to clone the repository, you can create a local Dockerfile that
-will build the same container, but install the package from GitHub:
+Note that the working directory of the container is set to be the [inst]
+folder provided, specifically this provides the "shinyApps" folder that
+has web content and the shiny application. The container will
+serve the shiny application on port 7769. Thus, to run the container:
+these ports to the host:
 
-```dockerfile
-FROM rocker/tidyverse
-# docker build -t data-quality-dashboard .
-RUN apt-get update && apt-get install -y default-jdk
-WORKDIR /code
-COPY . /code
-RUN Rscript -e "devtools::install_github('OHDSI/DataQualityDashboard')"
+```bash
+$ docker run -it --rm -p 7769:7769 data-quality-dashboard
 ```
+
+You can then open your browser to [http://localhost:7769](http://localhost:7769)
+to see the dashboard with your data loaded.
+
+![docker/dashboard.png](docker/dashboard.png)
+
+You can choose to map this to a different port, if desired:
+
+
+```bash
+$ docker run -it --rm -p 8000:7769 data-quality-dashboard
+```
+
+The entrypoint is [docker/entrypoint.sh](docker/entrypoint.sh) that will
+start then the shiny server. If you want to bind your own data, you can bind any json file to results.json in the container as follows:
+
+```bash
+$ docker run -it --rm -p 7769:7769 -v $PWD/results.json:/code/inst/shinyApps/results.json data-quality-dashboard
+```
+
 
 Executing Data Quality Checks
 ==============================
@@ -142,6 +160,7 @@ Viewing Results
 ================
 
 **Launching Dashboard as Shiny App**
+
 ```r
 DataQualityDashboard::viewDqDashboard(jsonPath = file.path(getwd(), outputFolder, cdmSourceName, sprintf("results_%s.json", cdmSourceName)))
 ```

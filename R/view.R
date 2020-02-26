@@ -1,6 +1,6 @@
 # @file view.R
 #
-# Copyright 2019 Observational Health Data Sciences and Informatics
+# Copyright 2019-2020 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -22,8 +22,11 @@
 #' @param jsonPath       The path to the JSON file produced by  \code{\link{executeDqChecks}}
 #' 
 #' @export
-viewDqDashboard <- function(jsonPath) {
+viewDqDashboard <- function(jsonPath, port = 7769, host = "127.0.0.1") {
   Sys.setenv(jsonPath = jsonPath)
   appDir <- system.file("shinyApps", package = "DataQualityDashboard")
-  shiny::runApp(appDir = appDir, display.mode = "normal", launch.browser = TRUE)
+  options(shiny.host = host)
+  options(shiny.port = port)
+  shiny::runApp(appDir = appDir, display.mode = "normal", launch.browser = FALSE)
 }
+
