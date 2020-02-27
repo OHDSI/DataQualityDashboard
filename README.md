@@ -69,7 +69,6 @@ to see the dashboard with your data loaded.
 
 You can choose to map this to a different port, if desired:
 
-
 ```bash
 $ docker run -it --rm -p 8000:7769 data-quality-dashboard
 ```
