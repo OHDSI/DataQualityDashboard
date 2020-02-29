@@ -17,9 +17,9 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, A.*
-		from @cdmDatabaseSchema.@cdmTableName A
-    where A.@cdmFieldName < @plausibleValueLow
+		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.*
+		from @cdmDatabaseSchema.@cdmTableName cdmTable
+    where cdmTable.@cdmFieldName < @plausibleValueLow
 	) violated_rows
 ) violated_row_count,
 (

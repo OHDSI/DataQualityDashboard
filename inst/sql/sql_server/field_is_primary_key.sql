@@ -18,9 +18,9 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, A.* 
-		  FROM @cdmDatabaseSchema.@cdmTableName A
-		 WHERE A.@cdmFieldName IN ( SELECT @cdmFieldName 
+		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.* 
+		  FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		 WHERE cdmTable.@cdmFieldName IN ( SELECT @cdmFieldName 
 		                            FROM @cdmDatabaseSchema.@cdmTableName
 												 GROUP BY @cdmFieldName
 												HAVING COUNT_BIG(*) > 1 ) 

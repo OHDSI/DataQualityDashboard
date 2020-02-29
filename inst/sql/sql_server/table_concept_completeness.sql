@@ -21,10 +21,10 @@ FROM
 	SELECT COUNT_BIG(*) AS num_violated_rows
 	FROM
 	(
-		SELECT * 
-		FROM @cdmDatabaseSchema.@cdmTableName
-		WHERE (@cdmFieldName = 0 OR @cdmFieldName IS NULL)
-		AND (@cdmSourceFieldName = 0 OR @cdmSourceFieldName IS NULL)
+		SELECT cdmTable.* 
+		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		WHERE (cdmTable.@cdmFieldName = 0 OR cdmTable.@cdmFieldName IS NULL)
+		AND (cdmTable.@cdmSourceFieldName = 0 OR cdmTable.@cdmSourceFieldName IS NULL)
 	) violated_rows
 ) violated_row_count,
 ( 

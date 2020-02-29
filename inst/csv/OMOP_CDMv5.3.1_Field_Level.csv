@@ -4,7 +4,7 @@ PERSON,gender_concept_id,Yes,0,integer,0,This field is meant to capture the biol
 PERSON,year_of_birth,Yes,0,integer,0,,"For data sources with date of birth, the year is extracted. For data sources where the year of birth is not available, the approximate year of birth is derived based on any age group categorization available.",No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,1850,1,YEAR(GETDATE())+1,1,,,,No,
 PERSON,month_of_birth,No,,integer,0,,"For data sources that provide the precise date of birth, the month is extracted and stored in this field.",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,1,1,12,1,,,,No,
 PERSON,day_of_birth,No,,integer,0,,"For data sources that provide the precise date of birth, the day is extracted and stored in this field.",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,1,1,31,1,,,,No,
-PERSON,CAST(birth_datetime AS DATE),No,,datetime,0,Compute age using birth_datetime.,"For data sources that provide the precise datetime of birth, store that value in this field. If birth_datetime is not provided in the source, use the following logic to infer the date: If day_of_birth is null and month_of_birth is not null then use month/1/year. If month_of_birth is null then use 1/day/year, if day_of_birth is null and month_of_birth is null then 1/1/year. If time of birth is not given use midnight (00:00:0000).",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1850-01-01',1,"DATEADD(dd,1,GETDATE())",1,,,,No,
+PERSON,birth_datetime,No,,datetime,0,Compute age using birth_datetime.,"For data sources that provide the precise datetime of birth, store that value in this field. If birth_datetime is not provided in the source, use the following logic to infer the date: If day_of_birth is null and month_of_birth is not null then use month/1/year. If month_of_birth is null then use 1/day/year, if day_of_birth is null and month_of_birth is null then 1/1/year. If time of birth is not given use midnight (00:00:0000).",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1850-01-01',1,"DATEADD(dd,1,GETDATE())",1,,,,No,
 PERSON,race_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Race,0,,,Yes,0,Yes,0,Yes,100,No,,No,,,,,,,,,,No,
 PERSON,ethnicity_concept_id,Yes,0,integer,0,"Ethnic backgrounds as subsets of race. The OMOP CDM adheres to the OMB standards so only Concepts that represent ""Hispanic"" and ""Not Hispanic"" are stored here. If a source has more granular ethnicity information it can be found in the field ethnicity_source_value.",Ethnicity in the OMOP CDM follows the OMB Standards for Data on Race and Ethnicity: Only distinctions between Hispanics and Non-Hispanics are made. If a source provides more granular ethnicity information it should be stored in the field ethnicity_source_value.,No,,Yes,0,CONCEPT,CONCEPT_ID,Ethnicity,0,,,Yes,0,Yes,0,Yes,100,No,,No,,,,,,,,,,No,
 PERSON,location_id,No,,integer,0,The location refers to the physical address of the person.,"Put the location_id from the LOCATION table here that represents the most granular location information for the person. This could be zip code, state, or county for example.",No,,Yes,0,LOCATION,LOCATION_ID,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
@@ -26,7 +26,7 @@ VISIT_OCCURRENCE,visit_occurrence_id,Yes,0,integer,0,Use this to identify unique
 VISIT_OCCURRENCE,person_id,Yes,0,integer,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,No,,Yes,0,No,,No,,No,,,,,,,,,,No,
 VISIT_OCCURRENCE,visit_concept_id,Yes,0,integer,0,"This field contains a concept id representing the kind of visit, like inpatient or outpatient.","Populate this field based on the kind of visit that took place for the person. For example this could be ""Inpatient Visit"", ""Outpatient Visit"", ""Ambulatory Visit"", etc. It is often the case that some logic should be written for how to define visits and how to assign Visit_Concept_Id. In US claims outpatient visits that appear to occur within the time period of an inpatient visit can be rolled into one with the same Visit_Occurrence_Id. In EHR data inpatient visits that are within one day of each other may be strung together to create one visit. It will all depend on the source data and how encounter records should be translated to visit occurrences.",No,,Yes,0,CONCEPT,CONCEPT_ID,Visit,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 VISIT_OCCURRENCE,visit_start_date,Yes,0,date,0,"For inpatient visits, the start date is typically the admission date. For outpatient visits the start date and end date will be the same.","When populating visit_start_date, you will first have to make decisions on how to define visits. In some cases visits in the source data can be strung together if there are one or fewer days between them.",No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
-VISIT_OCCURRENCE,CAST(visit_start_datetime AS DATE),No,,datetime,0,,"If no time is given for the start date of a visit, set it to midnight (00:00:0000).",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
+VISIT_OCCURRENCE,visit_start_datetime,No,,datetime,0,,"If no time is given for the start date of a visit, set it to midnight (00:00:0000).",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
 VISIT_OCCURRENCE,visit_end_date,Yes,0,date,0,For inpatient visits the end date is typically the discharge date.,"Visit end dates are mandatory. If end dates are not provided in the source there are three ways in which to derive them:
 Outpatient Visit: visit_end_datetime = visit_start_datetime
 Emergency Room Visit: visit_end_datetime = visit_start_datetime
@@ -34,7 +34,7 @@ Inpatient Visit: Usually there is information about discharge. If not, you shoul
 Non-hospital institution Visits: Particularly for claims data, if end dates are not provided assume the visit is for the duration of month that it occurs.
 For Inpatient Visits ongoing at the date of ETL, put date of processing the data into visit_end_datetime and visit_type_concept_id with 32220 ""Still patient"" to identify the visit as incomplete.
 All other Visits: visit_end_datetime = visit_start_datetime. If this is a one-day visit the end date should match the start date.",No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,VISIT_OCCURRENCE,VISIT_START_DATE,1,Yes,1
-VISIT_OCCURRENCE,CAST(visit_end_datetime AS DATE),No,,datetime,0,,"If no time is given for the end date of a visit, set it to midnight (00:00:0000).",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,VISIT_OCCURRENCE,VISIT_START_DATETIME,1,Yes,1
+VISIT_OCCURRENCE,visit_end_datetime,No,,datetime,0,,"If no time is given for the end date of a visit, set it to midnight (00:00:0000).",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,VISIT_OCCURRENCE,VISIT_START_DATETIME,1,Yes,1
 VISIT_OCCURRENCE,visit_type_concept_id,Yes,0,Integer,0,"Use this field to understand the provenance of the visit record, or where the record comes from.","Populate this field based on the provenance of the visit record, as in whether it came from an EHR record or billing claim.",No,,Yes,0,CONCEPT,CONCEPT_ID,Type Concept,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 VISIT_OCCURRENCE,provider_id,No,,integer,0,There will only be one provider per visit. If multiple providers are associated with a visit that information can be found in the VISIT_DETAIL table.,"If there are multiple providers associated with a visit, you will need to choose which one to put here. The additional providers can be stored in the visit_detail table.",No,,Yes,0,PROVIDER,PROVIDER_ID,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
 VISIT_OCCURRENCE,care_site_id,No,,integer,0,This field provides information about the care site where the visit took place.,There should only be one care site associated with a visit.,No,,Yes,0,CARE_SITE,CARE_SITE_ID,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
@@ -49,9 +49,9 @@ CONDITION_OCCURRENCE,condition_occurrence_id,Yes,0,bigint,0,,,Yes,0,No,,,,,,,,No
 CONDITION_OCCURRENCE,person_id,Yes,0,bigint,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,No,,Yes,0,No,,No,,No,,,,,,,,,,No,
 CONDITION_OCCURRENCE,condition_concept_id,Yes,0,integer,0,"The CONDITION_CONCEPT_ID field is recommended for primary use in analyses, and must be used for network studies",,No,,Yes,0,CONCEPT,CONCEPT_ID,Condition,0,,,Yes,0,Yes,0,Yes,5,No,,No,,,,,,,,,,No,
 CONDITION_OCCURRENCE,condition_start_date,Yes,0,date,0,,,No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
-CONDITION_OCCURRENCE,CAST(condition_start_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
+CONDITION_OCCURRENCE,condition_start_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
 CONDITION_OCCURRENCE,condition_end_date,No,,date,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,CONDITION_OCCURRENCE,CONDITION_START_DATE,1,Yes,1
-CONDITION_OCCURRENCE,CAST(condition_end_datetime AS DATE),No,,datetime,0,,should not be inferred,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,CONDITION_OCCURRENCE,CONDITION_START_DATETIME,1,Yes,1
+CONDITION_OCCURRENCE,condition_end_datetime,No,,datetime,0,,should not be inferred,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,CONDITION_OCCURRENCE,CONDITION_START_DATETIME,1,Yes,1
 CONDITION_OCCURRENCE,condition_type_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Type Concept,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 CONDITION_OCCURRENCE,condition_status_concept_id,No,,integer,0,,"Presently, there is no designated vocabulary, domain, or class that represents condition status. The following concepts from SNOMED are recommended:
 Admitting diagnosis: 4203942
@@ -68,9 +68,9 @@ DRUG_EXPOSURE,drug_exposure_id,Yes,0,bigint,0,,,Yes,,No,,,,,,,,No,,Yes,0,No,,No,
 DRUG_EXPOSURE,person_id,Yes,0,bigint,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,No,,Yes,0,No,,No,,No,,,,,,,,,,No,
 DRUG_EXPOSURE,drug_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Drug,0,,,Yes,0,Yes,0,Yes,5,No,,No,,,,,,,,,,No,
 DRUG_EXPOSURE,drug_exposure_start_date,Yes,0,date,0,,"Valid entries include a start date of a prescription, the date a prescription was filled, or the date on which a Drug administration procedure was recorded.",No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
-DRUG_EXPOSURE,CAST(drug_exposure_start_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
+DRUG_EXPOSURE,drug_exposure_start_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
 DRUG_EXPOSURE,drug_exposure_end_date,Yes,0,date,0,,"The DRUG_EXPOSURE_END_DATE denotes the day the drug exposure ended for the patient. This could be that the duration of DRUG_SUPPLY was reached (in which case DRUG_EXPOSURE_END_DATETIME = DRUG_EXPOSURE_START_DATETIME + DAYS_SUPPLY -1 day), or because the exposure was stopped (medication changed, medication discontinued, etc.)   When the native data suggests a drug exposure has a days supply less than 0, drop the record as unknown if a person has received the drug or not (THEMIS issue #24).   If a patient has multiple records on the same day for the same drug or procedures the ETL should not de-dupe them unless there is probable reason to believe the item is a true data duplicate (THEMIS issue #14).  Depending on different sources, it could be a known or an inferred date and denotes the last day at which the patient was still exposed to Drug.",No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,DRUG_EXPOSURE,DRUG_EXPOSURE_START_DATE,1,Yes,1
-DRUG_EXPOSURE,CAST(drug_exposure_end_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,DRUG_EXPOSURE,DRUG_EXPOSURE_START_DATETIME,1,Yes,1
+DRUG_EXPOSURE,drug_exposure_end_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,DRUG_EXPOSURE,DRUG_EXPOSURE_START_DATETIME,1,Yes,1
 DRUG_EXPOSURE,verbatim_end_date,No,,date,0,You can use the TYPE_CONCEPT_ID to delineate between prescriptions written vs. prescriptions dispensed vs. medication history vs. patient-reported exposure,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,DRUG_EXPOSURE,DRUG_EXPOSURE_START_DATE,1,Yes,1
 DRUG_EXPOSURE,drug_type_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Type Concept,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 DRUG_EXPOSURE,stop_reason,No,,varchar(20),0,," Reasons include regimen completed, changed, removed, etc.",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
@@ -91,7 +91,7 @@ PROCEDURE_OCCURRENCE,procedure_occurrence_id,Yes,0,integer,0,,,Yes,0,No,,,,,,,,N
 PROCEDURE_OCCURRENCE,person_id,Yes,0,integer,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,No,,Yes,0,No,,No,,No,,,,,,,,,,No,
 PROCEDURE_OCCURRENCE,procedure_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Procedure,0,,,Yes,0,Yes,0,Yes,5,No,,No,,,,,,,,,,No,
 PROCEDURE_OCCURRENCE,procedure_date,Yes,0,date,0,,,No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
-PROCEDURE_OCCURRENCE,CAST(procedure_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
+PROCEDURE_OCCURRENCE,procedure_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
 PROCEDURE_OCCURRENCE,procedure_type_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Type Concept,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 PROCEDURE_OCCURRENCE,modifier_concept_id,No,,integer,0,"These concepts are typically distinguished by 'Modifier' concept classes (e.g., 'CPT4 Modifier' as part of the 'CPT4' vocabulary).",,No,,Yes,0,CONCEPT,CONCEPT_ID,,,,,Yes,0,Yes,100,Yes,100,No,,No,,,,,,,,,,No,
 PROCEDURE_OCCURRENCE,quantity,No,,integer,0,"If the quantity value is omitted, a single procedure is assumed.","If a Procedure has a quantity of '0' in the source, this should default to '1' in the ETL. If there is a record in the source it can be assumed the exposure occurred at least once (THEMIS issue #26).",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,1,1,,,,,,No,
@@ -105,9 +105,9 @@ DEVICE_EXPOSURE,device_exposure_id,Yes,0,bigint,0,,,Yes,0,No,,,,,,,,No,,Yes,0,No
 DEVICE_EXPOSURE,person_id,Yes,0,bigint,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,No,,Yes,0,No,,No,,No,,,,,,,,,,No,
 DEVICE_EXPOSURE,device_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Device,0,,,Yes,0,Yes,0,Yes,5,No,,No,,,,,,,,,,No,
 DEVICE_EXPOSURE,device_exposure_start_date,Yes,0,date,0,,,No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
-DEVICE_EXPOSURE,CAST(device_exposure_start_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
+DEVICE_EXPOSURE,device_exposure_start_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
 DEVICE_EXPOSURE,device_exposure_end_date,No,,date,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,DEVICE_EXPOSURE,DEVICE_EXPOSURE_START_DATE,1,Yes,1
-DEVICE_EXPOSURE,CAST(device_exposure_end_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,DEVICE_EXPOSURE,DEVICE_EXPOSURE_START_DATETIME,1,Yes,1
+DEVICE_EXPOSURE,device_exposure_end_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,DEVICE_EXPOSURE,DEVICE_EXPOSURE_START_DATETIME,1,Yes,1
 DEVICE_EXPOSURE,device_type_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Type Concept,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 DEVICE_EXPOSURE,unique_device_id,No,,varchar(50),0,,"For medical devices that are regulated by the FDA, a Unique Device Identification (UDI) is provided if available in the data source and is recorded in the UNIQUE_DEVICE_ID field.",No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
 DEVICE_EXPOSURE,quantity,No,,integer,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,1,1,,,,,,No,
@@ -148,9 +148,9 @@ VISIT_DETAIL,visit_detail_id,Yes,0,integer,0,,,Yes,0,No,,,,,,,,No,,Yes,0,No,,No,
 VISIT_DETAIL,person_id,Yes,0,integer,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,No,,Yes,0,No,,No,,No,,,,,,,,,,No,
 VISIT_DETAIL,visit_detail_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Visit,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 VISIT_DETAIL,visit_detail_start_date,Yes,0,date,0,,,No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
-VISIT_DETAIL,CAST(visit_detail_start_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
+VISIT_DETAIL,visit_detail_start_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
 VISIT_DETAIL,visit_detail_end_date,Yes,0,date,0,,,No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,VISIT_OCCURRENCE,VISIT_DETAIL_START_DATE,1,Yes,1
-VISIT_DETAIL,CAST(visit_detail_end_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,VISIT_OCCURRENCE,VISIT_DETAIL_START_DATETIME,1,Yes,1
+VISIT_DETAIL,visit_detail_end_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,VISIT_OCCURRENCE,VISIT_DETAIL_START_DATETIME,1,Yes,1
 VISIT_DETAIL,visit_detail_type_concept_id,Yes,0,Integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Type Concept,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 VISIT_DETAIL,provider_id,No,,integer,0,,,No,,Yes,0,PROVIDER,PROVIDER_ID,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
 VISIT_DETAIL,care_site_id,No,,integer,0,,,No,,Yes,0,CARE_SITE,CARE_SITE_ID,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
@@ -166,7 +166,7 @@ VISIT_DETAIL,visit_occurrence_id,Yes,0,Integer,0,,,No,,Yes,0,VISIT_OCCURRENCE,VI
 NOTE,note_id,Yes,0,integer,0,,,Yes,0,No,,,,,,,,No,,Yes,0,No,,No,,No,,,,,,,,,,No,
 NOTE,person_id,Yes,0,integer,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,No,,Yes,0,No,,No,,No,,,,,,,,,,No,
 NOTE,note_date,Yes,0,date,0,,,No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
-NOTE,CAST(note_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
+NOTE,note_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
 NOTE,note_type_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Type Concept,0,,,Yes,0,Yes,0,No,,No,,No,,,,,,,,,,No,
 NOTE,note_class_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,,,,,Yes,0,Yes,0,No,,No,,No,,,,,,,,,,No,
 NOTE,note_title,No,,varchar(250),0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
@@ -187,7 +187,7 @@ NOTE_NLP,note_nlp_concept_id,No,,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,,,,,Ye
 NOTE_NLP,note_nlp_source_concept_id,No,,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
 NOTE_NLP,nlp_system,No,,varchar(250),0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
 NOTE_NLP,nlp_date,Yes,0,date,0,,,No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,,,,,,,,No,
-NOTE_NLP,CAST(nlp_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,,,,No,
+NOTE_NLP,nlp_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,,,,No,
 NOTE_NLP,term_exists,No,,varchar(1),0,,"Term_exists is defined as a flag that indicates if the patient actually has or had the condition. Any of the following modifiers would make Term_exists false:
 Negation = true
 Subject = [anything other than the patient]
@@ -209,7 +209,7 @@ OBSERVATION,observation_id,Yes,0,integer,0,,,Yes,0,No,,,,,,,,No,,Yes,0,No,,No,,N
 OBSERVATION,person_id,Yes,0,integer,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,No,,Yes,0,No,,No,,No,,,,,,,,,,No,
 OBSERVATION,observation_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,,,,,Yes,0,Yes,0,Yes,5,No,,No,,,,,,,,,,No,
 OBSERVATION,observation_date,Yes,0,date,0,,,No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
-OBSERVATION,CAST(observation_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
+OBSERVATION,observation_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
 OBSERVATION,observation_type_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Type Concept,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 OBSERVATION,value_as_number,No,,float,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
 OBSERVATION,value_as_string,No,,varchar(60),0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,,,,,,,,No,
@@ -228,7 +228,7 @@ SPECIMEN,person_id,Yes,0,integer,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,No,,Yes,0,No
 SPECIMEN,specimen_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,,,,,Yes,0,Yes,0,Yes,5,No,,No,,,,,,,,,,No,
 SPECIMEN,specimen_type_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Type Concept,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 SPECIMEN,specimen_date,Yes,0,date,0,,,No,,No,,,,,,,,No,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
-SPECIMEN,CAST(specimen_datetime AS DATE),No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
+SPECIMEN,specimen_datetime,No,,datetime,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
 SPECIMEN,quantity,No,,float,0,,,No,,No,,,,,,,,No,,Yes,100,No,,No,,No,,,1,1,,,,,,No,
 SPECIMEN,unit_concept_id,No,,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,,,,,Yes,0,Yes,100,Yes,5,No,,No,,,,,,,,,,No,
 SPECIMEN,anatomic_site_concept_id,No,,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,,,,,Yes,0,Yes,100,No,,No,,No,,,,,,,,,,No,
@@ -312,8 +312,8 @@ COST,drg_source_value,No,,VARCHAR(3),0,Diagnosis Related Groups are US codes use
 DRUG_ERA,drug_era_id,Yes,0,integer,0,,,Yes,0,No,,,,,,,,,,Yes,0,No,,No,,No,,,,,,,,,,No,
 DRUG_ERA,person_id,Yes,0,integer,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,,,Yes,0,No,,No,,No,,,,,,,,,,No,
 DRUG_ERA,drug_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Drug,0,Ingredient,0,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
-DRUG_ERA,CAST(drug_era_start_date AS DATE),Yes,0,datetime,0,,The Drug Era Start Date is the start date of the first Drug Exposure for a given ingredient.  (NOT RIGHT),No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
-DRUG_ERA,CAST(drug_era_end_date AS DATE),Yes,0,datetime,0,,"The Drug Era End Date is the end date of the last Drug Exposure. The End Date of each Drug Exposure is either taken from the field drug_exposure_end_date or, as it is typically not available, inferred using the following rules:
+DRUG_ERA,drug_era_start_date,Yes,0,datetime,0,,The Drug Era Start Date is the start date of the first Drug Exposure for a given ingredient.  (NOT RIGHT),No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
+DRUG_ERA,drug_era_end_date,Yes,0,datetime,0,,"The Drug Era End Date is the end date of the last Drug Exposure. The End Date of each Drug Exposure is either taken from the field drug_exposure_end_date or, as it is typically not available, inferred using the following rules:
 For pharmacy prescription data, the date when the drug was dispensed plus the number of days of supply are used to extrapolate the End Date for the Drug Exposure. Depending on the country-specific healthcare system, this supply information is either explicitly provided in the day_supply field or inferred from package size or similar information.
 For Procedure Drugs, usually the drug is administered on a single date (i.e., the administration date).
 A standard Persistence Window of 30 days (gap, slack) is permitted between two subsequent such extrapolated DRUG_EXPOSURE records to be considered to be merged into a single Drug Era.   (ARENT WE REQUIRING TO USE DRUG_EXPOSURE_END_DATE NOW????)",No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,DRUG_ERA,DRUG_ERA_START_DATE,1,No,
@@ -324,11 +324,11 @@ DOSE_ERA,person_id,Yes,0,integer,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,,,Yes,0,No,,
 DOSE_ERA,drug_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Drug,0,Ingredient,0,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 DOSE_ERA,unit_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Unit,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
 DOSE_ERA,dose_value,Yes,0,float,0,,,No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,0,1,,,,,,No,
-DOSE_ERA,CAST(dose_era_start_date AS DATE),Yes,0,datetime,0,,,No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
-DOSE_ERA,CAST(dose_era_end_date AS DATE),Yes,0,datetime,0,,,No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
+DOSE_ERA,dose_era_start_date,Yes,0,datetime,0,,,No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
+DOSE_ERA,dose_era_end_date,Yes,0,datetime,0,,,No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
 CONDITION_ERA,condition_era_id,Yes,0,integer,0,,,Yes,0,No,,,,,,,,,,Yes,0,No,,No,,No,,,,,,,,,,No,
 CONDITION_ERA,person_id,Yes,0,integer,0,,,No,,Yes,0,PERSON,PERSON_ID,,,,,,,Yes,0,No,,No,,No,,,,,,,,,,No,
 CONDITION_ERA,condition_concept_id,Yes,0,integer,0,,,No,,Yes,0,CONCEPT,CONCEPT_ID,Condition,0,,,Yes,0,Yes,0,Yes,0,No,,No,,,,,,,,,,No,
-CONDITION_ERA,CAST(condition_era_start_date AS DATE),Yes,0,datetime,0,,,No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
-CONDITION_ERA,CAST(condition_era_end_date AS DATE),Yes,0,datetime,0,,,No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
+CONDITION_ERA,condition_era_start_date,Yes,0,datetime,0,,,No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,Yes,1
+CONDITION_ERA,condition_era_end_date,Yes,0,datetime,0,,,No,,No,,,,,,,,,,Yes,0,No,,No,,No,,,'1950-01-01',1,"DATEADD(dd,1,GETDATE())",1,PERSON,BIRTH_DATETIME,1,No,
 CONDITION_ERA,condition_occurrence_count,No,,integer,0,,,No,,No,,,,,,,,,,Yes,100,No,,No,,No,,,1,1,,,,,,No,

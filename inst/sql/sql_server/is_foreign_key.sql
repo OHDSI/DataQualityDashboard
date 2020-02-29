@@ -19,11 +19,11 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, A.* 
-		FROM @cdmDatabaseSchema.@cdmTableName A
-		LEFT JOIN @cdmDatabaseSchema.@fkTableName B
-		ON A.@cdmFieldName = B.@fkFieldName
-		WHERE B.@fkFieldName IS NULL AND A.@cdmFieldName IS NOT NULL 
+		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.* 
+		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		LEFT JOIN @cdmDatabaseSchema.@fkTableName fkTable
+		ON cdmTable.@cdmFieldName = fkTable.@fkFieldName
+		WHERE fkTable.@fkFieldName IS NULL AND cdmTable.@cdmFieldName IS NOT NULL 
 	) violated_rows
 ) violated_row_count,
 ( 

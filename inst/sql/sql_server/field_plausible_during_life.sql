@@ -17,10 +17,10 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, A.*
-    from @cdmDatabaseSchema.@cdmTableName A
-    join @cdmDatabaseSchema.death B on A.person_id = B.person_id
-    where @cdmFieldName > dateadd(day,60,B.death_date) 
+		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.*
+    from @cdmDatabaseSchema.@cdmTableName cdmTable
+    join @cdmDatabaseSchema.death de on cdmTable.person_id = de.person_id
+    where cast(cdmTable.@cdmFieldName as date) > dateadd(day, 60, cast(de.death_date as date)) 
 	) violated_rows
 ) violated_row_count,
 (

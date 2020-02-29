@@ -16,9 +16,9 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT DISTINCT '@cdmTableName.@cdmFieldName' AS violating_field, @cdmFieldName
-		FROM @cdmDatabaseSchema.@cdmTableName
-		WHERE @standardConceptFieldName = 0
+		SELECT DISTINCT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.@cdmFieldName
+		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		WHERE cdmTable.@standardConceptFieldName = 0
 	) violated_rows
 ) violated_row_count,
 ( 

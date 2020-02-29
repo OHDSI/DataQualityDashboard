@@ -18,11 +18,11 @@ FROM
 	SELECT COUNT_BIG(violated_rows.person_id) AS num_violated_rows
 	FROM
 	(
-		SELECT A.* 
-		FROM @cdmDatabaseSchema.person A
-		LEFT JOIN @cdmDatabaseSchema.@cdmTableName B
-		ON A.person_id = B.person_id
-		WHERE B.person_id IS NULL
+		SELECT cdmTable.* 
+		FROM @cdmDatabaseSchema.person cdmTable
+		LEFT JOIN @cdmDatabaseSchema.@cdmTableName cdmTable2
+		ON cdmTable.person_id = cdmTable2.person_id
+		WHERE cdmTable2.person_id IS NULL
 	) violated_rows
 ) violated_row_count,
 ( 

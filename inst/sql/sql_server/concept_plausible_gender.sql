@@ -20,12 +20,12 @@ FROM
 	SELECT COUNT_BIG(*) AS num_violated_rows
 	FROM
 	(
-		SELECT A.* 
-		FROM @cdmDatabaseSchema.@cdmTableName A
-			INNER JOIN @cdmDatabaseSchema.person B
-			ON A.person_id = B.person_id
-		WHERE A.@cdmFieldName = @conceptId
-		AND B.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
+		SELECT cdmTable.* 
+		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+			INNER JOIN @cdmDatabaseSchema.person p
+			ON cdmTable.person_id = p.person_id
+		WHERE cdmTable.@cdmFieldName = @conceptId
+		AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
 	) violated_rows
 ) violated_row_count,
 ( 

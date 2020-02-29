@@ -18,13 +18,13 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, A.*
-    from @cdmDatabaseSchema.@cdmTableName A
+		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.*
+    from @cdmDatabaseSchema.@cdmTableName cdmTable
     {@cdmDatabaseSchema.@cdmTableName != @cdmDatabaseSchema.@plausibleTemporalAfterTableName}?{
-		join @cdmDatabaseSchema.@plausibleTemporalAfterTableName B
-			on A.person_id = B.person_id
+		join @cdmDatabaseSchema.@plausibleTemporalAfterTableName plausibleTable
+			on cdmTable.person_id = plausibleTable.person_id
 		}
-    where B.@plausibleTemporalAfterFieldName > A.@cdmFieldName
+    where cast(plausibleTable.@plausibleTemporalAfterFieldName as date) > cast(cdmTable.@cdmFieldName as date)
 	) violated_rows
 ) violated_row_count,
 (
