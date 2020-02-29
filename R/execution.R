@@ -323,8 +323,7 @@ executeDqChecks <- function(connectionDetails,
                   list(packageName = "DataQualityDashboard"),
                   list(warnOnMissingParameters = FALSE),
                   list(cdmDatabaseSchema = cdmDatabaseSchema),
-                  unlist(columns, recursive = FALSE),
-                  list(isPostgresql = connectionDetails$dbms == "postgresql"))
+                  unlist(columns, recursive = FALSE))
       
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)
       
