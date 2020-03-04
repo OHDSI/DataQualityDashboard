@@ -1,8 +1,8 @@
 Package: DataQualityDashboard
 Type: Package
 Title: Execute and View Data Quality Checks on OMOP CDM Database
-Version: 0.0.1
-Date: 2019-08-22
+Version: 1.0.0
+Date: 2020-02-28
 Authors@R: c(
   person("Clair", "Blacketer", , "mblacke@its.jnj.com", role = c("aut", "cre")),
   person("Ajit", "Londhe", role = c("aut")),
@@ -32,5 +32,5 @@ Suggests:
   knitr,
   rmarkdown,
   shiny
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Encoding: UTF-8

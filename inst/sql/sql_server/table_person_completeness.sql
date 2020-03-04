@@ -11,17 +11,18 @@ cdmTableName = @cdmTableName
 **********/
 
 
-SELECT num_violated_rows, CASE WHEN denominator.num_rows = 0 THEN 0 ELSE 1.0*num_violated_rows/denominator.num_rows END  AS pct_violated_rows
+SELECT num_violated_rows, CASE WHEN denominator.num_rows = 0 THEN 0 ELSE 1.0*num_violated_rows/denominator.num_rows END  AS pct_violated_rows, 
+  denominator.num_rows as num_denominator_rows
 FROM
 (
 	SELECT COUNT_BIG(violated_rows.person_id) AS num_violated_rows
 	FROM
 	(
-		SELECT person.* 
-		FROM @cdmDatabaseSchema.person
-		LEFT JOIN @cdmDatabaseSchema.@cdmTableName 
-		ON person.person_id = @cdmTableName.person_id
-		WHERE @cdmTableName.person_id IS NULL
+		SELECT cdmTable.* 
+		FROM @cdmDatabaseSchema.person cdmTable
+		LEFT JOIN @cdmDatabaseSchema.@cdmTableName cdmTable2
+		ON cdmTable.person_id = cdmTable2.person_id
+		WHERE cdmTable2.person_id IS NULL
 	) violated_rows
 ) violated_row_count,
 ( 

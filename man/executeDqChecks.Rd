@@ -4,11 +4,21 @@
 \alias{executeDqChecks}
 \title{Execute DQ checks}
 \usage{
-executeDqChecks(connectionDetails, cdmDatabaseSchema,
-  resultsDatabaseSchema, cdmSourceName, numThreads = 1,
-  sqlOnly = FALSE, outputFolder = "output", verboseMode = FALSE,
-  writeToTable = TRUE, checkLevels = c("TABLE", "FIELD", "CONCEPT"),
-  checkNames = c(), tablesToExclude = c())
+executeDqChecks(
+  connectionDetails,
+  cdmDatabaseSchema,
+  resultsDatabaseSchema,
+  cdmSourceName,
+  numThreads = 1,
+  sqlOnly = FALSE,
+  outputFolder = "output",
+  verboseMode = FALSE,
+  writeToTable = TRUE,
+  checkLevels = c("TABLE", "FIELD", "CONCEPT"),
+  checkNames = c(),
+  tablesToExclude = c(),
+  cdmVersion = "5.3.1"
+)
 }
 \arguments{
 \item{connectionDetails}{A connectionDetails object for connecting to the CDM database}
@@ -32,9 +42,11 @@ in the resultsDatabaseSchema. Default is TRUE.}
 
 \item{checkLevels}{Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)}
 
-\item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv}
+\item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv}
 
 \item{tablesToExclude}{(OPTIONAL) Choose which CDM tables to exclude from the execution.}
+
+\item{cdmVersion}{The CDM version to target for the data source. By default, 5.3.1 is used.}
 }
 \value{
 If sqlOnly = FALSE, a list object of results

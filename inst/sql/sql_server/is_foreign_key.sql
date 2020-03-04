@@ -12,17 +12,18 @@ fkFieldName = @fkFieldName
 **********/
 
 
-SELECT num_violated_rows, CASE WHEN denominator.num_rows = 0 THEN 0 ELSE 1.0*num_violated_rows/denominator.num_rows END  AS pct_violated_rows
+SELECT num_violated_rows, CASE WHEN denominator.num_rows = 0 THEN 0 ELSE 1.0*num_violated_rows/denominator.num_rows END  AS pct_violated_rows, 
+  denominator.num_rows as num_denominator_rows
 FROM
 (
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
-		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, p1.* 
-		FROM @cdmDatabaseSchema.@cdmTableName p1
-		LEFT JOIN @cdmDatabaseSchema.@fkTableName f1
-		ON p1.@cdmFieldName = f1.@fkFieldName
-		WHERE f1.@fkFieldName IS NULL AND p1.@cdmFieldName IS NOT NULL 
+		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.* 
+		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		LEFT JOIN @cdmDatabaseSchema.@fkTableName fkTable
+		ON cdmTable.@cdmFieldName = fkTable.@fkFieldName
+		WHERE fkTable.@fkFieldName IS NULL AND cdmTable.@cdmFieldName IS NOT NULL 
 	) violated_rows
 ) violated_row_count,
 ( 
