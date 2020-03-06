@@ -19,7 +19,11 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.*
 		from @cdmDatabaseSchema.@cdmTableName cdmTable
-    where cdmTable.@cdmFieldName < @plausibleValueLow
+    {@cdmDatatype == "datetime" | @cdmDatatype == "date"}?{
+      where cast(cdmTable.@cdmFieldName as date) < cast(@plausibleValueLow as date)
+    }:{
+      where cdmTable.@cdmFieldName < @plausibleValueLow
+    }
 	) violated_rows
 ) violated_row_count,
 (
