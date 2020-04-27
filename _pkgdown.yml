@@ -6,7 +6,26 @@ home:
   links:
   - text: Ask a question
     href: http://forums.ohdsi.org
-
+    
+navbar:
+  structure:
+    left:
+    - home
+    - intro
+    - reference
+    - articles
+    right: github
+  components:
+    home:
+      icon: fa-home fa-lg
+      href: index.html
+    intro:
+      text: Get started
+      href: articles/DataQualityDashboard.html
+    reference:
+      text: Reference
+      href: reference/index.html
+  
 reference:
   - title: "Execution"
     desc: >

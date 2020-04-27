@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Execute DQ checks — executeDqChecks • DataQualityDashboard</title>
+<title>Articles • DataQualityDashboard</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -36,11 +36,7 @@
 
 
 
-<meta property="og:title" content="Execute DQ checks — executeDqChecks" />
-
-<meta property="og:description" content="Execute DQ checks" />
-
-
+<meta property="og:title" content="Articles" />
 
 
 
@@ -58,7 +54,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-article-index">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -123,101 +119,20 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Execute DQ checks</h1>
-    <small class="dont-index">Source: <a href='https://github.com/OHDSI/DataQualityDashboard/blob/master/R/execution.R'><code>R/execution.R</code></a></small>
-    <div class="hidden name"><code>executeDqChecks.Rd</code></div>
+      <h1>Articles</h1>
     </div>
 
-    <div class="ref-description">
-    
-    <p>Execute DQ checks</p>
-    
+    <div class="section ">
+      <h3>All vignettes</h3>
+      <p class="section-desc"></p>
+
+      <dl>
+        <dt><a href="CheckTypeDescriptions.html">Data Quality Check Type Definitions</a></dt>
+        <dd></dt>
+        <dt><a href="DataQualityDashboard.html">UNKNOWN TITLE</a></dt>
+        <dd></dt>
+      </dl>
     </div>
-
-    <pre class="usage"><span class='fu'>executeDqChecks</span>(
-  <span class='no'>connectionDetails</span>,
-  <span class='no'>cdmDatabaseSchema</span>,
-  <span class='no'>resultsDatabaseSchema</span>,
-  <span class='no'>cdmSourceName</span>,
-  <span class='kw'>numThreads</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>sqlOnly</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>outputFolder</span> <span class='kw'>=</span> <span class='st'>"output"</span>,
-  <span class='kw'>verboseMode</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>writeToTable</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>checkLevels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"TABLE"</span>, <span class='st'>"FIELD"</span>, <span class='st'>"CONCEPT"</span>),
-  <span class='kw'>checkNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>tablesToExclude</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>cdmVersion</span> <span class='kw'>=</span> <span class='st'>"5.3.1"</span>
-)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>connectionDetails</th>
-      <td><p>A connectionDetails object for connecting to the CDM database</p></td>
-    </tr>
-    <tr>
-      <th>cdmDatabaseSchema</th>
-      <td><p>The fully qualified database name of the CDM schema</p></td>
-    </tr>
-    <tr>
-      <th>resultsDatabaseSchema</th>
-      <td><p>The fully qualified database name of the results schema</p></td>
-    </tr>
-    <tr>
-      <th>cdmSourceName</th>
-      <td><p>The name of the CDM data source</p></td>
-    </tr>
-    <tr>
-      <th>numThreads</th>
-      <td><p>The number of concurrent threads to use to execute the queries</p></td>
-    </tr>
-    <tr>
-      <th>sqlOnly</th>
-      <td><p>Should the SQLs be executed (FALSE) or just returned (TRUE)?</p></td>
-    </tr>
-    <tr>
-      <th>outputFolder</th>
-      <td><p>The folder to output logs and SQL files to</p></td>
-    </tr>
-    <tr>
-      <th>verboseMode</th>
-      <td><p>Boolean to determine if the console will show all execution steps. Default = FALSE</p></td>
-    </tr>
-    <tr>
-      <th>writeToTable</th>
-      <td><p>Boolean to indicate if the check results will be written to the dqdashboard_results table
-in the resultsDatabaseSchema. Default is TRUE.</p></td>
-    </tr>
-    <tr>
-      <th>checkLevels</th>
-      <td><p>Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)</p></td>
-    </tr>
-    <tr>
-      <th>checkNames</th>
-      <td><p>(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv</p></td>
-    </tr>
-    <tr>
-      <th>tablesToExclude</th>
-      <td><p>(OPTIONAL) Choose which CDM tables to exclude from the execution.</p></td>
-    </tr>
-    <tr>
-      <th>cdmVersion</th>
-      <td><p>The CDM version to target for the data source. By default, 5.3.1 is used.</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>If sqlOnly = FALSE, a list object of results</p>
-    
-
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <nav id="toc" data-toggle="toc" class="sticky-top">
-      <h2 data-toc-skip>Contents</h2>
-    </nav>
   </div>
 </div>
 
