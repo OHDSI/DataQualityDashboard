@@ -117,6 +117,7 @@
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
+#' @param vocabDatabaseSchema       The fully qualified database name of the vocabulary schema (default is to set it as the cdmDatabaseSchema)
 #' @param numThreads                The number of concurrent threads to use to execute the queries
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
@@ -135,6 +136,7 @@
 executeDqChecks <- function(connectionDetails,
                             cdmDatabaseSchema,
                             resultsDatabaseSchema,
+                            vocabDatabaseSchema,
                             cdmSourceName,
                             numThreads = 1,
                             sqlOnly = FALSE,
@@ -247,6 +249,7 @@ executeDqChecks <- function(connectionDetails,
                                               connectionDetails, 
                                               connection,
                                               cdmDatabaseSchema, 
+                                              vocabDatabaseSchema,
                                               outputFolder, sqlOnly)
   ParallelLogger::stopCluster(cluster = cluster)
   
@@ -296,6 +299,7 @@ executeDqChecks <- function(connectionDetails,
                       connectionDetails,
                       connection,
                       cdmDatabaseSchema, 
+                      vocabDatabaseSchema,
                       outputFolder, 
                       sqlOnly) {
   
@@ -323,6 +327,7 @@ executeDqChecks <- function(connectionDetails,
                   list(packageName = "DataQualityDashboard"),
                   list(warnOnMissingParameters = FALSE),
                   list(cdmDatabaseSchema = cdmDatabaseSchema),
+                  list(vocabDatabaseSchema = vocabDatabaseSchema),
                   unlist(columns, recursive = FALSE))
       
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)

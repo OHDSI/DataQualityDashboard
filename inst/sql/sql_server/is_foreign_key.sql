@@ -5,6 +5,7 @@ Foreign key check
 
 Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema
+{'@fkTableName' IN ('CONCEPT','DOMAIN')}?{vocabDatabaseSchema = @vocabDatabaseSchema}
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 fkTableName = @fkTableName
@@ -21,7 +22,7 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
-		LEFT JOIN @cdmDatabaseSchema.@fkTableName fkTable
+		LEFT JOIN {'@fkTableName' IN ('CONCEPT','DOMAIN')}?{@vocabDatabaseSchema.@fkTableName}:{@cdmDatabaseSchema.@fkTableName} fkTable
 		ON cdmTable.@cdmFieldName = fkTable.@fkFieldName
 		WHERE fkTable.@fkFieldName IS NULL AND cdmTable.@cdmFieldName IS NOT NULL 
 	) violated_rows

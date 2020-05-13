@@ -5,6 +5,7 @@ Drug era standard concepts, ingredients only
 
 Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema
+vocabDatabaseSchema = @vocabDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 fkClass = @fkClass
@@ -20,7 +21,7 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
-		LEFT JOIN @cdmDatabaseSchema.concept co
+		LEFT JOIN @vocabDatabaseSchema.concept co
 		ON cdmTable.@cdmFieldName = co.concept_id
         WHERE co.concept_id != 0 AND (co.concept_class_id != '@fkClass') 
 	) violated_rows
