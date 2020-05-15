@@ -9,6 +9,11 @@ install.packages("devtools")
 devtools::install_github("OHDSI/DataQualityDashboard")
 ```
 
+Note
+=====
+To view the JSON results in the shiny application the package requires that the CDM_SOURCE table has at least one row with some details about the database. This is to ensure that some metadata is delivered along with the JSON, should it be shared. As a best practice it is recommended to always fill in this table during ETL or at least prior to running the DQD. 
+
+
 Executing Data Quality Checks
 ==============================
   ```r
