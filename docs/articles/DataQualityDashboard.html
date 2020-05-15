@@ -59,6 +59,9 @@
 <li>
       <a href="../articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
     </li>
+    <li>
+      <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -102,6 +105,11 @@
 <a href="#r-installation" class="anchor"></a>R Installation</h1>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"devtools"</span>)
 <span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/reexports.html">install_github</a></span>(<span class="st">"OHDSI/DataQualityDashboard"</span>)</pre></body></html></div>
+</div>
+<div id="note" class="section level1">
+<h1 class="hasAnchor">
+<a href="#note" class="anchor"></a>Note</h1>
+<p>To view the JSON results in the shiny application the package requires that the CDM_SOURCE table has at least one row with some details about the database. This is to ensure that some metadata is delivered along with the JSON, should it be shared. As a best practice it is recommended to always fill in this table during ETL or at least prior to running the DQD.</p>
 </div>
 <div id="executing-data-quality-checks" class="section level1">
 <h1 class="hasAnchor">

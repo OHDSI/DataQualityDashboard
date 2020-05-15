@@ -117,6 +117,7 @@
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
+#' @param vocabDatabaseSchema       The fully qualified database name of the vocabulary schema (default is to set it as the cdmDatabaseSchema)
 #' @param numThreads                The number of concurrent threads to use to execute the queries
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
@@ -128,6 +129,9 @@
 #' @param checkNames                (OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv
 #' @param tablesToExclude           (OPTIONAL) Choose which CDM tables to exclude from the execution.
 #' @param cdmVersion                The CDM version to target for the data source. By default, 5.3.1 is used.
+#' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
+#' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
+#' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
 #' 
 #' @return If sqlOnly = FALSE, a list object of results
 #' 
@@ -135,6 +139,7 @@
 executeDqChecks <- function(connectionDetails,
                             cdmDatabaseSchema,
                             resultsDatabaseSchema,
+                            vocabDatabaseSchema = cdmDatabaseSchema,
                             cdmSourceName,
                             numThreads = 1,
                             sqlOnly = FALSE,
@@ -144,7 +149,10 @@ executeDqChecks <- function(connectionDetails,
                             checkLevels = c("TABLE", "FIELD", "CONCEPT"),
                             checkNames = c(),
                             tablesToExclude = c(),
-                            cdmVersion = "5.3.1") {
+                            cdmVersion = "5.3.1",
+                            tableCheckThresholdLoc = "default",
+                            fieldCheckThresholdLoc = "default",
+                            conceptCheckThresholdLoc = "default") {
   
   options(scipen = 999)
   outputFolder <- file.path(outputFolder, cdmSourceName)
@@ -186,15 +194,25 @@ executeDqChecks <- function(connectionDetails,
   checkDescriptionsDf <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion), 
                                             package = "DataQualityDashboard"), 
                                 stringsAsFactors = FALSE)
-  tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
+  
+  
+if (tableCheckThresholdLoc == "default"){
+      tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
+                              package = "DataQualityDashboard"), 
+                              stringsAsFactors = FALSE)} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
+                                                                                      stringsAsFactors = FALSE)}
+  
+if (fieldCheckThresholdLoc == "default"){ 
+    fieldChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
                                       package = "DataQualityDashboard"), 
-                          stringsAsFactors = FALSE)
-  fieldChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
-                                      package = "DataQualityDashboard"), 
-                          stringsAsFactors = FALSE)
+                          stringsAsFactors = FALSE)} else {fieldChecks <- read.csv(fieldCheckThresholdLoc, 
+                                                                                   stringsAsFactors = FALSE)}
+  
+if (conceptCheckThresholdLoc == "default"){ 
   conceptChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion),
                                       package = "DataQualityDashboard"), 
-                          stringsAsFactors = FALSE)
+                          stringsAsFactors = FALSE)} else {conceptChecks <- read.csv(conceptCheckThresholdLoc, 
+                                                                                     stringsAsFactors = FALSE)}
   
   # ensure we use only checks that are intended to be run -----------------------------------------
   
@@ -247,6 +265,7 @@ executeDqChecks <- function(connectionDetails,
                                               connectionDetails, 
                                               connection,
                                               cdmDatabaseSchema, 
+                                              vocabDatabaseSchema,
                                               outputFolder, sqlOnly)
   ParallelLogger::stopCluster(cluster = cluster)
   
@@ -296,6 +315,7 @@ executeDqChecks <- function(connectionDetails,
                       connectionDetails,
                       connection,
                       cdmDatabaseSchema, 
+                      vocabDatabaseSchema,
                       outputFolder, 
                       sqlOnly) {
   
@@ -323,6 +343,7 @@ executeDqChecks <- function(connectionDetails,
                   list(packageName = "DataQualityDashboard"),
                   list(warnOnMissingParameters = FALSE),
                   list(cdmDatabaseSchema = cdmDatabaseSchema),
+                  list(vocabDatabaseSchema = vocabDatabaseSchema),
                   unlist(columns, recursive = FALSE))
       
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)

@@ -19,7 +19,7 @@ output:
 
 <!--
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Adding Custom Patient-Level Prediction Algorithms}
+%\VignetteIndexEntry{Data Quality Check Type Definitions}
 -->
 
 # Introduction
