@@ -1,9 +1,8 @@
-pandoc: 2.7.3
-pkgdown: 1.5.1
+pandoc: '2.6'
+pkgdown: 1.4.1
 pkgdown_sha: ~
 articles:
   CheckTypeDescriptions: CheckTypeDescriptions.html
   DataQualityDashboard: DataQualityDashboard.html
   Thresholds: Thresholds.html
-last_built: 2020-05-15T01:15Z
 
