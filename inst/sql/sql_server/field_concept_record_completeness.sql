@@ -1,6 +1,7 @@
 /*********
 CONCEPT_RECORD_COMPLETENESS
-number of 0s / total number of records
+number of 0s / total number of records {@cdmTableName in ('OBSERVATION', 'MEASUREMENT')}{*for the OBSERVATION.unit_concept and MEASUREMENT.concept_id 
+the numerator and denominator are limited to records where value_as_number IS NOT NULL}
 
 Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema
@@ -17,11 +18,11 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
-		WHERE cdmTable.@cdmFieldName = 0
+		WHERE cdmTable.@cdmFieldName = 0 {@cdmTableName in ('OBSERVATION', 'MEASUREMENT')}?{AND @cdmTableName.value_as_number IS NOT NULL}
 	) violated_rows
 ) violated_row_count,
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName
+	FROM @cdmDatabaseSchema.@cdmTableName {@cdmTableName in ('OBSERVATION', 'MEASUREMENT')}?{WHERE @cdmTableName.value_as_number IS NOT NULL}
 ) denominator
 ;
