@@ -166,7 +166,7 @@ This article will detail each check type, its name, check level, description, de
 
 **Description**: The number and percent of records with a value of 0 in the standard concept field *cdmFieldName* in the *cdmTableName* table.
 
-**Definition**: It is important to understand how well source values were mapped to standard concepts. This check will count the number of records in a standard concept field (condition_concept_id, drug_concept_id, etc.) with a value of 0 rather. 
+**Definition**: It is important to understand how well source values were mapped to standard concepts. This check will count the number of records in a standard concept field (condition_concept_id, drug_concept_id, etc.) with a value of 0 rather a standard concept. NOTE for the field unit_concept_id in the MEASUREMENT and OBSERVATION tables both the numerator and denominator are limited to records where value_as_number is not null. This prevents over-inflation of the numbers and focuses the check to records that are eligible for a unit value. 
 
 ## sourceConceptRecordCompleteness
 
