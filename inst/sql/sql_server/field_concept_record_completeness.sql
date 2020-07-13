@@ -18,11 +18,11 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
-		WHERE cdmTable.@cdmFieldName = 0 {@cdmTableName in ('OBSERVATION', 'MEASUREMENT')}?{AND @cdmTableName.value_as_number IS NOT NULL}
+		WHERE cdmTable.@cdmFieldName = 0 {@cdmTableName in ('OBSERVATION', 'MEASUREMENT')}?{AND cdmTable.value_as_number IS NOT NULL}
 	) violated_rows
 ) violated_row_count,
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName {@cdmTableName in ('OBSERVATION', 'MEASUREMENT')}?{WHERE @cdmTableName.value_as_number IS NOT NULL}
+	FROM @cdmDatabaseSchema.@cdmTableName cdmTable {@cdmTableName in ('OBSERVATION', 'MEASUREMENT')}?{WHERE cdmTable.value_as_number IS NOT NULL}
 ) denominator
 ;
