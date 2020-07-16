@@ -292,8 +292,7 @@ if (conceptCheckThresholdLoc == "default"){
     
     ParallelLogger::logInfo("Execution Complete")  
   }
-  
-  ParallelLogger::unregisterLogger("DqDashboard")
+
   
   # write to table ----------------------------------------------------------------------
   
@@ -308,6 +307,11 @@ if (conceptCheckThresholdLoc == "default"){
   } else {
     allResults  
   }
+  
+  
+  ParallelLogger::unregisterLogger("DqDashboard")
+  
+  return(allResults$CheckResults)
 }
 
 .runCheck <- function(checkDescription, 
@@ -554,9 +558,37 @@ writeJsonResultsToTable <- function(connectionDetails,
   })
   
   df <- do.call(plyr::rbind.fill, checkResults)
-  .writeResultsToTable(connectionDetails = connectionDetails,
-                       resultsDatabaseSchema = resultsDatabaseSchema,
-                       checkResults = df)
+  
+  connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+  on.exit(DatabaseConnector::disconnect(connection = connection))
+  tableName <- sprintf("%s.dqdashboard_results", resultsDatabaseSchema)
+  
+  ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
+  
+  if ("UNIT_CONCEPT_ID" %in% colnames(checkResults)){
+    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", packageName = "DataQualityDashboard", tableName = tableName)
+  } else if ("CDM_FIELD_NAME" %in% colnames(checkResults)){
+    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_field.sql", packageName = "DataQualityDashboard", tableName = tableName)
+  } else {
+    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_table.sql", packageName = "DataQualityDashboard", tableName = tableName)
+  }
+  
+  DatabaseConnector::executeSql(connection = connection, sql = ddl, progressBar = TRUE)
+  
+  tryCatch(
+    expr = {
+      DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = checkResults, 
+                                     dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE)
+      ParallelLogger::logInfo("Finished writing table")
+    },
+    error = function(e) {
+      ParallelLogger::logError(sprintf("Writing table failed: %s", e$message))
+    }
+  )
+  
+  # .writeResultsToTable(connectionDetails = connectionDetails,
+  #                      resultsDatabaseSchema = resultsDatabaseSchema,
+  #                      checkResults = df)
 }
 
 .writeResultsToTable <- function(connectionDetails,
@@ -569,10 +601,14 @@ writeJsonResultsToTable <- function(connectionDetails,
   
   ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
   
+  ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_dataframe_ddl.sql", packageName = "DataQualityDashboard", tableName = tableName)
+ 
+  DatabaseConnector::executeSql(connection = connection, sql = ddl, progressBar = TRUE)
+  
   tryCatch(
     expr = {
       DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = checkResults, 
-                                     dropTableIfExists = TRUE, createTable = TRUE, tempTable = FALSE)
+                                     dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE)
       ParallelLogger::logInfo("Finished writing table")
     },
     error = function(e) {
