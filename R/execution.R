@@ -146,8 +146,11 @@ executeDqChecks <- function(connectionDetails,
                             outputFolder = "output",
                             verboseMode = FALSE,
                             writeToTable = TRUE,
+                            writeTableName = "dqdashboard_results",
                             checkLevels = c("TABLE", "FIELD", "CONCEPT"),
                             checkNames = c(),
+                            cohortDefinitionId = c(),
+                            cohortDatabaseSchema = resultsDatabaseSchema,
                             tablesToExclude = c(),
                             cdmVersion = "5.3.1",
                             tableCheckThresholdLoc = "default",
@@ -227,9 +230,9 @@ if (conceptCheckThresholdLoc == "default"){
   }
   
   library(magrittr)
-  tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
-  fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
-  conceptChecks <- conceptChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
+  # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
+  # fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
+  # conceptChecks <- conceptChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   
   
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
@@ -268,6 +271,8 @@ if (conceptCheckThresholdLoc == "default"){
                                               connection,
                                               cdmDatabaseSchema, 
                                               vocabDatabaseSchema,
+                                              cohortDatabaseSchema,
+                                              cohortDefinitionId,
                                               outputFolder, sqlOnly)
   ParallelLogger::stopCluster(cluster = cluster)
   
@@ -299,7 +304,9 @@ if (conceptCheckThresholdLoc == "default"){
   if (!sqlOnly & writeToTable) {
     .writeResultsToTable(connectionDetails = connectionDetails,
                          resultsDatabaseSchema = resultsDatabaseSchema,
-                         checkResults = allResults$CheckResults)
+                         checkResults = allResults$CheckResults,
+                         writeTableName = writeTableName,
+                         cohortDefinitionId = cohortDefinitionId)
   }
   
   if (sqlOnly) {
@@ -322,6 +329,8 @@ if (conceptCheckThresholdLoc == "default"){
                       connection,
                       cdmDatabaseSchema, 
                       vocabDatabaseSchema,
+                      cohortDatabaseSchema,
+                      cohortDefinitionId,
                       outputFolder, 
                       sqlOnly) {
   
@@ -332,6 +341,8 @@ if (conceptCheckThresholdLoc == "default"){
                               tolower(checkDescription$checkLevel),
                               checkDescription$evaluationFilter)
   checks <- eval(parse(text = filterExpression))
+  
+  if (length(cohortDefinitionId > 0)){cohort = TRUE} else {cohort = FALSE}
   
   if (sqlOnly) {
     unlink(file.path(outputFolder, sprintf("%s.sql", checkDescription$checkName)))
@@ -349,7 +360,10 @@ if (conceptCheckThresholdLoc == "default"){
                   list(packageName = "DataQualityDashboard"),
                   list(warnOnMissingParameters = FALSE),
                   list(cdmDatabaseSchema = cdmDatabaseSchema),
+                  list(cohortDatabaseSchema = cohortDatabaseSchema),
+                  list(cohortDefinitionId = cohortDefinitionId),
                   list(vocabDatabaseSchema = vocabDatabaseSchema),
+                  list(cohort = cohort),
                   unlist(columns, recursive = FALSE))
       
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)
@@ -549,7 +563,9 @@ if (conceptCheckThresholdLoc == "default"){
 #' @export
 writeJsonResultsToTable <- function(connectionDetails,
                                     resultsDatabaseSchema,
-                                    jsonFilePath) {
+                                    jsonFilePath,
+                                    writeTableName = "dqdashboard_results",
+                                    cohortDefinitionId = c()) {
   
   jsonData <- jsonlite::read_json(jsonFilePath)
   checkResults <- lapply(jsonData$CheckResults, function(cr) {
@@ -561,16 +577,19 @@ writeJsonResultsToTable <- function(connectionDetails,
   
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection = connection))
-  tableName <- sprintf("%s.dqdashboard_results", resultsDatabaseSchema)
+  
+  if (length(cohortDefinitionId > 0)){
+    tableName <- sprintf("%s.%s_%s", resultsDatabaseSchema,writeTableName, cohortDefinitionId)
+  } else {tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)}
   
   ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
   
   if ("UNIT_CONCEPT_ID" %in% colnames(checkResults)){
-    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", packageName = "DataQualityDashboard", tableName = tableName)
+    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
   } else if ("CDM_FIELD_NAME" %in% colnames(checkResults)){
-    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_field.sql", packageName = "DataQualityDashboard", tableName = tableName)
+    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_field.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
   } else {
-    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_table.sql", packageName = "DataQualityDashboard", tableName = tableName)
+    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_table.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
   }
   
   DatabaseConnector::executeSql(connection = connection, sql = ddl, progressBar = TRUE)
@@ -593,15 +612,20 @@ writeJsonResultsToTable <- function(connectionDetails,
 
 .writeResultsToTable <- function(connectionDetails,
                                  resultsDatabaseSchema,
-                                 checkResults) {
+                                 checkResults,
+                                 writeTableName,
+                                 cohortDefinitionId) {
   
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection = connection))
-  tableName <- sprintf("%s.dqdashboard_results", resultsDatabaseSchema)
+  
+  if (length(cohortDefinitionId > 0)){
+    tableName <- sprintf("%s.%s_%s", resultsDatabaseSchema,writeTableName, cohortDefinitionId)
+  } else {tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)}
   
   ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
   
-  ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_dataframe_ddl.sql", packageName = "DataQualityDashboard", tableName = tableName)
+  ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_dataframe_ddl.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
  
   DatabaseConnector::executeSql(connection = connection, sql = ddl, progressBar = TRUE)
   

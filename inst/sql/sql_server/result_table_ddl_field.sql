@@ -1,11 +1,12 @@
 --DDL to create dqdashboard_results table.
 
-DROP TABLE IF EXISTS @tableName;
+IF OBJECT_ID('@tableName', 'U') IS NOT NULL
+	DROP TABLE @tableName;  
 CREATE TABLE @tableName
 (
-  num_violated_rows     integer,
-  pct_violated_rows     float8,
-  num_denominator_rows  integer,
+  num_violated_rows     bigint,
+  pct_violated_rows     float,
+  num_denominator_rows  bigint,
   execution_time        varchar(255),
   query_text            varchar(MAX),
   check_name            varchar(255),

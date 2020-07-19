@@ -8,7 +8,10 @@ cdmDatabaseSchema = @cdmDatabaseSchema
 conceptId = @conceptId
 unitConceptId = @unitConceptId
 plausibleValueLow = @plausibleValueLow
-
+{@cohort}?{
+cohortDefinitionId = @cohortDefinitionId
+cohortDatabaseSchema = @cohortDatabaseSchema
+}
 **********/
 
 
@@ -21,6 +24,11 @@ FROM
 	(
 		SELECT m.* 
 		FROM @cdmDatabaseSchema.measurement m
+		{@cohort}?{
+  	JOIN @cohortDatabaseSchema.COHORT c
+  	ON m.PERSON_ID = c.SUBJECT_ID
+  	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+  	}
 		WHERE m.measurement_concept_id = @conceptId
 		AND m.unit_concept_id = @unitConceptId
 		AND m.value_as_number IS NOT NULL
@@ -29,7 +37,12 @@ FROM
 ) violated_row_count,
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.measurement
+	FROM @cdmDatabaseSchema.measurement m
+	{@cohort}?{
+	JOIN @cohortDatabaseSchema.COHORT c
+	ON m.PERSON_ID = c.SUBJECT_ID
+	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+	}
 	WHERE measurement_concept_id = @conceptId
 	AND unit_concept_id = @unitConceptId
 	AND value_as_number IS NOT NULL

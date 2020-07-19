@@ -1,16 +1,18 @@
 --DDL to create dqdashboard_results table.
 
-DROP TABLE IF EXISTS @tableName;
+IF OBJECT_ID('@tableName', 'U') IS NOT NULL
+	DROP TABLE @tableName;    
+    
 CREATE TABLE @tableName
 (
-  num_violated_rows     integer,
-  pct_violated_rows     float8,
-  num_denominator_rows  integer,
+  num_violated_rows     bigint,
+  pct_violated_rows     float,
+  num_denominator_rows  bigint,
   execution_time        varchar(255),
-  query_text            varchar(MAX),
+  query_text            varchar(8000),
   check_name            varchar(255),
   check_level           varchar(255),
-  check_description     varchar(MAX),
+  check_description     varchar(8000),
   cdm_table_name        varchar(255),
   cdm_field_name        varchar(255),
   concept_id            varchar(255),
@@ -20,7 +22,7 @@ CREATE TABLE @tableName
   subcategory           varchar(255),
   context               varchar(255),
   warning               varchar(255),
-  error                 varchar(MAX),
+  error                 varchar(8000),
   checkid               integer,
   failed                integer,
   threshold_value       integer

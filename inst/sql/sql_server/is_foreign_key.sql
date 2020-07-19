@@ -10,6 +10,10 @@ cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 fkTableName = @fkTableName
 fkFieldName = @fkFieldName
+{@cohort & '@runForCohort' == 'Yes'}?{
+cohortDefinitionId = @cohortDefinitionId
+cohortDatabaseSchema = @cohortDatabaseSchema
+}
 **********/
 
 
@@ -22,6 +26,11 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		{@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT c 
+    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
+    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
 		LEFT JOIN {'@fkTableName' IN ('CONCEPT','DOMAIN')}?{@vocabDatabaseSchema.@fkTableName}:{@cdmDatabaseSchema.@fkTableName} fkTable
 		ON cdmTable.@cdmFieldName = fkTable.@fkFieldName
 		WHERE fkTable.@fkFieldName IS NULL AND cdmTable.@cdmFieldName IS NOT NULL 
@@ -29,6 +38,11 @@ FROM
 ) violated_row_count,
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName
+	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+	{@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT c 
+    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
+    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
 ) denominator
 ;
