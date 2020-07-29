@@ -99,7 +99,7 @@ function loadResults(results) {
         initComplete: function () {
             this.api().columns().every(function (d) {
                 var column = this;
-                if ([0, 6, 7].includes(d))
+                if ([0, 7, 8].includes(d))
                     return;
                 var select = $('<select><option value=""></option></select>')
                     .appendTo($(column.header()))
@@ -131,6 +131,7 @@ function loadResults(results) {
             { data: "CATEGORY", title: "CATEGORY" },
             { data: function (d) { return d.SUBCATEGORY ? d.SUBCATEGORY : "None" }, title: "SUBCATEGORY" },
             { data: "CHECK_LEVEL", title: "LEVEL" },
+            { data: function (d) { if (d.NOTES_VALUE == undefined) { return "None"; } else { return "Exists"; } }, title: "NOTES" },
             /*{ data: function (d) { return d.CDM_TABLE_NAME ? d.CDM_TABLE_NAME : "None" }, title: "TABLE" },
             { data: function (d) { return d.CDM_FIELD_NAME ? d.CDM_FIELD_NAME : "None" }, title: "FIELD" },*/
             {
