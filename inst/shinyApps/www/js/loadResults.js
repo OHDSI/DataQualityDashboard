@@ -131,7 +131,7 @@ function loadResults(results) {
             { data: "CATEGORY", title: "CATEGORY" },
             { data: function (d) { return d.SUBCATEGORY ? d.SUBCATEGORY : "None" }, title: "SUBCATEGORY" },
             { data: "CHECK_LEVEL", title: "LEVEL" },
-            { data: function (d) { if (d.NOTES_VALUE == undefined) { return "None"; } else { return "Exists"; } }, title: "NOTES" },
+            { data: function (d) { if (d.NOTES_VALUE == '') { return "None"; } else { return "Exists"; } }, title: "NOTES" },
             /*{ data: function (d) { return d.CDM_TABLE_NAME ? d.CDM_TABLE_NAME : "None" }, title: "TABLE" },
             { data: function (d) { return d.CDM_FIELD_NAME ? d.CDM_FIELD_NAME : "None" }, title: "FIELD" },*/
             {
