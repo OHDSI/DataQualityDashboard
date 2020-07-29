@@ -25,5 +25,6 @@ CREATE TABLE @tableName
   error                 varchar(8000),
   checkid               integer,
   failed                integer,
-  threshold_value       integer
+  threshold_value       integer,
+  notes_value           varchar(8000)
 );

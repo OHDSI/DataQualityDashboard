@@ -395,9 +395,11 @@ if (conceptCheckThresholdLoc == "default"){
   
   checkResults$FAILED <- 0
   checkResults$THRESHOLD_VALUE <- NA
+  checkResults$NOTES_VALUE <- NA
   
   for (i in 1:nrow(checkResults)) {
     thresholdField <- sprintf("%sThreshold", checkResults[i,]$CHECK_NAME)
+    notesField <- sprintf("%sNotes", checkResults[i,]$CHECK_NAME)
     
     # find if field exists -----------------------------------------------
     thresholdFieldExists <- eval(parse(text = 
@@ -407,17 +409,25 @@ if (conceptCheckThresholdLoc == "default"){
     
     if (!thresholdFieldExists) {
       thresholdValue <- NA
+      notesValue <- NA
     } else {
       if (checkResults[i,]$CHECK_LEVEL == "TABLE") {
         
         thresholdFilter <- sprintf("tableChecks$%s[tableChecks$cdmTableName == '%s']",
                                    thresholdField, checkResults[i,]$CDM_TABLE_NAME)
+        notesFilter <- sprintf("tableChecks$%s[tableChecks$cdmTableName == '%s']",
+                                   notesField, checkResults[i,]$CDM_TABLE_NAME)
         
       } else if (checkResults[i,]$CHECK_LEVEL == "FIELD") {
         
         thresholdFilter <- sprintf("fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
                                 fieldChecks$cdmFieldName == '%s']",
                                    thresholdField, 
+                                   checkResults[i,]$CDM_TABLE_NAME,
+                                   checkResults[i,]$CDM_FIELD_NAME)
+        notesFilter <- sprintf("fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
+                                fieldChecks$cdmFieldName == '%s']",
+                                   notesField, 
                                    checkResults[i,]$CDM_TABLE_NAME,
                                    checkResults[i,]$CDM_FIELD_NAME)
         
@@ -433,6 +443,13 @@ if (conceptCheckThresholdLoc == "default"){
                                      checkResults[i,]$CDM_TABLE_NAME,
                                      checkResults[i,]$CDM_FIELD_NAME,
                                      checkResults[i,]$CONCEPT_ID)
+          notesFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                  conceptChecks$cdmFieldName == '%s' &
+                                  conceptChecks$conceptId == %s]",
+                                     notesField, 
+                                     checkResults[i,]$CDM_TABLE_NAME,
+                                     checkResults[i,]$CDM_FIELD_NAME,
+                                     checkResults[i,]$CONCEPT_ID)
         } else {
           
           thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
@@ -444,11 +461,23 @@ if (conceptCheckThresholdLoc == "default"){
                                      checkResults[i,]$CDM_FIELD_NAME,
                                      checkResults[i,]$CONCEPT_ID,
                                      checkResults[i,]$UNIT_CONCEPT_ID)
+          thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                  conceptChecks$cdmFieldName == '%s' &
+                                  conceptChecks$conceptId == %s &
+                                  conceptChecks$unitConceptId == '%s']",
+                                     notesField, 
+                                     checkResults[i,]$CDM_TABLE_NAME,
+                                     checkResults[i,]$CDM_FIELD_NAME,
+                                     checkResults[i,]$CONCEPT_ID,
+                                     checkResults[i,]$UNIT_CONCEPT_ID)
         } 
       }
       
       thresholdValue <- eval(parse(text = thresholdFilter))
+      notesValue <- eval(parse(text = notesFilter))
+      
       checkResults[i,]$THRESHOLD_VALUE <- thresholdValue
+      checkResults[i,]$NOTES_VALUE <- notesValue
     }
     
     if (!is.na(checkResults[i,]$ERROR)) {
