@@ -1,7 +1,7 @@
 function loadResults(results) {
     $('dq-metadata-heading').attr('data-results', JSON.stringify(results));
     $('dq-dashboard').attr('data-results', JSON.stringify(results.CheckResults));
-    
+
     var metadata = results.Metadata[0];
     $('cdm-source-name').text(metadata.CDM_SOURCE_NAME);
     $('dq-metadata').attr('data-results', JSON.stringify(metadata));
@@ -11,6 +11,18 @@ function loadResults(results) {
         thresholdMessage = ''
         if (d.THRESHOLD_VALUE != undefined) {
             thresholdMessage = ' (Threshold=' + d.THRESHOLD_VALUE + '%)';
+        }
+        if (d.NOTES_VALUE == undefined) {
+            d.NOTES_VALUE = '';
+        }
+        if (d.CONCEPT_ID == undefined) {
+            d.CONCEPT_ID = '';
+        }
+        if (d.UNIT_CONCEPT_ID == undefined) {
+            d.UNIT_CONCEPT_ID = '';
+        }
+        if (d.CDM_FIELD_NAME == undefined) {
+            d.CDM_FIELD_NAME = '';
         }
         if (d.ERROR) {
             errorMessage = d.ERROR;
@@ -23,6 +35,10 @@ function loadResults(results) {
             '<tr>' +
             '<td>Description:</td>' +
             '<td>' + d.CHECK_DESCRIPTION + thresholdMessage + '.</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>Notes:</td>' +
+            '<td>' + d.NOTES_VALUE + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Level:</td>' +
