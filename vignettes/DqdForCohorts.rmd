@@ -39,7 +39,7 @@ Running the Data Quality Dashboard for a cohort is fairly straightforward. There
                                       outputFolder = outputFolder, 
                                       verboseMode = verboseMode,
                                       writeToTable = writeToTable,
-                                      writeTableName = 
+                                      writeTableName = "dqdashboard_results_123",
                                       checkLevels = checkLevels,
                                       tablesToExclude = tablesToExclude,
                                       checkNames = checkNames)
