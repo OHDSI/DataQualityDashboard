@@ -60,6 +60,9 @@
       <a href="../articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
     </li>
     <li>
+      <a href="../articles/DqdForCohorts.html">Running the DQD on a Cohort</a>
+    </li>
+    <li>
       <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
     </li>
   </ul>
@@ -88,7 +91,7 @@
       <h1>Failure Thresholds and How to Change Them</h1>
                         <h4 class="author">Clair Blacketer</h4>
             
-            <h4 class="date">2020-06-30</h4>
+            <h4 class="date">2020-07-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/master/vignettes/Thresholds.rmd"><code>vignettes/Thresholds.rmd</code></a></small>
       <div class="hidden name"><code>Thresholds.rmd</code></div>
@@ -139,6 +142,11 @@
 <p>Using this method it is possible to turn checks on or off by changing the ‘Yes’/‘No’ values in the control files. This will affect individual checks only. If you would like to filter checks based on check level (TABLE, FIELD, CONCEPT), check type (turn off all fkClass checks, for example), or CDM table (turn off all checks for the COST table), this can be done at the execution step and does not need to be specified in the control file. The vignette <strong>Advanced DQD Execution Options</strong> details how to do this.</p>
 <p>For each check type column in the control file there will be one or more additional columns based on the inputs the check type needs to function. For instance the isForeignKey check has the fields fkTableName and fkFieldName so that the check knows where to find the primary key associated with the foreign key. Each check type will also have a column named using the convention <strong>checktype</strong>Threshold. This is the column that lists the threshold against which the check will be evaluated to determine a pass or fail. Similarly to how the ‘Yes’/‘No’ indicators work, the intersection of each CDM field and check type threshold field will hold a value that will be compared to the outcome of the check to determine if the check passes or fails. In figure 1 for the check that is turned on in cell C2 the threshold is listed in cell D2. In this case the value is 0 indicating that if any records in the database violate the rule then this check will fail.</p>
 <p>To change the threshold for a check, input a value between 0 and 100. The threshold value is based on the percent of records that violate a check and indicates the percent of violating records you are willing to tolerate. A 0 thresholds means that any violating records will cause the check to fail and a 100 means that all records evaluated could violate the check and the check will still pass. After changing any thresholds in the control files, save the files in a location that the R instance can access.</p>
+</div>
+<div id="step-2a-documenting-metadata-on-updated-thresholds" class="section level3">
+<h3 class="hasAnchor">
+<a href="#step-2a-documenting-metadata-on-updated-thresholds" class="anchor"></a>Step 2a: Documenting Metadata on Updated Thresholds</h3>
+<p>In addition to thresholds, each check type will also have a column named using the convention <strong>checktype</strong>Notes. These columns allow entry of any information about why a particular check threshold was changed for a certain database, or perhaps record a link to an issue tracking system to denote that a failure has been identified and a fix is in the works. If any notes are recorded these will be exposed in the shiny application.</p>
 </div>
 <div id="step-3-run-the-dqd-using-the-updated-thresholds" class="section level3">
 <h3 class="hasAnchor">

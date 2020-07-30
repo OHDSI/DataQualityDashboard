@@ -4,5 +4,6 @@ pkgdown_sha: ~
 articles:
   CheckTypeDescriptions: CheckTypeDescriptions.html
   DataQualityDashboard: DataQualityDashboard.html
+  DqdForCohorts: DqdForCohorts.html
   Thresholds: Thresholds.html
 

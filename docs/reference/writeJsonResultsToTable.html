@@ -95,6 +95,9 @@
       <a href="../articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
     </li>
     <li>
+      <a href="../articles/DqdForCohorts.html">Running the DQD on a Cohort</a>
+    </li>
+    <li>
       <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
     </li>
   </ul>
@@ -132,7 +135,13 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>writeJsonResultsToTable</span>(<span class='no'>connectionDetails</span>, <span class='no'>resultsDatabaseSchema</span>, <span class='no'>jsonFilePath</span>)</pre>
+    <pre class="usage"><span class='fu'>writeJsonResultsToTable</span>(
+  <span class='no'>connectionDetails</span>,
+  <span class='no'>resultsDatabaseSchema</span>,
+  <span class='no'>jsonFilePath</span>,
+  <span class='kw'>writeTableName</span> <span class='kw'>=</span> <span class='st'>"dqdashboard_results"</span>,
+  <span class='kw'>cohortDefinitionId</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>()
+)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

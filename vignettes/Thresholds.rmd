@@ -58,6 +58,10 @@ For each check type column in the control file there will be one or more additio
 
 To change the threshold for a check, input a value between 0 and 100. The threshold value is based on the percent of records that violate a check and indicates the percent of violating records you are willing to tolerate. A 0 thresholds means that any violating records will cause the check to fail and a 100 means that all records evaluated could violate the check and the check will still pass. After changing any thresholds in the control files, save the files in a location that the R instance can access. 
 
+### Step 2a: Documenting Metadata on Updated Thresholds
+
+In addition to thresholds, each check type will also have a column named using the convention **checktype**Notes. These columns allow entry of any information about why a particular check threshold was changed for a certain database, or perhaps record a link to an issue tracking system to denote that a failure has been identified and a fix is in the works. If any notes are recorded these will be exposed in the shiny application. 
+
 ### Step 3: Run the DQD Using the Updated Thresholds
 
 Follow the instructions on the [Getting Started](https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html) page to set the parameters to run the Data Quality Dashboard. When running the execute function, point the package to the updated threshold files as shown in the example below. To do this, The options **tableCheckThresholdLoc**, **fieldCheckThresholdLoc**, **conceptCheckThresholdLoc** should contain the fully qualified location of the files. If you would like to revert to the default thresholds these options can be removed from the execute function call or be set to "default".
