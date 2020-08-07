@@ -9,7 +9,10 @@ cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 conceptId = @conceptId
 plausibleGender = @plausibleGender
-
+{@cohort}?{
+cohortDefinitionId = @cohortDefinitionId
+cohortDatabaseSchema = @cohortDatabaseSchema
+}
 **********/
 
 
@@ -24,13 +27,27 @@ FROM
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 			INNER JOIN @cdmDatabaseSchema.person p
 			ON cdmTable.person_id = p.person_id
+			
+			{@cohort}?{
+    	JOIN @cohortDatabaseSchema.COHORT c
+    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
+    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
+			
 		WHERE cdmTable.@cdmFieldName = @conceptId
 		AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
 	) violated_rows
 ) violated_row_count,
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName
+	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+	
+	{@cohort}?{
+	JOIN @cohortDatabaseSchema.COHORT c
+	ON cdmTable.PERSON_ID = c.SUBJECT_ID
+	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+	}
+	
 	WHERE @cdmFieldName = @conceptId
 ) denominator
 ;

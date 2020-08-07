@@ -33,4 +33,6 @@ output/
 results/
 thresholds/
 hs_err_pid*.log
+docs/Gemfile
+docs/Gemfile.lock
 

@@ -7,7 +7,10 @@ Determine what #/% of persons have at least one record in the cdmTable
 Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
-
+{@cohort & '@runForCohort' == 'Yes'}?{
+cohortDefinitionId = @cohortDefinitionId
+cohortDatabaseSchema = @cohortDatabaseSchema
+}
 **********/
 
 
@@ -20,6 +23,11 @@ FROM
 	(
 		SELECT cdmTable.* 
 		FROM @cdmDatabaseSchema.person cdmTable
+		{@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT c 
+    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
+    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
 		LEFT JOIN @cdmDatabaseSchema.@cdmTableName cdmTable2
 		ON cdmTable.person_id = cdmTable2.person_id
 		WHERE cdmTable2.person_id IS NULL
@@ -27,6 +35,11 @@ FROM
 ) violated_row_count,
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.person
+	FROM @cdmDatabaseSchema.person cdmTable
+	{@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT c 
+    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
+    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
 ) denominator
 ;
