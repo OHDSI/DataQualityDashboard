@@ -33,7 +33,7 @@ FROM
     	ON cdmTable.PERSON_ID = c.SUBJECT_ID
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
     	}
-    where cast(plausibleTable.@plausibleTemporalAfterFieldName as date) > cast(cdmTable.@cdmFieldName as date)
+    where cast(@plausibleTemporalAfterFieldName as date) > cast(cdmTable.@cdmFieldName as date)
 	) violated_rows
 ) violated_row_count,
 (
