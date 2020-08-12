@@ -205,20 +205,20 @@ executeDqChecks <- function(connectionDetails,
 if (tableCheckThresholdLoc == "default"){
       tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
                               package = "DataQualityDashboard"), 
-                              stringsAsFactors = FALSE)} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
-                                                                                      stringsAsFactors = FALSE)}
+                              stringsAsFactors = FALSE, na.strings = c(" ",""))} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
+                                                                                      stringsAsFactors = FALSE, na.strings = c(" ",""))}
   
 if (fieldCheckThresholdLoc == "default"){ 
     fieldChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
                                       package = "DataQualityDashboard"), 
-                          stringsAsFactors = FALSE)} else {fieldChecks <- read.csv(fieldCheckThresholdLoc, 
-                                                                                   stringsAsFactors = FALSE)}
+                          stringsAsFactors = FALSE, na.strings = c(" ",""))} else {fieldChecks <- read.csv(fieldCheckThresholdLoc, 
+                                                                                   stringsAsFactors = FALSE, na.strings = c(" ",""))}
   
 if (conceptCheckThresholdLoc == "default"){ 
   conceptChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion),
                                       package = "DataQualityDashboard"), 
-                          stringsAsFactors = FALSE)} else {conceptChecks <- read.csv(conceptCheckThresholdLoc, 
-                                                                                     stringsAsFactors = FALSE)}
+                          stringsAsFactors = FALSE, na.strings = c(" ",""))} else {conceptChecks <- read.csv(conceptCheckThresholdLoc, 
+                                                                                     stringsAsFactors = FALSE, na.strings = c(" ",""))}
   
   # ensure we use only checks that are intended to be run -----------------------------------------
   
@@ -236,7 +236,7 @@ if (conceptCheckThresholdLoc == "default"){
   # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   # fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   # conceptChecks <- conceptChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
-  
+
   
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |
@@ -464,7 +464,7 @@ if (conceptCheckThresholdLoc == "default"){
                                      checkResults[i,]$CDM_FIELD_NAME,
                                      checkResults[i,]$CONCEPT_ID,
                                      checkResults[i,]$UNIT_CONCEPT_ID)
-          thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+          notesFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
                                   conceptChecks$conceptId == %s &
                                   conceptChecks$unitConceptId == '%s']",
@@ -628,7 +628,7 @@ writeJsonResultsToTable <- function(connectionDetails,
   
   tryCatch(
     expr = {
-      DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = checkResults, 
+      DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = df, 
                                      dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE)
       ParallelLogger::logInfo("Finished writing table")
     },
