@@ -146,6 +146,24 @@ executeDqChecks <- function(connectionDetails,
                             tablesToExclude = c(),
                             cdmVersion = "5.3.1") {
   
+  # Check input -------------------------------------------------------------------------------------------------------------------
+  if (!("connectionDetails" %in% class(connectionDetails))){
+    stop("connectionDetails must be an object of class 'connectionDetails'.")
+  } 
+  
+  stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
+  stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
+  stopifnot(is.logical(writeToTable), is.character(checkLevels))
+  
+  if (!all(checkLevels %in% c("TABLE", "FIELD", "CONCEPT"))) {
+    stop('checkLevels argument must be a subset of c("TABLE", "FIELD", "CONCEPT"). 
+         You passed in ', paste(checkLevels, collapse = ", "))
+  }
+  
+  stopifnot(is.null(checkNames) | is.character(checkNames), is.null(tablesToExclude) | is.character(tablesToExclude))
+  stopifnot(is.character(cdmVersion))
+  
+  # Setup output folder ------------------------------------------------------------------------------------------------------------
   options(scipen = 999)
   outputFolder <- file.path(outputFolder, cdmSourceName)
   
