@@ -514,7 +514,28 @@ if (conceptCheckThresholdLoc == "default"){
   sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
                            cdmDatabaseSchema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
-  metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
+  metadata <- tryCatch(
+    expr = {
+      DatabaseConnector::querySql(connection = connection, sql = sql)
+    },
+    error = function(e) {
+      ParallelLogger::logWarn("Retrieving metadata from cdm_source failed.")
+      return(
+        data.frame(
+          "CDM_SOURCE_NAME"=cdmSourceName,
+          "CDM_SOURCE_ABBREVIATION"=NA,
+          "CDM_HOLDER"=NA,
+          "SOURCE_DESCRIPTION"=NA,
+          "SOURCE_DOCUMENTATION_REFERENCE"=NA,
+          "CDM_ETL_REFERENCE"=NA,
+          "SOURCE_RELEASE_DATE"=NA,
+          "CDM_RELEASE_DATE"=NA,
+          "CDM_VERSION"=NA,
+          "VOCABULARY_VERSION"=NA
+        )
+      )
+    }
+  )
   
   metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
   
