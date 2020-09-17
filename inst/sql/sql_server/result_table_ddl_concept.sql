@@ -20,7 +20,7 @@ CREATE TABLE @tableName
   checkid               integer,
   failed                integer,
   threshold_value       integer,
-  notes_value           varchar(8000)
+  notes_value           varchar(8000),
   x_row                 varchar(255),
   cdm_field_name        varchar(255),
   error                 varchar(8000),

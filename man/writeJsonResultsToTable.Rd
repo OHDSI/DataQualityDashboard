@@ -9,7 +9,8 @@ writeJsonResultsToTable(
   resultsDatabaseSchema,
   jsonFilePath,
   writeTableName = "dqdashboard_results",
-  cohortDefinitionId = c()
+  cohortDefinitionId = c(),
+  useMppBulkLoad = FALSE
 )
 }
 \arguments{
