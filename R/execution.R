@@ -463,7 +463,7 @@ if (conceptCheckThresholdLoc == "default"){
                                      checkResults[i,]$CDM_TABLE_NAME,
                                      checkResults[i,]$CDM_FIELD_NAME,
                                      checkResults[i,]$CONCEPT_ID,
-                                     checkResults[i,]$UNIT_CONCEPT_ID)
+                                     as.integer(checkResults[i,]$UNIT_CONCEPT_ID))
           notesFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
                                   conceptChecks$conceptId == %s &
@@ -472,7 +472,7 @@ if (conceptCheckThresholdLoc == "default"){
                                      checkResults[i,]$CDM_TABLE_NAME,
                                      checkResults[i,]$CDM_FIELD_NAME,
                                      checkResults[i,]$CONCEPT_ID,
-                                     checkResults[i,]$UNIT_CONCEPT_ID)
+                                     as.integer(checkResults[i,]$UNIT_CONCEPT_ID))
         } 
       }
       
