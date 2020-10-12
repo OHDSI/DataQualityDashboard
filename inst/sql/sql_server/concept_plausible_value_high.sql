@@ -5,6 +5,8 @@ PLAUSIBLE_VALUE_HIGH - find any MEASUREMENT records that have VALUE_AS_NUMBER wi
 
 Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema
+cdmTableName = @cdmTableName
+cdmFieldName = @cdmFieldName
 conceptId = @conceptId
 unitConceptId = @unitConceptId
 plausibleValueHigh = @plausibleValueHigh
@@ -23,13 +25,13 @@ FROM
 	FROM
 	(
 		SELECT m.* 
-		FROM @cdmDatabaseSchema.measurement m
+		FROM @cdmDatabaseSchema.@cdmTableName m
 		{@cohort}?{
   	JOIN @cohortDatabaseSchema.COHORT c
   	ON m.PERSON_ID = c.SUBJECT_ID
   	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
   	}
-		WHERE m.measurement_concept_id = @conceptId
+		WHERE m.@cdmFieldName = @conceptId
 		AND m.unit_concept_id = @unitConceptId
 		AND m.value_as_number IS NOT NULL
 		AND m.value_as_number > @plausibleValueHigh
@@ -37,13 +39,13 @@ FROM
 ) violated_row_count,
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.measurement m
+	FROM @cdmDatabaseSchema.@cdmTableName m
 	{@cohort}?{
 	JOIN @cohortDatabaseSchema.COHORT c
 	ON m.PERSON_ID = c.SUBJECT_ID
 	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
 	}
-	WHERE measurement_concept_id = @conceptId
+	WHERE m.@cdmFieldName = @conceptId
 	AND unit_concept_id = @unitConceptId
 	AND value_as_number IS NOT NULL
 ) denominator

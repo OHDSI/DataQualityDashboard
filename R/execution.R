@@ -463,7 +463,7 @@ if (conceptCheckThresholdLoc == "default"){
                                      checkResults[i,]$CDM_TABLE_NAME,
                                      checkResults[i,]$CDM_FIELD_NAME,
                                      checkResults[i,]$CONCEPT_ID,
-                                     checkResults[i,]$UNIT_CONCEPT_ID)
+                                     as.integer(checkResults[i,]$UNIT_CONCEPT_ID))
           notesFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
                                   conceptChecks$conceptId == %s &
@@ -472,7 +472,7 @@ if (conceptCheckThresholdLoc == "default"){
                                      checkResults[i,]$CDM_TABLE_NAME,
                                      checkResults[i,]$CDM_FIELD_NAME,
                                      checkResults[i,]$CONCEPT_ID,
-                                     checkResults[i,]$UNIT_CONCEPT_ID)
+                                     as.integer(checkResults[i,]$UNIT_CONCEPT_ID))
         } 
       }
       
@@ -597,7 +597,8 @@ writeJsonResultsToTable <- function(connectionDetails,
                                     resultsDatabaseSchema,
                                     jsonFilePath,
                                     writeTableName = "dqdashboard_results",
-                                    cohortDefinitionId = c()) {
+                                    cohortDefinitionId = c(), 
+                                    useMppBulkLoad = FALSE) {
   
   jsonData <- jsonlite::read_json(jsonFilePath)
   checkResults <- lapply(jsonData$CheckResults, function(cr) {
@@ -616,9 +617,9 @@ writeJsonResultsToTable <- function(connectionDetails,
   
   ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
   
-  if ("UNIT_CONCEPT_ID" %in% colnames(checkResults)){
+  if ("UNIT_CONCEPT_ID" %in% colnames(df)){
     ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
-  } else if ("CDM_FIELD_NAME" %in% colnames(checkResults)){
+  } else if ("CDM_FIELD_NAME" %in% colnames(df)){
     ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_field.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
   } else {
     ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_table.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
@@ -629,7 +630,8 @@ writeJsonResultsToTable <- function(connectionDetails,
   tryCatch(
     expr = {
       DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = df, 
-                                     dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE)
+                                     dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE,
+                                     progressBar = TRUE)
       ParallelLogger::logInfo("Finished writing table")
     },
     error = function(e) {
