@@ -27,7 +27,7 @@
   
   params <- c(list(sql = checkDescription$checkDescription),
               list(warnOnMissingParameters = FALSE),
-              unlist(columns, recursive = FALSE))
+              lapply(unlist(columns, recursive = FALSE), toupper))
   
   reportResult <- data.frame(
     NUM_VIOLATED_ROWS = NA,

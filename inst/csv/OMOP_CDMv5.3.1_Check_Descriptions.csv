@@ -1,6 +1,6 @@
 checkLevel,checkName,checkDescription,kahnContext,kahnCategory,kahnSubcategory,sqlFile,evaluationFilter
 TABLE,measurePersonCompleteness,The number and percent of persons in the CDM that do not have at least one record in the @cdmTableName table,Validation,Completeness,,table_person_completeness.sql,measurePersonCompleteness=='Yes'
-FIELD,cdmField,A yes or no value indicating if all fields are present in the @cdmTableName table as expected based on the specification. ,Verification,Conformance,Relational,field_cdm_field.sql,cdmFieldName!=''
+FIELD,cdmField,A yes or no value indicating if @cdmFieldName is present in the @cdmTableName table as expected based on the specification. ,Verification,Conformance,Relational,field_cdm_field.sql,cdmFieldName!=''
 FIELD,isRequired,The number and percent of records with a NULL value in the @cdmFieldName of the @cdmTableName that is considered not nullable.,Validation,Conformance,Relational,field_is_not_nullable.sql,isRequired=='Yes'
 FIELD,cdmDatatype,A yes or no value indicating if the @cdmFieldName in the @cdmTableName is the expected data type based on the specification.,Verification,Conformance,Value,field_cdm_datatype.sql,cdmDatatype=='integer'
 FIELD,isPrimaryKey,The number and percent of records that have a duplicate value in the @cdmFieldName field of the @cdmTableName.,Verification,Conformance,Relational,field_is_primary_key.sql,isPrimaryKey=='Yes'
