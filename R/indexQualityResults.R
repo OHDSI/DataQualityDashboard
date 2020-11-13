@@ -29,11 +29,12 @@ indexQualityResults <-
     
     addResultsToIndex <- function(json, filename) {
       cdm_source_name <- json$Metadata[[1]]$CDM_SOURCE_NAME
-      cdm_source_abbreviation <-
-        json$Metadata[[1]]$CDM_SOURCE_ABBREVIATION
-      cdm_release_date <- json$Metadata[[1]]$CDM_RELEASE_DATE
+      cdm_source_abbreviation <- json$Metadata[[1]]$CDM_SOURCE_ABBREVIATION
+      cdm_release_date <- format(lubridate::ymd(json$Metadata[[1]]$CDM_RELEASE_DATE),"%Y-%m-%d")
       percent_passed <- json$Overview$percentPassed
-      end_timestamp <- json$endTimestamp
+      count_passed <- json$Overview$countPassed
+      count_failed <- json$Overview$countOverallFailed
+      dqd_execution_date <- format(lubridate::ymd_hms(json$endTimestamp),"%Y-%m-%d")
       
       if (!is.null(cdm_source_name)) {
         
@@ -46,9 +47,11 @@ indexQualityResults <-
           c(
             cdm_source_name,
             cdm_source_abbreviation,
+            count_passed,
+            count_failed,
             percent_passed,
             cdm_release_date,
-            end_timestamp,
+            dqd_execution_date,
             filename
           )
         )
@@ -75,7 +78,7 @@ indexQualityResults <-
         end_timestamp <- gsub("-","",end_timestamp)
         end_timestamp <- gsub(" ","_",end_timestamp)
         end_timestamp <- gsub(":","",end_timestamp)
-        result_filename <- paste0(end_timestamp,"_",cdm_source_abbreviation, ".json")
+        result_filename <- paste0(cdm_source_abbreviation, "_dqd_result_", end_timestamp, ".json")
         
         # copy the result file to the output directory with the index file
         json_string <- rjson::toJSON(result_json)
@@ -88,19 +91,15 @@ indexQualityResults <-
       c(
         "cdm_source_name",
         "cdm_source_abbreviation",
+        "count_passed",
+        "count_failed",
         "percent_passed",
         "cdm_release_date",
-        "end_timestamp",
+        "dqd_execution_date",
         "result_file_name"
       )
-    result_index$cdm_release_date <-
-      as.Date(result_index$cdm_release_date,
-              tryFormats = c("%Y-%m-%d", "%m/%d/%Y"))
-    result_index$end_timestamp <-
-      as.Date(result_index$end_timestamp)
-    result_index$percent_passed <-
-      as.numeric(result_index$percent_passed)
-    result_index$cdm_source_name <- result_index$cdm_source_name
-    
+    result_index$percent_passed <- as.numeric(result_index$percent_passed)
+    result_index$count_passed <- as.numeric(result_index$count_passed)
+    result_index$count_failed <- as.numeric(result_index$count_failed)
     write(jsonlite::toJSON(result_index), file = file.path(outputFolder, outputFile))
   }
