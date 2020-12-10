@@ -1,7 +1,7 @@
 ---
 title: "Running the DQD on a Cohort"
 author: "Clair Blacketer"
-date: "2020-08-07"
+date: "2020-09-02"
 header-includes:
     - \usepackage{fancyhdr}
     - \pagestyle{fancy}

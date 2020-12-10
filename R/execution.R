@@ -206,7 +206,8 @@ if (tableCheckThresholdLoc == "default"){
       tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
                               package = "DataQualityDashboard"), 
                               stringsAsFactors = FALSE)} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
-                                                                                      stringsAsFactors = FALSE)}
+                                                                                      stringsAsFactors = FALSE)                     
+                              }
   
 if (fieldCheckThresholdLoc == "default"){ 
     fieldChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
@@ -512,9 +513,30 @@ if (conceptCheckThresholdLoc == "default"){
   
   # capture metadata -----------------------------------------------------------------------
   sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
-                           cdmDatabaseSchema = cdmDatabaseSchema)
+                          cdmDatabaseSchema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
-  metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
+  metadata <- tryCatch(
+    expr = {
+      DatabaseConnector::querySql(connection = connection, sql = sql)
+    },
+    error = function(e) {
+      ParallelLogger::logWarn("Retrieving metadata from cdm_source failed.")
+      return(
+        data.frame(
+          "CDM_SOURCE_NAME"=cdmSourceName,
+          "CDM_SOURCE_ABBREVIATION"=cdmSourceName,
+          "CDM_HOLDER"=NA,
+          "SOURCE_DESCRIPTION"=NA,
+          "SOURCE_DOCUMENTATION_REFERENCE"=NA,
+          "CDM_ETL_REFERENCE"=NA,
+          "SOURCE_RELEASE_DATE"=NA,
+          "CDM_RELEASE_DATE"=NA,
+          "CDM_VERSION"=NA,
+          "VOCABULARY_VERSION"=NA
+        )
+      )
+    }
+  )
   
   metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
   

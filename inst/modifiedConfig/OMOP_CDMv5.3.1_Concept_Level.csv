@@ -1,10 +1,4 @@
-cdmFieldName,cdmTableName,cdmWrongFieldName,conceptId,conceptName,wrongDomain,cdmValueFieldName,checkAllowedValues,checkUnit
-observation_concept_id,observation,measurement_concept_id,2000001119,AIHA or ITP poorly responsive to corticosteroids or other standard therapy,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001133,Reason for non-eligibility for SCT,measurement,,,
-observation_concept_id,observation,,2000001133,Reason for non-eligibility for SCT,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001121,Amp1q [Identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001121,Amp1q [Identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000001103,Bone marrow infiltration,measurement,,,
+cdmFieldName,cdmTable,cdmWrongFieldName,concept_id,concept_name,wrongDomain,cdmValueFieldName,checkAllowedValues,checkUnit
 measurement_concept_id,measurement,observation_concept_id,2000001070,CLL - MRD assessment using ASO - PCR on bone marrow,observation,,,
 measurement_concept_id,measurement,,2000001070,CLL - MRD assessment using ASO - PCR on bone marrow,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000001069,CLL - MRD assessment using ASO - PCR on peripheral blood,observation,,,
@@ -22,31 +16,9 @@ observation_concept_id,observation,measurement_concept_id,2000001074,Chemotherap
 measurement_concept_id,measurement,observation_concept_id,21494134,Chromosome region 1q21 duplication in Bone marrow by FISH,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000001082,Del 8q24 [%] in bone marrow by FISH,observation,,,
 measurement_concept_id,measurement,,2000001082,Del 8q24 [%] in bone marrow by FISH,,unit_concept_id,,Yes
-observation_concept_id,observation,measurement_concept_id,4175026,ECOG Performance status - Grade 0,measurement,,,
-observation_concept_id,observation,measurement_concept_id,4173614,ECOG Performance status - Grade 1,measurement,,,
-observation_concept_id,observation,measurement_concept_id,4172043,ECOG Performance status - Grade 2,measurement,,,
-observation_concept_id,observation,measurement_concept_id,4174241,ECOG Performance status - Grade 3,measurement,,,
-observation_concept_id,observation,measurement_concept_id,4174251,ECOG Performance status - Grade 4,measurement,,,
-measurement_concept_id,measurement,observation_concept_id,4167763,ECOG scale for physical assessment,observation,,,
-measurement_concept_id,measurement,,4167763,ECOG scale for physical assessment,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000001132,Eligibility for stem cell therapy,measurement,,,
-observation_concept_id,observation,,2000001132,Eligibility for stem cell therapy,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000001089,FASAY,observation,,,
 measurement_concept_id,measurement,,2000001089,FASAY,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,3049502,IgVH gene targeted mutation analysis in Blood or Tissue by Molecular genetics method,observation,,,
-observation_concept_id,observation,measurement_concept_id,2000001128,Initial stem cell mobilization successful,measurement,,,
-measurement_concept_id,measurement,observation_concept_id,4169154,Karnofsky performance status,observation,,,
-measurement_concept_id,measurement,observation_concept_id,4196111,Karyotype Determination,observation,,,
-measurement_concept_id,measurement,,4196111,Karyotype Determination,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000001120,Meeting the criteria for treatment initiation,measurement,,,
-observation_concept_id,observation,,2000001120,Meeting the criteria for treatment initiation,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000001131,Number of gathered transplants,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001104,Number of lymph node areas affected,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001129,Overall stem cell mobilization successful,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001165,Reason for not receiving SCT after being considered eligible,measurement,,,
-observation_concept_id,observation,,2000001165,Reason for not receiving SCT after being considered eligible,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001102,Size of lymph node bulk,observation,,,
-measurement_concept_id,measurement,,2000001102,Size of lymph node bulk,,unit_concept_id,,Yes
 observation_concept_id,observation,measurement_concept_id,2000000001,First line chemotherapy,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000002,Chemotherapy changed - relapse,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000003,Chemotherapy changed - Refractory disease,measurement,,,
@@ -72,9 +44,10 @@ measurement_concept_id,measurement,observation_concept_id,2000000022,t(4;14)(p16
 measurement_concept_id,measurement,,2000000022,t(4;14)(p16;q32) cells/100 cells in Bone marrow,,unit_concept_id,,Yes
 observation_concept_id,observation,measurement_concept_id,2000000023,Toxicity value,measurement,,,
 observation_concept_id,observation,,2000000023,Toxicity value,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000000024,Outcome of adverse event,measurement,,,
-observation_concept_id,observation,,2000000024,Outcome of adverse event,,value_as_concept_id,Yes,
+measurement_concept_id,measurement,observation_concept_id,2000000024,Outcome of adverse event,observation,,,
+measurement_concept_id,measurement,,2000000024,Outcome of adverse event,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000028,QLQ-C30 Global Health Status change from baseline,observation,,,
+measurement_concept_id,measurement,observation_concept_id,2000000907,Quality of life,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000029,QLQ-C30 Physical Functioning change from baseline,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000030,QLQ-C30 Role Functioning change from baseline,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000031,QLQ-C30 Emotional Functioning change from baseline,observation,,,
@@ -121,6 +94,7 @@ measurement_concept_id,measurement,observation_concept_id,2000000599,Trisomic MM
 measurement_concept_id,measurement,,2000000599,Trisomic MM,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000600,Combined IgH-translocated/trisomic MM,observation,,,
 observation_concept_id,observation,measurement_concept_id,2000000601,Partial response,measurement,,,
+observation_concept_id,observation,measurement_concept_id,2000000928,IMWG 2011 Response Criteria,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000602,Progressive disease,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000603,Stable disease,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000604,Complete response,measurement,,,
@@ -148,12 +122,15 @@ measurement_concept_id,measurement,observation_concept_id,2000000631,Del(13)q [I
 measurement_concept_id,measurement,,2000000631,Del(13)q [Identifier] in bone marrow,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000632,Del(11)q [Identifier] in bone marrow,observation,,,
 measurement_concept_id,measurement,,2000000632,Del(11)q [Identifier] in bone marrow,,value_as_concept_id,Yes,
+measurement_concept_id,measurement,observation_concept_id,2000000909,Del11q,observation,,,
+measurement_concept_id,measurement,,2000000909,Del11q,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000633,Del(11)q cells/100 cells in bone marrow,observation,,,
 measurement_concept_id,measurement,,2000000633,Del(11)q cells/100 cells in bone marrow,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,2000000634,Binet stage,observation,,,
 measurement_concept_id,measurement,,2000000634,Binet stage,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000638,Rai stage,observation,,,
 measurement_concept_id,measurement,,2000000638,Rai stage,,value_as_concept_id,Yes,
+measurement_concept_id,measurement,observation_concept_id,2000000887,Staging/risk category,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000645,Mayo stage,observation,,,
 measurement_concept_id,measurement,,2000000645,Mayo stage,,value_as_concept_id,Yes,
 observation_concept_id,observation,measurement_concept_id,2000000649,IWCLL consenus response criteria 2008: complete remission,measurement,,,
@@ -202,7 +179,7 @@ measurement_concept_id,measurement,observation_concept_id,2000000724,Revised Mul
 measurement_concept_id,measurement,,2000000724,Revised Multiple Myeloma International Staging System (R-ISS),,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000728,Protein.monoclonal [Mass/volume] in Serum by Electrophoresis,observation,,,
 measurement_concept_id,measurement,,2000000728,Protein.monoclonal [Mass/volume] in Serum by Electrophoresis,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000000887,Staging/risk category,observation,,,
+measurement_concept_id,measurement,observation_concept_id,2000000946,Serum protein electrophoresis (SPEP),observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000888,The Frailty Index for Elders (FIFE),observation,,,
 measurement_concept_id,measurement,,2000000888,The Frailty Index for Elders (FIFE),,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000892,Patient Cumulative Illness Rating Scale (CIRS),observation,,,
@@ -221,12 +198,10 @@ measurement_concept_id,measurement,observation_concept_id,2000000900,Whole body 
 measurement_concept_id,measurement,,2000000900,Whole body MRI,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000905,EQ-5D 3L Total change from baseline,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000906,EQ-5D Y Total change from baseline,observation,,,
-measurement_concept_id,measurement,observation_concept_id,2000000907,Quality of life,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000908,Immunohistochemistry,observation,,,
-measurement_concept_id,measurement,observation_concept_id,2000000909,Del11q,observation,,,
-measurement_concept_id,measurement,,2000000909,Del11q,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000910,Del13q,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000911,Del17p,observation,,,
+measurement_concept_id,measurement,observation_concept_id,2000000920,Cytogenetics,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000912,IGHV rearrangement,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000913,Isolated Monosomy 13,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000914,t(11;14) (q13;q32),observation,,,
@@ -239,25 +214,22 @@ measurement_concept_id,measurement,observation_concept_id,2000000918,t(14;16)(q3
 measurement_concept_id,measurement,,2000000918,t(14;16)(q32;q23)(IGH;MAF) fusion transcript [identifier] in Bone marrow,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000919,t(11;14) (q13;q32) cells/100 cells in Bone marrow,observation,,,
 measurement_concept_id,measurement,,2000000919,t(11;14) (q13;q32) cells/100 cells in Bone marrow,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000000920,Cytogenetics,observation,,,
 observation_concept_id,observation,measurement_concept_id,2000000921,Very good partial response or better,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000922,Sequencing Sustained MRD Negative,measurement,,,
+observation_concept_id,observation,measurement_concept_id,2000000931,Sustained MRD Negative,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000923,Flow Sustained MRD Negative,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000924,Sequencing MRD-Negative,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000925,Flow MRD-negative,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000926,MRD Positive,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000927,IWCLL consenus response criteria 2008,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000000928,IMWG 2011 Response Criteria,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000929,IMWG 2016 Response Criteria,measurement,,,
 observation_concept_id,observation,measurement_concept_id,2000000930,MRD Negative,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000000931,Sustained MRD Negative,measurement,,,
 measurement_concept_id,measurement,observation_concept_id,2000000932,Molecular response measurement by flow cytometry or sequencing,observation,,,
 measurement_concept_id,measurement,,2000000932,Molecular response measurement by flow cytometry or sequencing,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000942,Serum Quantitative Immunoglobulins,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000943,Urine protein electrophoresis (UPEP),observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000944,Urine immunofixation electrophoresis (UIFE),observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000945,Full skeleton radiographic survey,observation,,,
-measurement_concept_id,measurement,observation_concept_id,2000000946,Serum protein electrophoresis (SPEP),observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000000947,Mayo Stratification for Myeloma and Risk-adapted Therapy (mSMART 2.0),observation,,,
 measurement_concept_id,measurement,,2000000947,Mayo Stratification for Myeloma and Risk-adapted Therapy (mSMART 2.0),,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000000951,Lactate dehydrogenase [Enzymatic activity/volume] in Serum or Plasma,observation,,,
@@ -324,60 +296,16 @@ measurement_concept_id,measurement,,3046299,Protein.monoclonal [Mass/volume] in 
 measurement_concept_id,measurement,observation_concept_id,3050579,ZAP70 cells [Presence] in Unspecified specimen,observation,,,
 measurement_concept_id,measurement,,3050579,ZAP70 cells [Presence] in Unspecified specimen,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,40757589,Granulocyte colony stimulating factor [Mass/volume] in Serum or Plasma,observation,,,
-measurement_concept_id,measurement,observation_concept_id,3006923,Alanine aminotransferase [Enzymatic activity/Volume] in Serum or Plasma,observation,,,
-measurement_concept_id,measurement,observation_concept_id,3024561,Albumin [Mass/volume] in Serum or Plasma,observation,,,
-measurement_concept_id,measurement,observation_concept_id,3013721,Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma,observation,,,
 measurement_concept_id,measurement,observation_concept_id,3018199,Band form neutrophils [#/volume] in Blood,observation,,,
 measurement_concept_id,measurement,,3018199,Band form neutrophils [#/volume] in Blood,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3004809,Bands %,observation,,,
 measurement_concept_id,measurement,,3004809,Bands %,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,3013201,Beta-2-Microglobulin [Mass/volume] in Serum or Plasma,observation,,,
 measurement_concept_id,measurement,observation_concept_id,2000001076,Bone marrow involvement according to cytology [%],observation,,,
 measurement_concept_id,measurement,,2000001076,Bone marrow involvement according to cytology [%],,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,2000001078,Bone marrow involvement according to histology [%],observation,,,
 measurement_concept_id,measurement,,2000001078,Bone marrow involvement according to histology [%],,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,2000001077,Bone marrow involvement according to immunophenotyping [%],observation,,,
 measurement_concept_id,measurement,,2000001077,Bone marrow involvement according to immunophenotyping [%],,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000001130,CD34+ cells [#/Volume] in Blood,observation,,,
-measurement_concept_id,measurement,,2000001130,CD34+ cells [#/Volume] in Blood,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,46236971,CD34 dose in hematopoietic progenitor cell transfusion [#/mass] per recipient body mass,observation,,,
-measurement_concept_id,measurement,,46236971,CD34 dose in hematopoietic progenitor cell transfusion [#/mass] per recipient body mass,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,3019183,CD38 cells/100 cells in Blood,observation,,,
-measurement_concept_id,measurement,,3019183,CD38 cells/100 cells in Blood,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,3020460,C reactive protein [Mass/volume] in Serum or Plasma,observation,,,
-measurement_concept_id,measurement,observation_concept_id,3006906,Calcium [Mass/volume] in Serum or Plasma,observation,,,
-measurement_concept_id,measurement,observation_concept_id,42527796,Cells.chromosome 12 trisomy/Cells counted in Blood or Tissue by FISH,observation,,,
-measurement_concept_id,measurement,,42527796,Cells.chromosome 12 trisomy/Cells counted in Blood or Tissue by FISH,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,3051825,Creatinine [Mass/volume] in Blood,observation,,,
-measurement_concept_id,measurement,,3051825,Creatinine [Mass/volume] in Blood,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,3017250,Creatinine [Mass/volume] in Urine,observation,,,
-measurement_concept_id,measurement,,3017250,Creatinine [Mass/volume] in Urine,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000001111,Del11q [%] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001111,Del11q [%] in bone marrow by FISH,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000001105,Del11q [%] in peripheral blood by FISH,observation,,,
-measurement_concept_id,measurement,,2000001105,Del11q [%] in peripheral blood by FISH,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000001114,Del11q [Identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001114,Del11q [Identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001108,Del11q [Identifier] in peripheral blood by FISH,observation,,,
-measurement_concept_id,measurement,,2000001108,Del11q [Identifier] in peripheral blood by FISH,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001112,Del13q [%] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001112,Del13q [%] in bone marrow by FISH,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000001106,Del13q [%] in peripheral blood by FISH,observation,,,
-measurement_concept_id,measurement,,2000001106,Del13q [%] in peripheral blood by FISH,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000001115,Del13q [Identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001115,Del13q [Identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001109,Del13q [Identifier] in peripheral blood by FISH,observation,,,
-measurement_concept_id,measurement,,2000001109,Del13q [Identifier] in peripheral blood by FISH,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001113,Del17p [%] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001113,Del17p [%] in bone marrow by FISH,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000001107,Del17p [%] in peripheral blood by FISH,observation,,,
-measurement_concept_id,measurement,,2000001107,Del17p [%] in peripheral blood by FISH,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000001116,Del17p [Identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001116,Del17p [Identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001110,Del17p [Identifier] in peripheral blood by FISH,observation,,,
-measurement_concept_id,measurement,,2000001110,Del17p [Identifier] in peripheral blood by FISH,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001122,Del1p [Identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001122,Del1p [Identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,2000001080,Del 6q21 [%] in bone marrow by FISH,observation,,,
 measurement_concept_id,measurement,,2000001080,Del 6q21 [%] in bone marrow by FISH,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,2000001096,Del 6q21 [%] in peripheral blood by FISH,observation,,,
@@ -398,14 +326,6 @@ measurement_concept_id,measurement,observation_concept_id,3009542,Hematocrit [Vo
 measurement_concept_id,measurement,,3009542,Hematocrit [Volume Fraction] of Blood,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3000963,Hemoglobin [Mass/volume] in Blood,observation,,,
 measurement_concept_id,measurement,,3000963,Hemoglobin [Mass/volume] in Blood,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000001155,Hyperdiploidy [Identifier] in bone marrow,observation,,,
-measurement_concept_id,measurement,,2000001155,Hyperdiploidy [Identifier] in bone marrow,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001157,Hyperdiploidy [Identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001157,Hyperdiploidy [Identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001154,Hypodiploidy [Identifier] in bone marrow,observation,,,
-measurement_concept_id,measurement,,2000001154,Hypodiploidy [Identifier] in bone marrow,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001156,Hypodiploidy [Identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001156,Hypodiploidy [Identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,3007164,IgA [Mass/volume] in Serum or Plasma,observation,,,
 measurement_concept_id,measurement,,3007164,IgA [Mass/volume] in Serum or Plasma,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,44816761,IgA.kappa/IgA.lambda [Mass Ratio] in Serum or Plasma,observation,,,
@@ -430,7 +350,6 @@ measurement_concept_id,measurement,observation_concept_id,44816758,IgM.kappa [Ma
 measurement_concept_id,measurement,,44816758,IgM.kappa [Mass/volume] in Serum or Plasma,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,44816759,IgM.lambda [Mass/volume] in Serum or Plasma,observation,,,
 measurement_concept_id,measurement,,44816759,IgM.lambda [Mass/volume] in Serum or Plasma,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,40759246,Immunoglobulin light chains.free [Presence] in Serum,observation,,,
 measurement_concept_id,measurement,observation_concept_id,3007778,Kappa light chains/Lambda light chains [Mass Ratio] in Serum,observation,,,
 measurement_concept_id,measurement,,3007778,Kappa light chains/Lambda light chains [Mass Ratio] in Serum,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3053209,Kappa light chains.free/Lambda light chains.free [Mass Ratio] in Serum,observation,,,
@@ -439,15 +358,10 @@ measurement_concept_id,measurement,observation_concept_id,3031501,Kappa light ch
 measurement_concept_id,measurement,,3031501,Kappa light chains.free/Lambda light chains.free [Mass Ratio] in Urine,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3034860,Kappa light chains.free [Mass/volume] in Serum,observation,,,
 measurement_concept_id,measurement,,3034860,Kappa light chains.free [Mass/volume] in Serum,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,2000001118,Lactate Dehydrogenase [Enzymatic activity/Volume] in Blood,observation,,,
 measurement_concept_id,measurement,observation_concept_id,3047169,Lambda light chains.free [Mass/volume] in Serum or Plasma,observation,,,
 measurement_concept_id,measurement,,3047169,Lambda light chains.free [Mass/volume] in Serum or Plasma,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3032372,Large granular lymphocytes [#/volume] in Blood,observation,,,
 measurement_concept_id,measurement,,3032372,Large granular lymphocytes [#/volume] in Blood,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,3010813,Leukocytes [#/volume] in Blood,observation,,,
-measurement_concept_id,measurement,,3010813,Leukocytes [#/volume] in Blood,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,3019198,Lymphocytes [#/volume] in Blood,observation,,,
-measurement_concept_id,measurement,,3019198,Lymphocytes [#/volume] in Blood,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3031745,Lymphocytes Plasmacytoid/100 leukocytes in Blood,observation,,,
 measurement_concept_id,measurement,,3031745,Lymphocytes Plasmacytoid/100 leukocytes in Blood,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3007357,Lymphoma cells/100 leukocytes in Blood,observation,,,
@@ -470,11 +384,6 @@ measurement_concept_id,measurement,observation_concept_id,3021120,Myelocytes [#/
 measurement_concept_id,measurement,,3021120,Myelocytes [#/volume] in Blood,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3017732,Neutrophils [#/volume] in Blood,observation,,,
 measurement_concept_id,measurement,,3017732,Neutrophils [#/volume] in Blood,,unit_concept_id,,Yes
-observation_concept_id,observation,measurement_concept_id,2000001140,Non-eligible for SCT due to comorbidities,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001141,Non-eligible for SCT due to high biological age,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001143,Non-eligible for SCT due to other reason,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001142,Non-eligible for SCT due to poor general health,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001138,Not eligible after further examination,measurement,,,
 measurement_concept_id,measurement,observation_concept_id,3032942,Plasma cell precursor/100 leukocytes in Blood,observation,,,
 measurement_concept_id,measurement,,3032942,Plasma cell precursor/100 leukocytes in Blood,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3032320,Plasma cell precursor [#/volume] in Blood,observation,,,
@@ -485,41 +394,10 @@ measurement_concept_id,measurement,observation_concept_id,3031114,Protein.monocl
 measurement_concept_id,measurement,,3031114,Protein.monoclonal/Protein.total in 24 hour Urine by Electrophoresis,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3036416,Protein.monoclonal [Mass/volume] in Urine,observation,,,
 measurement_concept_id,measurement,,3036416,Protein.monoclonal [Mass/volume] in Urine,,unit_concept_id,,Yes
-observation_concept_id,observation,measurement_concept_id,2000001149,SLiM-CRAB criteria: A,measurement,,,
-observation_concept_id,observation,,2000001149,SLiM-CRAB criteria: A,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000001150,SLiM-CRAB criteria: B,measurement,,,
-observation_concept_id,observation,,2000001150,SLiM-CRAB criteria: B,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000001147,SLiM-CRAB criteria: C,measurement,,,
-observation_concept_id,observation,,2000001147,SLiM-CRAB criteria: C,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000001152,SLiM-CRAB criteria: Li,measurement,,,
-observation_concept_id,observation,,2000001152,SLiM-CRAB criteria: Li,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000001153,SLiM-CRAB criteria: M,measurement,,,
-observation_concept_id,observation,,2000001153,SLiM-CRAB criteria: M,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000001148,SLiM-CRAB criteria: R,measurement,,,
-observation_concept_id,observation,,2000001148,SLiM-CRAB criteria: R,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000001151,SLiM-CRAB criteria: S,measurement,,,
-observation_concept_id,observation,,2000001151,SLiM-CRAB criteria: S,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,3015586,Segmented neutrophils [#/volume] in Blood,observation,,,
 measurement_concept_id,measurement,,3015586,Segmented neutrophils [#/volume] in Blood,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3031741,Smudge cells [#/volume] in Blood,observation,,,
 measurement_concept_id,measurement,,3031741,Smudge cells [#/volume] in Blood,,unit_concept_id,,Yes
-measurement_concept_id,measurement,observation_concept_id,3009106,TP53 gene mutations found [Identifier] in Blood or Tissue by Molecular genetics method Nominal,observation,,,
-measurement_concept_id,measurement,,3009106,TP53 gene mutations found [Identifier] in Blood or Tissue by Molecular genetics method Nominal,,value_as_concept_id,Yes,
-observation_concept_id,observation,measurement_concept_id,2000001136,No benefit is expected from further or modified induction therapy,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001134,Ongoing induction therapy,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001135,Patient decision,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001137,Patient failed to show up at transplantation center,measurement,,,
-observation_concept_id,observation,measurement_concept_id,2000001139,SCT not received for other reason,measurement,,,
-measurement_concept_id,measurement,observation_concept_id,2000001126,t(11;14) [identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001126,t(11;14) [identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001124,t(14;16) [Identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001124,t(14;16) [Identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001125,t(14;20) [Identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001125,t(14;20) [Identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001123,t(4;14) [Identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001123,t(4;14) [Identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
-measurement_concept_id,measurement,observation_concept_id,2000001127,t(6;14) [Identifier] in bone marrow by FISH,observation,,,
-measurement_concept_id,measurement,,2000001127,t(6;14) [Identifier] in bone marrow by FISH,,value_as_concept_id,Yes,
 measurement_concept_id,measurement,observation_concept_id,3001552,Prolymphocytes [#/volume] in Blood,observation,,,
 measurement_concept_id,measurement,,3001552,Prolymphocytes [#/volume] in Blood,,unit_concept_id,,Yes
 measurement_concept_id,measurement,observation_concept_id,3031793,Immature monocytes/100 leukocytes in Blood,observation,,,
