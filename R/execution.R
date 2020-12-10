@@ -27,7 +27,7 @@
   
   params <- c(list(sql = checkDescription$checkDescription),
               list(warnOnMissingParameters = FALSE),
-              unlist(columns, recursive = FALSE))
+              lapply(unlist(columns, recursive = FALSE), toupper))
   
   reportResult <- data.frame(
     NUM_VIOLATED_ROWS = NA,
@@ -205,21 +205,26 @@ executeDqChecks <- function(connectionDetails,
 if (tableCheckThresholdLoc == "default"){
       tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
                               package = "DataQualityDashboard"), 
+<<<<<<< HEAD
                               stringsAsFactors = FALSE)} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
                                                                                       stringsAsFactors = FALSE)                     
                               }
+=======
+                              stringsAsFactors = FALSE, na.strings = c(" ",""))} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
+                                                                                      stringsAsFactors = FALSE, na.strings = c(" ",""))}
+>>>>>>> 21ade6b1eb77ad296d9145fd1c812e362afa5b3a
   
 if (fieldCheckThresholdLoc == "default"){ 
     fieldChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
                                       package = "DataQualityDashboard"), 
-                          stringsAsFactors = FALSE)} else {fieldChecks <- read.csv(fieldCheckThresholdLoc, 
-                                                                                   stringsAsFactors = FALSE)}
+                          stringsAsFactors = FALSE, na.strings = c(" ",""))} else {fieldChecks <- read.csv(fieldCheckThresholdLoc, 
+                                                                                   stringsAsFactors = FALSE, na.strings = c(" ",""))}
   
 if (conceptCheckThresholdLoc == "default"){ 
   conceptChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion),
                                       package = "DataQualityDashboard"), 
-                          stringsAsFactors = FALSE)} else {conceptChecks <- read.csv(conceptCheckThresholdLoc, 
-                                                                                     stringsAsFactors = FALSE)}
+                          stringsAsFactors = FALSE, na.strings = c(" ",""))} else {conceptChecks <- read.csv(conceptCheckThresholdLoc, 
+                                                                                     stringsAsFactors = FALSE, na.strings = c(" ",""))}
   
   # ensure we use only checks that are intended to be run -----------------------------------------
   
@@ -237,7 +242,7 @@ if (conceptCheckThresholdLoc == "default"){
   # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   # fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   # conceptChecks <- conceptChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
-  
+
   
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |
@@ -464,8 +469,8 @@ if (conceptCheckThresholdLoc == "default"){
                                      checkResults[i,]$CDM_TABLE_NAME,
                                      checkResults[i,]$CDM_FIELD_NAME,
                                      checkResults[i,]$CONCEPT_ID,
-                                     checkResults[i,]$UNIT_CONCEPT_ID)
-          thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                     as.integer(checkResults[i,]$UNIT_CONCEPT_ID))
+          notesFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
                                   conceptChecks$conceptId == %s &
                                   conceptChecks$unitConceptId == '%s']",
@@ -473,7 +478,7 @@ if (conceptCheckThresholdLoc == "default"){
                                      checkResults[i,]$CDM_TABLE_NAME,
                                      checkResults[i,]$CDM_FIELD_NAME,
                                      checkResults[i,]$CONCEPT_ID,
-                                     checkResults[i,]$UNIT_CONCEPT_ID)
+                                     as.integer(checkResults[i,]$UNIT_CONCEPT_ID))
         } 
       }
       
@@ -619,7 +624,8 @@ writeJsonResultsToTable <- function(connectionDetails,
                                     resultsDatabaseSchema,
                                     jsonFilePath,
                                     writeTableName = "dqdashboard_results",
-                                    cohortDefinitionId = c()) {
+                                    cohortDefinitionId = c(), 
+                                    useMppBulkLoad = FALSE) {
   
   jsonData <- jsonlite::read_json(jsonFilePath)
   checkResults <- lapply(jsonData$CheckResults, function(cr) {
@@ -638,9 +644,9 @@ writeJsonResultsToTable <- function(connectionDetails,
   
   ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
   
-  if ("UNIT_CONCEPT_ID" %in% colnames(checkResults)){
+  if ("UNIT_CONCEPT_ID" %in% colnames(df)){
     ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
-  } else if ("CDM_FIELD_NAME" %in% colnames(checkResults)){
+  } else if ("CDM_FIELD_NAME" %in% colnames(df)){
     ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_field.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
   } else {
     ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_table.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
@@ -650,8 +656,9 @@ writeJsonResultsToTable <- function(connectionDetails,
   
   tryCatch(
     expr = {
-      DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = checkResults, 
-                                     dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE)
+      DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = df, 
+                                     dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE,
+                                     progressBar = TRUE)
       ParallelLogger::logInfo("Finished writing table")
     },
     error = function(e) {

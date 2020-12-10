@@ -1,7 +1,7 @@
 ---
 title: "Data Quality Check Type Definitions"
 author: "Clair Blacketer"
-date: "2020-08-07"
+date: "2020-08-10"
 header-includes:
     - \usepackage{fancyhdr}
     - \pagestyle{fancy}
