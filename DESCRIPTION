@@ -1,18 +1,19 @@
 Package: DataQualityDashboard
 Type: Package
 Title: Execute and View Data Quality Checks on OMOP CDM Database
-Version: 1.0.0
-Date: 2020-02-28
+Version: 2.0.6
+Date: 2020-11-30
 Authors@R: c(
   person("Clair", "Blacketer", , "mblacke@its.jnj.com", role = c("aut", "cre")),
   person("Ajit", "Londhe", role = c("aut")),
   person("Anthony", "Sena", role = c("aut")),
   person("Anthony", "Molinaro", role = c("aut")),
   person("Frank", "DeFalco", role = c("aut")),
-  person("Pavel", "Grafkin", role = c("aut"))
+  person("Pavel", "Grafkin", role = c("aut")),
+  person("Wout", "Vekemans", ,"wvekeman@its.jnj.com", role = c("aut"))
   )
-Maintainer: Clair Blacketer <mblacke@its.jnj.com>
-Description: An R package for assessing data quality in standardized OMOP Common Data Model data sources.
+Maintainer: Wout Vekemans <wvekeman@its.jnj.com>
+Description: An R package for assessing data quality in standardized OMOP Common Data Model data sources, adapted to work in the HONEUR ecosystem.
 License: Apache License 2.0
 VignetteBuilder: knitr
 URL: https://github.com/OHDSI/DataQualityDashboard
