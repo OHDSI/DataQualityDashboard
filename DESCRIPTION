@@ -25,12 +25,15 @@ Imports:
   ParallelLogger,
   dplyr,
   jsonlite,
+  rjson,
+  lubridate,
   SqlRender (>= 1.6.0),
   plyr
 Suggests:
   testthat,
   knitr,
   rmarkdown,
-  shiny
+  shiny,
+  ggplot2
 RoxygenNote: 7.1.1
 Encoding: UTF-8
