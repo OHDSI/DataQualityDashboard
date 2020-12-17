@@ -205,14 +205,8 @@ executeDqChecks <- function(connectionDetails,
 if (tableCheckThresholdLoc == "default"){
       tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
                               package = "DataQualityDashboard"), 
-<<<<<<< HEAD
-                              stringsAsFactors = FALSE)} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
-                                                                                      stringsAsFactors = FALSE)                     
-                              }
-=======
                               stringsAsFactors = FALSE, na.strings = c(" ",""))} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
                                                                                       stringsAsFactors = FALSE, na.strings = c(" ",""))}
->>>>>>> 21ade6b1eb77ad296d9145fd1c812e362afa5b3a
   
 if (fieldCheckThresholdLoc == "default"){ 
     fieldChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),

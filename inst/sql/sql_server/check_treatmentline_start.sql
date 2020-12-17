@@ -18,15 +18,22 @@ SELECT num_violated_rows,
 FROM
 (
 	SELECT count(*) AS num_violated_rows from
-	(SELECT
-		distinct 
-		tl.person_id,
-		tl.line_number,
-		tl.line_start_date!=min(tl.drug_era_start_date) as wrong
-	FROM @cdmDatabaseSchema.treatment_line tl 
-	group by line_number, person_id
-	) violated_rows
-	where wrong
+	(SELECT * FROM 	
+		(SELECT 
+			person_id, 
+			min(drug_era_start_date) AS min_era, 
+			line_number 
+		FROM @cdmDatabaseSchema.treatment_line tl 
+		GROUP BY tl.person_id, tl.line_number ) min_table
+		LEFT JOIN 
+		(SELECT 
+			person_id, 
+			line_number, 
+			line_start_date 
+		FROM @cdmDatabaseSchema.treatment_line tl2) tr_table 
+		ON min_table.person_id = tr_table.person_id AND min_table.line_number = tr_table.line_number
+		WHERE line_start_date != min_era
+		) violated_rows
 	) violated_row_count,
 ( 
 	SELECT COUNT(*) AS num_rows
