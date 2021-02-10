@@ -27,7 +27,7 @@ createDefaultMessageSender <- function() {
 }
 
 createWsMessageSender <- function(userId) {
-  ws <- WebSocket$new("ws://10.110.1.7:8001/progress", autoConnect = FALSE)
+  ws <- WebSocket$new("ws://10.110.1.7:8001/dqd/progress", autoConnect = FALSE)
 
   ws$onOpen(function(event) {
     cat("Connection opened\n")
