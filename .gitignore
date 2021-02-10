@@ -66,3 +66,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### File storage location ###
+uploads
+
+### Static resources ###
+src/main/resources/static
