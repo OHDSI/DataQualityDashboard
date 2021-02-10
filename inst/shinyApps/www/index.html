@@ -144,7 +144,7 @@
     const queryString = window.location.search
     const urlParams = new URLSearchParams(queryString)
     const fileName = urlParams.get('result')
-    const url = `/api/download/${fileName}`
+    const url = `dqd/api/download/${fileName}`
 
     $.ajax({
       dataType: "json",
