@@ -37,20 +37,19 @@ public class RConnectionCreator {
     * A new Rserve connection on the corresponding port has to be established as well. */
     @SneakyThrows
     public RConnectionWrapper createRConnection() {
-        if (isUnix()) {
-            RConnection connection = new RConnection(host, port);
+        RConnection connection;
 
-            return new RConnectionWrapper(connection);
+        if (isUnix()) {
+            connection = new RConnection(host, port);
         } else {
             int currentPort = getAndIncrementCurrentPort();
             createRServeProcess(currentPort);
-            RConnection connection = new RConnection(host, currentPort);
-
-            RConnectionWrapper connectionWrapper = new RConnectionWrapper(connection);
-            connectionWrapper.loadScripts();
-
-            return connectionWrapper;
+            connection = new RConnection(host, currentPort);
         }
+        RConnectionWrapper connectionWrapper = new RConnectionWrapper(connection);
+        connectionWrapper.loadScripts();
+
+        return connectionWrapper;
     }
 
     @SneakyThrows

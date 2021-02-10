@@ -2,14 +2,11 @@ package com.arcadia.DataQualityDashboard.service;
 
 import com.arcadia.DataQualityDashboard.dto.DbSettings;
 import com.arcadia.DataQualityDashboard.properties.RServeProperties;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class RConnectionWrapperTest {
-    private RConnectionWrapper rConnectionWrapper;
 
     private final RServeProperties properties = new RServeProperties(
             "",
@@ -27,27 +24,21 @@ class RConnectionWrapperTest {
             "builder1!"
     );
 
-    @SneakyThrows
-    @BeforeEach
-    void setUp() {
-        RConnectionCreator creator = new RConnectionCreator(properties);
-        rConnectionWrapper = creator.createRConnection();
-        rConnectionWrapper.loadScripts();
-    }
-
-    @AfterEach
-    void tearDown() {
-        rConnectionWrapper.close();
-    }
-
     @Test
     void loadScripts() {
-        // Loading in setUp method
+        RConnectionCreator creator = new RConnectionCreator(properties);
+        RConnectionWrapper connection = creator.createRConnection();
+        connection.loadScripts();
+        connection.close();
     }
 
     @Test
     void dataQualityCheck() throws RException, DbTypeNotSupportedException {
-        String result = rConnectionWrapper.checkDataQuality(dbSettings, "");
+        RConnectionCreator creator = new RConnectionCreator(properties);
+        RConnectionWrapper connection = creator.createRConnection();
+        String result = connection.checkDataQuality(dbSettings, "");
+        connection.close();
+
         assertNotNull(result);
     }
 }
