@@ -161,7 +161,19 @@ executeDqChecks <- function(connectionDetails,
                             conceptCheckThresholdLoc = "default") {
   
   options(scipen = 999)
-  outputFolder <- file.path(outputFolder, cdmSourceName)
+
+  # capture metadata -----------------------------------------------------------------------
+  connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
+  sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
+                           cdmDatabaseSchema = cdmDatabaseSchema)
+  sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
+  metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
+  if (nrow(metadata)<1) {
+    stop("Please populate the cdm_source table before executing data quality checks.")
+  }
+  metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
+  DatabaseConnector::disconnect(connection)
+  outputFolder <- file.path(outputFolder, tolower(metadata$CDM_SOURCE_ABBREVIATION))
   
   if (!dir.exists(outputFolder)) {
     dir.create(path = outputFolder, recursive = TRUE)
@@ -296,7 +308,8 @@ if (conceptCheckThresholdLoc == "default"){
                                     startTime = startTime,
                                     tableChecks = tableChecks, 
                                     fieldChecks = fieldChecks,
-                                    conceptChecks = conceptChecks)
+                                    conceptChecks = conceptChecks,
+                                    metadata = metadata)
     
     ParallelLogger::logInfo("Execution Complete")  
   }
@@ -321,7 +334,7 @@ if (conceptCheckThresholdLoc == "default"){
   
   ParallelLogger::unregisterLogger("DqDashboard")
   
-  return(allResults$CheckResults)
+  return(allResults)
 }
 
 .runCheck <- function(checkDescription, 
@@ -505,21 +518,13 @@ if (conceptCheckThresholdLoc == "default"){
                               startTime,
                               tableChecks,
                               fieldChecks,
-                              conceptChecks) {
+                              conceptChecks,
+                              metadata) {
   
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection = connection))
   
-  # capture metadata -----------------------------------------------------------------------
-  sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
-                           cdmDatabaseSchema = cdmDatabaseSchema)
-  sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
-  metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
-  
-  metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
-  
   # evaluate thresholds-------------------------------------------------------------------
-  
   checkResults <- .evaluateThresholds(checkResults = checkResults, 
                                       tableChecks = tableChecks, 
                                       fieldChecks = fieldChecks,
@@ -580,11 +585,18 @@ if (conceptCheckThresholdLoc == "default"){
                  Overview = overview)
   
   resultJson <- jsonlite::toJSON(result)
-  write(resultJson, file.path(outputFolder, sprintf("results_%s.json", cdmSourceName)))
+  
+  endTimestamp <- endTime 
+  endTimestamp <- gsub("-","",endTimestamp)
+  endTimestamp <- gsub(" ","-",endTimestamp)
+  endTimestamp <- gsub(":","",endTimestamp)  
+  
+  resultFilename <- file.path(outputFolder, sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp))
+  ParallelLogger::logInfo(sprintf("Writing results to file: %s", resultFilename))
+  write(resultJson, resultFilename)
   
   result
 }
-
 
 #' Write JSON Results to SQL Table
 #' 
