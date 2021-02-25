@@ -7,6 +7,10 @@ Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
+{@cohort & '@runForCohort' == 'Yes'}?{
+cohortDefinitionId = @cohortDefinitionId
+cohortDatabaseSchema = @cohortDatabaseSchema
+}
 **********/
 
 
@@ -19,13 +23,23 @@ FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.*
     from @cdmDatabaseSchema.@cdmTableName cdmTable
+    {@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT c 
+    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
+    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
     join @cdmDatabaseSchema.death de on cdmTable.person_id = de.person_id
     where cast(cdmTable.@cdmFieldName as date) > dateadd(day, 60, cast(de.death_date as date)) 
 	) violated_rows
 ) violated_row_count,
 (
 	SELECT COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName
+	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+	{@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT c 
+    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
+    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
 	where person_id in
 	( select person_id from @cdmDatabaseSchema.death )
 ) denominator

@@ -4,7 +4,14 @@
 \alias{writeJsonResultsToTable}
 \title{Write JSON Results to SQL Table}
 \usage{
-writeJsonResultsToTable(connectionDetails, resultsDatabaseSchema, jsonFilePath)
+writeJsonResultsToTable(
+  connectionDetails,
+  resultsDatabaseSchema,
+  jsonFilePath,
+  writeTableName = "dqdashboard_results",
+  cohortDefinitionId = c(),
+  useMppBulkLoad = FALSE
+)
 }
 \arguments{
 \item{connectionDetails}{A connectionDetails object for connecting to the CDM database}

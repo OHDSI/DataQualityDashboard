@@ -9,7 +9,10 @@ cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 cdmSourceFieldName = @cdmSourceFieldName
-
+{@cohort & '@runForCohort' == 'Yes'}?{
+cohortDefinitionId = @cohortDefinitionId
+cohortDatabaseSchema = @cohortDatabaseSchema
+}
 
 **********/
 
@@ -23,12 +26,22 @@ FROM
 	(
 		SELECT cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		{@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT c 
+    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
+    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
 		WHERE (cdmTable.@cdmFieldName = 0 OR cdmTable.@cdmFieldName IS NULL)
 		AND (cdmTable.@cdmSourceFieldName = 0 OR cdmTable.@cdmSourceFieldName IS NULL)
 	) violated_rows
 ) violated_row_count,
 ( 
 	SELECT COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName
+	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+	{@cohort & '@runForCohort' == 'Yes'}?{
+    	JOIN @cohortDatabaseSchema.COHORT c 
+    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
+    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	}
 ) denominator
 ;

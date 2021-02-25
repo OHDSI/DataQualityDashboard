@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Execute and View Data Quality Checks on OMOP CDM Database • DataQualityDashboard</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Execute and View Data Quality Checks on OMOP CDM Database">
 <meta property="og:description" content="An R package for assessing data quality in standardized OMOP Common Data Model data sources.">
 <meta name="twitter:card" content="summary">
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -43,13 +44,34 @@
   </a>
 </li>
 <li>
+  <a href="articles/DataQualityDashboard.html">Get started</a>
+</li>
+<li>
   <a href="reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
+    </li>
+    <li>
+      <a href="articles/DqdForCohorts.html">Running the DQD on a Cohort</a>
+    </li>
+    <li>
+      <a href="articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
+    </li>
+  </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -62,6 +84,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="contents col-md-9">
 
@@ -69,13 +92,26 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#dataqualitydashboard" class="anchor"></a>DataQualityDashboard</h1></div>
 
-<p>The DataQualityDashboard is a tool to help improve data quality standards in observational data science.</p>
-<p><img src="https://github.com/OHDSI/DataQualityDashboard/raw/master/extras/dqDashboardScreenshot.png"></p>
+<p>The goal of the Data Quality Dashboard (DQD) project is to design and develop an open-source tool to expose and evaluate observational data quality.</p>
 </div>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>An R package for characterizing the data quality of a person-level data source that has been converted into the OMOP CDM 5.3.1 format.</p>
+<p>This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.3.1 and v5.2.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way.</p>
+</div>
+<div id="overview" class="section level1">
+<h1 class="hasAnchor">
+<a href="#overview" class="anchor"></a>Overview</h1>
+<p>The quality checks were organized according to the Kahn Framework<sup id="kahn"><a href="#f1">1</a></sup> which uses a system of categories and contexts that represent stratgies for assessing data quality. For an introduction to the kahn framework please click <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/">here</a>.</p>
+<p>Using this framework, the Data Quality Dashboard takes a systematic-based approach to running data quality checks. Instead of writing thousands of individual checks, we use “data quality check types”. These “check types” are more general, parameterized data quality checks into which OMOP tables, fields, and concepts can be substituted to represent a singular data quality idea. For example, one check type might be written as</p>
+<p><em>The number and percent of records with a value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> table less than <strong>plausibleValueLow</strong>.</em></p>
+<p>This would be considered an atemporal plausibility verification check because we are looking for implausibly low values in some field based on internal knowledge. We can use this check type to substitute in values for <strong>cdmFieldName</strong>, <strong>cdmTableName</strong>, and <strong>plausibleValueLow</strong> to create a unique data quality check. If we apply it to PERSON.YEAR_OF_BIRTH here is how that might look:</p>
+<p><em>The number and percent of records with a value in the <strong>year_of_birth</strong> field of the <strong>PERSON</strong> table less than <strong>1850</strong>.</em></p>
+<p>And, since it is parameterized, we can similarly apply it to DRUG_EXPOSURE.days_supply:</p>
+<p><em>The number and percent of records with a value in the <strong>days_supply</strong> field of the <strong>DRUG_EXPOSURE</strong> table less than <strong>0</strong>.</em></p>
+<p>Version 1 of the tool includes 20 different check types organized into Kahn contexts and categories. Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs. For a detailed description and definition of each check type please click <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions">here</a>.</p>
+<p>After systematically applying the 20 check types to an OMOP CDM version approximately 3,351 individual data quality checks are resolved, run against the database, and evaluated based on a pre-specified threshold. The R package then creates a json object that is read into an RShiny application to view the results.</p>
+<p><img src="https://github.com/OHDSI/DataQualityDashboard/raw/master/extras/dqDashboardScreenshot.png"></p>
 </div>
 <div id="features" class="section level1">
 <h1 class="hasAnchor">
@@ -96,102 +132,6 @@
 <a href="#system-requirements" class="anchor"></a>System Requirements</h1>
 <p>Requires R (version 3.2.2 or higher). Requires <a href="https://github.com/OHDSI/DatabaseConnector">DatabaseConnector</a> and <a href="https://github.com/OHDSI/SqlRender">SqlRender</a>.</p>
 </div>
-<div id="r-installation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#r-installation" class="anchor"></a>R Installation</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"devtools"</span>)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"OHDSI/DataQualityDashboard"</span>)</a></code></pre></div>
-</div>
-<div id="executing-data-quality-checks" class="section level1">
-<h1 class="hasAnchor">
-<a href="#executing-data-quality-checks" class="anchor"></a>Executing Data Quality Checks</h1>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co"># fill out the connection details -----------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">connectionDetails &lt;-<span class="st"> </span>DatabaseConnector<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DatabaseConnector/topics/createConnectionDetails">createConnectionDetails</a></span>(<span class="dt">dbms =</span> <span class="st">""</span>, </a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">                                                              <span class="dt">user =</span> <span class="st">""</span>, </a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">                                                              <span class="dt">password =</span> <span class="st">""</span>, </a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">                                                              <span class="dt">server =</span> <span class="st">""</span>, </a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">                                                              <span class="dt">port =</span> <span class="st">""</span>, </a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">                                                              <span class="dt">extraSettings =</span> <span class="st">""</span>)</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">cdmDatabaseSchema &lt;-<span class="st"> "yourCdmSchema"</span> <span class="co"># the fully qualified database schema name of the CDM</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">resultsDatabaseSchema &lt;-<span class="st"> "yourResultsSchema"</span> <span class="co"># the fully qualified database schema name of the results schema (that you can write to)</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">cdmSourceName &lt;-<span class="st"> "Your CDM Source"</span> <span class="co"># a human readable name for your CDM source</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co"># determine how many threads (concurrent SQL sessions) to use ----------------------------------------</span></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15">numThreads &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># on Redshift, 3 seems to work well</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co"># specify if you want to execute the queries or inspect them ------------------------------------------</span></a>
-<a class="sourceLine" id="cb2-18" data-line-number="18">sqlOnly &lt;-<span class="st"> </span><span class="ot">FALSE</span> <span class="co"># set to TRUE if you just want to get the SQL scripts and not actually run the queries</span></a>
-<a class="sourceLine" id="cb2-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co"># where should the logs go? -------------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb2-21" data-line-number="21">outputFolder &lt;-<span class="st"> "output"</span></a>
-<a class="sourceLine" id="cb2-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co"># logging type -------------------------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb2-24" data-line-number="24">verboseMode &lt;-<span class="st"> </span><span class="ot">FALSE</span> <span class="co"># set to TRUE if you want to see activity written to the console</span></a>
-<a class="sourceLine" id="cb2-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co"># write results to table? ------------------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb2-27" data-line-number="27">writeToTable &lt;-<span class="st"> </span><span class="ot">TRUE</span> <span class="co"># set to FALSE if you want to skip writing to a SQL table in the results schema</span></a>
-<a class="sourceLine" id="cb2-28" data-line-number="28"></a>
-<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co"># if writing to table and using Redshift, bulk loading can be initialized -------------------------------</span></a>
-<a class="sourceLine" id="cb2-30" data-line-number="30"></a>
-<a class="sourceLine" id="cb2-31" data-line-number="31"><span class="co"># Sys.setenv("AWS_ACCESS_KEY_ID" = "",</span></a>
-<a class="sourceLine" id="cb2-32" data-line-number="32"><span class="co">#            "AWS_SECRET_ACCESS_KEY" = "",</span></a>
-<a class="sourceLine" id="cb2-33" data-line-number="33"><span class="co">#            "AWS_DEFAULT_REGION" = "",</span></a>
-<a class="sourceLine" id="cb2-34" data-line-number="34"><span class="co">#            "AWS_BUCKET_NAME" = "",</span></a>
-<a class="sourceLine" id="cb2-35" data-line-number="35"><span class="co">#            "AWS_OBJECT_KEY" = "",</span></a>
-<a class="sourceLine" id="cb2-36" data-line-number="36"><span class="co">#            "AWS_SSE_TYPE" = "AES256",</span></a>
-<a class="sourceLine" id="cb2-37" data-line-number="37"><span class="co">#            "USE_MPP_BULK_LOAD" = TRUE)</span></a>
-<a class="sourceLine" id="cb2-38" data-line-number="38"></a>
-<a class="sourceLine" id="cb2-39" data-line-number="39"><span class="co"># which DQ check levels to run -------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb2-40" data-line-number="40">checkLevels &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"TABLE"</span>, <span class="st">"FIELD"</span>, <span class="st">"CONCEPT"</span>)</a>
-<a class="sourceLine" id="cb2-41" data-line-number="41"></a>
-<a class="sourceLine" id="cb2-42" data-line-number="42"><span class="co"># which DQ checks to run? ------------------------------------</span></a>
-<a class="sourceLine" id="cb2-43" data-line-number="43"></a>
-<a class="sourceLine" id="cb2-44" data-line-number="44">checkNames &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>() <span class="co"># Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv</span></a>
-<a class="sourceLine" id="cb2-45" data-line-number="45"></a>
-<a class="sourceLine" id="cb2-46" data-line-number="46"><span class="co"># run the job --------------------------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb2-47" data-line-number="47">DataQualityDashboard<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DataQualityDashboard/topics/executeDqChecks">executeDqChecks</a></span>(<span class="dt">connectionDetails =</span> connectionDetails, </a>
-<a class="sourceLine" id="cb2-48" data-line-number="48">                                    <span class="dt">cdmDatabaseSchema =</span> cdmDatabaseSchema, </a>
-<a class="sourceLine" id="cb2-49" data-line-number="49">                                    <span class="dt">resultsDatabaseSchema =</span> resultsDatabaseSchema,</a>
-<a class="sourceLine" id="cb2-50" data-line-number="50">                                    <span class="dt">cdmSourceName =</span> cdmSourceName, </a>
-<a class="sourceLine" id="cb2-51" data-line-number="51">                                    <span class="dt">numThreads =</span> numThreads,</a>
-<a class="sourceLine" id="cb2-52" data-line-number="52">                                    <span class="dt">sqlOnly =</span> sqlOnly, </a>
-<a class="sourceLine" id="cb2-53" data-line-number="53">                                    <span class="dt">outputFolder =</span> outputFolder, </a>
-<a class="sourceLine" id="cb2-54" data-line-number="54">                                    <span class="dt">verboseMode =</span> verboseMode,</a>
-<a class="sourceLine" id="cb2-55" data-line-number="55">                                    <span class="dt">writeToTable =</span> writeToTable,</a>
-<a class="sourceLine" id="cb2-56" data-line-number="56">                                    <span class="dt">checkLevels =</span> checkLevels,</a>
-<a class="sourceLine" id="cb2-57" data-line-number="57">                                    <span class="dt">checkNames =</span> checkNames)</a>
-<a class="sourceLine" id="cb2-58" data-line-number="58"></a>
-<a class="sourceLine" id="cb2-59" data-line-number="59"><span class="co"># inspect logs ----------------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb2-60" data-line-number="60">ParallelLogger<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/ParallelLogger/topics/launchLogViewer">launchLogViewer</a></span>(<span class="dt">logFileName =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(outputFolder, cdmSourceName, </a>
-<a class="sourceLine" id="cb2-61" data-line-number="61">                                                      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sprintf">sprintf</a></span>(<span class="st">"log_DqDashboard_%s.txt"</span>, cdmSourceName)))</a>
-<a class="sourceLine" id="cb2-62" data-line-number="62"></a>
-<a class="sourceLine" id="cb2-63" data-line-number="63"><span class="co"># (OPTIONAL) if you want to write the JSON file to the results table separately -----------------------------</span></a>
-<a class="sourceLine" id="cb2-64" data-line-number="64">jsonFilePath &lt;-<span class="st"> ""</span></a>
-<a class="sourceLine" id="cb2-65" data-line-number="65">DataQualityDashboard<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DataQualityDashboard/topics/writeJsonResultsToTable">writeJsonResultsToTable</a></span>(<span class="dt">connectionDetails =</span> connectionDetails, </a>
-<a class="sourceLine" id="cb2-66" data-line-number="66">                                            <span class="dt">resultsDatabaseSchema =</span> resultsDatabaseSchema, </a>
-<a class="sourceLine" id="cb2-67" data-line-number="67">                                            <span class="dt">jsonFilePath =</span> jsonFilePath)</a>
-<a class="sourceLine" id="cb2-68" data-line-number="68">                                            </a></code></pre></div>
-</div>
-<div id="viewing-results" class="section level1">
-<h1 class="hasAnchor">
-<a href="#viewing-results" class="anchor"></a>Viewing Results</h1>
-<p><strong>Launching Dashboard as Shiny App</strong></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">DataQualityDashboard<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DataQualityDashboard/topics/viewDqDashboard">viewDqDashboard</a></span>(<span class="dt">jsonPath =</span> <span class="st">"full_path_to_json_file.json"</span>)</a></code></pre></div>
-<p><strong>Launching on a web server</strong></p>
-<p>If you have npm installed:</p>
-<ol>
-<li>Install http-server:</li>
-</ol>
-<pre><code>npm install -g http-server</code></pre>
-<ol>
-<li><p>Rename the json file to <em>results.json</em> and place it in inst/shinyApps/www</p></li>
-<li><p>Go to inst/shinyApps/www, then run:</p></li>
-</ol>
-<pre><code>http-server</code></pre>
-<p>A results JSON file for the Synthea synthetic dataset will be shown. You can view your results by replacing the results.json file with your file (with name results.json).</p>
-</div>
 <div id="support" class="section level1">
 <h1 class="hasAnchor">
 <a href="#support" class="anchor"></a>Support</h1>
@@ -208,13 +148,14 @@
 <div id="development-status" class="section level3">
 <h3 class="hasAnchor">
 <a href="#development-status" class="anchor"></a>Development status</h3>
-<p>In early development phase. Not ready for use.</p>
+<p>V1.0 ready for use.</p>
 </div>
 </div>
 <div id="acknowledgements" class="section level1">
 <h1 class="hasAnchor">
 <a href="#acknowledgements" class="anchor"></a>Acknowledgements</h1>
 <p>This project is supported in part through the National Science Foundation grant IIS 1251151.</p>
+<p><b id="f1">1</b> Kahn, M.G., et al., A Harmonized Data Quality Assessment Terminology and Framework for the Secondary Use of Electronic Health Record Data. EGEMS (Wash DC), 2016. 4(1): p. 1244. <a href="#kahn">↩</a></p>
 </div>
 
   </div>
@@ -259,17 +200,20 @@
 </div>
 </div>
 
+
       <footer><div class="copyright">
   <p>Developed by Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

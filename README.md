@@ -4,14 +4,37 @@ DataQualityDashboard
 [![Build Status](https://travis-ci.org/OHDSI/DataQualityDashboard.svg?branch=master)](https://travis-ci.org/OHDSI/DataQualityDashboard)
 [![codecov.io](https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=master)](https://codecov.io/github/OHDSI/DataQualityDashboard?branch=master)
 
-
-The DataQualityDashboard is a tool to help improve data quality standards in observational data science.
-
-<img src="https://github.com/OHDSI/DataQualityDashboard/raw/master/extras/dqDashboardScreenshot.png"/>
+The goal of the Data Quality Dashboard (DQD) project is to design and develop an open-source tool to expose and evaluate observational data quality. 
 
 Introduction
 ============
-An R package for characterizing the data quality of a person-level data source that has been converted into the OMOP CDM 5.3.1 format.
+
+This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.3.1 and v5.2.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way. 
+
+Overview
+========
+
+The quality checks were organized according to the Kahn Framework<sup id="kahn">[1](#f1)</sup> which uses a system of categories and contexts that represent stratgies for assessing data quality. For an introduction to the kahn framework please click [here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/). 
+
+Using this framework, the Data Quality Dashboard takes a systematic-based approach to running data quality checks. Instead of writing thousands of individual checks, we use “data quality check types”. These “check types” are more general, parameterized data quality checks into which OMOP tables, fields, and concepts can be substituted to represent a singular data quality idea. For example, one check type might be written as 
+
+*The number and percent of records with a value in the **cdmFieldName** field of the **cdmTableName** table less than **plausibleValueLow**.*
+
+This would be considered an atemporal plausibility verification check because we are looking for implausibly low values in some field based on internal knowledge. We can use this check type to substitute in values for **cdmFieldName**, **cdmTableName**, and **plausibleValueLow** to create a unique data quality check. If we apply it to PERSON.YEAR_OF_BIRTH here is how that might look: 
+
+*The number and percent of records with a value in the **year_of_birth** field of the **PERSON** table less than **1850**.* 
+
+And, since it is parameterized, we can similarly apply it to DRUG_EXPOSURE.days_supply: 
+
+*The number and percent of records with a value in the **days_supply** field of the **DRUG_EXPOSURE** table less than **0**.* 
+
+Version 1 of the tool includes 20 different check types organized into Kahn contexts and categories. Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs. For a detailed description and definition of each check type please click [here](https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions). 
+
+After systematically applying the 20 check types to an OMOP CDM version approximately 3,351 individual data quality checks are resolved, run against the database, and evaluated based on a pre-specified threshold. The R package then creates a json object that is read into an RShiny application to view the results.
+
+
+<img src="https://github.com/OHDSI/DataQualityDashboard/raw/master/extras/dqDashboardScreenshot.png"/>
+
 
 Features
 ========
@@ -27,126 +50,6 @@ DataQualityDashboard is an R package
 System Requirements
 ===================
 Requires R (version 3.2.2 or higher). Requires [DatabaseConnector](https://github.com/OHDSI/DatabaseConnector) and [SqlRender](https://github.com/OHDSI/SqlRender).
-
-R Installation
-===============
-
-```r
-install.packages("devtools")
-devtools::install_github("OHDSI/DataQualityDashboard")
-```
-
-Executing Data Quality Checks
-==============================
-  ```r
-
-# fill out the connection details -----------------------------------------------------------------------
-connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "", 
-                                                                user = "", 
-                                                                password = "", 
-                                                                server = "", 
-                                                                port = "", 
-                                                                extraSettings = "")
-
-cdmDatabaseSchema <- "yourCdmSchema" # the fully qualified database schema name of the CDM
-resultsDatabaseSchema <- "yourResultsSchema" # the fully qualified database schema name of the results schema (that you can write to)
-cdmSourceName <- "Your CDM Source" # a human readable name for your CDM source
-
-# determine how many threads (concurrent SQL sessions) to use ----------------------------------------
-numThreads <- 1 # on Redshift, 3 seems to work well
-
-# specify if you want to execute the queries or inspect them ------------------------------------------
-sqlOnly <- FALSE # set to TRUE if you just want to get the SQL scripts and not actually run the queries
-
-# where should the logs go? -------------------------------------------------------------------------
-outputFolder <- "output"
-
-# logging type -------------------------------------------------------------------------------------
-verboseMode <- FALSE # set to TRUE if you want to see activity written to the console
-
-# write results to table? ------------------------------------------------------------------------------
-writeToTable <- TRUE # set to FALSE if you want to skip writing to a SQL table in the results schema
-
-# if writing to table and using Redshift, bulk loading can be initialized -------------------------------
-
-# Sys.setenv("AWS_ACCESS_KEY_ID" = "",
-#            "AWS_SECRET_ACCESS_KEY" = "",
-#            "AWS_DEFAULT_REGION" = "",
-#            "AWS_BUCKET_NAME" = "",
-#            "AWS_OBJECT_KEY" = "",
-#            "AWS_SSE_TYPE" = "AES256",
-#            "USE_MPP_BULK_LOAD" = TRUE)
-
-# which DQ check levels to run -------------------------------------------------------------------
-checkLevels <- c("TABLE", "FIELD", "CONCEPT")
-
-# which DQ checks to run? ------------------------------------
-
-checkNames <- c() # Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv
-
-# run the job --------------------------------------------------------------------------------------
-DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails, 
-                                      cdmDatabaseSchema = cdmDatabaseSchema, 
-                                      resultsDatabaseSchema = resultsDatabaseSchema,
-                                      cdmSourceName = cdmSourceName, 
-                                      numThreads = numThreads,
-                                      sqlOnly = sqlOnly, 
-                                      outputFolder = outputFolder, 
-                                      verboseMode = verboseMode,
-                                      writeToTable = writeToTable,
-                                      checkLevels = checkLevels,
-                                      checkNames = checkNames)
-
-# inspect logs ----------------------------------------------------------------------------
-ParallelLogger::launchLogViewer(logFileName = file.path(outputFolder, cdmSourceName, 
-                                                        sprintf("log_DqDashboard_%s.txt", cdmSourceName)))
-
-# (OPTIONAL) if you want to write the JSON file to the results table separately -----------------------------
-jsonFilePath <- ""
-DataQualityDashboard::writeJsonResultsToTable(connectionDetails = connectionDetails, 
-                                              resultsDatabaseSchema = resultsDatabaseSchema, 
-                                              jsonFilePath = jsonFilePath)
-                                              
-
-```
-
-Viewing Results
-================
-
-**Launching Dashboard as Shiny App**
-```r
-DataQualityDashboard::viewDqDashboard(jsonPath = file.path(getwd(), outputFolder, cdmSourceName, sprintf("results_%s.json", cdmSourceName)))
-```
-
-**Launching on a web server**
-
-If you have npm installed:
-
-1. Install http-server:
-
-```
-npm install -g http-server
-```
-
-2. Rename the json file to *results.json* and place it in inst/shinyApps/www
-
-3. Go to inst/shinyApps/www, then run:
-
-```
-http-server
-```
-
-A results JSON file for the Synthea synthetic dataset will be shown. You can view your results by replacing the results.json file with your file (with name results.json).
-
-
-
-View checks
-===========
-To see description of checks using R, execute the command bellow:
-```
-View(read.csv(system.file("csv","OMOP_CDMv5.3.1_Check_Descriptions.csv",package="DataQualityDashboard"),as.is=T))
-```
-
 
 Support
 =======
@@ -165,3 +68,6 @@ V1.0 ready for use.
 # Acknowledgements
 
 This project is supported in part through the National Science Foundation grant IIS 1251151.
+
+<b id="f1">1</b> Kahn, M.G., et al., A Harmonized Data Quality Assessment Terminology and Framework for the Secondary Use of Electronic Health Record Data. EGEMS (Wash DC), 2016. 4(1): p. 1244. [↩](#kahn)
+

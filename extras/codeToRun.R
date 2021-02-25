@@ -42,6 +42,10 @@ checkLevels <- c("TABLE", "FIELD", "CONCEPT")
 
 checkNames <- c() #Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv
 
+# which CDM tables to exclude? ------------------------------------
+
+tablesToExclude <- c() 
+
 # run the job --------------------------------------------------------------------------------------
 DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails, 
                               cdmDatabaseSchema = cdmDatabaseSchema, 
@@ -53,6 +57,7 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                               verboseMode = verboseMode,
                               writeToTable = writeToTable,
                               checkLevels = checkLevels,
+                              tablesToExclude = tablesToExclude,
                               checkNames = checkNames)
 
 # inspect logs ----------------------------------------------------------------------------

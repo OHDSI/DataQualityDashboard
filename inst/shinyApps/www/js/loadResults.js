@@ -1,7 +1,7 @@
 function loadResults(results) {
     $('dq-metadata-heading').attr('data-results', JSON.stringify(results));
     $('dq-dashboard').attr('data-results', JSON.stringify(results.CheckResults));
-    
+
     var metadata = results.Metadata[0];
     $('cdm-source-name').text(metadata.CDM_SOURCE_NAME);
     $('dq-metadata').attr('data-results', JSON.stringify(metadata));
@@ -11,6 +11,18 @@ function loadResults(results) {
         thresholdMessage = ''
         if (d.THRESHOLD_VALUE != undefined) {
             thresholdMessage = ' (Threshold=' + d.THRESHOLD_VALUE + '%)';
+        }
+        if (d.NOTES_VALUE == undefined) {
+            d.NOTES_VALUE = '';
+        }
+        if (d.CONCEPT_ID == undefined) {
+            d.CONCEPT_ID = '';
+        }
+        if (d.UNIT_CONCEPT_ID == undefined) {
+            d.UNIT_CONCEPT_ID = '';
+        }
+        if (d.CDM_FIELD_NAME == undefined) {
+            d.CDM_FIELD_NAME = '';
         }
         if (d.ERROR) {
             errorMessage = d.ERROR;
@@ -23,6 +35,10 @@ function loadResults(results) {
             '<tr>' +
             '<td>Description:</td>' +
             '<td>' + d.CHECK_DESCRIPTION + thresholdMessage + '.</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>Notes:</td>' +
+            '<td>' + d.NOTES_VALUE + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Level:</td>' +
@@ -74,7 +90,7 @@ function loadResults(results) {
     var dtResults = $('#dt-results').DataTable({
         dom: '<B>l<fr<t>ip>',
         lengthMenu: [[5, 10, -1], [5, 10, "All"]],
-        order: [[7, "desc"]],
+        order: [[10, "desc"]],
         buttons: [
             'colvis',
             'csvHtml5'
@@ -83,7 +99,7 @@ function loadResults(results) {
         initComplete: function () {
             this.api().columns().every(function (d) {
                 var column = this;
-                if ([0, 6, 7].includes(d))
+                if ([0, 9, 10].includes(d))
                     return;
                 var select = $('<select><option value=""></option></select>')
                     .appendTo($(column.header()))
@@ -111,12 +127,15 @@ function loadResults(results) {
                 "defaultContent": ''
             },
             { data: function (d) { if (d.FAILED == 0) { return "PASS" } else { return "FAIL" } }, title: "STATUS", className: 'dt-body-right' },
-            { data: function (d) { return d.CONTEXT ? d.CONTEXT : "None"; }, title: "CONTEXT" },
+            /*{ data: function (d) { return d.CONTEXT ? d.CONTEXT : "None"; }, title: "CONTEXT" },*/
+            { data: "CDM_TABLE_NAME", title: "TABLE"},
+            { data: function (d) { return d.CDM_FIELD_NAME ? d.CDM_FIELD_NAME : "None"; }, title: "FIELD", visible: false },
+            { data: "CHECK_NAME", title: "CHECK", visible: false},
             { data: "CATEGORY", title: "CATEGORY" },
             { data: function (d) { return d.SUBCATEGORY ? d.SUBCATEGORY : "None" }, title: "SUBCATEGORY" },
             { data: "CHECK_LEVEL", title: "LEVEL" },
-            /*{ data: function (d) { return d.CDM_TABLE_NAME ? d.CDM_TABLE_NAME : "None" }, title: "TABLE" },
-            { data: function (d) { return d.CDM_FIELD_NAME ? d.CDM_FIELD_NAME : "None" }, title: "FIELD" },*/
+            { data: function (d) { if (d.NOTES_VALUE == null) { return "None"; } else { return "Exists"; } }, title: "NOTES" },
+            
             {
                 data: function (d) {
                     thresholdMessage = '';
@@ -130,7 +149,7 @@ function loadResults(results) {
         ],
         columnDefs: [{
             targets: [0, 1, 2, 3, 4, 5, 6],
-            orderable: false
+            orderable: true
         }]
     });
 
