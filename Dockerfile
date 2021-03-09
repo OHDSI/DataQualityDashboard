@@ -14,7 +14,7 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-RUN ./mvnw install -DskipTests -Dspring-boot.run.profiles=${prop}
+RUN ./mvnw install -DskipTests -P${prop}
 
 # 2nd Run Step
 FROM openjdk:15-oracle
