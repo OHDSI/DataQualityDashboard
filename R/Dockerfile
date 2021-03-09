@@ -6,7 +6,7 @@ RUN apt-get update
 RUN apt-get install -y apt-utils
 RUN apt-get install -y libcurl4-openssl-dev
 RUN apt-get install -y libssl-dev
-RUN apt-get install -y openjdk-8-jre
+RUN apt-get install -y default-jdk
 RUN apt-get install -y libxml2-dev
 
 RUN R -e "install.packages('DatabaseConnector')"
