@@ -69,7 +69,5 @@ dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, passw
 
   jsonResult <- resultToJson(result)
 
-  writeJsonResultToFile(jsonResult, outputFolder, cdmSourceName)
-
   return(jsonResult)
 }
