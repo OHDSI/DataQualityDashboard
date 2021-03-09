@@ -1,6 +1,16 @@
 library(DatabaseConnector)
 library(SqlRender)
 
+init <- function () {
+  Sys.setenv('DATABASECONNECTOR_JAR_FOLDER' = '~/jdbcDrivers')
+  DatabaseConnector::downloadJdbcDrivers('sql server')
+  DatabaseConnector::downloadJdbcDrivers('postgresql')
+  DatabaseConnector::downloadJdbcDrivers('oracle')
+  DatabaseConnector::downloadJdbcDrivers('redshift')
+}
+
+init()
+
 dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, password, wsUserId, threadCount) {
   connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dataType,
                                                                   user = user,

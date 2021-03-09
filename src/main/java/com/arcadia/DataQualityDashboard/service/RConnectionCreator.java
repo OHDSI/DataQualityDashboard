@@ -50,9 +50,9 @@ public class RConnectionCreator {
     * Create a new Rserve process for each thread (listening on a different port);
     * A new Rserve connection on the corresponding port has to be established as well. */
     public RConnectionWrapper createRConnection() throws RException {
-        RConnection connection;
-
         try {
+            RConnection connection;
+
             if (isUnix()) {
                 connection = new RConnection(host, port);
             } else {
@@ -60,13 +60,14 @@ public class RConnectionCreator {
                 createRServeProcess(currentPort);
                 connection = new RConnection(host, currentPort);
             }
+
+            RConnectionWrapper connectionWrapper = new RConnectionWrapper(connection);
+            connectionWrapper.loadScripts(loadScripts);
+
+            return connectionWrapper;
         } catch (RserveException e) {
             throw new RException(e.getMessage(), e);
         }
-        RConnectionWrapper connectionWrapper = new RConnectionWrapper(connection);
-        connectionWrapper.loadScripts(loadScripts);
-
-        return connectionWrapper;
     }
 
     /* For Windows */
