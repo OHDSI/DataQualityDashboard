@@ -1,5 +1,8 @@
 # 1st Build Step
 FROM openjdk:15-oracle as build
+
+ARG prop=dev
+
 WORKDIR /workspace/app
 
 # Source
@@ -11,7 +14,7 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-RUN ./mvnw -X install -DskipTests -Pdev
+RUN ./mvnw install -DskipTests -Dspring-boot.run.profiles=${prop}
 
 # 2nd Run Step
 FROM openjdk:15-oracle

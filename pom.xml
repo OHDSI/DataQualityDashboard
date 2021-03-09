@@ -72,46 +72,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.apache.maven.shared</groupId>
-			<artifactId>maven-filtering</artifactId>
-			<version>3.2.0</version>
-		</dependency>
 	</dependencies>
-
-	<profiles>
-		<profile>
-			<id>dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<spring.profiles.active>dev</spring.profiles.active>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>local</id>
-			<properties>
-				<spring.profiles.active>local</spring.profiles.active>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>stage</id>
-			<properties>
-				<spring.profiles.active>stage</spring.profiles.active>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>prod</id>
-			<properties>
-				<spring.profiles.active>prod</spring.profiles.active>
-			</properties>
-		</profile>
-	</profiles>
 
 	<build>
 		<plugins>
@@ -126,7 +87,15 @@
 						</exclude>
 					</excludes>
 					<profiles>
-						<profile>dev</profile>
+						<profile>
+							<id>dev</id>
+							<properties>
+								<spring.profiles.active>dev</spring.profiles.active>
+							</properties>
+							<activation>
+								<activeByDefault>true</activeByDefault>
+							</activation>
+						</profile>
 						<profile>local</profile>
 						<profile>stage</profile>
 						<profile>prod</profile>
@@ -138,6 +107,9 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
+				<includes>
+					<include>*.properties</include>
+				</includes>
 			</resource>
 		</resources>
 	</build>
