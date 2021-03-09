@@ -19,15 +19,19 @@ public class RConnectionWrapper {
 
     private final RConnection rConnection;
 
-    @SneakyThrows
-    public void loadScripts(List<String> scriptsPaths) {
+    @SneakyThrows({REXPMismatchException.class, REngineException.class})
+    public void loadScripts(List<String> scriptsPaths) throws RException {
         for (String path : scriptsPaths) {
-            rConnection.voidEval(format("source('%s')", path));
+            String cmd = format("source('%s')", path);
+            REXP runResponse = rConnection.parseAndEval(toTryCmd(cmd));
+            if (runResponse.inherits("try-error")) {
+                throw new RException(runResponse.asString());
+            }
         }
     }
 
     public String checkDataQuality(DbSettings dbSettings, String userId) throws RException, DbTypeNotSupportedException {
-        return checkDataQuality(dbSettings, userId, 3);
+        return checkDataQuality(dbSettings, userId, 1);
     }
 
     @SneakyThrows({REXPMismatchException.class, REngineException.class})
