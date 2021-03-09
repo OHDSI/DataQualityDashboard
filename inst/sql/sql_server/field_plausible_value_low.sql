@@ -28,7 +28,11 @@ FROM
     	ON cdmTable.PERSON_ID = c.SUBJECT_ID
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
     	}
-    where cdmTable.@cdmFieldName < @plausibleValueLow
+    {@cdmDatatype == "datetime" | @cdmDatatype == "date"}?{
+      where cast(cdmTable.@cdmFieldName as date) < cast(@plausibleValueLow as date)
+    }:{
+      where cdmTable.@cdmFieldName < @plausibleValueLow
+    }
 	) violated_rows
 ) violated_row_count,
 (
