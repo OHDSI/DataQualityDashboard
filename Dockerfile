@@ -11,7 +11,7 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-RUN ./mvnw install -DskipTests -Pdev
+RUN ./mvnw install -DskipTests -Pdev -e switch
 
 # 2nd Run Step
 FROM openjdk:15-oracle
