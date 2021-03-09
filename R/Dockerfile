@@ -24,6 +24,7 @@ VOLUME /rserve
 
 WORKDIR .
 
+RUN mkdir root/R
 RUN mkdir root/R/properties
 
 COPY properties/${prop}.properties root/R/properties/default.properties
