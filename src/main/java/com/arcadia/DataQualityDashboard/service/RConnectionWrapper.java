@@ -20,28 +20,27 @@ public class RConnectionWrapper {
     private final RConnection rConnection;
 
     @SneakyThrows
-    public void loadScripts() {
-        List<String> scriptsPaths = List.of(
-                "~/R/rServer.R",
-                "~/R/messageSender.R",
-                "~/R/execution.R"
-        );
-
+    public void loadScripts(List<String> scriptsPaths) {
         for (String path : scriptsPaths) {
             rConnection.voidEval(format("source('%s')", path));
         }
     }
 
-    @SneakyThrows({REXPMismatchException.class, REngineException.class})
     public String checkDataQuality(DbSettings dbSettings, String userId) throws RException, DbTypeNotSupportedException {
-        String dqdCmd = format("dataQualityCheck(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")",
+        return checkDataQuality(dbSettings, userId, 3);
+    }
+
+    @SneakyThrows({REXPMismatchException.class, REngineException.class})
+    public String checkDataQuality(DbSettings dbSettings, String userId, int threadCount) throws RException, DbTypeNotSupportedException {
+        String dqdCmd = format("dataQualityCheck(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %d)",
                 adaptDbType(dbSettings.getDbType()),
                 dbSettings.getServer(),
                 dbSettings.getPort(),
                 format("%s.%s", dbSettings.getDatabase(), dbSettings.getSchema()),
                 dbSettings.getUser(),
                 dbSettings.getPassword(),
-                userId
+                userId,
+                threadCount
         );
 
         REXP runResponse = rConnection.parseAndEval(toTryCmd(dqdCmd));

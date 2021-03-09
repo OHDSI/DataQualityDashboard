@@ -1,44 +1,51 @@
 package com.arcadia.DataQualityDashboard.service;
 
-import com.arcadia.DataQualityDashboard.dto.DbSettings;
-import com.arcadia.DataQualityDashboard.properties.RServeProperties;
 import org.junit.jupiter.api.Test;
 
+import static com.arcadia.DataQualityDashboard.service.TestProperties.*;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class RConnectionWrapperTest {
 
-    private final RServeProperties properties = new RServeProperties(
-            "",
-            "10.110.1.7",
-            6311
-    );
-
-    private final DbSettings dbSettings = new DbSettings(
-            "sql server",
-            "822JNJ16S03V",
-            1433,
-            "CDM_CPRD",
-            "dbo",
-            "cdm_builder",
-            "builder1!"
-    );
-
     @Test
-    void loadScripts() {
-        RConnectionCreator creator = new RConnectionCreator(properties);
-        RConnectionWrapper connection = creator.createRConnection();
-        connection.loadScripts();
+    void loadScripts() throws RException {
+        // Windows OS
+        RConnectionWrapper connection = new RConnectionCreator(rServerProperties)
+                .setLoadScripts(loadScripts)
+                .createRConnection();
+
         connection.close();
     }
 
     @Test
     void dataQualityCheck() throws RException, DbTypeNotSupportedException {
-        RConnectionCreator creator = new RConnectionCreator(properties);
-        RConnectionWrapper connection = creator.createRConnection();
+        // Windows OS
+        RConnectionWrapper connection = new RConnectionCreator(rServerProperties)
+                .setLoadScripts(loadScripts)
+                .createRConnection();
+
         String result = connection.checkDataQuality(dbSettings, "");
         connection.close();
 
         assertNotNull(result);
+        System.out.println(result);
+    }
+
+    @Test
+    void performanceTest() throws RException, DbTypeNotSupportedException {
+        int[] threadCounts = {1, 2, 3, 4, 5, 7, 9};
+
+        RConnectionWrapper connection = new RConnectionCreator(rServerProperties)
+                .setLoadScripts(loadScripts)
+                .createRConnection();
+
+        for (int threadCount : threadCounts) {
+            long startTime = System.currentTimeMillis();
+            String result = connection.checkDataQuality(dbSettings, "", threadCount);
+            long durationInSeconds = (System.currentTimeMillis() - startTime) / 1000;
+            System.out.println(format("%d threads: %d seconds", threadCount, durationInSeconds));
+            assertNotNull(result);
+        }
     }
 }

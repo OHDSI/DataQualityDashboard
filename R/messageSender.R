@@ -1,4 +1,5 @@
 library(websocket)
+library(properties)
 
 createMessageSender <- function(userId) {
   result <- NULL
@@ -27,7 +28,11 @@ createDefaultMessageSender <- function() {
 }
 
 createWsMessageSender <- function(userId) {
-  ws <- WebSocket$new("ws://10.110.1.7:8001/dqd/progress", autoConnect = FALSE)
+  props <- read.properties('~/R/properties/default.properties')
+  server <- props$host
+  url <- paste(server, '/dqd/progress', collapse = '')
+
+  ws <- WebSocket$new(url, autoConnect = FALSE)
 
   ws$onOpen(function(event) {
     cat("Connection opened\n")

@@ -1,7 +1,7 @@
 library(DatabaseConnector)
 library(SqlRender)
 
-dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, password, wsUserId) {
+dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, password, wsUserId, threadCount) {
   connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dataType,
                                                                   user = user,
                                                                   password = password,
@@ -14,7 +14,7 @@ dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, passw
   cdmSourceName <- "" # a human readable name for your CDM source
 
   # determine how many threads (concurrent SQL sessions) to use ----------------------------------------
-  numThreads <- 1 # on Redshift, 3 seems to work well
+  numThreads <- threadCount # on Redshift, 3 seems to work well
 
   # specify if you want to execute the queries or inspect them ------------------------------------------
   sqlOnly <- FALSE # set to TRUE if you just want to get the SQL scripts and not actually run the queries

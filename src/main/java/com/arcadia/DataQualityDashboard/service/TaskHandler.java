@@ -17,6 +17,7 @@ public class TaskHandler {
 
     private final Map<String, Future<String>> tasks = new ConcurrentHashMap<>();
 
+    @SneakyThrows
     public boolean createTask(DbSettings dbSettings, String userId) {
         if (tasks.containsKey(userId)) {
             return false;
