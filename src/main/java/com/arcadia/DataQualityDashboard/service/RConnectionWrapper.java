@@ -31,7 +31,7 @@ public class RConnectionWrapper {
     }
 
     public String checkDataQuality(DbSettings dbSettings, String userId) throws RException, DbTypeNotSupportedException {
-        return checkDataQuality(dbSettings, userId, 3);
+        return checkDataQuality(dbSettings, userId, 1);
     }
 
     @SneakyThrows({REXPMismatchException.class, REngineException.class})
