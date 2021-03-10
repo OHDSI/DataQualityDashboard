@@ -3,4 +3,4 @@ debug(dataQualityCheck("sql server",
                        "1433",
                        "CDM_CPRD.dbo",
                        "cdm_builder",
-                       "builder1!", "test", 3))
+                       "builder1!", "", 3))

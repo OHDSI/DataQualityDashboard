@@ -2,6 +2,10 @@ package com.arcadia.DataQualityDashboard.service;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import static com.arcadia.DataQualityDashboard.service.TestProperties.*;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,7 +23,7 @@ class RConnectionWrapperTest {
     }
 
     @Test
-    void dataQualityCheck() throws RException, DbTypeNotSupportedException {
+    void dataQualityCheck() throws RException, DbTypeNotSupportedException, IOException {
         // Windows OS
         RConnectionWrapper connection = new RConnectionCreator(rServerProperties)
                 .setLoadScripts(loadScripts)
@@ -29,7 +33,11 @@ class RConnectionWrapperTest {
         connection.close();
 
         assertNotNull(result);
+
         System.out.println(result);
+        BufferedWriter writer = new BufferedWriter(new FileWriter("uploads/result.json"));
+        writer.write(result);
+        writer.close();
     }
 
     @Test
