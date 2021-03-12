@@ -243,6 +243,7 @@ sqlOnly &lt;- FALSE # set to TRUE if you just want to get the SQL scripts and no
 
 # where should the logs go? -------------------------------------------------------------------------
 outputFolder &lt;- &quot;output&quot;
+outputFile &lt;- &quot;results.json&quot;
 
 # logging type -------------------------------------------------------------------------------------
 verboseMode &lt;- FALSE # set to TRUE if you want to see activity written to the console
@@ -279,6 +280,7 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                                       numThreads = numThreads,
                                       sqlOnly = sqlOnly, 
                                       outputFolder = outputFolder, 
+                                      outputFile = outputFile,
                                       verboseMode = verboseMode,
                                       writeToTable = writeToTable,
                                       checkLevels = checkLevels,
@@ -302,7 +304,9 @@ DataQualityDashboard::writeJsonResultsToTable(connectionDetails = connectionDeta
 
 <p><strong>Launching Dashboard as Shiny App</strong></p>
 
-<pre><code class="r">DataQualityDashboard::viewDqDashboard(jsonPath = file.path(getwd(), outputFolder, cdmSourceName, sprintf(&quot;results_%s.json&quot;, cdmSourceName)))
+<pre><code class="r">DataQualityDashboard::viewDqDashboard(
+  jsonPath = file.path(getwd(), outputFolder, cdmSourceName, outputFile, cdmSourceName))
+)
 </code></pre>
 
 <p><strong>Launching on a web server</strong></p>
@@ -317,20 +321,23 @@ DataQualityDashboard::writeJsonResultsToTable(connectionDetails = connectionDeta
 </code></pre>
 
 <ol>
-<li><p>Rename the json file to <em>results.json</em> and place it in inst/shinyApps/www</p></li>
+<li><p>Name the output file <em>results.json</em> and place it in inst/shinyApps/www</p></li>
 <li><p>Go to inst/shinyApps/www, then run:</p></li>
 </ol>
 
 <pre><code>http-server
 </code></pre>
 
-<p>A results JSON file for the Synthea synthetic dataset will be shown. You can view your results by replacing the results.json file with your file (with name results.json).</p>
-
 <h1>View checks</h1>
 
 <p>To see description of checks using R, execute the command below:</p>
 
-<pre><code>View(read.csv(system.file(&quot;csv&quot;,&quot;OMOP_CDMv5.3.1_Check_Descriptions.csv&quot;,package=&quot;DataQualityDashboard&quot;),as.is=T))
+<pre><code>View(read.csv(
+  system.file(&quot;csv&quot;,&quot;OMOP_CDMv5.3.1_Check_Descriptions.csv&quot;,
+    package=&quot;DataQualityDashboard&quot;
+  ),
+  as.is=T)
+)
 </code></pre>
 
 </body>

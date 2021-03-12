@@ -122,6 +122,7 @@
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #' @param outputFolder              The folder to output logs and SQL files to
+#' @param outputFile                (OPTIONAL) File to write results JSON object 
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
 #'                                  in the resultsDatabaseSchema. Default is TRUE.
@@ -147,6 +148,7 @@ executeDqChecks <- function(connectionDetails,
                             numThreads = 1,
                             sqlOnly = FALSE,
                             outputFolder = "output",
+                            outputFile = "",
                             verboseMode = FALSE,
                             writeToTable = TRUE,
                             writeTableName = "dqdashboard_results",
@@ -209,7 +211,7 @@ executeDqChecks <- function(connectionDetails,
   unlink(file.path(outputFolder, logFileName))
   
   if (verboseMode) {
-    appenders <- list(ParallelLogger::createConsoleAppender(),
+    appenders <- list(ParallelLogger::createConsoleAppender(layout=ParallelLogger::layoutTimestamp),
                       ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
                                                          fileName = file.path(outputFolder, logFileName)))    
   } else {
@@ -298,18 +300,22 @@ if (conceptCheckThresholdLoc == "default"){
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
   
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
-  resultsList <- ParallelLogger::clusterApply(cluster = cluster, x = checkDescriptions,
-                                              fun = .runCheck, 
-                                              tableChecks,
-                                              fieldChecks,
-                                              conceptChecks,
-                                              connectionDetails, 
-                                              connection,
-                                              cdmDatabaseSchema, 
-                                              vocabDatabaseSchema,
-                                              cohortDatabaseSchema,
-                                              cohortDefinitionId,
-                                              outputFolder, sqlOnly)
+  resultsList <- ParallelLogger::clusterApply(
+    cluster = cluster, x = checkDescriptions,
+    fun = .runCheck, 
+    tableChecks,
+    fieldChecks,
+    conceptChecks,
+    connectionDetails, 
+    connection,
+    cdmDatabaseSchema, 
+    vocabDatabaseSchema,
+    cohortDatabaseSchema,
+    cohortDefinitionId,
+    outputFolder, 
+    sqlOnly,
+    progressBar = TRUE
+  )
   ParallelLogger::stopCluster(cluster = cluster)
   
   if (numThreads == 1 & !sqlOnly) {
@@ -326,6 +332,7 @@ if (conceptCheckThresholdLoc == "default"){
                                     checkResults = checkResults,
                                     cdmSourceName = cdmSourceName, 
                                     outputFolder = outputFolder,
+                                    outputFile = outputFile,
                                     startTime = startTime,
                                     tableChecks = tableChecks, 
                                     fieldChecks = fieldChecks,
@@ -536,6 +543,7 @@ if (conceptCheckThresholdLoc == "default"){
                               checkResults,
                               cdmSourceName,
                               outputFolder,
+                              outputFile,
                               startTime,
                               tableChecks,
                               fieldChecks,
@@ -606,13 +614,15 @@ if (conceptCheckThresholdLoc == "default"){
                  Overview = overview)
   
   resultJson <- jsonlite::toJSON(result)
+
+  if (nchar(outputFile)==0)  {
+    endTimestamp <- format(endTime,"%Y%m%d%H%M%S")
+    outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp)
+  }
   
-  endTimestamp <- endTime 
-  endTimestamp <- gsub("-","",endTimestamp)
-  endTimestamp <- gsub(" ","-",endTimestamp)
-  endTimestamp <- gsub(":","",endTimestamp)  
+  resultFilename <- file.path(outputFolder,outputFile)
+  result$outputFile <- outputFile
   
-  resultFilename <- file.path(outputFolder, sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp))
   ParallelLogger::logInfo(sprintf("Writing results to file: %s", resultFilename))
   write(resultJson, resultFilename)
   
