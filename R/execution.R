@@ -156,6 +156,7 @@ executeDqChecks <- function(connectionDetails,
                             cohortDatabaseSchema = resultsDatabaseSchema,
                             tablesToExclude = c(),
                             cdmVersion = "5.3.1",
+                            removeZeroDenoms = TRUE,
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
                             conceptCheckThresholdLoc = "default") {
@@ -324,6 +325,7 @@ if (conceptCheckThresholdLoc == "default"){
     allResults <- .summarizeResults(connectionDetails = connectionDetails, 
                                     cdmDatabaseSchema = cdmDatabaseSchema, 
                                     checkResults = checkResults,
+                                    removeZeroDenoms = removeZeroDenoms,
                                     cdmSourceName = cdmSourceName, 
                                     outputFolder = outputFolder,
                                     startTime = startTime,
@@ -535,6 +537,7 @@ if (conceptCheckThresholdLoc == "default"){
                               cdmDatabaseSchema,
                               checkResults,
                               cdmSourceName,
+                              removeZeroDenoms,
                               outputFolder,
                               startTime,
                               tableChecks,
@@ -550,6 +553,12 @@ if (conceptCheckThresholdLoc == "default"){
                                       tableChecks = tableChecks, 
                                       fieldChecks = fieldChecks,
                                       conceptChecks = conceptChecks)
+  
+  if(removeZeroDenoms == TRUE){
+    ## Remove records with a zero denominator
+    checkResults <- checkResults %>% 
+      filter(NUM_DENOMINATOR_ROWS != 0 | is.na(NUM_DENOMINATOR_ROWS)==TRUE)
+  }
   
   countTotal <- nrow(checkResults)
   countThresholdFailed <- nrow(checkResults[checkResults$FAILED == 1 & 
@@ -707,6 +716,96 @@ writeJsonResultsToTable <- function(connectionDetails,
     }
   )
 }
+
+#' Remove Data Quality Checks with a zero denominator
+#' 
+#' 
+#' @param jsonFilePath              Path to the JSON results from which the checks will be removed
+#' @param outputFolder              Folder where the new JSON file will be written. It will have the suffix "no_zeros"
+#' 
+#' @export
+removeZeroDenoms <- function(jsonFilePath,
+                             outputFolder){
+  
+  ## Write JSON results to dataframe and do some manipulation and rewrite back to JSON
+  library(dplyr)
+  
+  jsonData <- jsonlite::read_json(jsonFilePath)
+  checkResults <- lapply(jsonData$CheckResults, function(cr) {
+    cr[sapply(cr, is.null)] <- NA
+    as.data.frame(cr)
+  })
+  
+  df <- do.call(plyr::rbind.fill, checkResults)
+  
+  ## Remove records with a zero denominator
+  dfNonZero <- df %>% 
+    filter(NUM_DENOMINATOR_ROWS != 0 | is.na(NUM_DENOMINATOR_ROWS)==TRUE)
+  
+  countTotal <- nrow(dfNonZero)
+  countThresholdFailed <- nrow(dfNonZero[dfNonZero$FAILED == 1 & 
+                                           is.na(dfNonZero$ERROR),])
+  countErrorFailed <- nrow(dfNonZero[!is.na(dfNonZero$ERROR),])
+  countOverallFailed <- nrow(dfNonZero[dfNonZero$FAILED == 1,])
+  
+  countPassed <- countTotal - countOverallFailed
+  
+  countTotalPlausibility <- nrow(dfNonZero[dfNonZero$CATEGORY=='Plausibility',])
+  countTotalConformance <- nrow(dfNonZero[dfNonZero$CATEGORY=='Conformance',])
+  countTotalCompleteness <- nrow(dfNonZero[dfNonZero$CATEGORY=='Completeness',])
+  
+  countFailedPlausibility <- nrow(dfNonZero[dfNonZero$CATEGORY=='Plausibility' & 
+                                              dfNonZero$FAILED == 1,])
+  
+  countFailedConformance <- nrow(dfNonZero[dfNonZero$CATEGORY=='Conformance' &
+                                             dfNonZero$FAILED == 1,])
+  
+  countFailedCompleteness <- nrow(dfNonZero[dfNonZero$CATEGORY=='Completeness' &
+                                              dfNonZero$FAILED == 1,])
+  
+  countPassedPlausibility <- countTotalPlausibility - countFailedPlausibility
+  countPassedConformance <- countTotalConformance - countFailedConformance
+  countPassedCompleteness <- countTotalCompleteness - countFailedCompleteness
+  
+  overview <- list(
+    countTotal = as.list(countTotal), 
+    countPassed = as.list(countPassed), 
+    countErrorFailed = as.list(countErrorFailed),
+    countThresholdFailed = as.list(countThresholdFailed),
+    countOverallFailed = as.list(countOverallFailed),
+    percentPassed = as.list(round(countPassed / countTotal * 100)),
+    percentFailed = as.list(round(countOverallFailed / countTotal * 100)),
+    countTotalPlausibility = as.list(countTotalPlausibility),
+    countTotalConformance = as.list(countTotalConformance),
+    countTotalCompleteness = as.list(countTotalCompleteness),
+    countFailedPlausibility = as.list(countFailedPlausibility),
+    countFailedConformance = as.list(countFailedConformance),
+    countFailedCompleteness = as.list(countFailedCompleteness),
+    countPassedPlausibility = as.list(countPassedPlausibility),
+    countPassedConformance = as.list(countPassedConformance),
+    countPassedCompleteness = as.list(countPassedCompleteness)
+  )
+  
+  
+  result <- list(startTimestamp = jsonData[["startTimestamp"]], 
+                 endTimestamp = jsonData[["endTimestamp"]],
+                 executionTime = jsonData[["executionTime"]],
+                 CheckResults = dfNonZero, 
+                 Metadata = jsonData[["Metadata"]], 
+                 Overview = overview)
+  resultJson <- jsonlite::toJSON(result)
+
+  outputFolder <- file.path(outputFolder, tolower(jsonData[["Metadata"]][[1]]$CDM_SOURCE_ABBREVIATION))
+  
+  endTimestamp <- jsonData[["endTimestamp"]] 
+  endTimestamp <- gsub("-","",endTimestamp)
+  endTimestamp <- gsub(" ","-",endTimestamp)
+  endTimestamp <- gsub(":","",endTimestamp) 
+  
+  resultFilename <- file.path(outputFolder, sprintf("%s-%s.json", tolower(jsonData[["Metadata"]][[1]]$CDM_SOURCE_ABBREVIATION),paste0(endTimestamp,"_no_zeros")))
+  write(resultJson, resultFilename)
+}
+
 
 .needsAutoCommit <- function(connection) {
   autoCommit <- FALSE
