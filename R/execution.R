@@ -58,7 +58,8 @@
   reportResult
 }
 
-.processCheck <- function(connection,
+.processCheck <- function(recordResult,
+                          connection,
                           connectionDetails, 
                           check, 
                           checkDescription, 
@@ -81,7 +82,7 @@
   tryCatch(
     expr = {
       if (singleThreaded) {
-        if (.needsAutoCommit(connection)) {
+        if (.needsAutoCommit(connection, connectionDetails)) {
           rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
         }  
       }
@@ -90,7 +91,7 @@
                                             errorReportFile = errorReportFile)
       
       delta <- difftime(Sys.time(), start, units = "secs")
-      .recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
+      recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,
                     executionTime = sprintf("%f %s", delta, attr(delta, "units")))
     },
     warning = function(w) {
@@ -99,7 +100,7 @@
                                       checkDescription$checkName, 
                                       check["cdmTableName"], 
                                       check["cdmFieldName"], w$message))
-      .recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
+      recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
     },
     error = function(e) {
       ParallelLogger::logError(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
@@ -107,7 +108,7 @@
                                        checkDescription$checkName, 
                                        check["cdmTableName"], 
                                        check["cdmFieldName"], e$message))
-      .recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message)  
+      recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message)
     }
   ) 
 }
@@ -158,30 +159,33 @@ executeDqChecks <- function(connectionDetails,
                             cdmVersion = "5.3.1",
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
-                            conceptCheckThresholdLoc = "default") {
-  
+                            conceptCheckThresholdLoc = "default",
+                            messageSender = list(send <- function() {})) {
+
+  messageSender$send("Execution started")
+
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
     stop("connectionDetails must be an object of class 'connectionDetails'.")
-  } 
-  
+  }
+
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
-  
+
   if (!all(checkLevels %in% c("TABLE", "FIELD", "CONCEPT"))) {
-    stop('checkLevels argument must be a subset of c("TABLE", "FIELD", "CONCEPT"). 
+    stop('checkLevels argument must be a subset of c("TABLE", "FIELD", "CONCEPT").
          You passed in ', paste(checkLevels, collapse = ", "))
   }
-  
+
   stopifnot(is.null(checkNames) | is.character(checkNames), is.null(tablesToExclude) | is.character(tablesToExclude))
   stopifnot(is.character(cdmVersion))
-  
-  # Setup output folder ------------------------------------------------------------------------------------------------------------
+
+  # Setup output folder -----
   options(scipen = 999)
 
   # capture metadata -----------------------------------------------------------------------
-  connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
+  connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
                            cdmDatabaseSchema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
@@ -189,7 +193,7 @@ executeDqChecks <- function(connectionDetails,
   if (nrow(metadata)<1) {
     stop("Please populate the cdm_source table before executing data quality checks.")
   }
-  metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
+  metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
   DatabaseConnector::disconnect(connection)
   outputFolder <- file.path(outputFolder, tolower(metadata$CDM_SOURCE_ABBREVIATION))
   
@@ -216,8 +220,7 @@ executeDqChecks <- function(connectionDetails,
     appenders <- list(ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
                                                          fileName = file.path(outputFolder, logFileName)))    
   }
-  
-  
+
   logger <- ParallelLogger::createLogger(name = "DqDashboard",
                                          threshold = "INFO",
                                          appenders = appenders)
@@ -230,25 +233,33 @@ executeDqChecks <- function(connectionDetails,
   checkDescriptionsDf <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion), 
                                             package = "DataQualityDashboard"), 
                                 stringsAsFactors = FALSE)
-  
-  
-if (tableCheckThresholdLoc == "default"){
-      tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
-                              package = "DataQualityDashboard"), 
-                              stringsAsFactors = FALSE, na.strings = c(" ",""))} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
-                                                                                      stringsAsFactors = FALSE, na.strings = c(" ",""))}
-  
-if (fieldCheckThresholdLoc == "default"){ 
+
+  if (tableCheckThresholdLoc == "default") {
+    tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
+                                        package = "DataQualityDashboard"),
+                            stringsAsFactors = FALSE, na.strings = c(" ", ""))
+  } else {
+    tableChecks <- read.csv(tableCheckThresholdLoc,
+                            stringsAsFactors = FALSE, na.strings = c(" ", ""))
+  }
+
+  if (fieldCheckThresholdLoc == "default") {
     fieldChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
-                                      package = "DataQualityDashboard"), 
-                          stringsAsFactors = FALSE, na.strings = c(" ",""))} else {fieldChecks <- read.csv(fieldCheckThresholdLoc, 
-                                                                                   stringsAsFactors = FALSE, na.strings = c(" ",""))}
-  
-if (conceptCheckThresholdLoc == "default"){ 
-  conceptChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion),
-                                      package = "DataQualityDashboard"), 
-                          stringsAsFactors = FALSE, na.strings = c(" ",""))} else {conceptChecks <- read.csv(conceptCheckThresholdLoc, 
-                                                                                     stringsAsFactors = FALSE, na.strings = c(" ",""))}
+                                        package = "DataQualityDashboard"),
+                            stringsAsFactors = FALSE, na.strings = c(" ", ""))
+  } else {
+    fieldChecks <- read.csv(fieldCheckThresholdLoc,
+                            stringsAsFactors = FALSE, na.strings = c(" ", ""))
+  }
+
+  if (conceptCheckThresholdLoc == "default") {
+    conceptChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion),
+                                          package = "DataQualityDashboard"),
+                              stringsAsFactors = FALSE, na.strings = c(" ", ""))
+  } else {
+    conceptChecks <- read.csv(conceptCheckThresholdLoc,
+                              stringsAsFactors = FALSE, na.strings = c(" ", ""))
+  }
   
   # ensure we use only checks that are intended to be run -----------------------------------------
   
@@ -296,10 +307,12 @@ if (conceptCheckThresholdLoc == "default"){
   
   fieldChecks$cdmFieldName <- toupper(fieldChecks$cdmFieldName)
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
-  
+
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
   resultsList <- ParallelLogger::clusterApply(cluster = cluster, x = checkDescriptions,
-                                              fun = .runCheck, 
+                                              fun = .runCheck,
+                                              .processCheck,
+                                              .recordResult,
                                               tableChecks,
                                               fieldChecks,
                                               conceptChecks,
@@ -309,7 +322,9 @@ if (conceptCheckThresholdLoc == "default"){
                                               vocabDatabaseSchema,
                                               cohortDatabaseSchema,
                                               cohortDefinitionId,
-                                              outputFolder, sqlOnly)
+                                              outputFolder,
+                                              sqlOnly,
+                                              messageSender)
   ParallelLogger::stopCluster(cluster = cluster)
   
   if (numThreads == 1 & !sqlOnly) {
@@ -331,8 +346,10 @@ if (conceptCheckThresholdLoc == "default"){
                                     fieldChecks = fieldChecks,
                                     conceptChecks = conceptChecks,
                                     metadata = metadata)
-    
-    ParallelLogger::logInfo("Execution Complete")  
+
+    message <- "Execution Completed"
+    messageSender$send(message)
+    ParallelLogger::logInfo(message)
   }
 
   
@@ -358,7 +375,9 @@ if (conceptCheckThresholdLoc == "default"){
   return(allResults)
 }
 
-.runCheck <- function(checkDescription, 
+.runCheck <- function(checkDescription,
+                      processCheck,
+                      recordResult,
                       tableChecks,
                       fieldChecks,
                       conceptChecks,
@@ -369,10 +388,12 @@ if (conceptCheckThresholdLoc == "default"){
                       cohortDatabaseSchema,
                       cohortDefinitionId,
                       outputFolder, 
-                      sqlOnly) {
-  
+                      sqlOnly,
+                      messageSender) {
   library(magrittr)
-  ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
+  message <- sprintf("Processing check description: %s", checkDescription$checkName)
+  messageSender$send(message)
+  ParallelLogger::logInfo(message)
   
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",
                               tolower(checkDescription$checkLevel),
@@ -384,7 +405,7 @@ if (conceptCheckThresholdLoc == "default"){
   if (sqlOnly) {
     unlink(file.path(outputFolder, sprintf("%s.sql", checkDescription$checkName)))
   }
-  
+
   if (nrow(checks) > 0) {
     dfs <- apply(X = checks, MARGIN = 1, function(check) {
       
@@ -410,12 +431,13 @@ if (conceptCheckThresholdLoc == "default"){
                                         sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
         data.frame()
       } else {
-        .processCheck(connection = connection,
-                      connectionDetails = connectionDetails,
-                      check = check, 
-                      checkDescription = checkDescription, 
-                      sql = sql,
-                      outputFolder = outputFolder)
+        processCheck(recordResult = recordResult,
+                     connection = connection,
+                     connectionDetails = connectionDetails,
+                     check = check,
+                     checkDescription = checkDescription,
+                     sql = sql,
+                     outputFolder = outputFolder)
       }    
     })
     do.call(rbind, dfs)
@@ -544,7 +566,7 @@ if (conceptCheckThresholdLoc == "default"){
   
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection = connection))
-  
+
   # evaluate thresholds-------------------------------------------------------------------
   checkResults <- .evaluateThresholds(checkResults = checkResults, 
                                       tableChecks = tableChecks, 
@@ -605,18 +627,22 @@ if (conceptCheckThresholdLoc == "default"){
                  Metadata = metadata, 
                  Overview = overview)
   
-  resultJson <- jsonlite::toJSON(result)
-  
-  endTimestamp <- endTime 
+  return(result)
+}
+
+resultToJson <- function(result) {
+  return(jsonlite::toJSON(result))
+}
+
+writeJsonResultToFile <- function(resultJson, outputFolder) {
+  endTimestamp <- endTime
   endTimestamp <- gsub("-","",endTimestamp)
   endTimestamp <- gsub(" ","-",endTimestamp)
-  endTimestamp <- gsub(":","",endTimestamp)  
-  
+  endTimestamp <- gsub(":","",endTimestamp)
+
   resultFilename <- file.path(outputFolder, sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp))
   ParallelLogger::logInfo(sprintf("Writing results to file: %s", resultFilename))
   write(resultJson, resultFilename)
-  
-  result
 }
 
 #' Write JSON Results to SQL Table
@@ -708,7 +734,7 @@ writeJsonResultsToTable <- function(connectionDetails,
   )
 }
 
-.needsAutoCommit <- function(connection) {
+.needsAutoCommit <- function(connection, connectionDetails) {
   autoCommit <- FALSE
   if (!is.null(connection)) {
     if (inherits(connection, "DatabaseConnectorJdbcConnection")) {

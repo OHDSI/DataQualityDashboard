@@ -141,17 +141,18 @@
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
 
   <script type="text/javascript">
-    // if not running in shiny, try to accomodate web server
-    if (location.port == 80 || location.port == 8080 || location.port == "") {
-      $.ajax({
-        dataType: "json",
-        url: "results.json",
-        success: function (results) {
-          loadResults(results);
-        }
-      });
-    }
+    const queryString = window.location.search
+    const urlParams = new URLSearchParams(queryString)
+    const fileName = urlParams.get('result')
+    const url = `api/download/${fileName}`
 
+    $.ajax({
+      dataType: "json",
+      url,
+      success: function (results) {
+        loadResults(results);
+      }
+    })
   </script>
 
 </body>

@@ -7,7 +7,6 @@
 # R data files from past sessions
 .Rdata
 .RData
-.Rhistory
 
 # RStudio files
 .Rproj.user/
@@ -27,8 +26,6 @@ inst/results.json
 
 # Other
 .DS_Store
-
-errorReport.txt
 output/
 results/
 thresholds/
@@ -36,3 +33,42 @@ hs_err_pid*.log
 docs/Gemfile
 docs/Gemfile.lock
 
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### File storage location ###
+uploads
+
+### Static resources ###
+src/main/resources/static
