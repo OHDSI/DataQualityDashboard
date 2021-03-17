@@ -1,9 +1,6 @@
 DataQualityDashboard
 ====================
 
-[![Build Status](https://travis-ci.org/OHDSI/DataQualityDashboard.svg?branch=master)](https://travis-ci.org/OHDSI/DataQualityDashboard)
-[![codecov.io](https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=master)](https://codecov.io/github/OHDSI/DataQualityDashboard?branch=master)
-
 The goal of the Data Quality Dashboard (DQD) project is to design and develop an open-source tool to expose and evaluate observational data quality. 
 
 Introduction
