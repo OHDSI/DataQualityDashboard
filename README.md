@@ -9,7 +9,11 @@ The goal of the Data Quality Dashboard (DQD) project is to design and develop an
 Introduction
 ============
 
+This repository forked from https://github.com/OHDSI/DataQualityDashboard. 
+
 This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.3.1 and v5.2.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way. 
+
+This service wraps **DataQualityDashboard** functional in Web-service that used by Perseus https://github.com/SoftwareCountry/Perseus.
 
 Overview
 ========
@@ -45,29 +49,24 @@ Features
 
 Technology
 ==========
-DataQualityDashboard is an R package 
 
-System Requirements
-===================
-Requires R (version 3.2.2 or higher). Requires [DatabaseConnector](https://github.com/OHDSI/DatabaseConnector) and [SqlRender](https://github.com/OHDSI/SqlRender).
+- Java 15
+- R 4.0.4
 
-Support
-=======
+Getting Started
+==========
 
-* Developer questions/comments/feedback: <a href="http://forums.ohdsi.org/c/developers">OHDSI Forum</a>
-* We use the <a href="https://github.com/OHDSI/DataQualityDashboard/issues">GitHub issue tracker</a> for all bugs/issues/enhancements 
- 
+### R server
+
+    cd R
+    docker build -t r-serve --build-arg prop=prod .
+    docker run -d --network host --name r-serve r-serve
+
+### Data-quality-check service
+
+    docker build -t dqd-service --build-arg prop=prod .
+    docker run -d --network host --name dqd-service dqd-service
+
 License
 =======
 DataQualityDashboard is licensed under Apache License 2.0
-
-### Development status
-
-V1.0 ready for use. 
-
-# Acknowledgements
-
-This project is supported in part through the National Science Foundation grant IIS 1251151.
-
-<b id="f1">1</b> Kahn, M.G., et al., A Harmonized Data Quality Assessment Terminology and Framework for the Secondary Use of Electronic Health Record Data. EGEMS (Wash DC), 2016. 4(1): p. 1244. [↩](#kahn)
-
