@@ -193,7 +193,6 @@ executeDqChecks <- function(connectionDetails,
   }
   metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
   DatabaseConnector::disconnect(connection)
-  outputFolder <- file.path(outputFolder, tolower(metadata$CDM_SOURCE_ABBREVIATION))
   
   if (!dir.exists(outputFolder)) {
     dir.create(path = outputFolder, recursive = TRUE)
