@@ -23,6 +23,7 @@ executeDqChecks(
   cohortDatabaseSchema = resultsDatabaseSchema,
   tablesToExclude = c(),
   cdmVersion = "5.3.1",
+  removeZeroDenoms = TRUE,
   tableCheckThresholdLoc = "default",
   fieldCheckThresholdLoc = "default",
   conceptCheckThresholdLoc = "default"
