@@ -23,26 +23,23 @@ FROM
 	FROM
 	(
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.*
-    from @cdmDatabaseSchema.@cdmTableName cdmTable
+    FROM @cdmDatabaseSchema.@cdmTableName cdmTable
     {@cdmDatabaseSchema.@cdmTableName != @cdmDatabaseSchema.@plausibleTemporalAfterTableName}?{
-		join @cdmDatabaseSchema.@plausibleTemporalAfterTableName plausibleTable
-			on cdmTable.person_id = plausibleTable.person_id
-		}
+		JOIN @cdmDatabaseSchema.@plausibleTemporalAfterTableName plausibleTable
+			ON cdmTable.person_id = plausibleTable.person_id}
 		{@cohort & '@runForCohort' == 'Yes'}?{
-    	JOIN @cohortDatabaseSchema.COHORT c 
-    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
-    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
-    	}
-    where cast(@plausibleTemporalAfterFieldName as date) > cast(cdmTable.@cdmFieldName as date)
+    JOIN @cohortDatabaseSchema.COHORT c 
+      ON cdmTable.PERSON_ID = c.SUBJECT_ID
+    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId}
+    WHERE cast(@plausibleTemporalAfterFieldName as date) > cast(cdmTable.@cdmFieldName as date)
 	) violated_rows
 ) violated_row_count,
 (
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 	{@cohort & '@runForCohort' == 'Yes'}?{
-    	JOIN @cohortDatabaseSchema.COHORT c 
-    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
-    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
-    	}
+  JOIN @cohortDatabaseSchema.COHORT c 
+    ON cdmTable.PERSON_ID = c.SUBJECT_ID
+    AND c.COHORT_DEFINITION_ID = @cohortDefinitionId }
 ) denominator
 ;

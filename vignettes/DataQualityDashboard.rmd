@@ -62,6 +62,7 @@ sqlOnly <- FALSE # set to TRUE if you just want to get the SQL scripts and not a
 
 # where should the logs go? -------------------------------------------------------------------------
 outputFolder <- "output"
+outputFile <- "results.json"
 
 # logging type -------------------------------------------------------------------------------------
 verboseMode <- FALSE # set to TRUE if you want to see activity written to the console
@@ -98,6 +99,7 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                                       numThreads = numThreads,
                                       sqlOnly = sqlOnly, 
                                       outputFolder = outputFolder, 
+                                      outputFile = outputFile,
                                       verboseMode = verboseMode,
                                       writeToTable = writeToTable,
                                       checkLevels = checkLevels,
@@ -122,7 +124,9 @@ Viewing Results
 
 **Launching Dashboard as Shiny App**
 ```r
-DataQualityDashboard::viewDqDashboard(jsonPath = file.path(getwd(), outputFolder, cdmSourceName, sprintf("results_%s.json", cdmSourceName)))
+DataQualityDashboard::viewDqDashboard(
+  jsonPath = file.path(getwd(), outputFolder, cdmSourceName, outputFile, cdmSourceName))
+)
 ```
 
 **Launching on a web server**
@@ -135,7 +139,7 @@ If you have npm installed:
 npm install -g http-server
 ```
 
-2. Rename the json file to *results.json* and place it in inst/shinyApps/www
+2. Name the output file *results.json* and place it in inst/shinyApps/www
 
 3. Go to inst/shinyApps/www, then run:
 
@@ -143,13 +147,14 @@ npm install -g http-server
 http-server
 ```
 
-A results JSON file for the Synthea synthetic dataset will be shown. You can view your results by replacing the results.json file with your file (with name results.json).
-
-
-
 View checks
 ===========
 To see description of checks using R, execute the command below:
 ```
-View(read.csv(system.file("csv","OMOP_CDMv5.3.1_Check_Descriptions.csv",package="DataQualityDashboard"),as.is=T))
+View(read.csv(
+  system.file("csv","OMOP_CDMv5.3.1_Check_Descriptions.csv",
+    package="DataQualityDashboard"
+  ),
+  as.is=T)
+)
 ```

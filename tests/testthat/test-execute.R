@@ -39,3 +39,35 @@ test_that("Execute DQ checks", {
     }
   }
 })
+
+test_that("Execute DQ checks on Synthea/Eunomia", {
+  
+  results <- DataQualityDashboard::executeDqChecks(connectionDetails = Eunomia::getEunomiaConnectionDetails(), 
+                                                   cdmDatabaseSchema = "main", 
+                                                   resultsDatabaseSchema = "temp",
+                                                   cdmSourceName = "Eunomia", 
+                                                   checkLevels = "TABLE",
+                                                   writeToTable = F)
+  
+  expect_true(nrow(results$CheckResults) > 0)
+  
+  
+  results <- DataQualityDashboard::executeDqChecks(connectionDetails = Eunomia::getEunomiaConnectionDetails(), 
+                                                   cdmDatabaseSchema = "main", 
+                                                   resultsDatabaseSchema = "temp",
+                                                   cdmSourceName = "Eunomia", 
+                                                   checkLevels = "FIELD",
+                                                   writeToTable = F)
+  
+  expect_true(nrow(results$CheckResults) > 0)
+  
+  
+  results <- DataQualityDashboard::executeDqChecks(connectionDetails = Eunomia::getEunomiaConnectionDetails(), 
+                                                   cdmDatabaseSchema = "main", 
+                                                   resultsDatabaseSchema = "temp",
+                                                   cdmSourceName = "Eunomia", 
+                                                   checkLevels = "CONCEPT",
+                                                   writeToTable = F)
+  
+  expect_true(nrow(results$CheckResults) > 0)
+})
