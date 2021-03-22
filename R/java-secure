@@ -7,5 +7,4 @@ replace="jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA, \
     include jdk.disabled.namedCurves"
 
 cd etc/java-11-openjdk/security
-sudo chmod 700 java.security
 sudo sed -i "s/$search/$replace/" java.security

@@ -34,6 +34,7 @@ COPY rServer.R root/R/rServer.R
 
 # Enable tls 1.0, 1.1
 COPY java-secure java-secure
-RUN ./java-secure
+RUN chmod 700 ./java-secure
+RUN sudo ./java-secure
 
 ENTRYPOINT R -e "Rserve::run.Rserve(remote=TRUE)"
