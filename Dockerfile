@@ -11,6 +11,7 @@ COPY inst/shinyApps/www/ src/main/resources/static/
 
 # Maven
 COPY mvnw .
+RUN chmod 770 mvnw
 COPY .mvn .mvn
 COPY pom.xml .
 
