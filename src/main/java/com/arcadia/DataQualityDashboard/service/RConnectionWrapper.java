@@ -11,6 +11,7 @@ import org.rosuda.REngine.Rserve.RConnection;
 import java.util.List;
 
 import static com.arcadia.DataQualityDashboard.service.DbTypeAdapter.adaptDbType;
+import static com.arcadia.DataQualityDashboard.service.DbTypeAdapter.adaptServer;
 import static com.arcadia.DataQualityDashboard.util.OperationSystem.isUnix;
 import static java.lang.String.format;
 
@@ -36,9 +37,11 @@ public class RConnectionWrapper {
 
     @SneakyThrows({REXPMismatchException.class, REngineException.class})
     public String checkDataQuality(DbSettings dbSettings, String userId, int threadCount) throws RException, DbTypeNotSupportedException {
+        String dbType = adaptDbType(dbSettings.getDbType());
+
         String dqdCmd = format("dataQualityCheck(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %d)",
-                adaptDbType(dbSettings.getDbType()),
-                dbSettings.getServer(),
+                dbType,
+                adaptServer(dbType, dbSettings.getServer(), dbSettings.getDatabase()),
                 dbSettings.getPort(),
                 format("%s.%s", dbSettings.getDatabase(), dbSettings.getSchema()),
                 dbSettings.getUser(),
