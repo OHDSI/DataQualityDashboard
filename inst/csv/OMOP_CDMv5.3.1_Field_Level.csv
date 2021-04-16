@@ -149,8 +149,8 @@ VISIT_DETAIL,person_id,Yes,0,,integer,0,,,,No,,,Yes,0,,PERSON,PERSON_ID,,,,,,,No
 VISIT_DETAIL,visit_detail_concept_id,Yes,0,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,Visit,0,,,,,Yes,0,,Yes,0,,Yes,0,,No,,,No,,,,,,,,,,,,,,,No,,,Yes
 VISIT_DETAIL,visit_detail_start_date,Yes,0,,date,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,'1950-01-01',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,PERSON,BIRTH_DATETIME,1,,Yes,1,,Yes
 VISIT_DETAIL,visit_detail_start_datetime,No,,,datetime,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,'1950-01-01',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,PERSON,BIRTH_DATETIME,1,,Yes,1,,Yes
-VISIT_DETAIL,visit_detail_end_date,Yes,0,,date,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,'1950-01-01',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,VISIT_OCCURRENCE,VISIT_DETAIL_START_DATE,1,,Yes,1,,Yes
-VISIT_DETAIL,visit_detail_end_datetime,No,,,datetime,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,'1950-01-01',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,VISIT_OCCURRENCE,VISIT_DETAIL_START_DATETIME,1,,Yes,1,,Yes
+VISIT_DETAIL,visit_detail_end_date,Yes,0,,date,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,'1950-01-01',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,VISIT_DETAIL,VISIT_DETAIL_START_DATE,1,,Yes,1,,Yes
+VISIT_DETAIL,visit_detail_end_datetime,No,,,datetime,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,'1950-01-01',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,VISIT_DETAIL,VISIT_DETAIL_START_DATETIME,1,,Yes,1,,Yes
 VISIT_DETAIL,visit_detail_type_concept_id,Yes,0,,Integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,Type Concept,0,,,,,Yes,0,,Yes,0,,Yes,0,,No,,,No,,,,,,,,,,,,,,,No,,,Yes
 VISIT_DETAIL,provider_id,No,,,integer,0,,,,No,,,Yes,0,,PROVIDER,PROVIDER_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,Yes
 VISIT_DETAIL,care_site_id,No,,,integer,0,,,,No,,,Yes,0,,CARE_SITE,CARE_SITE_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,Yes
