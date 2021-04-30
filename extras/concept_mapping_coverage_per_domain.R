@@ -15,22 +15,43 @@ check_results <- result$CheckResults %>%
 # Add fields
 coverage_results <- check_results %>%
   filter(CHECK_NAME %in% c("standardConceptRecordCompleteness", "sourceValueCompleteness")) %>%
+  # Not interested in era's as these are all derived
+  filter(!(CDM_TABLE_NAME %in% c("DRUG_ERA", "DOSE_ERA", "CONDITION_ERA"))) %>%
   mutate(
+    # First check is over all records, second over the unique source terms
+    coverageType = recode(CHECK_NAME, 
+                          standardConceptRecordCompleteness = "Records",
+                          sourceValueCompleteness = "Terms"),
     # Coverage is rows not failing
     coveragePct = 1 - PCT_VIOLATED_ROWS,
-    # Base of the field names is a proxy for the domain
-    domain = ifelse(CHECK_NAME=="standardConceptRecordCompleteness", 
+    # Naming of domains
+    domain = recode(CDM_TABLE_NAME, 
+                    VISIT_OCCURRENCE = "VISIT",
+                    CONDITION_OCCURRENCE = "CONDITION",
+                    PROCEDURE_OCCURRENCE = "PROCEDURE",
+                    DRUG_EXPOSURE = "DRUG",
+                    DEVICE_EXPOSURE = "DEVICE"
+    ),
+    domain_abbrev = recode(CDM_TABLE_NAME, 
+                           VISIT_OCCURRENCE = "VST",
+                           CONDITION_OCCURRENCE = "Dx",
+                           PROCEDURE_OCCURRENCE = "PROC",
+                           DRUG_EXPOSURE = "Rx",
+                           DEVICE_EXPOSURE = "DEV",
+                           OBSERVATION = "OBS",
+                           MEASUREMENT = "MEAS",
+                           SPECIMEN = "SPEC"
+    ),
+    # Base of the field names is name
+    variable = ifelse(CHECK_NAME=="standardConceptRecordCompleteness", 
                       sub('_CONCEPT_ID', '', CDM_FIELD_NAME), 
                       sub('_SOURCE_VALUE', '', CDM_FIELD_NAME)
     ),
-    # First check is over all records, second over the unique source terms
-    coverageType = recode(CHECK_NAME, 
-                   standardConceptRecordCompleteness = "Records",
-                   sourceValueCompleteness = "Terms")
-  ) %>%
-  # To keep things simple, we only look at the six main domains (and exluce era's)
-  filter(!(CDM_TABLE_NAME %in% c("DRUG_ERA", "DOSE_ERA", "CONDITION_ERA"))) %>%
-  filter(domain %in% c("VISIT", "PROCEDURE", "DRUG", "CONDITION", "MEASUREMENT", "OBSERVATION"))
+    domainField = ifelse(domain==variable,
+                         domain,
+                         paste0(domain_abbrev,"-",variable)
+   )
+  )
 
 # Table
 table <- coverage_results %>% 
@@ -39,14 +60,18 @@ table <- coverage_results %>%
     nUnmapped = formatC(NUM_VIOLATED_ROWS, format="d", big.mark=","),
     nTotal = formatC(NUM_DENOMINATOR_ROWS, format="d", big.mark=",")
   ) %>%
-  select(domain, coverageType, percentUnmapped, nUnmapped, nTotal) %>% 
-  arrange(domain, desc(coverageType))  # by domain, terms first, then records
+  select(domainField, coverageType, percentUnmapped, nUnmapped, nTotal) %>% 
+  arrange(domainField, desc(coverageType))  # by domain, terms first, then records
 
  write.csv(table, file="concept_mapping_coverage.csv", row.names = FALSE)
 
 # Coverage plot like fig 6 in EHDEN DoA
 # note: coverage is percentage NOT failing to map
 coverage_results %>%
+  # To keep things simple, we only look at the six main domains and units
+  filter(domainField %in% c("VISIT", "PROCEDURE", "DRUG", "CONDITION", "MEASUREMENT", 
+                       "OBSERVATION", "MEAS-UNIT", "OBS-UNIT")
+  ) %>%
   mutate(
     coveragePct = 1 - PCT_VIOLATED_ROWS
   ) %>%
@@ -62,7 +87,7 @@ coverage_results %>%
                               margin=margin(r=0))
   ) +
   coord_flip() +
-  facet_grid(domain ~ ., scales="free_y", space="free_y", switch="y") +
+  facet_grid(domainField ~ ., scales="free_y", space="free_y", switch="y") +
   scale_y_continuous(labels = scales::percent) +
   guides(fill=FALSE) +
   ylab("Percentage Coverage (%)") + 
