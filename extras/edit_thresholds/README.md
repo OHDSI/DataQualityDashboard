@@ -43,6 +43,7 @@ For more information, visit: https://ohdsi.github.io/DataQualityDashboard/articl
 ## How to run?
 
 1. Run the `pivotLongerTable.R`, to convert the threshold-defining file into a longer version of it. It will be saved in ??
+
 **TO DO: missing checks might be in another 'level'**
 
 ** what's the use of fkFieldName?**
@@ -52,6 +53,7 @@ For more information, visit: https://ohdsi.github.io/DataQualityDashboard/articl
   2b. You could as well create a csv file of this form _[include table]_,
   
   | | Test      | cdmTableName | newThreshold |
+  | -- | ----------- | ----------- | ----------- |
   | 1 | measurePersonCompleteness | xxx  | 100 |
   | 2| measurePersonCompleteness  | yyy  | 25  |
   
