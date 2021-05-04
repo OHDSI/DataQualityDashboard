@@ -38,7 +38,7 @@ combined_results <- tibble(check_results_old) %>%
   filter(PCT_VIOLATED_ROWS != new_PCT_VIOLATED_ROWS)
 
 # Save as csv
-write.csv(combined_results, file="different_checks.csv")
+write.csv(combined_results, file=file.path(getwd(), saving_dir, "different_checks.csv"))
 
 
 # Plot them - interactive
