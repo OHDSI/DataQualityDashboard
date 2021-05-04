@@ -65,11 +65,13 @@ p <- combined_results %>%
   geom_abline(colour="gray", linetype = "dashed")+
   scale_colour_manual(labels = c("Fail", "Pass"), 
                       values = c("chocolate1", "darkblue"))+
-  labs(x="Previous % of row fails", y="Current % of row fails") +
-  theme_minimal() 
+  scale_alpha(guide = 'none') +
+  theme_minimal() +
+  theme(legend.title = element_blank()) +
+  labs(x="Previous % of row fails", y="Current % of row fails")
+
 
 p2 <- ggplotly(p, tooltip="text") %>%
-  style(hoveron="text") %>%
-  layout(legend=list(title=list(text=''))) # change legend title here or ggplot
+  style(hoveron="text")
 
 htmlwidgets::saveWidget(p2, file.path(getwd(), saving_dir,"fig_compare_DQD.html"))
