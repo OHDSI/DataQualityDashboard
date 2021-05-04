@@ -4,7 +4,7 @@ library("ggplot2")
 library("plotly")
 
 # Directories
-setwd('/my/path/to/dqd/')
+setwd('/my/path/to/dqd/extra/scripts/')
 file_old <- "json/results/folder/file1.json"
 file_new <- "json/results/folder/file2.json"
 saving_dir <- "results_compare/"
@@ -68,6 +68,8 @@ p <- combined_results %>%
   labs(x="Previous % of row fails", y="Current % of row fails") +
   theme_minimal() 
 
-ggplotly(p, tooltip="text") %>%
+p2 <- ggplotly(p, tooltip="text") %>%
   style(hoveron="text") %>%
   layout(legend=list(title=list(text=''))) # change legend title here or ggplot
+
+htmlwidgets::saveWidget(p2, file.path(getwd(), saving_dir,"fig_compare_DQD.html"))
