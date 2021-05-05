@@ -62,4 +62,3 @@ _[Please note that not all checks have been tested. If you get an error, multipl
 
 4. Run `edit_thresholds.R` function: `pivot_wider_func()` and save the resulting table, which you can use for your future analysis!
 
-
