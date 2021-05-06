@@ -19,7 +19,7 @@ In the previous files, each check can be found using a combination of the check 
 | 5| isPrimaryKey   | cdmTableName, cdmFieldName        | 
 | 6| isForeignKey   | cdmTableName, cdmFieldName, fkTableName        | 
 | 7| fkDomain   | cdmTableName, cdmFieldName, fkDomain        | 
-| 8| fkClass   | fkClass, cdmFieldName        | 
+| 8| fkClass   | cdmTableName, cdmFieldName, fkClass        | 
 | 9| isStandardValidConcept   | cdmTableName, cdmFieldName        | 
 | 10| measureValueCompleteness   | cdmTableName, cdmFieldName        | 
 | 11| standardConceptRecordCompleteness   | cdmTableName, cdmFieldName        | 
