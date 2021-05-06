@@ -3,8 +3,7 @@ library("jsonlite")
 library("ggplot2")
 
 setwd('/my/path/to/dqd/')
-
-dqd_filename <- 'dqd.json'
+dqd_filename <- 'my_dqd_result.json'
 
 # Load data
 result <- jsonlite::fromJSON(dqd_filename)
@@ -12,12 +11,12 @@ check_results <- result$CheckResults %>%
   select(CHECK_NAME, CDM_TABLE_NAME, CDM_FIELD_NAME, 
          NUM_VIOLATED_ROWS, NUM_DENOMINATOR_ROWS, PCT_VIOLATED_ROWS)
 
-# Add fields
 coverage_results <- check_results %>%
   filter(CHECK_NAME %in% c("standardConceptRecordCompleteness", "sourceValueCompleteness")) %>%
   # Not interested in era's as these are all derived
   filter(!(CDM_TABLE_NAME %in% c("DRUG_ERA", "DOSE_ERA", "CONDITION_ERA"))) %>%
   mutate(
+    CDM_FIELD_NAME = toupper(CDM_FIELD_NAME),
     # First check is over all records, second over the unique source terms
     coverageType = recode(CHECK_NAME, 
                           standardConceptRecordCompleteness = "Records",
@@ -25,27 +24,18 @@ coverage_results <- check_results %>%
     # Coverage is rows not failing
     coveragePct = 1 - PCT_VIOLATED_ROWS,
     # Naming of domains
-    domain = recode(CDM_TABLE_NAME, 
-                    VISIT_OCCURRENCE = "VISIT",
-                    CONDITION_OCCURRENCE = "CONDITION",
-                    PROCEDURE_OCCURRENCE = "PROCEDURE",
-                    DRUG_EXPOSURE = "DRUG",
-                    DEVICE_EXPOSURE = "DEVICE"
-    ),
-    domain_abbrev = recode(CDM_TABLE_NAME, 
-                           VISIT_OCCURRENCE = "VST",
-                           CONDITION_OCCURRENCE = "Dx",
-                           PROCEDURE_OCCURRENCE = "PROC",
-                           DRUG_EXPOSURE = "Rx",
-                           DEVICE_EXPOSURE = "DEV",
-                           OBSERVATION = "OBS",
-                           MEASUREMENT = "MEAS",
-                           SPECIMEN = "SPEC"
-    ),
-    # Base of the field names is name
+    domain = gsub("_(OCC\\w+|EXP\\w+|PLAN.+)$", "", CDM_TABLE_NAME),
     variable = ifelse(CHECK_NAME=="standardConceptRecordCompleteness", 
                       sub('_CONCEPT_ID', '', CDM_FIELD_NAME), 
                       sub('_SOURCE_VALUE', '', CDM_FIELD_NAME)
+    ),
+    domain_abbrev = recode(domain, 
+                           VISIT = "VST",
+                           CONDITION = "COND",
+                           PROCEDURE = "PROC",
+                           OBSERVATION = "OBS",
+                           MEASUREMENT = "MEAS",
+                           SPECIMEN = "SPEC"
     ),
     domainField = ifelse(domain==variable,
                          domain,
@@ -63,7 +53,7 @@ table <- coverage_results %>%
   select(domainField, coverageType, percentUnmapped, nUnmapped, nTotal) %>% 
   arrange(domainField, desc(coverageType))  # by domain, terms first, then records
 
- write.csv(table, file="concept_mapping_coverage.csv", row.names = FALSE)
+write.csv(table, file="concept_mapping_coverage.csv", row.names = FALSE)
 
 # Coverage plot like fig 6 in EHDEN DoA
 # note: coverage is percentage NOT failing to map
