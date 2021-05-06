@@ -35,15 +35,6 @@ In the previous files, each check can be found using a combination of the check 
 | 20| plausibleGender   | cdmTableName, cdmFieldName, conceptId    | 
 
 
-<!-- | 4| cdmDatatype   | cdmTableName, cdmFieldName,cdmDatatype        | | -->
-<!--| 14| plausibleValueLow   | cdmTableName, cdmFieldName, plausibleValueLow        | |-->
-<!--| 15| plausibleValueHigh   | cdmTableName, cdmFieldName, plausibleValueHigh        | |-->
-<!--| 16| plausibleTemporalAfter   | cdmTableName, cdmFieldName, plausibleTemporalAfterFieldName, plausibleTemporalAfterTableName        | | -->
-<!--| 18| plausibleValueLow   | cdmTableName, cdmFieldName, plausibleValueLow       | |-->
-<!--| 19| plausibleValueHigh   | cdmTableName, cdmFieldName, plausibleValueHigh    | |-->
-<!--| 20| plausibleGender   | cdmTableName, cdmFieldName, plausibleGender        | |-->
-<!-- valid prevalence low/high (concept) not in new dqd version?~ -->
-
 ## How to run?
 
 **1.** Define the checks for which you want to edit the thresholds in a .csv file, including all the 'additional columns', like this:
