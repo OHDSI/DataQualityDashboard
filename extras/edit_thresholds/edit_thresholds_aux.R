@@ -2,7 +2,7 @@ library(dplyr)
 library(tidyverse)
 library(stringr)
 
-
+# Run together with edit_thresholds.R
 
 # Pivot longer the csv file, using the check names
 # where columns are <check_name>, <check_name>Threshold, or <check_name>Notes
@@ -36,21 +36,17 @@ pivot_longer_func <- function(file){
 # Reads either the saved file or a df if both functions are called together
 # Returns the original threshold table, with edited thresholds
 pivot_wider_func <- function(df = NULL, file = NULL){
+  
   # just to make it flexible
   if(is.null(df) & is.null(file)){
-    stop("Not valid value found.")
-  }
-  
+    stop("Not valid value found.")}
   if(!is.null(df) & !is.null(file)){
-    stop("Ambiguous input. Give only df or file.")
-  }
-  
-  # actual pivot_wider
+    stop("Ambiguous input. Give only df or file.")}
   if(!is.null(file)){
       df <- read.csv(file, colClasses = "character", 
-                           stringsAsFactors = FALSE, row.names=1)
-      }
+                           stringsAsFactors = FALSE, row.names=1)}
   
+  # actual pivot_wider
   df_wide <- df %>%
     pivot_wider(
       names_from = Check_name,
@@ -59,127 +55,41 @@ pivot_wider_func <- function(df = NULL, file = NULL){
       values_from = c(Threshold, Notes))
   
   return(df_wide)
-  
-}
-  
-
-# Cleaning step
-# just to have a tidier .csv file to read manually.
-# This file cannot be converted back to 'wider' with the current code!!
-clean_func <- function(df_long){
-  df_long_clean <- df_long %>%
-    # Make thresholds numeric :) -they were character for first pivot_longer
-    mutate(Threshold = as.numeric(Threshold)) %>%
-    
-    # Filtering rows where no check is happening
-    filter(!(Check_name == "isRequired" & isRequired == "No")) %>%
-          select(-isRequired) %>%
-    filter(!(Check_name == "cdmDatatype" & cdmDatatype == "")) %>%  # never occurs
-    filter(!(Check_name == "isPrimaryKey" & isPrimaryKey == "No")) %>%
-          select(-isPrimaryKey) %>%
-    filter(!(Check_name == "isForeignKey" & isForeignKey == "No")) %>% 
-          select(-isForeignKey) %>%
-    filter(!(Check_name == "fkDomain" & fkDomain=="")) %>%
-    filter(!(Check_name == "fkClass" & fkClass=="")) %>%
-    filter(!(Check_name == "isStandardValidConcept" & isStandardValidConcept == "No")) %>% 
-          select(-isStandardValidConcept) %>%
-    filter(!(Check_name == "measureValueCompleteness" & measureValueCompleteness == "No")) %>%
-          select(-measureValueCompleteness) %>%
-    filter(!(Check_name == "standardConceptRecordCompleteness" & standardConceptRecordCompleteness == "No")) %>%
-          select(-standardConceptRecordCompleteness) %>%
-    filter(!(Check_name == "sourceConceptRecordCompleteness" & sourceConceptRecordCompleteness == "No")) %>% 
-          select(-sourceConceptRecordCompleteness) %>%
-    filter(!(Check_name == "sourceValueCompleteness" & sourceValueCompleteness == "No")) %>% 
-          select(-sourceValueCompleteness) %>%
-    filter(!(Check_name == "plausibleValueLow" & plausibleValueLow=="")) %>%
-    filter(!(Check_name == "plausibleValueHigh" & plausibleValueHigh=="")) %>%
-    filter(!(Check_name == "plausibleTemporalAfter" & plausibleTemporalAfter=="")) %>% 
-          select(-plausibleTemporalAfter) %>%
-    filter(!(Check_name == "plausibleDuringLife" & plausibleDuringLife == "No")) %>% 
-          select(-plausibleDuringLife) %>%
-    
-    
-    # Keep information only for relevant rows
-    mutate(
-      cdmDatatype = ifelse(Check_name=="cdmDatatype", cdmDatatype, NA_character_),
-      fkClass = ifelse(Check_name == "fkClass", fkClass, NA_character_),
-      fkDomain = ifelse(Check_name %in% c("fkDomain", "fkClass", "isRequired"),
-                        fkDomain, NA_character_),
-      fkTableName = ifelse(
-                  Check_name == "isForeignKey", 
-                  fkTableName, NA_character_),
-      plausibleTemporalAfterFieldName = ifelse(
-                  Check_name == "plausibleTemporalAfter",
-                  plausibleTemporalAfterFieldName, NA_character_),
-      plausibleTemporalAfterTableName = ifelse(
-                  Check_name == "plausibleTemporalAfter",
-                  plausibleTemporalAfterTableName, NA_character_),
-      plausibleValueHigh = ifelse(
-                  Check_name == "plausibleValueHigh", 
-                  plausibleValueHigh, NA_character_),
-      plausibleValueLow = ifelse(
-                  Check_name == "plausibleValueLow", 
-                  plausibleValueLow, NA_character_)
-      
-    ) %>%
-    
-    # Reorder columns
-    select(
-      Check_name, 
-      cdmTableName, cdmFieldName,
-      Threshold, Notes,
-      fkTableName, fkDomain, fkClass,
-      standardConceptFieldName,
-      plausibleValueLow, plausibleValueHigh,
-      plausibleTemporalAfterTableName, plausibleTemporalAfterFieldName,
-      cdmDatatype, 
-      fkFieldName,
-      userGuidance, etlConventions, runForCohort
-    )
-  
-  return(df_long_clean)
 }
 
 
+# Get index of rows that fulfill the conditions given in 'file'
+# If working well, only one row in 'df' is subset for each row in 'file'
+# Prints the corresponding index.
 print_threshold_location <- function(df, file){
-  df_thresholds <- read.csv(file)
   
-  df2 <- df %>%
-    mutate(index=c(1:nrow(.)))
+  df_thresholds <- read.csv(file, stringsAsFactors = FALSE)
+  df2 <- df %>% mutate(index=c(1:nrow(.)))
   
-  for(i in c(1:length(df_thresholds))){
+  for(i in c(1:nrow(df_thresholds))){
     row = df_thresholds[i,]
+    
+    # for all
     df3 <- df2 %>%
       filter(
         Check_name == row$Check_name &
-        cdmTableName == row$cdmTableName &
-        cdmFieldName == row$cdmFieldName)
-    print(df3$index)
-  }
+        cdmTableName == row$cdmTableName)
+
+    # for Field+Concept Level only
+    if(tolower(row$Level) %in% c("field", "concept")){
+      df3<-df3%>%filter(cdmFieldName == row$cdmFieldName)
+    }
     
+    # 'additional' auxiliary columns
+    if(row$Check_name=="isForeignKey"){
+      df3<-df3%>%filter(fkTableName==row$fkTableName)}
+    if(row$Check_name=="plausibleGender"){
+      df3<-df3%>%filter(conceptId==row$conceptId)}
+    if(tolower(row$Level) == "concept" & 
+      row$Check_name%in%c("plausibleValueLow", "plausibleValueHigh")){
+      df3 <- df3%>%filter(conceptId==row$conceptId &
+                        unitConceptId==row$unitConceptId)}
+    
+    print(paste(row$Check_name, ": ", df3$index, sep=""))
+  }
 }
-
-
-# # How to run:
-# # setwd("~/Documents/Projects/EHDEN_UKBiobank/DQD_thresholds_30Apr21/")
-# setwd("your/own/dir/xx")
-# file <- "DQD_Field_Level_v5.3.1_UKB.csv"
-# 
-# # 1) get longer table
-# df_long <- pivot_longer_func(file)
-# write.csv(df_long, file.path(getwd(), "dflong.csv"))
-# 
-# # 2) Edit thresholds, in df_long directly or in excel file
-# # using the following indeces:
-# # be aware that the excel file might have one extra row for column names, see the index in the first column!!
-# file_thresholds <- "thresholds_to_add.csv"
-# print_threshold_location(df_long, file_thresholds)
-# 
-# # 3) get originally wide table!
-# file_edited = "dflong.csv"
-# df_new <- pivot_wider_func(file=file_edited)
-# # 4) save it!
-# 
-# write.csv(df_new, file.path(getwd(), "DQD_Field_Level_v5.3.1_new.csv"))
-  
-
