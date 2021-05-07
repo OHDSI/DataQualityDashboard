@@ -106,12 +106,12 @@ edit_threshold <- function(df, index, row){
   
   # notes (avoid duplication)
   notes_old <- as.character(df[index,'Notes'])
+  if(notes_old=="character(0)"){notes_old=""}
   notes_old <- stringr::str_replace_all(string=notes_old, row$Notes, "")
-  notes_old <- stringr::str_replace_all(notes_old, "[character(0)]", "")
   notes_old <- stringr::str_replace_all(notes_old, "[|][|]", "")
   notes_new <- paste(notes_old, row$Notes, sep="|")
   df[index, 'Notes'] = notes_new
-  
+
   return(df)
   
 }
