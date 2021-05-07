@@ -39,7 +39,7 @@ In the previous files, each check can be found using a combination of the check 
 
 **1.** Define the checks for which you want to edit the thresholds in a .csv file, including all the 'additional columns', like this:
 
-| Level | Check_name      | cdmTableName | cdmFieldName | fkTableName	|fkDomain| Threshold | Notes |
+| Level | checkName      | cdmTableName | cdmFieldName | fkTableName	|fkDomain| Threshold | Notes |
 | ----| ---- | ----- | ----- |----- | ----- |----- | ----- |
 | Field| isRequired | MEASUREMENT  | person_id | | | 10 | "one note" |
 |Field | plausibleValueLow  | PERSON  | year_of_birth  | | |100 | "another note" |

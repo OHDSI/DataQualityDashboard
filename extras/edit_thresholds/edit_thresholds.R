@@ -21,7 +21,7 @@ pivot_longer_func <- function(df){
     
     # bring all (threshold and notes) to a temp column
     pivot_longer(-(!ends_with("Threshold") & !ends_with("Notes")),
-                 names_to = c("Check_name", "Type"),
+                 names_to = c("checkName", "Type"),
                  names_sep = "_",
                  values_to="temp"
     ) %>%
@@ -52,9 +52,9 @@ pivot_wider_func <- function(df = NULL, file = NULL){
   # actual pivot_wider
   df_wide <- df %>%
     pivot_wider(
-      names_from = Check_name,
+      names_from = checkName,
       names_sep = "",
-      names_glue = "{Check_name}{.value}",
+      names_glue = "{checkName}{.value}",
       values_from = c(Threshold, Notes))
   
   return(df_wide)
@@ -71,7 +71,7 @@ get_threshold_location <- function(df, row){
     # for all
     df3 <- df2 %>%
       filter(
-        Check_name == row$Check_name &
+        checkName == row$checkName &
         cdmTableName == row$cdmTableName)
 
     # for Field+Concept Level only
@@ -80,16 +80,16 @@ get_threshold_location <- function(df, row){
     }
     
     # 'additional' auxiliary columns
-    if(row$Check_name=="isForeignKey"){
+    if(row$checkName=="isForeignKey"){
       df3<-df3%>%filter(fkTableName==row$fkTableName)}
-    if(row$Check_name=="plausibleGender"){
+    if(row$checkName=="plausibleGender"){
       df3<-df3%>%filter(conceptId==row$conceptId)}
     if(tolower(row$Level) == "concept" & 
-      row$Check_name%in%c("plausibleValueLow", "plausibleValueHigh")){
+      row$checkName%in%c("plausibleValueLow", "plausibleValueHigh")){
       df3 <- df3%>%filter(conceptId==row$conceptId &
                         unitConceptId==row$unitConceptId)}
     
-    # print(paste(row$Check_name, ": ", df3$index, sep=""))
+    # print(paste(row$checkName, ": ", df3$index, sep=""))
     return(df3$index)
 }
 
