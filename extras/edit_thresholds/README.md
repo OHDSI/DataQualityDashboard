@@ -39,17 +39,14 @@ In the previous files, each check can be found using a combination of the check 
 
 **1.** Define the checks for which you want to edit the thresholds in a .csv file, including all the 'additional columns', like this:
 
-| Level | Check_name      | cdmTableName | cdmFieldName | fkTableName	|fkDomain|
-| ----| ---- | ----- | ----- |----- | ----- |
-| Field| isRequired | MEASUREMENT  | person_id | | |
-|Field | plausibleValueLow  | PERSON  | year_of_birth  | | |
-|Field|	isForeignKey|	MEASUREMENT|	person_id	| PERSON	| |
-|Field	|fkDomain |	PERSON |	race_concept_id		| | Race |
+| Level | Check_name      | cdmTableName | cdmFieldName | fkTableName	|fkDomain| Threshold | Notes |
+| ----| ---- | ----- | ----- |----- | ----- |----- | ----- |
+| Field| isRequired | MEASUREMENT  | person_id | | | 10 | "one note" |
+|Field | plausibleValueLow  | PERSON  | year_of_birth  | | |100 | "another note" |
+|Field|	isForeignKey|	MEASUREMENT|	person_id	| PERSON	| |1 |  |
+|Field	|fkDomain |	PERSON |	race_concept_id		| | Race |49 | "and yet another one" |
 
 
-**2.** Run `edit_thresholds.R` functions: `pivot_longer_func()` and  `print_threshold_location()`. Make sure to edit the script for the (2) file names.
+**2.** Run `edit_thresholds.R`. Make sure to have the correct file names.
 
-**3.** With the threshold 'location', or index in the long table, edit your thresholds (and notes!) as desired. _(Keep in mind that the printed value corresponds to the index. If you open the table in Excel, the row in Excel might be displaced by one because of the first row.)_
-
-**4.** Run `edit_thresholds.R` function: `pivot_wider_func()` and save the resulting table, which you can use for your future analysis!
 
