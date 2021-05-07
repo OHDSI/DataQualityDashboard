@@ -4,8 +4,15 @@ library(stringr)
 
 # Directories
 setwd("your/own/dir/xx")
-file <- file.path(getwd(), "DQD_Field_Level_v5.3.1.txt")
-file_new <- file.path(getwd(), "DQD_Field_Level_v5.3.1_new.csv")
+file_field <- file.path(getwd(), "DQD_Field_Level_v5.3.1.txt")
+file_field_new <- file.path(getwd(), "DQD_Field_Level_v5.3.1_new.csv")
+
+file_concept <- file.path(getwd(), "DQD_Concept_Level_v5.3.1.txt")
+file_concept_new <- file.path(getwd(), "DQD_Concept_Level_v5.3.1_new.csv")
+
+# file_table <- ""
+# file_table_new <- ""
+
 file_thresholds <- file.path(getwd(), "thresholds_to_add.csv")
 
 
@@ -78,7 +85,7 @@ get_threshold_location <- function(df, row){
     if(tolower(row$Level) %in% c("field", "concept")){
       df3<-df3%>%filter(cdmFieldName == row$cdmFieldName)
     }
-    
+
     # 'additional' auxiliary columns
     if(row$checkName=="isForeignKey"){
       df3<-df3%>%filter(fkTableName==row$fkTableName)}
@@ -88,8 +95,6 @@ get_threshold_location <- function(df, row){
       row$checkName%in%c("plausibleValueLow", "plausibleValueHigh")){
       df3 <- df3%>%filter(conceptId==row$conceptId &
                         unitConceptId==row$unitConceptId)}
-    
-    # print(paste(row$checkName, ": ", df3$index, sep=""))
     return(df3$index)
 }
 
@@ -111,28 +116,40 @@ edit_threshold <- function(df, index, row){
   
 }
 
-# Main function
-# 1) get longer table
-df <- read.csv(file, colClasses = "character", stringsAsFactors = FALSE)
-df_long <- pivot_longer_func(df)
-df_thresholds <- read.csv(file_thresholds, colClasses="character",stringsAsFactors = FALSE)
-
-# 2) Edit thresholds
-for(i in c(1:nrow(df_thresholds))){
-  row = df_thresholds[i,]
-  index <- get_threshold_location(df_long, row)
-  df_long <- edit_threshold(df_long, index, row)
+main_function <- function(file, file_new, thresholds){
+    # 1) get longer table
+    df <- read.csv(file, colClasses = "character", stringsAsFactors = FALSE)
+    df_long <- pivot_longer_func(df)
+    
+    # 2) Edit thresholds
+    for(i in c(1:nrow(thresholds))){
+      row = thresholds[i,]
+      index <- get_threshold_location(df_long, row)
+      df_long <- edit_threshold(df_long, index, row)
+    }
+    
+    # 3) get originally wide table
+    df_new <- pivot_wider_func(df=df_long)
+    df_new <- df_new[colnames(df)]
+    
+    # 4) save it!
+    write.csv(df_new, file_new, row.names = FALSE)
+    
+    # 5) (optional) final check
+    df.old <- read.csv(file, colClasses = "character", stringsAsFactors = FALSE)
+    df.new <- read.csv(file_new, colClasses = "character", stringsAsFactors = FALSE)
+    end <- base::all.equal(df.old, df.new)
+    end <- stringr::str_replace(end, "string mismatch", "difference")
+    end <- stringr::str_replace(end, "TRUE", "No differences")
+    print(end)
 }
 
-# 3) get originally wide table
-df_new <- pivot_wider_func(df=df_long)
-df_new <- df_new[colnames(df)]
-
-# 4) save it!
-write.csv(df_new, file_new, row.names = FALSE)
-
-# 5) (optional) final check
-df.old <- read.csv(file, colClasses = "character", stringsAsFactors = FALSE)
-df.new <- read.csv(file_new, colClasses = "character", stringsAsFactors = FALSE)
-end <-base::all.equal(df.old, df.new)
-stringr::str_replace(end, "string mismatch", "difference")
+# Main function
+df_thresholds <- read.csv(file_thresholds, colClasses="character",stringsAsFactors = FALSE)
+for(level in unique(df_thresholds$Level)){
+  print(paste("Editing:", level))
+  thresholds = df_thresholds %>% filter(Level==level)
+  if(level=="Field"){main_function(file_field, file_field_new, thresholds)}
+  if(level=="Concept"){main_function(file_concept, file_concept_new, thresholds)}
+  if(level=="Table"){main_function(file_table, file_table_new, thresholds)}
+}
