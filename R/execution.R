@@ -16,6 +16,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+.getCheckId <- function(checkLevel, checkName, cdmTableName,
+                        cdmFieldName = NA, conceptId = NA,
+                        unitConceptId = NA) {
+  tolower(
+    paste(
+      na.omit(c(
+        dplyr::na_if(gsub(" ", "", checkLevel), ""), 
+        dplyr::na_if(gsub(" ", "", checkName), ""), 
+        dplyr::na_if(gsub(" ", "", cdmTableName), ""), 
+        dplyr::na_if(gsub(" ", "", cdmFieldName), ""), 
+        dplyr::na_if(gsub(" ", "", conceptId), ""), 
+        dplyr::na_if(gsub(" ", "", unitConceptId), "")
+      )), 
+      collapse = "_"
+    )
+  )
+}
+
 .recordResult <- function(result = NULL, check, 
                           checkDescription, sql, 
                           executionTime = NA,
@@ -47,7 +65,9 @@
     SUBCATEGORY = checkDescription$kahnSubcategory,
     CONTEXT = checkDescription$kahnContext,
     WARNING = warning,
-    ERROR = error, row.names = NULL, stringsAsFactors = FALSE
+    ERROR = error,
+    checkId = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"]),
+    row.names = NULL, stringsAsFactors = FALSE
   )
   
   if (!is.null(result)) {
@@ -324,7 +344,6 @@ if (conceptCheckThresholdLoc == "default"){
   allResults <- NULL
   if (!sqlOnly) {
     checkResults <- do.call(rbind, resultsList)
-    checkResults$checkId <- seq.int(nrow(checkResults))
     
     allResults <- .summarizeResults(connectionDetails = connectionDetails, 
                                     cdmDatabaseSchema = cdmDatabaseSchema, 
