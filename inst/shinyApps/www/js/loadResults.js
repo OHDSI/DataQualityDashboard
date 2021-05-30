@@ -61,6 +61,10 @@ function loadResults(results) {
             '<td>' + d.UNIT_CONCEPT_ID + '</td>' +
             '</tr>' +
             '<tr>' +
+            '<td>Check Id:</td>' +
+            '<td>' + d.checkId + '</td>' +
+            '</tr>' +
+            '<tr>' +
             '<td># Rows Violated:</td>' +
             '<td>' + d.NUM_VIOLATED_ROWS + '</td>' +
             '</tr>' +
