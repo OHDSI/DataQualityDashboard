@@ -13,7 +13,7 @@ file_concept_new <- file.path(getwd(), "DQD_Concept_Level_v5.3.1_new.csv")
 # file_table <- ""
 # file_table_new <- ""
 
-file_thresholds <- file.path(getwd(), "extras/edit_thresholds/thresholds_to_add.csv")
+file_thresholds <- file.path(getwd(), "thresholds_to_add.csv")
 
 
 
@@ -79,7 +79,7 @@ get_threshold_location <- function(df, row){
     df3 <- df2 %>%
       filter(
         checkName == row$checkName &
-          cdmTableName == row$cdmTableName)
+        cdmTableName == row$cdmTableName)
     
     # for Field+Concept Level only
     if(tolower(row$Level) %in% c("field", "concept")){
@@ -92,9 +92,9 @@ get_threshold_location <- function(df, row){
     if(row$checkName=="plausibleGender"){
       df3<-df3%>%filter(conceptId==row$conceptId)}
     if(tolower(row$Level) == "concept" & 
-       row$checkName%in%c("plausibleValueLow", "plausibleValueHigh")){
+      row$checkName%in%c("plausibleValueLow", "plausibleValueHigh")){
       df3 <- df3%>%filter(conceptId==row$conceptId &
-                            unitConceptId==row$unitConceptId)}
+                          unitConceptId==row$unitConceptId)}
     return(df3$index)
 }
 
