@@ -57,7 +57,7 @@ write.csv(table, file="concept_mapping_coverage.csv", row.names = FALSE)
 
 # Coverage plot like fig 6 in EHDEN DoA
 # note: coverage is percentage NOT failing to map
-coverage_results %>%
+fig <- coverage_results %>%
   # To keep things simple, we only look at the six main domains and units
   filter(domainField %in% c("VISIT", "PROCEDURE", "DRUG", "CONDITION", "MEASUREMENT", 
                        "OBSERVATION", "MEAS-UNIT", "OBS-UNIT")
@@ -69,20 +69,19 @@ coverage_results %>%
   geom_col() +
   geom_text(aes(label=scales::percent(coveragePct, accuracy = 0.01)), 
             position=position_stack(vjust=0.5), 
-            size=3, colour="white", fontface="bold") +
+            size=3, colour="gray10", fontface="bold") +
+  theme_minimal() +
   theme(
     axis.text.y=element_text(size=10),
     strip.placement="outside",
-    strip.text.y=element_text(angle=90, hjust=0.5, face="bold", size=6,
-                              margin=margin(r=0))
+    strip.text.y=element_text(angle=0, hjust=0.5, face="bold", size=6)
   ) +
   coord_flip() +
   facet_grid(domainField ~ ., scales="free_y", space="free_y", switch="y") +
-  scale_y_continuous(labels = scales::percent) +
   guides(fill=FALSE) +
   ylab("Percentage Coverage (%)") + 
   xlab("") + 
-  scale_fill_manual(values=c("darkblue", "skyblue"))
+  scale_fill_manual(values=c("cornflowerblue", "skyblue"))
 
-ggsave('concept_mapping_coverage.png', height = 5, width = 5 * 1.61803)
+ggsave('concept_mapping_coverage.png', height = 8, width = 8 * 1.61803)
  
