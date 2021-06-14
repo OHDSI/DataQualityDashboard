@@ -17,7 +17,7 @@ result_old <- jsonlite::fromJSON(file_old)
 
 check_results_old <- result_old$CheckResults %>%
   select(checkId, CHECK_NAME, 
-         CDM_TABLE_NAME, CDM_FIELD_NAME,
+         CDM_TABLE_NAME, CDM_FIELD_NAME, CONCEPT_ID, UNIT_CONCEPT_ID,
          THRESHOLD_VALUE, PCT_VIOLATED_ROWS,
          FAILED)
 
@@ -26,7 +26,7 @@ result_new <- jsonlite::fromJSON(file_new)
 
 check_results_new <- result_new$CheckResults %>%
   select(checkId, CHECK_NAME, 
-         CDM_TABLE_NAME, CDM_FIELD_NAME,
+         CDM_TABLE_NAME, CDM_FIELD_NAME, CONCEPT_ID, UNIT_CONCEPT_ID,
          THRESHOLD_VALUE, PCT_VIOLATED_ROWS,
          FAILED) %>%
   rename(new_PCT_VIOLATED_ROWS = PCT_VIOLATED_ROWS)
@@ -34,7 +34,7 @@ check_results_new <- result_new$CheckResults %>%
 # ... only keep the different
 combined_results <- tibble(check_results_old) %>%
   left_join(check_results_new, by=c("CDM_TABLE_NAME", "CDM_FIELD_NAME",
-                                    "CHECK_NAME")) %>%
+                                    "CHECK_NAME", "CONCEPT_ID", "UNIT_CONCEPT_ID")) %>%
   filter(PCT_VIOLATED_ROWS != new_PCT_VIOLATED_ROWS)
 
 # Save as csv
