@@ -42,7 +42,6 @@ p <- combined_results %>%
              y=pct_new,
              colour=fail_status,
              text=paste(
-               sprintf('<br><i>Check ID: </i>%s', checkId.new),
                sprintf('<br><i>Check name: </i>%s', CHECK_NAME),
                sprintf('<br><i>Table: </i>%s', CDM_TABLE_NAME),
                sprintf('<br><i>Field: </i>%s', CDM_FIELD_NAME),
