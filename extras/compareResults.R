@@ -32,6 +32,8 @@ combined_results <- check_results_old %>%
 write.csv(combined_results, file=file.path(getwd(), saving_dir, "different_checks.csv"))
 
 # Plot
+cols <- c("Pass" = "darkblue", "Fail" = "chocolate1")
+
 p <- combined_results %>%
   mutate(       
     fail_status = ifelse(FAILED.new==0, "Pass", "Fail"),
@@ -52,7 +54,7 @@ p <- combined_results %>%
   geom_point() +
   geom_abline(colour="gray", linetype = "dashed")+
   scale_colour_manual(labels = c("Fail", "Pass"), 
-                      values = c("chocolate1", "darkblue"))+
+                      values = cols)+
   scale_alpha(guide = 'none') +
   theme_minimal() +
   theme(legend.title = element_blank()) +
