@@ -31,6 +31,15 @@ combined_results <- check_results_old %>%
 # Save as csv
 write.csv(combined_results, file=file.path(getwd(), saving_dir, "different_checks.csv"))
 
+### Visualization
+# If no differences: add mock point
+if(nrow(combined_results)==0){
+  combined_results <- bind_rows(
+    combined_results,
+    data.frame(PCT_VIOLATED_ROWS.old = -1, PCT_VIOLATED_ROWS.new = -1, fail_status = "NA", text = "NA")
+  )
+  }
+
 # Plot
 p <- combined_results %>%
   mutate(       
@@ -56,7 +65,7 @@ p <- combined_results %>%
   scale_alpha(guide = 'none') +
   theme_minimal() +
   theme(legend.title = element_blank()) +
-  expand_limits(y=100, x=100) +
+  lims(y=c(0,100), x=c(0,100)) +
   labs(x="Previous % of row fails", y="Current % of row fails") +
   annotate("text",label="Improved", x = 88.5, y = 12.5, colour="grey") +
   annotate("text",label="Worsened", x = 12.5, y = 88.5, colour="grey")
