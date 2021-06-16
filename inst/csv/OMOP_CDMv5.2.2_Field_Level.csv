@@ -155,7 +155,7 @@ NOTE_NLP,note_nlp_id,Yes,0,,integer,0,,,,Yes,0,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No
 NOTE_NLP,note_id,Yes,0,,integer,0,,,,No,,,Yes,0,,NOTE,NOTE_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
 NOTE_NLP,section_concept_id,No,,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
 NOTE_NLP,snippet,No,,,varchar(250),0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
-NOTE_NLP,offset,No,,,varchar(50),0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
+NOTE_NLP,'offset',No,,,varchar(50),0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
 NOTE_NLP,lexical_variant,Yes,0,,varchar(250),0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
 NOTE_NLP,note_nlp_concept_id,No,,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
 NOTE_NLP,note_nlp_source_concept_id,No,,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
