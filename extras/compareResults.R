@@ -31,7 +31,12 @@ combined_results <- check_results_old %>%
 # Save as csv
 write.csv(combined_results, file=file.path(getwd(), saving_dir, "different_checks.csv"))
 
-# Plot
+# If no differences: add mock point
+if(nrow(combined_results)==0){
+  stop("No differences found.")
+}
+
+# Visualization
 p <- combined_results %>%
   mutate(       
     fail_status = ifelse(FAILED.new==0, "Pass", "Fail"),
@@ -56,7 +61,7 @@ p <- combined_results %>%
   scale_alpha(guide = 'none') +
   theme_minimal() +
   theme(legend.title = element_blank()) +
-  expand_limits(y=100, x=100) +
+  lims(y=c(0,100), x=c(0,100)) +
   labs(x="Previous % of row fails", y="Current % of row fails") +
   annotate("text",label="Improved", x = 88.5, y = 12.5, colour="grey") +
   annotate("text",label="Worsened", x = 12.5, y = 88.5, colour="grey")
