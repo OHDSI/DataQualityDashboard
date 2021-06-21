@@ -2,17 +2,12 @@
 #' 
 #' Use:
 #' 
-#' # Directories
-#' setwd("your/own/dir/xx")
-#' file_field <- file.path(getwd(), "DQD_Field_Level_v5.3.1.txt")
-#' file_field_new <- file.path(getwd(), "DQD_Field_Level_v5.3.1_new.csv")
-#' file_concept <- file.path(getwd(), "DQD_Concept_Level_v5.3.1.txt")
-#' file_concept_new <- file.path(getwd(), "DQD_Concept_Level_v5.3.1_new.csv")
+#' file_field <- "DQD_Field_Level_v5.3.1.txt"
+#' file_concept <- "DQD_Concept_Level_v5.3.1.txt"
 #' # file_table <- ""
-#' # file_table_new <- ""
-#' file_thresholds <- file.path(getwd(), "thresholds_to_add.csv")
+#' file_thresholds <- "thresholds_to_add.csv"
 #' 
-#' edit_thresholds(file_thresholds)
+#' edit_thresholds(file_thresholds, file_field (opt), file_concept (opt), file_table (opt))
 
 
 library("dplyr")
@@ -20,7 +15,7 @@ library("tidyverse")
 # Other packages used: stringr
 
 
-edit_thresholds <- function(file_thresholds){
+edit_thresholds <- function(file_thresholds, file_field=NULL, file_concept=NULL, file_table=NULL){
   
   # Pivot longer the csv file, using the check names
   # where columns are <check_name>, <check_name>Threshold, or <check_name>Notes
@@ -122,7 +117,7 @@ edit_thresholds <- function(file_thresholds){
   }
   
   # Edits one file
-  main_function <- function(file, file_new, thresholds){
+  main_function <- function(file, thresholds){
     # 1) get longer table
     df <- read.csv(file, colClasses = "character", stringsAsFactors = FALSE)
     df_long <- pivot_longer_func(df)
@@ -139,6 +134,7 @@ edit_thresholds <- function(file_thresholds){
     df_new <- df_new[colnames(df)]
     
     # 4) save it!
+    file_new <- paste(substr(file_concept, 0, (nchar(file_concept)-4)), "_new.csv", sep="")
     write.csv(df_new, file_new, row.names = FALSE)
     
     # 5) (optional) final check
@@ -156,8 +152,8 @@ edit_thresholds <- function(file_thresholds){
   for(level in unique(df_thresholds$Level)){
     print(paste("Editing:", level))
     thresholds = df_thresholds %>% filter(Level==level)
-    if(level=="Field"){main_function(file_field, file_field_new, thresholds)}
-    if(level=="Concept"){main_function(file_concept, file_concept_new, thresholds)}
-    if(level=="Table"){main_function(file_table, file_table_new, thresholds)}
+    if(level=="Field"){main_function(file_field, thresholds)}
+    if(level=="Concept"){main_function(file_concept, thresholds)}
+    if(level=="Table"){main_function(file_table, thresholds)}
   }
 }
