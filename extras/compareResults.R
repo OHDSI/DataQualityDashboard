@@ -52,7 +52,7 @@ p <- combined_results %>%
   geom_point() +
   geom_abline(colour="gray", linetype = "dashed")+
   scale_colour_manual(labels = c("Fail", "Pass"), 
-                      values = c("chocolate1", "darkblue"))+
+                      values = c("Pass" = "darkblue", "Fail" = "chocolate1"))+
   scale_alpha(guide = 'none') +
   theme_minimal() +
   theme(legend.title = element_blank()) +
