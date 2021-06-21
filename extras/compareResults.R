@@ -1,77 +1,72 @@
+#' Comparing DQD results
+#' 
+#' Use:
+#' compare_results(file_old, file_new, saving_dir)
+
 library("dplyr")
-library("jsonlite")
-library("ggplot2")
-library("plotly")
+# Other packages used: jsonlite, ggplot2, plotly
 
-# Directories
-setwd('/my/path/to/dqd/extra/scripts/')
-file_old <- "json/results/folder/file1.json"
-file_new <- "json/results/folder/file2.json"
-saving_dir <- "results_compare/"
-dir.create(file.path(getwd(), saving_dir), showWarnings = FALSE)
-
-
-# List all differences
-# ... between OLD
-result_old <- jsonlite::fromJSON(file_old)
-check_results_old <- tibble(result_old$CheckResults)
-
-# ... and NEW
-result_new <- jsonlite::fromJSON(file_new)
-check_results_new <- tibble(result_new$CheckResults)
-
-# ... only keep the different
-combined_results <- check_results_old %>%
-  left_join(check_results_new,
-            by=c("CHECK_NAME", "CDM_TABLE_NAME", "CDM_FIELD_NAME",
-                 "CONCEPT_ID", "UNIT_CONCEPT_ID"),
-            suffix=c(".old", ".new")) %>%
-  filter(PCT_VIOLATED_ROWS.old != PCT_VIOLATED_ROWS.new)
-
-# Save as csv
-write.csv(combined_results, file=file.path(getwd(), saving_dir, "different_checks.csv"))
-
-### Visualization
-# If no differences: add mock point
-if(nrow(combined_results)==0){
-  combined_results <- bind_rows(
-    combined_results,
-    data.frame(PCT_VIOLATED_ROWS.old = -1, PCT_VIOLATED_ROWS.new = -1, fail_status = "NA", text = "NA")
-  )
+compare_results <- function(jsonPath.old, jsonPath.new, saving_dir){
+  # List all differences
+  # ... between OLD
+  result_old <- jsonlite::fromJSON(jsonPath.old)
+  check_results_old <- dplyr::tibble(result_old$CheckResults)
+  
+  # ... and NEW
+  result_new <- jsonlite::fromJSON(jsonPath.new)
+  check_results_new <- dplyr::tibble(result_new$CheckResults)
+  
+  # ... only keep the different
+  combined_results <- check_results_old %>%
+    left_join(check_results_new,
+              by=c("CHECK_NAME", "CDM_TABLE_NAME", "CDM_FIELD_NAME",
+                   "CONCEPT_ID", "UNIT_CONCEPT_ID"),
+              suffix=c(".old", ".new")) %>%
+    filter(PCT_VIOLATED_ROWS.old != PCT_VIOLATED_ROWS.new)
+  
+  # Save as csv
+  saving_name <- file.path(saving_dir, paste("compare_dqd", Sys.Date(), sep="_"))
+  dir.create(file.path(saving_dir), showWarnings = FALSE)
+  write.csv(combined_results, file=paste(saving_name, ".csv", sep=""))
+  
+  # If no differences: return
+  if(nrow(combined_results)==0){
+    stop("No differences found.")
   }
-
-# Plot
-p <- combined_results %>%
-  mutate(       
-    fail_status = ifelse(FAILED.new==0, "Pass", "Fail"),
-    pct_old = round(PCT_VIOLATED_ROWS.old*100, digits=2),
-    pct_new = round(PCT_VIOLATED_ROWS.new*100, digits=2)
-  ) %>% 
-  ggplot(aes(x=pct_old,
-             y=pct_new,
-             colour=fail_status,
-             text=paste(
-               sprintf('<br><i>Check name: </i>%s', CHECK_NAME),
-               sprintf('<br><i>Table: </i>%s', CDM_TABLE_NAME),
-               sprintf('<br><i>Field: </i>%s', CDM_FIELD_NAME),
-               sprintf('<br><i>Threshold value: </i>%.1f%%', THRESHOLD_VALUE.new),
-               sprintf('<br><b><i>old: </i> %.2f%% </b>', pct_old),
-               sprintf('<br><b><i>new: </i> %.2f%% </b>', pct_new)
-             ), alpha=0.6)) +
-  geom_point() +
-  geom_abline(colour="gray", linetype = "dashed")+
-  scale_colour_manual(labels = c("Fail", "Pass"), 
-                      values = c("chocolate1", "darkblue"))+
-  scale_alpha(guide = 'none') +
-  theme_minimal() +
-  theme(legend.title = element_blank()) +
-  lims(y=c(0,100), x=c(0,100)) +
-  labs(x="Previous % of row fails", y="Current % of row fails") +
-  annotate("text",label="Improved", x = 88.5, y = 12.5, colour="grey") +
-  annotate("text",label="Worsened", x = 12.5, y = 88.5, colour="grey")
-
-p_interactive <- ggplotly(p, tooltip="text") %>%
-  style(hoveron="text")
-
-htmlwidgets::saveWidget(p_interactive, file.path(getwd(), saving_dir, "fig_compare_DQD.html"))
-p_interactive
+  
+  ### Visualization
+  p <- combined_results %>%
+    mutate(       
+      fail_status = ifelse(FAILED.new==0, "Pass", "Fail"),
+      pct_old = round(PCT_VIOLATED_ROWS.old*100, digits=2),
+      pct_new = round(PCT_VIOLATED_ROWS.new*100, digits=2)
+    ) %>% 
+    ggplot2::ggplot(ggplot2::aes(x=pct_old,
+               y=pct_new,
+               colour=fail_status,
+               text=paste(
+                 sprintf('<br><i>Check name: </i>%s', CHECK_NAME),
+                 sprintf('<br><i>Table: </i>%s', CDM_TABLE_NAME),
+                 sprintf('<br><i>Field: </i>%s', CDM_FIELD_NAME),
+                 sprintf('<br><i>Threshold value: </i>%.1f%%', THRESHOLD_VALUE.new),
+                 sprintf('<br><b><i>old: </i> %.2f%% </b>', pct_old),
+                 sprintf('<br><b><i>new: </i> %.2f%% </b>', pct_new)
+               ), alpha=0.6)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_abline(colour="gray", linetype = "dashed")+
+    ggplot2::scale_colour_manual(labels = c("Fail", "Pass"), 
+                        values = c("chocolate1", "darkblue"))+
+    ggplot2::scale_alpha(guide = 'none') +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.title = ggplot2::element_blank()) +
+    ggplot2::lims(y=c(0,100), x=c(0,100)) +
+    ggplot2::labs(x="Previous % of row fails", y="Current % of row fails") +
+    ggplot2::annotate("text",label="Improved", x = 88.5, y = 12.5, colour="grey") +
+    ggplot2::annotate("text",label="Worsened", x = 12.5, y = 88.5, colour="grey")
+  
+  p_interactive <- plotly::ggplotly(p, tooltip="text") %>%
+    plotly::style(hoveron="text")
+  
+  htmlwidgets::saveWidget(p_interactive, file=paste(saving_name, ".html", sep=""))
+  p_interactive
+}
