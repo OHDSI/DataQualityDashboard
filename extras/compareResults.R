@@ -1,8 +1,34 @@
-#' Comparing DQD results
+#' Compare DQD results
 #' 
-#' Use:
-#' compare_results(file_old, file_new, saving_dir)
-
+#' Matches checks from the two provided DQD results and saves two outputs:
+#' \itemize{
+#'  \item a table with all checks that are different
+#'  \item an interactive plot (html) with old fail percentage versus new fail
+#'  percentage
+#' } 
+#' This makes it easy to identify differences between subsequent runs of DQD.
+#' Nothing will be created if there are no differences between the given DQD results.
+#' See also: \link[TBD]{TBD - link to abstract}
+#' 
+#' @param jsonPath.old the path to the old DQD json results file
+#' @param jsonPath.new the path to the new DQD json results file
+#' @param saving_dir the path to the folder where the output should be written
+#' @import dplyr
+#' @import ggplot2
+#' @importFrom plotly ggplotly
+#' @importFrom plotly style
+#' @importFrom htmlwidgets saveWidget
+#' @importFrom jsonlite fromJSON
+#' 
+#' @author Elena Garcia Lara, Maxim Moinat
+#' 
+#' @return An interactive plotly figure or nothing if no differences are found.
+#' @export
+#' 
+#' @examples 
+#' \dontrun{
+#'   compareDqResults("dqd_results_1.json", "dqd_results_2.json", "output")
+#' }
 library("dplyr")
 library("ggplot2")
 # Other packages used: jsonlite, plotly
