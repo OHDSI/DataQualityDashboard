@@ -1,13 +1,22 @@
-#' Comparing DQD results
+#' Plot concept mapping coverage
 #' 
-#' Use:
-#' plot_concept_coverage(jsonPath)
-
-library("dplyr")
-library("ggplot2")
-# Other packages used: jsonlite
-
-plot_conncept_coverage <- function(jsonPath){
+#' Finds mapping coverage from a given DQD results file, and returns an accessible figure
+#' 
+#' @param jsonPath the path to the DQD json results file
+#' @param savingDir the path to the folder where the output should be written
+#' @import ggplot2
+#' @import dplyr
+#' 
+#' @author Elena Garcia Lara, Maxim Moinat
+#' 
+#' @return A figure to visualize concept mapping coverage per domain
+#' @export
+#' 
+#' @examples 
+#' \dontrun{
+#'   plotConceptCoverage("dqd_results.json", "output")
+#' }
+plotConceptCoverage <- function(jsonPath, savingDir){
   
   # Load data
   result <- jsonlite::fromJSON(jsonPath)
@@ -87,5 +96,7 @@ plot_conncept_coverage <- function(jsonPath){
     xlab("") + 
     scale_fill_manual(values=c("cornflowerblue", "skyblue"))
   
-  ggsave('concept_mapping_coverage.png', height = 8, width = 8 * 1.61803)
+  saving_name <- file.path(savingDir, paste("concept_mapping_coverage", Sys.Date(), sep="_"))
+  dir.create(file.path(savingDir), showWarnings = FALSE)
+  ggsave(filename=paste(saving_name, ".png", sep=""), height = 8, width = 8 * 1.61803)
 }

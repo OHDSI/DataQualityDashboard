@@ -12,13 +12,9 @@
 #' 
 #' @param jsonPath.old the path to the old DQD json results file
 #' @param jsonPath.new the path to the new DQD json results file
-#' @param saving_dir the path to the folder where the output should be written
+#' @param savingDir the path to the folder where the output should be written
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom plotly ggplotly
-#' @importFrom plotly style
-#' @importFrom htmlwidgets saveWidget
-#' @importFrom jsonlite fromJSON
 #' 
 #' @author Elena Garcia Lara, Maxim Moinat
 #' 
@@ -29,11 +25,7 @@
 #' \dontrun{
 #'   compareDqResults("dqd_results_1.json", "dqd_results_2.json", "output")
 #' }
-library("dplyr")
-library("ggplot2")
-# Other packages used: jsonlite, plotly
-
-compareDqResults <- function(jsonPath.old, jsonPath.new, saving_dir){
+compareDqResults <- function(jsonPath.old, jsonPath.new, savingDir){
 
   # List all differences
   # ... between OLD
@@ -52,15 +44,15 @@ compareDqResults <- function(jsonPath.old, jsonPath.new, saving_dir){
               suffix=c(".old", ".new")) %>%
     filter(PCT_VIOLATED_ROWS.old != PCT_VIOLATED_ROWS.new)
   
-  # Save as csv
-  saving_name <- file.path(saving_dir, paste("compare_dqd", Sys.Date(), sep="_"))
-  dir.create(file.path(saving_dir), showWarnings = FALSE)
-  write.csv(combined_results, file=paste(saving_name, ".csv", sep=""))
-  
-  # No difference found, exit function
+  # When No difference found, exit function
   if(nrow(combined_results)==0){
     stop("No differences found.")
   }
+  
+  # Save as csv
+  saving_name <- file.path(savingDir, paste("compare_dqd", Sys.Date(), sep="_"))
+  dir.create(file.path(savingDir), showWarnings = FALSE)
+  write.csv(combined_results, file=paste(saving_name, ".csv", sep=""))
   
   # Visualization
   p <- combined_results %>%
