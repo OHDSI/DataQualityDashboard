@@ -33,7 +33,7 @@ library("dplyr")
 library("ggplot2")
 # Other packages used: jsonlite, plotly
 
-compare_results <- function(jsonPath.old, jsonPath.new, saving_dir){
+compareDqResults <- function(jsonPath.old, jsonPath.new, saving_dir){
 
   # List all differences
   # ... between OLD
