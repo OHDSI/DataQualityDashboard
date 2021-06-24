@@ -11,11 +11,11 @@ compare_results <- function(jsonPath.old, jsonPath.new, saving_dir){
 
   # List all differences
   # ... between OLD
-  result_old <- jsonlite::fromJSON(file_old)
+  result_old <- jsonlite::fromJSON(jsonPath.old)
   check_results_old <- tibble(result_old$CheckResults)
   
   # ... and NEW
-  result_new <- jsonlite::fromJSON(file_new)
+  result_new <- jsonlite::fromJSON(jsonPath.new)
   check_results_new <- tibble(result_new$CheckResults)
   
   # ... only keep the different
