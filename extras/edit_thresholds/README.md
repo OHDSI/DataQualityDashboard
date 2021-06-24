@@ -41,7 +41,7 @@ In the previous files, each check can be found using a combination of the check 
 
 | Level | checkName      | cdmTableName | cdmFieldName | fkTableName	|fkDomain|conceptId | unitConceptId| Threshold | Notes |
 | ----| ---- | ----- | ----- |----- | ----- |----- | ----- |----- | ----- |
-| FieLd   | isRequired | MEASUREMENT  | person_id                | | |                          ||10| "one note" |
+| Field   | isRequired | MEASUREMENT  | person_id                | | |                          ||10| "one note" |
 |Field    | plausibleValueLow  | PERSON  | year_of_birth         | | |                   ||100 | "another note" |
 |Field    |	isForeignKey|	MEASUREMENT|	person_id	       | PERSON  | |                   ||1 | |
 |Field 	  |fkDomain |	PERSON |	race_concept_id		       | | Race    |                   ||49 | "and yet another one" |
