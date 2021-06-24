@@ -10,7 +10,7 @@ library("ggplot2")
 plot_conncept_coverage <- function(jsonPath){
   
   # Load data
-  result <- jsonlite::fromJSON(dqd_filename)
+  result <- jsonlite::fromJSON(jsonPath)
   check_results <- result$CheckResults %>%
     select(CHECK_NAME, CDM_TABLE_NAME, CDM_FIELD_NAME, 
            NUM_VIOLATED_ROWS, NUM_DENOMINATOR_ROWS, PCT_VIOLATED_ROWS)
