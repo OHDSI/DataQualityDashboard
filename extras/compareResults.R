@@ -57,7 +57,7 @@ compareDqResults <- function(jsonPath.old, jsonPath.new, saving_dir){
   dir.create(file.path(saving_dir), showWarnings = FALSE)
   write.csv(combined_results, file=paste(saving_name, ".csv", sep=""))
   
-  # If no differences: add mock point
+  # No difference found, exit function
   if(nrow(combined_results)==0){
     stop("No differences found.")
   }
