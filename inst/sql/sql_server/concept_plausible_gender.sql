@@ -1,4 +1,3 @@
-
 /*********
 CONCEPT LEVEL check:
 PLAUSIBLE_GENDER - number of records of a given concept which occur in person with implausible gender for that concept
@@ -15,7 +14,25 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 }
 **********/
 
-
+{@CLEANSE} ? {
+	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
+		SELECT cdmTable.* 
+		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		INNER JOIN @cdmDatabaseSchema.person p
+		ON cdmTable.person_id = p.person_id			
+		WHERE cdmTable.@cdmFieldName = @conceptId
+		AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532}; 
+	
+	DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE cdmTable.@cdmFieldName IN ( 
+		SELECT cdmTable.*@cdmFieldName 
+		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		INNER JOIN @cdmDatabaseSchema.person p
+		ON cdmTable.person_id = p.person_id			
+		WHERE cdmTable.@cdmFieldName = @conceptId
+		AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532}
+    );	
+}
+{@EXECUTE} ? {
 SELECT num_violated_rows, CASE WHEN denominator.num_rows = 0 THEN 0 ELSE 1.0*num_violated_rows/denominator.num_rows END AS pct_violated_rows, 
   denominator.num_rows as num_denominator_rows
 FROM
@@ -49,5 +66,5 @@ FROM
 	}
 	
 	WHERE @cdmFieldName = @conceptId
-) denominator
-;
+) denominator;
+}
