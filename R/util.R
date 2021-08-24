@@ -93,9 +93,13 @@ compareDqResults <- function(jsonPath.old, jsonPath.new, savingDir){
 #' Plot concept mapping coverage
 #' 
 #' Finds mapping coverage from a given DQD results file, and returns an accessible figure
+#' If \code{savingDir} is provided, the figure is saved as png.
 #' 
 #' @param jsonPath the path to the DQD json results file
 #' @param savingDir the path to the folder where the output should be written
+#' 
+#' @import dplyr
+#' @import ggplot2
 #' 
 #' @author Elena Garcia Lara
 #' @author Maxim Moinat
@@ -107,7 +111,7 @@ compareDqResults <- function(jsonPath.old, jsonPath.new, savingDir){
 #' \dontrun{
 #'   plotConceptCoverage("dqd_results.json", "output")
 #' }
-plotConceptCoverage <- function(jsonPath, savingDir){
+plotConceptCoverage <- function(jsonPath, savingDir = NA){
   
   # Load data
   result <- jsonlite::fromJSON(jsonPath)
@@ -157,14 +161,13 @@ plotConceptCoverage <- function(jsonPath, savingDir){
     select(domainField, coverageType, percentUnmapped, nUnmapped, nTotal) %>% 
     arrange(domainField, desc(coverageType))  # by domain, terms first, then records
   
-  write.csv(table, file="concept_mapping_coverage.csv", row.names = FALSE)
-  
   # Coverage plot like fig 6 in EHDEN DoA
   # note: coverage is percentage NOT failing to map
   fig <- coverage_results %>%
     # To keep things simple, we only look at the six main domains and units
     filter(domainField %in% c("VISIT", "PROCEDURE", "DRUG", "CONDITION", "MEASUREMENT", 
-                              "OBSERVATION", "MEAS-UNIT", "OBS-UNIT")
+                              "OBSERVATION", "MEAS-UNIT", "OBS-UNIT"),
+           NUM_DENOMINATOR_ROWS > 0
     ) %>%
     mutate(
       coveragePct = 1 - PCT_VIOLATED_ROWS
@@ -187,7 +190,13 @@ plotConceptCoverage <- function(jsonPath, savingDir){
     xlab("") + 
     scale_fill_manual(values=c("cornflowerblue", "skyblue"))
   
-  saving_name <- file.path(savingDir, paste("concept_mapping_coverage", Sys.Date(), sep="_"))
-  dir.create(file.path(savingDir), showWarnings = FALSE)
-  ggsave(filename=paste(saving_name, ".png", sep=""), height = 8, width = 8 * 1.61803)
+  if (!is.na(savingDir)) {
+    saving_name <- file.path(savingDir, paste("concept_mapping_coverage", Sys.Date(), sep="_"))
+    dir.create(file.path(savingDir), showWarnings = FALSE)
+    ggsave(filename=paste(saving_name, ".png", sep=""), height = 8, width = 8 * 1.61803)
+    saving_table <- file.path(savingDir, "concept_mapping_coverage.csv")
+    write.csv(table, file=saving_table, row.names = FALSE)
+  }
+  
+  return(fig)
 }

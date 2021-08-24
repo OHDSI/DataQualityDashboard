@@ -4,7 +4,7 @@
 \alias{plotConceptCoverage}
 \title{Plot concept mapping coverage}
 \usage{
-plotConceptCoverage(jsonPath, savingDir)
+plotConceptCoverage(jsonPath, savingDir = NA)
 }
 \arguments{
 \item{jsonPath}{the path to the DQD json results file}
@@ -16,6 +16,7 @@ A figure to visualize concept mapping coverage per domain
 }
 \description{
 Finds mapping coverage from a given DQD results file, and returns an accessible figure
+If \code{savingDir} is provided, the figure is saved as png.
 }
 \examples{
 \dontrun{
@@ -23,5 +24,7 @@ Finds mapping coverage from a given DQD results file, and returns an accessible 
 }
 }
 \author{
-Elena Garcia Lara, Maxim Moinat
+Elena Garcia Lara
+
+Maxim Moinat
 }

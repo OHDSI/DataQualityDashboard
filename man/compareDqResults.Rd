@@ -33,5 +33,7 @@ See also: \link[TBD]{TBD - link to abstract}
 }
 }
 \author{
-Elena Garcia Lara, Maxim Moinat
+Elena Garcia Lara
+
+Maxim Moinat
 }
