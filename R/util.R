@@ -1,4 +1,48 @@
-#' Compare DQD results
+# @file util.R
+#
+# Copyright 2021 Observational Health Data Sciences and Informatics
+#
+# This file is part of DataQualityDashboard
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#' Joins two DQD results
+#' 
+#' @param jsonPath.1 the path to the first DQD json results file
+#' @param jsonPath.2 the path to the second DQD json results file
+#' 
+#' @return A tibble with the joined dqd results, one row per DQD check.
+.joinDqdResults <- function(jsonPath.1, jsonPath.2, suffixes = c(".1", ".2")){
+  # List all differences
+  # ... between OLD
+  result_old <- jsonlite::fromJSON(jsonPath.1)
+  check_results_old <- tibble(result_old$CheckResults)
+  
+  # ... and NEW
+  result_new <- jsonlite::fromJSON(jsonPath.2)
+  check_results_new <- tibble(result_new$CheckResults)
+  
+  # ... and join
+  combined_results <- check_results_old %>%
+    left_join(check_results_new,
+              by=c("CHECK_NAME", "CDM_TABLE_NAME", "CDM_FIELD_NAME",
+                   "CONCEPT_ID", "UNIT_CONCEPT_ID"),
+              suffix=suffixes)
+  
+  return(combined_results)
+}
+
+#' Create an interactive scatter plot comparing two DQD results
 #' 
 #' Matches checks from the two provided DQD results and saves two outputs:
 #' \itemize{
@@ -12,7 +56,8 @@
 #' 
 #' @param jsonPath.old the path to the old DQD json results file
 #' @param jsonPath.new the path to the new DQD json results file
-#' @param savingDir the path to the folder where the output should be written
+#' @param savingDir (optional) the path to the folder where the output should be written.
+#'                  if not given, no output will be written.
 #' 
 #' @author Elena Garcia Lara
 #' @author Maxim Moinat
@@ -22,41 +67,27 @@
 #' 
 #' @examples 
 #' \dontrun{
-#'   compareDqResults("dqd_results_1.json", "dqd_results_2.json", "output")
+#'   plotCompareDqdResults("dqd_results_1.json", "dqd_results_2.json", "output")
 #' }
-compareDqResults <- function(jsonPath.old, jsonPath.new, savingDir){
+plotCompareDqdResults <- function(jsonPath.old, jsonPath.new, savingDir = NA){
+  combinedResult <- .joinDqdResults(jsonPath.old, jsonPath.new, suffixes = c(".old", ".new"))
   
-  # List all differences
-  # ... between OLD
-  result_old <- jsonlite::fromJSON(jsonPath.old)
-  check_results_old <- tibble(result_old$CheckResults)
+  # Only keep changed
+  combinedResult <- combinedResult %>%
+                      filter(PCT_VIOLATED_ROWS.old != PCT_VIOLATED_ROWS.new)
   
-  # ... and NEW
-  result_new <- jsonlite::fromJSON(jsonPath.new)
-  check_results_new <- tibble(result_new$CheckResults)
-  
-  # ... only keep the different
-  combined_results <- check_results_old %>%
-    left_join(check_results_new,
-              by=c("CHECK_NAME", "CDM_TABLE_NAME", "CDM_FIELD_NAME",
-                   "CONCEPT_ID", "UNIT_CONCEPT_ID"),
-              suffix=c(".old", ".new")) %>%
-    filter(PCT_VIOLATED_ROWS.old != PCT_VIOLATED_ROWS.new)
-  
-  # When No difference found, exit function
-  if(nrow(combined_results)==0){
+  # When no difference found, exit function
+  if(nrow(combinedResult)==0){
     stop("No differences found.")
   }
   
-  # Save as csv
-  saving_name <- file.path(savingDir, paste("compare_dqd", Sys.Date(), sep="_"))
-  dir.create(file.path(savingDir), showWarnings = FALSE)
-  write.csv(combined_results, file=paste(saving_name, ".csv", sep=""))
-  
   # Visualization
-  p <- combined_results %>%
+  p <- combinedResult %>%
     mutate(       
-      fail_status = ifelse(FAILED.new==0, "Pass", "Fail"),
+      fail_status = ifelse(FAILED.old, 
+                           ifelse(FAILED.new, "Fail→Fail", "Fail→Pass"),
+                           ifelse(FAILED.new, "Pass→Fail", "Pass→Pass")
+                           ),
       pct_old = round(PCT_VIOLATED_ROWS.old*100, digits=2),
       pct_new = round(PCT_VIOLATED_ROWS.new*100, digits=2)
     ) %>% 
@@ -73,8 +104,9 @@ compareDqResults <- function(jsonPath.old, jsonPath.new, savingDir){
                ), alpha=0.6)) +
     geom_point() +
     geom_abline(colour="gray", linetype = "dashed")+
-    scale_colour_manual(labels = c("Fail", "Pass"), 
-                        values = c("Pass" = "darkblue", "Fail" = "chocolate1"))+
+    scale_colour_manual(labels = c("Fail→Pass", "Fail→Fail", "Pass→Pass", "Pass→Fail"),
+                        values = c("Pass→Pass" = "lightblue", "Fail→Fail" = "chocolate1",
+                                   "Fail→Pass" = "darkblue", "Pass→Fail" = "coral"))+
     scale_alpha(guide = 'none') +
     theme_minimal() +
     theme(legend.title = element_blank()) +
@@ -86,8 +118,52 @@ compareDqResults <- function(jsonPath.old, jsonPath.new, savingDir){
   p_interactive <- plotly::ggplotly(p, tooltip="text") %>%
     plotly::style(hoveron="text")
   
-  htmlwidgets::saveWidget(p_interactive, file=paste(saving_name, ".html", sep=""))
+  if (!is.na(savingDir)) {
+    savingName <- file.path(savingDir, paste("compare_dqd", Sys.Date(), sep="_"))
+    dir.create(file.path(savingDir), showWarnings = FALSE)
+    htmlwidgets::saveWidget(p_interactive, file=paste(savingName, ".html", sep=""))
+  }
+  
   p_interactive
+}
+
+#' Create table comparing two DQD results
+#' 
+#' @param jsonPath.old the path to the old DQD json results file
+#' @param jsonPath.new the path to the new DQD json results file
+#' @param savingDir (optional) the path to the folder where the output should be written
+#'                  if not given, no output will be written.
+#' 
+#' @author Elena Garcia Lara
+#' @author Maxim Moinat
+#' 
+#' @return An overview of all differing checks
+#' @export
+#' 
+#' @examples 
+#' \dontrun{
+#'   tableCompareDqdResults("dqd_results_1.json", "dqd_results_2.json", "output")
+#' }
+tableCompareDqdResults <- function(jsonPath.old, jsonPath.new, savingDir = NA){
+  combinedResult <- .joinDqdResults(jsonPath.old, jsonPath.new, suffixes = c(".old", ".new"))
+  
+  # Only keep changed
+  combinedResult <- combinedResult %>%
+    filter(PCT_VIOLATED_ROWS.old != PCT_VIOLATED_ROWS.new) %>%
+    select(CHECK_NAME, CDM_TABLE_NAME, CDM_FIELD_NAME,
+           CONCEPT_ID, UNIT_CONCEPT_ID,
+           PCT_VIOLATED_ROWS.old, NUM_DENOMINATOR_ROWS.old, FAILED.old,
+           PCT_VIOLATED_ROWS.new, NUM_DENOMINATOR_ROWS.new, FAILED.new,
+           NOTES_VALUE.old, NOTES_VALUE.new)
+  
+  # Save as csv
+  if (!is.na(savingDir)) {
+    saving_name <- file.path(savingDir, paste("compare_dqd", Sys.Date(), sep="_"))
+    dir.create(file.path(savingDir), showWarnings = FALSE)
+    write.csv(combinedResult, file=paste(saving_name, ".csv", sep=""))
+  }
+  
+  return(combinedResult)
 }
 
 #' Plot concept mapping coverage
@@ -96,7 +172,8 @@ compareDqResults <- function(jsonPath.old, jsonPath.new, savingDir){
 #' If \code{savingDir} is provided, the figure is saved as png.
 #' 
 #' @param jsonPath the path to the DQD json results file
-#' @param savingDir the path to the folder where the output should be written
+#' @param savingDir (optional) the path to the folder where plot and data table are written
+#'                  if not given, no output will be saved
 #' 
 #' @import dplyr
 #' @import ggplot2

@@ -9,7 +9,8 @@ plotConceptCoverage(jsonPath, savingDir = NA)
 \arguments{
 \item{jsonPath}{the path to the DQD json results file}
 
-\item{savingDir}{the path to the folder where the output should be written}
+\item{savingDir}{(optional) the path to the folder where plot and data table are written
+if not given, no output will be saved}
 }
 \value{
 A figure to visualize concept mapping coverage per domain
