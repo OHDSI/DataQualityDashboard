@@ -26,10 +26,10 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 		AND m.value_as_number > @plausibleValueHigh; 
 	
 	UPDATE @cdmDatabaseSchema.@cdmTableName SET value_as_number = NULL 
-		WHERE m.@cdmFieldName = @conceptId
-		AND m.unit_concept_id = @unitConceptId
-		AND m.value_as_number IS NOT NULL
-		AND m.value_as_number > @plausibleValueHigh;	
+		WHERE @cdmFieldName = @conceptId
+		AND unit_concept_id = @unitConceptId
+		AND value_as_number IS NOT NULL
+		AND value_as_number > @plausibleValueHigh;	
 }
 
 {@EXECUTE} ? {
