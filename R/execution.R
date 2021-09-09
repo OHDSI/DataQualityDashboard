@@ -83,7 +83,8 @@
                           check, 
                           checkDescription, 
                           sql, 
-                          outputFolder) {
+                          outputFolder,
+						  actionType) {
   singleThreaded <- TRUE
   start <- Sys.time()
   if (is.null(connection)) {
@@ -106,12 +107,16 @@
         }  
       }
       
-      result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
-                                            errorReportFile = errorReportFile)
-      
-      delta <- difftime(Sys.time(), start, units = "secs")
-      .recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
-                    executionTime = sprintf("%f %s", delta, attr(delta, "units")))
+	  if (actionType == "CLEANSE") {
+		DatabaseConnector::executeSql(connection = connection, sql = sql,errorReportFile = errorReportFile)
+	  } else if (actionType == "EXECUTE") {
+		  result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
+												errorReportFile = errorReportFile)
+		  
+		  delta <- difftime(Sys.time(), start, units = "secs")
+		  .recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
+						executionTime = sprintf("%f %s", delta, attr(delta, "units")))
+	  }	  
     },
     warning = function(w) {
       ParallelLogger::logWarn(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
@@ -180,7 +185,8 @@ executeDqChecks <- function(connectionDetails,
                             cdmVersion = "5.3.1",
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
-                            conceptCheckThresholdLoc = "default") {
+                            conceptCheckThresholdLoc = "default",
+							actions = list(CLEANSE=FALSE, EXECUTE=TRUE)) {
   
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
@@ -317,7 +323,7 @@ if (conceptCheckThresholdLoc == "default"){
   
   fieldChecks$cdmFieldName <- toupper(fieldChecks$cdmFieldName)
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
-  
+    
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
   resultsList <- ParallelLogger::clusterApply(
     cluster = cluster, x = checkDescriptions,
@@ -333,6 +339,7 @@ if (conceptCheckThresholdLoc == "default"){
     cohortDefinitionId,
     outputFolder, 
     sqlOnly,
+	actions,
     progressBar = TRUE
   )
   ParallelLogger::stopCluster(cluster = cluster)
@@ -394,7 +401,8 @@ if (conceptCheckThresholdLoc == "default"){
                       cohortDatabaseSchema,
                       cohortDefinitionId,
                       outputFolder, 
-                      sqlOnly) {
+                      sqlOnly,
+					  actions) {
   
   library(magrittr)
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
@@ -417,31 +425,68 @@ if (conceptCheckThresholdLoc == "default"){
         setNames(check[c], c)
       })
       
-      params <- c(list(dbms = connectionDetails$dbms),
-                  list(sqlFilename = checkDescription$sqlFile),
-                  list(packageName = "DataQualityDashboard"),
-                  list(warnOnMissingParameters = FALSE),
-                  list(cdmDatabaseSchema = cdmDatabaseSchema),
-                  list(cohortDatabaseSchema = cohortDatabaseSchema),
-                  list(cohortDefinitionId = cohortDefinitionId),
-                  list(vocabDatabaseSchema = vocabDatabaseSchema),
-                  list(cohort = cohort),
-                  unlist(columns, recursive = FALSE))
+	  if (actions$CLEANSE) {
+		params <- c(list(dbms = connectionDetails$dbms),
+					  list(sqlFilename = checkDescription$sqlFile),
+					  list(packageName = "DataQualityDashboard"),
+					  list(warnOnMissingParameters = FALSE),
+					  list(cdmDatabaseSchema = cdmDatabaseSchema),
+					  list(cohortDatabaseSchema = cohortDatabaseSchema),
+					  list(cohortDefinitionId = cohortDefinitionId),
+					  list(vocabDatabaseSchema = vocabDatabaseSchema),
+					  list(cohort = cohort),
+					  list(CLEANSE = TRUE),
+					  list(EXECUTE = FALSE),
+					  unlist(columns, recursive = FALSE))
       
-      sql <- do.call(SqlRender::loadRenderTranslateSql, params)
+		sql <- do.call(SqlRender::loadRenderTranslateSql, params)
       
-      if (sqlOnly) {
-        write(x = sql, file = file.path(outputFolder, 
+		if (sqlOnly) {
+			write(x = sql, file = file.path(outputFolder, 
                                         sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
-        data.frame()
-      } else {
-        .processCheck(connection = connection,
-                      connectionDetails = connectionDetails,
-                      check = check, 
-                      checkDescription = checkDescription, 
-                      sql = sql,
-                      outputFolder = outputFolder)
-      }    
+			data.frame()
+		} else {
+			.processCheck(connection = connection,
+						connectionDetails = connectionDetails,
+						check = check, 
+						checkDescription = checkDescription, 
+						sql = sql,
+						outputFolder = outputFolder,
+						actionType = "CLEANSE")
+		}
+	  }
+	  
+	  if (actions$EXECUTE) {
+		params <- c(list(dbms = connectionDetails$dbms),
+					  list(sqlFilename = checkDescription$sqlFile),
+					  list(packageName = "DataQualityDashboard"),
+					  list(warnOnMissingParameters = FALSE),
+					  list(cdmDatabaseSchema = cdmDatabaseSchema),
+					  list(cohortDatabaseSchema = cohortDatabaseSchema),
+					  list(cohortDefinitionId = cohortDefinitionId),
+					  list(vocabDatabaseSchema = vocabDatabaseSchema),
+					  list(cohort = cohort),
+					  list(CLEANSE = FALSE),
+					  list(EXECUTE = TRUE),
+					  unlist(columns, recursive = FALSE))
+      
+		sql <- do.call(SqlRender::loadRenderTranslateSql, params)
+      
+		if (sqlOnly) {
+			write(x = sql, file = file.path(outputFolder, 
+                                        sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
+			data.frame()
+		} else {
+			.processCheck(connection = connection,
+						connectionDetails = connectionDetails,
+						check = check, 
+						checkDescription = checkDescription, 
+						sql = sql,
+						outputFolder = outputFolder,
+						actionType = "EXECUTE")
+		}
+	  }
+	  
     })
     do.call(rbind, dfs)
   } else {
@@ -747,3 +792,45 @@ writeJsonResultsToTable <- function(connectionDetails,
   }
   autoCommit
 }
+
+performCleanse <- function(connectionDetails,
+                            cdmDatabaseSchema,
+                            resultsDatabaseSchema,
+                            vocabDatabaseSchema,
+                            cdmSourceName,
+                            outputFolder,
+                            outputFile,
+                            cohortDefinitionId,
+                            cohortDatabaseSchema,
+                            cdmVersion,
+							tablesToCleanse) 
+{
+
+  # If cleansing prior to execution, create archive tables if they do not already exist.
+  # Find the names of the tables that participate in DQD.  For each table, create a corresponding "ARCHIVE"
+  # table to store results prior to deleting or updating.
+    
+  connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+  
+  archiveNames  <- paste0(tablesToCleanse,"_ARCHIVE")
+  
+  ParallelLogger::logInfo("Beginning cleanse process.")
+      
+  for (k in 1:length(archiveNames)) {
+    if (!DatabaseConnector::dbExistsTable(conn,archiveNames[k])) {
+      sql <- paste0("CREATE TABLE ",cdmDatabaseSchema,".",archiveNames[k],
+                    " AS SELECT * FROM ",cdmDatabaseSchema,".",tablesToCleanse[k],
+                    " WHERE 1 = 0;")
+	  ParallelLogger::logInfo(sprintf("Creating archive table for %s.", tablesToCleanse[k]))
+      DatabaseConnector::executeSql(conn,sql)
+    }
+  }
+  ParallelLogger::logInfo("Archive table created.")
+  
+  ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
+  
+  ParallelLogger::logInfo("Cleanse process complete.")
+  on.exit(DatabaseConnector::disconnect(connection = connection))
+  
+}
+
