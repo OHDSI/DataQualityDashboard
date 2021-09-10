@@ -83,8 +83,7 @@
                           check, 
                           checkDescription, 
                           sql, 
-                          outputFolder,
-						  actionType) {
+                          outputFolder) {
   singleThreaded <- TRUE
   start <- Sys.time()
   if (is.null(connection)) {
@@ -107,16 +106,12 @@
         }  
       }
       
-	  if (actionType == "CLEANSE") {
-		DatabaseConnector::executeSql(connection = connection, sql = sql,errorReportFile = errorReportFile)
-	  } else if (actionType == "EXECUTE") {
-		  result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
+	      result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
 												errorReportFile = errorReportFile)
 		  
 		  delta <- difftime(Sys.time(), start, units = "secs")
 		  .recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
-						executionTime = sprintf("%f %s", delta, attr(delta, "units")))
-	  }	  
+						executionTime = sprintf("%f %s", delta, attr(delta, "units")))  
     },
     warning = function(w) {
       ParallelLogger::logWarn(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
@@ -336,7 +331,33 @@ if (conceptCheckThresholdLoc == "default"){
                 cohortDatabaseSchema,
                 cdmVersion,
 				tablesToPrep = unique(tableChecks$cdmTableName))
+				
+	sqlOnly <- TRUE
+	actions <- list(CLEANSE=TRUE, EXECUTE=FALSE)
+	
+    cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
+    resultsList <- ParallelLogger::clusterApply(
+      cluster = cluster, x = checkDescriptions,
+      fun = .runCheck, 
+      tableChecks,
+      fieldChecks,
+      conceptChecks,
+      connectionDetails, 
+      connection,
+      cdmDatabaseSchema, 
+      vocabDatabaseSchema,
+      cohortDatabaseSchema,
+      cohortDefinitionId,
+      outputFolder, 
+      sqlOnly,
+	  actions,
+      progressBar = TRUE
+    )
+    ParallelLogger::stopCluster(cluster = cluster)
   }
+  
+  sqlOnly <- FALSE
+  actions <- list(CLEANSE=FALSE, EXECUTE=TRUE)
   
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
   resultsList <- ParallelLogger::clusterApply(
@@ -455,19 +476,8 @@ if (conceptCheckThresholdLoc == "default"){
       
 		sql <- do.call(SqlRender::loadRenderTranslateSql, params)
       
-		if (sqlOnly) {
-			write(x = sql, file = file.path(outputFolder, 
-                                        sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
-			data.frame()
-		} else {
-			.processCheck(connection = connection,
-						connectionDetails = connectionDetails,
-						check = check, 
-						checkDescription = checkDescription, 
-						sql = sql,
-						outputFolder = outputFolder,
-						actionType = "CLEANSE")
-		}
+		write(x = sql, file = file.path(outputFolder, sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
+		data.frame()		
 	  }
 	  
 	  if (actions$EXECUTE) {
@@ -496,13 +506,12 @@ if (conceptCheckThresholdLoc == "default"){
 						check = check, 
 						checkDescription = checkDescription, 
 						sql = sql,
-						outputFolder = outputFolder,
-						actionType = "EXECUTE")
+						outputFolder = outputFolder)
 		}
 	  }
 	  
     })
-    do.call(rbind, dfs)
+    if (actions$EXECUTE) { do.call(rbind, dfs) }
   } else {
     ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
     data.frame()
