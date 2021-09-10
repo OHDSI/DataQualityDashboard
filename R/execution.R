@@ -324,6 +324,20 @@ if (conceptCheckThresholdLoc == "default"){
   fieldChecks$cdmFieldName <- toupper(fieldChecks$cdmFieldName)
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
     
+  if (actions$CLEANSE) {
+    prepCleanse(connectionDetails,
+                cdmDatabaseSchema,
+                resultsDatabaseSchema,
+                vocabDatabaseSchema,
+                cdmSourceName,
+                outputFolder,
+                outputFile,
+                cohortDefinitionId,
+                cohortDatabaseSchema,
+                cdmVersion,
+				tablesToPrep = unique(tableChecks$cdmTableName))
+  }
+  
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
   resultsList <- ParallelLogger::clusterApply(
     cluster = cluster, x = checkDescriptions,
@@ -793,7 +807,7 @@ writeJsonResultsToTable <- function(connectionDetails,
   autoCommit
 }
 
-performCleanse <- function(connectionDetails,
+prepCleanse <- function(connectionDetails,
                             cdmDatabaseSchema,
                             resultsDatabaseSchema,
                             vocabDatabaseSchema,
@@ -803,7 +817,7 @@ performCleanse <- function(connectionDetails,
                             cohortDefinitionId,
                             cohortDatabaseSchema,
                             cdmVersion,
-							tablesToCleanse) 
+							tablesToPrep) 
 {
 
   # If cleansing prior to execution, create archive tables if they do not already exist.
@@ -812,25 +826,21 @@ performCleanse <- function(connectionDetails,
     
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   
-  archiveNames  <- paste0(tablesToCleanse,"_ARCHIVE")
+  archiveNames  <- paste0(tablesToPrep,"_ARCHIVE")
   
-  ParallelLogger::logInfo("Beginning cleanse process.")
+  ParallelLogger::logInfo("Beginning cleanse prep process.")
       
   for (k in 1:length(archiveNames)) {
-    if (!DatabaseConnector::dbExistsTable(conn,archiveNames[k])) {
+    if (!DatabaseConnector::dbExistsTable(connection,archiveNames[k])) {
       sql <- paste0("CREATE TABLE ",cdmDatabaseSchema,".",archiveNames[k],
-                    " AS SELECT * FROM ",cdmDatabaseSchema,".",tablesToCleanse[k],
+                    " AS SELECT * FROM ",cdmDatabaseSchema,".",tablesToPrep[k],
                     " WHERE 1 = 0;")
-	  ParallelLogger::logInfo(sprintf("Creating archive table for %s.", tablesToCleanse[k]))
-      DatabaseConnector::executeSql(conn,sql)
+	  ParallelLogger::logInfo(sprintf("Creating archive table for %s.", tablesToPrep[k]))
+      DatabaseConnector::executeSql(connection,sql)
     }
   }
-  ParallelLogger::logInfo("Archive table created.")
-  
-  ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
-  
-  ParallelLogger::logInfo("Cleanse process complete.")
+    
+  ParallelLogger::logInfo("Cleanse prep process complete.")
   on.exit(DatabaseConnector::disconnect(connection = connection))
   
 }
-
