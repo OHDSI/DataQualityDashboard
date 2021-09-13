@@ -320,6 +320,8 @@ if (conceptCheckThresholdLoc == "default"){
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
     
   if (actions$CLEANSE) {
+  
+    # Check if archive tables exist, if not, create them.
     prepCleanse(connectionDetails,
                 cdmDatabaseSchema,
                 resultsDatabaseSchema,
@@ -331,7 +333,10 @@ if (conceptCheckThresholdLoc == "default"){
                 cohortDatabaseSchema,
                 cdmVersion,
 				tablesToPrep = unique(tableChecks$cdmTableName))
-				
+
+	# Create files for cleaning DML and turn off normal execution of dqd.
+	# This is necessary since we have both SELECT and DML in a single SQL file.
+	
 	sqlOnly <- TRUE
 	actions <- list(CLEANSE=TRUE, EXECUTE=FALSE)
 	
@@ -354,6 +359,14 @@ if (conceptCheckThresholdLoc == "default"){
       progressBar = TRUE
     )
     ParallelLogger::stopCluster(cluster = cluster)
+
+	for (k in 1:length(checksToInclude)) {
+		
+		cleanseFileName <- paste0(outputFolder,"/cleanse_",checksToInclude[k],".sql")
+		if (file.exists(cleanseFileName) && checksToInclude[k] != "cdmField") {
+			  ParallelLogger::logInfo(paste0("Executing clease script: ",cleanseFileName))
+		}
+	}
   }
   
   sqlOnly <- FALSE
@@ -476,7 +489,7 @@ if (conceptCheckThresholdLoc == "default"){
       
 		sql <- do.call(SqlRender::loadRenderTranslateSql, params)
       
-		write(x = sql, file = file.path(outputFolder, sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
+		write(x = sql, file = file.path(outputFolder, sprintf("cleanse_%s.sql", checkDescription$checkName)), append = TRUE)
 		data.frame()		
 	  }
 	  
