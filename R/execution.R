@@ -360,14 +360,18 @@ if (conceptCheckThresholdLoc == "default"){
     )
     ParallelLogger::stopCluster(cluster = cluster)
 
+	# Create a separate connection to perform the cleanse
+	conn <- DatabaseConnector::connect(connectionDetails)
 	for (k in 1:length(checksToInclude)) {
-		
 		cleanseFileName <- paste0(outputFolder,"/cleanse_",checksToInclude[k],".sql")
 		if (file.exists(cleanseFileName) && checksToInclude[k] != "cdmField") {
 			  ParallelLogger::logInfo(paste0("Executing clease script: ",cleanseFileName))
+			  sql <- SqlRender::readSql(cleanseFileName)
+			  # DatabaseConnector::executeSql(conn,sql)
 		}
 	}
   }
+  DatabaseConnector::disconnect(conn)
   
   sqlOnly <- FALSE
   actions <- list(CLEANSE=FALSE, EXECUTE=TRUE)
@@ -852,12 +856,18 @@ prepCleanse <- function(connectionDetails,
   
   ParallelLogger::logInfo("Beginning cleanse prep process.")
       
+  allTableNames <- DatabaseConnector::getTableNames(connection,cdmDatabaseSchema) 	  
+  
   for (k in 1:length(archiveNames)) {
-    if (!DatabaseConnector::dbExistsTable(connection,archiveNames[k])) {
-      sql <- paste0("CREATE TABLE ",cdmDatabaseSchema,".",archiveNames[k],
+    if (archiveNames[k] %in% allTableNames) {
+	  ParallelLogger::logInfo(sprintf("Truncating previous results for %s.", archiveNames[k]))
+      sql <- paste0("TRUNCATE TABLE ",cdmDatabaseSchema,".",archiveNames[k],";")
+      DatabaseConnector::executeSql(connection,sql)
+    } else {
+	    ParallelLogger::logInfo(sprintf("Creating archive table for %s.", tablesToPrep[k]))
+		sql <- paste0("CREATE TABLE ",cdmDatabaseSchema,".",archiveNames[k],
                     " AS SELECT * FROM ",cdmDatabaseSchema,".",tablesToPrep[k],
                     " WHERE 1 = 0;")
-	  ParallelLogger::logInfo(sprintf("Creating archive table for %s.", tablesToPrep[k]))
       DatabaseConnector::executeSql(connection,sql)
     }
   }

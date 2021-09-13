@@ -22,11 +22,11 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 		  JOIN @vocabDatabaseSchema.concept co ON cdmTable.@cdmFieldName = co.concept_id
 		  WHERE co.concept_id != 0 AND (co.standard_concept != 'S' OR co.invalid_reason IS NOT NULL); 
 	
-	DELETE FROM @cdmDatabaseSchema.@cdmTableName cdmTable WHERE EXISTS ( 
-		SELECT 1 
-		  FROM @vocabDatabaseSchema.concept co 
-		  WHERE cdmTable.@cdmFieldName = co.concept_id
-		    AND co.concept_id != 0 AND (co.standard_concept != 'S' OR co.invalid_reason IS NOT NULL)
+	DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmTableName_ID IN ( 
+		SELECT cdmTable.@cdmTableName_ID 
+		  FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		  JOIN @vocabDatabaseSchema.concept co ON cdmTable.@cdmFieldName = co.concept_id
+		  WHERE co.concept_id != 0 AND (co.standard_concept != 'S' OR co.invalid_reason IS NOT NULL)
 	);
 }
 

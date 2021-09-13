@@ -23,12 +23,13 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 		WHERE cdmTable.@cdmFieldName = @conceptId
 		AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532}; 
 
-	DELETE FROM @cdmDatabaseSchema.@cdmTableName cdmTable WHERE EXISTS ( 
-		SELECT 1 
-		FROM @cdmDatabaseSchema.person p
-		WHERE cdmTable.person_id = p.person_id			
-		AND cdmTable.@cdmFieldName = @conceptId
-		AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532}
+	DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmTableName_ID IN ( 
+		SELECT cdmTable.@cdmTableName_ID 
+		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		INNER JOIN @cdmDatabaseSchema.person p
+		ON cdmTable.person_id = p.person_id			
+		WHERE cdmTable.@cdmFieldName = @conceptId
+		AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
     );			
 }
 

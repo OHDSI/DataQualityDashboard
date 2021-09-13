@@ -20,11 +20,11 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 		JOIN @cdmDatabaseSchema.death de ON cdmTable.person_id = de.person_id
 		WHERE CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(DAY, 60, CAST(de.death_date AS DATE)); 
 	
-	DELETE FROM @cdmDatabaseSchema.@cdmTableName cdmTable WHERE EXISTS (
-		SELECT 1
-		FROM @cdmDatabaseSchema.death de 
-		WHERE cdmTable.person_id = de.person_id
-		AND CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(DAY, 60, CAST(de.death_date AS DATE))
+	DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmTableName_ID IN (
+		SELECT cdmTable.@cdmTableName_ID
+		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		JOIN @cdmDatabaseSchema.death de ON cdmTable.person_id = de.person_id
+		WHERE CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(DAY, 60, CAST(de.death_date AS DATE))
 	);
 }
 

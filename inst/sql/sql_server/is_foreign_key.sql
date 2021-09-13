@@ -24,13 +24,21 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 		ON cdmTable.@cdmFieldName = fkTable.@fkFieldName
 		WHERE fkTable.@fkFieldName IS NULL AND cdmTable.@cdmFieldName IS NOT NULL ; 
 	
-	DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmDatabaseSchema.@cdmTableName_id IN ( 
+	{'@cdmTableName' IN ('FACT_RELATIONSHIP')}?{
+		DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmFieldName IN ( 
+		SELECT cdmTable.@cdmFieldName 
+		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		LEFT JOIN {'@fkTableName' IN ('CONCEPT','DOMAIN')}?{@vocabDatabaseSchema.@fkTableName}:{@cdmDatabaseSchema.@fkTableName} fkTable
+		ON cdmTable.@cdmFieldName = fkTable.@fkFieldName
+		WHERE fkTable.@fkFieldName IS NULL AND cdmTable.@cdmFieldName IS NOT NULL
+		);}:{
+		DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmTableName_id IN ( 
 		SELECT cdmTable.@cdmTableName_id 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		LEFT JOIN {'@fkTableName' IN ('CONCEPT','DOMAIN')}?{@vocabDatabaseSchema.@fkTableName}:{@cdmDatabaseSchema.@fkTableName} fkTable
 		ON cdmTable.@cdmFieldName = fkTable.@fkFieldName
 		WHERE fkTable.@fkFieldName IS NULL AND cdmTable.@cdmFieldName IS NOT NULL
-	);
+		);}
 }
 
 {@EXECUTE} ? {

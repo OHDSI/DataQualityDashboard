@@ -25,16 +25,14 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 		    }
 		WHERE CAST(@plausibleTemporalAfterFieldName AS DATE) > CAST(cdmTable.@cdmFieldName AS DATE); 
 	
-	{@cdmDatabaseSchema.@cdmTableName != @cdmDatabaseSchema.@plausibleTemporalAfterTableName}?{
-		DELETE FROM @cdmDatabaseSchema.@cdmTableName cdmTable WHERE EXISTS (
-		SELECT 1 
-		FROM @cdmDatabaseSchema.@plausibleTemporalAfterTableName plausibleTable
-		WHERE cdmTable.person_id = plausibleTable.person_id 
-		AND CAST(@plausibleTemporalAfterFieldName AS DATE) > CAST(cdmTable.@cdmFieldName AS DATE);
-	}:{
-		DELETE FROM @cdmDatabaseSchema.@cdmTableName 
+	DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmTableName_ID IN (
+	   SELECT cdmTable.@cdmTableName_ID
+		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		{@cdmDatabaseSchema.@cdmTableName != @cdmDatabaseSchema.@plausibleTemporalAfterTableName}?{
+			JOIN @cdmDatabaseSchema.@plausibleTemporalAfterTableName plausibleTable
+			ON cdmTable.person_id = plausibleTable.person_id
+		    }
 		WHERE CAST(@plausibleTemporalAfterFieldName AS DATE) > CAST(cdmTable.@cdmFieldName AS DATE);
-	}
 }
 
 {@EXECUTE} ? {
