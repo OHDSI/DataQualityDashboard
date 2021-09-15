@@ -104,9 +104,9 @@ plotCompareDqdResults <- function(jsonPath.old, jsonPath.new, savingDir = NA){
                ), alpha=0.6)) +
     geom_point() +
     geom_abline(colour="gray", linetype = "dashed")+
-    scale_colour_manual(labels = c("Fail→Pass", "Fail→Fail", "Pass→Pass", "Pass→Fail"),
-                        values = c("Pass→Pass" = "lightblue", "Fail→Fail" = "chocolate1",
-                                   "Fail→Pass" = "darkblue", "Pass→Fail" = "coral"))+
+    scale_colour_manual(labels = c("Fail-to-Pass", "Fail-to-Fail", "Pass-to-Pass", "Pass-to-Fail"),
+                        values = c("Pass-to-Pass" = "lightblue", "Fail-to-Fail" = "chocolate1",
+                                   "Fail-to-Pass" = "darkblue", "Pass-to-Fail" = "coral"))+
     scale_alpha(guide = 'none') +
     theme_minimal() +
     theme(legend.title = element_blank()) +
