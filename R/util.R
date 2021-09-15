@@ -85,8 +85,8 @@ plotCompareDqdResults <- function(jsonPath.old, jsonPath.new, savingDir = NA){
   p <- combinedResult %>%
     mutate(       
       fail_status = ifelse(FAILED.old, 
-                           ifelse(FAILED.new, "Fail→Fail", "Fail→Pass"),
-                           ifelse(FAILED.new, "Pass→Fail", "Pass→Pass")
+                           ifelse(FAILED.new, "Fail-to-Fail", "Fail-to-Pass"),
+                           ifelse(FAILED.new, "Pass-to-Fail", "Pass-to-Pass")
                            ),
       pct_old = round(PCT_VIOLATED_ROWS.old*100, digits=2),
       pct_new = round(PCT_VIOLATED_ROWS.new*100, digits=2)
