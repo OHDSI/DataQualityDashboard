@@ -344,8 +344,8 @@ if (conceptCheckThresholdLoc == "default"){
     resultsList <- ParallelLogger::clusterApply(
       cluster = cluster, x = checkDescriptions,
       fun = .runCheck, 
-      tableChecks,
-      fieldChecks,
+      tableChecks[-which(tableChecks$cdmTableName == "NOTE_NLP"),], # removing NOTE_NLP for now
+      fieldChecks[-which(fieldChecks$cdmTableName == "NOTE_NLP"),], # removing NOTE_NLP for now
       conceptChecks,
       connectionDetails, 
       connection,
@@ -361,13 +361,14 @@ if (conceptCheckThresholdLoc == "default"){
     ParallelLogger::stopCluster(cluster = cluster)
 
 	# Create a separate connection to perform the cleanse
+	excludedChecks <- c("measurePersonCompleteness","cdmField")
 	conn <- DatabaseConnector::connect(connectionDetails)
 	for (k in 1:length(checksToInclude)) {
 		cleanseFileName <- paste0(outputFolder,"/cleanse_",checksToInclude[k],".sql")
-		if (file.exists(cleanseFileName) && checksToInclude[k] != "cdmField") {
+		if (file.exists(cleanseFileName) && !(checksToInclude[k] %in% excludedChecks)) {
 			  ParallelLogger::logInfo(paste0("Executing clease script: ",cleanseFileName))
 			  sql <- SqlRender::readSql(cleanseFileName)
-			  # DatabaseConnector::executeSql(conn,sql)
+			  DatabaseConnector::executeSql(conn,sql)
 		}
 	}
   }
@@ -859,15 +860,14 @@ prepCleanse <- function(connectionDetails,
   allTableNames <- DatabaseConnector::getTableNames(connection,cdmDatabaseSchema) 	  
   
   for (k in 1:length(archiveNames)) {
-    if (archiveNames[k] %in% allTableNames) {
-	  ParallelLogger::logInfo(sprintf("Truncating previous results for %s.", archiveNames[k]))
-      sql <- paste0("TRUNCATE TABLE ",cdmDatabaseSchema,".",archiveNames[k],";")
-      DatabaseConnector::executeSql(connection,sql)
-    } else {
+    if (!(archiveNames[k] %in% allTableNames)) {
 	    ParallelLogger::logInfo(sprintf("Creating archive table for %s.", tablesToPrep[k]))
 		sql <- paste0("CREATE TABLE ",cdmDatabaseSchema,".",archiveNames[k],
                     " AS SELECT * FROM ",cdmDatabaseSchema,".",tablesToPrep[k],
                     " WHERE 1 = 0;")
+      DatabaseConnector::executeSql(connection,sql)
+	  sql <- paste0("ALTER TABLE ",cdmDatabaseSchema,".",archiveNames[k],
+                    " ADD COLUMN DQD_ARCHIVE_DATE DATE DEFAULT NULL;")
       DatabaseConnector::executeSql(connection,sql)
     }
   }

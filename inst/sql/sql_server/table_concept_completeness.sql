@@ -18,7 +18,7 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 
 {@CLEANSE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
-		SELECT cdmTable.* 
+		SELECT cdmTable.*, getdate() 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		WHERE (cdmTable.@cdmFieldName = 0 OR cdmTable.@cdmFieldName IS NULL)
 		AND (cdmTable.@cdmSourceFieldName = 0 OR cdmTable.@cdmSourceFieldName IS NULL); 

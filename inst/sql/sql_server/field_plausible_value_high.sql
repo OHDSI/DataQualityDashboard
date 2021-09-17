@@ -16,19 +16,19 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 
 {@CLEANSE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
-		SELECT cdmTable.*
+		SELECT cdmTable.*, getdate()
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		{@cdmDatatype == "datetime" | @cdmDatatype == "date"}?{
-		WHERE CAST(cdmTable.@cdmFieldName AS DATE) > CAST(@plausibleValueHigh AS DATE)
+		WHERE CAST(cdmTable.@cdmFieldName AS DATE) > CAST(@plausibleValueHigh AS DATE);
 		}:{
-		WHERE cdmTable.@cdmFieldName > @plausibleValueHigh
-        }; 
+		WHERE cdmTable.@cdmFieldName > @plausibleValueHigh;
+        }
 	
 	{@cdmDatatype == "datetime" | @cdmDatatype == "date"}?{
 	UPDATE @cdmDatabaseSchema.@cdmTableName SET @cdmFieldName = NULL
-	WHERE CAST(@cdmFieldName AS DATE) > CAST(@plausibleValueHigh AS DATE)
+	WHERE CAST(@cdmFieldName AS DATE) > CAST(@plausibleValueHigh AS DATE);
 	}:{
-	UPDATE @cdmDatabaseSchema.@cdmTableName SET @cdmFieldName = NULL WHERE @cdmFieldName > @plausibleValueHigh
+	UPDATE @cdmDatabaseSchema.@cdmTableName SET @cdmFieldName = NULL WHERE @cdmFieldName > @plausibleValueHigh;
 	}
 }
 

@@ -17,7 +17,7 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 
 {@CLEANSE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
-		SELECT cdmTable.*
+		SELECT cdmTable.*, getdate()
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		{@cdmDatabaseSchema.@cdmTableName != @cdmDatabaseSchema.@plausibleTemporalAfterTableName}?{
 			JOIN @cdmDatabaseSchema.@plausibleTemporalAfterTableName plausibleTable

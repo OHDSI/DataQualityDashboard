@@ -12,7 +12,7 @@ cdmFieldName = @cdmFieldName
 
 {@CLEANSE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
-		SELECT cdmTable.* 
+		SELECT cdmTable.*, getdate() 
 		  FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		 WHERE ISNUMERIC(abs(cdmTable.@cdmFieldName)) = 0 
 		   AND cdmTable.@cdmFieldName IS NOT NULL; 

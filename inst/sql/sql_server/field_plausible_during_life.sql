@@ -15,7 +15,7 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 
 {@CLEANSE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
-		SELECT cdmTable.*
+		SELECT cdmTable.*, getdate()
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		JOIN @cdmDatabaseSchema.death de ON cdmTable.person_id = de.person_id
 		WHERE CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(DAY, 60, CAST(de.death_date AS DATE)); 

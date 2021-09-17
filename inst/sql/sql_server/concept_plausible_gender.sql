@@ -16,7 +16,7 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 
 {@CLEANSE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
-		SELECT cdmTable.* 
+		SELECT cdmTable.*, getdate() 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		INNER JOIN @cdmDatabaseSchema.person p
 		ON cdmTable.person_id = p.person_id			
