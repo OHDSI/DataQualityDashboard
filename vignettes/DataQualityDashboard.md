@@ -1,7 +1,7 @@
 ---
 title: "Getting Started"
 author: "Clair Blacketer"
-date: "2021-06-29"
+date: "2021-05-07"
 header-includes:
     - \usepackage{fancyhdr}
     - \pagestyle{fancy}
