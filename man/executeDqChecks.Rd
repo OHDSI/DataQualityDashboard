@@ -25,7 +25,8 @@ executeDqChecks(
   cdmVersion = "5.3.1",
   tableCheckThresholdLoc = "default",
   fieldCheckThresholdLoc = "default",
-  conceptCheckThresholdLoc = "default"
+  conceptCheckThresholdLoc = "default",
+  actions = list(CLEANSE = FALSE, EXECUTE = TRUE)
 )
 }
 \arguments{

@@ -344,8 +344,8 @@ if (conceptCheckThresholdLoc == "default"){
     resultsList <- ParallelLogger::clusterApply(
       cluster = cluster, x = checkDescriptions,
       fun = .runCheck, 
-      tableChecks[-which(tableChecks$cdmTableName == "NOTE_NLP"),], # removing NOTE_NLP for now
-      fieldChecks[-which(fieldChecks$cdmTableName == "NOTE_NLP"),], # removing NOTE_NLP for now
+      tableChecks, # tableChecks[-which(tableChecks$cdmTableName == "NOTE_NLP"),], # removing NOTE_NLP for now
+      fieldChecks, # fieldChecks[-which(fieldChecks$cdmTableName == "NOTE_NLP"),], # removing NOTE_NLP for now
       conceptChecks,
       connectionDetails, 
       connection,
@@ -360,20 +360,11 @@ if (conceptCheckThresholdLoc == "default"){
     )
     ParallelLogger::stopCluster(cluster = cluster)
 
-	# Create a separate connection to perform the cleanse
-	excludedChecks <- c("measurePersonCompleteness","cdmField")
-	conn <- DatabaseConnector::connect(connectionDetails)
-	for (k in 1:length(checksToInclude)) {
-		cleanseFileName <- paste0(outputFolder,"/cleanse_",checksToInclude[k],".sql")
-		if (file.exists(cleanseFileName) && !(checksToInclude[k] %in% excludedChecks)) {
-			  ParallelLogger::logInfo(paste0("Executing clease script: ",cleanseFileName))
-			  sql <- SqlRender::readSql(cleanseFileName)
-			  DatabaseConnector::executeSql(conn,sql)
-		}
-	}
+	# With prep complete and SQL DML files generated, execute the cleanse.
+	performCleanse(connectionDetails,checksToInclude,outputFolder)
   }
-  DatabaseConnector::disconnect(conn)
   
+  # Turn sqlOnly off, cleanse off, to resume normal (ie, non-cleanse) execution of DQD
   sqlOnly <- FALSE
   actions <- list(CLEANSE=FALSE, EXECUTE=TRUE)
   
@@ -834,6 +825,10 @@ writeJsonResultsToTable <- function(connectionDetails,
   autoCommit
 }
 
+# If cleansing prior to execution, create archive tables if they do not already exist.
+# Find the names of the tables that participate in DQD.  For each table, create a corresponding "ARCHIVE"
+# table to store results prior to deleting or updating.
+
 prepCleanse <- function(connectionDetails,
                             cdmDatabaseSchema,
                             resultsDatabaseSchema,
@@ -845,12 +840,7 @@ prepCleanse <- function(connectionDetails,
                             cohortDatabaseSchema,
                             cdmVersion,
 							tablesToPrep) 
-{
-
-  # If cleansing prior to execution, create archive tables if they do not already exist.
-  # Find the names of the tables that participate in DQD.  For each table, create a corresponding "ARCHIVE"
-  # table to store results prior to deleting or updating.
-    
+{    
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   
   archiveNames  <- paste0(tablesToPrep,"_ARCHIVE")
@@ -873,6 +863,36 @@ prepCleanse <- function(connectionDetails,
   }
     
   ParallelLogger::logInfo("Cleanse prep process complete.")
-  on.exit(DatabaseConnector::disconnect(connection = connection))
-  
+  on.exit(DatabaseConnector::disconnect(connection = connection)) 
+}
+
+# The cleanse is performed by executing the SQL scripts generated via .runCheck.
+# It is expected that prepCleanse() and .runCheck() are executed before performCleanse()
+# and that the SQL dml scripts were generated.
+
+performCleanse <- function(connectionDetails,checksToInclude,outputFolder)
+{
+	
+	excludedChecks <- c("measurePersonCompleteness","cdmField")
+	conn <- DatabaseConnector::connect(connectionDetails)
+
+	tryCatch(
+		expr = {  
+			for (k in 1:length(checksToInclude)) {
+				cleanseFileName <- paste0(outputFolder,"/cleanse_",checksToInclude[k],".sql")
+				if (file.exists(cleanseFileName) && !(checksToInclude[k] %in% excludedChecks)) {
+					ParallelLogger::logInfo(paste0("Executing clease script: ",cleanseFileName))
+			        sql <- SqlRender::readSql(cleanseFileName)
+			        DatabaseConnector::executeSql(conn,sql)
+				}
+			}
+		},
+		warning = function(w) {
+			ParallelLogger::logWarn(sprintf("[Cleanse file name: %s] %s",cleanseFileName, w$message))
+		},
+		error = function(e) {
+			ParallelLogger::logError(sprintf("[Cleanse file name: %s] %s",cleanseFileName, e$message))
+		}
+	)
+	on.exit(DatabaseConnector::disconnect(conn))
 }
