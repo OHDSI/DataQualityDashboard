@@ -1,0 +1,15 @@
+citHeader("To cite DataQualityDashboard in publications use:")
+
+bibentry(bibtype = "Article",
+        author = personList(as.person("C. Blacketer"),
+                            as.person("F. J. Schuemie"),
+                            as.person("P. B. Ryan"),
+                            as.person("P. Rijnbeek")),
+        title = "Increasing trust in real-world evidence through evaluation of observational data quality",
+        journal = "Journal of the American Medical Informatics Association",
+        volume = "28",
+        number = "10",
+        pages = "2251-2257",
+        year = "2021",
+        url = "https://doi.org/10.1093/jamia/ocab132"
+)

@@ -19,8 +19,6 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -104,14 +102,14 @@
 <div id="overview" class="section level1">
 <h1 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h1>
-<p>The quality checks were organized according to the Kahn Framework<sup id="kahn"><a href="#f1">1</a></sup> which uses a system of categories and contexts that represent stratgies for assessing data quality. For an introduction to the kahn framework please click <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/" class="external-link">here</a>.</p>
+<p>The quality checks were organized according to the Kahn Framework<sup id="kahn"><a href="#f1">1</a></sup> which uses a system of categories and contexts that represent stratgies for assessing data quality. For an introduction to the kahn framework please click <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/">here</a>.</p>
 <p>Using this framework, the Data Quality Dashboard takes a systematic-based approach to running data quality checks. Instead of writing thousands of individual checks, we use “data quality check types”. These “check types” are more general, parameterized data quality checks into which OMOP tables, fields, and concepts can be substituted to represent a singular data quality idea. For example, one check type might be written as</p>
 <p><em>The number and percent of records with a value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> table less than <strong>plausibleValueLow</strong>.</em></p>
 <p>This would be considered an atemporal plausibility verification check because we are looking for implausibly low values in some field based on internal knowledge. We can use this check type to substitute in values for <strong>cdmFieldName</strong>, <strong>cdmTableName</strong>, and <strong>plausibleValueLow</strong> to create a unique data quality check. If we apply it to PERSON.YEAR_OF_BIRTH here is how that might look:</p>
 <p><em>The number and percent of records with a value in the <strong>year_of_birth</strong> field of the <strong>PERSON</strong> table less than <strong>1850</strong>.</em></p>
 <p>And, since it is parameterized, we can similarly apply it to DRUG_EXPOSURE.days_supply:</p>
 <p><em>The number and percent of records with a value in the <strong>days_supply</strong> field of the <strong>DRUG_EXPOSURE</strong> table less than <strong>0</strong>.</em></p>
-<p>Version 1 of the tool includes 20 different check types organized into Kahn contexts and categories. Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs. For a detailed description and definition of each check type please click <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions" class="external-link">here</a>.</p>
+<p>Version 1 of the tool includes 20 different check types organized into Kahn contexts and categories. Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs. For a detailed description and definition of each check type please click <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions">here</a>.</p>
 <p>After systematically applying the 20 check types to an OMOP CDM version approximately 3,351 individual data quality checks are resolved, run against the database, and evaluated based on a pre-specified threshold. The R package then creates a json object that is read into an RShiny application to view the results.</p>
 <p><img src="https://github.com/OHDSI/DataQualityDashboard/raw/master/extras/dqDashboardScreenshot.png"></p>
 </div>
@@ -132,15 +130,15 @@
 <div id="system-requirements" class="section level1">
 <h1 class="hasAnchor">
 <a href="#system-requirements" class="anchor"></a>System Requirements</h1>
-<p>Requires R (version 3.2.2 or higher). Requires <a href="https://github.com/OHDSI/DatabaseConnector" class="external-link">DatabaseConnector</a> and <a href="https://github.com/OHDSI/SqlRender" class="external-link">SqlRender</a>.</p>
+<p>Requires R (version 3.2.2 or higher). Requires <a href="https://github.com/OHDSI/DatabaseConnector">DatabaseConnector</a> and <a href="https://github.com/OHDSI/SqlRender">SqlRender</a>.</p>
 </div>
 <div id="support" class="section level1">
 <h1 class="hasAnchor">
 <a href="#support" class="anchor"></a>Support</h1>
 <ul>
-<li>Developer questions/comments/feedback: <a href="http://forums.ohdsi.org/c/developers" class="external-link">OHDSI Forum</a>
+<li>Developer questions/comments/feedback: <a href="http://forums.ohdsi.org/c/developers">OHDSI Forum</a>
 </li>
-<li>We use the <a href="https://github.com/OHDSI/DataQualityDashboard/issues" class="external-link">GitHub issue tracker</a> for all bugs/issues/enhancements</li>
+<li>We use the <a href="https://github.com/OHDSI/DataQualityDashboard/issues">GitHub issue tracker</a> for all bugs/issues/enhancements</li>
 </ul>
 </div>
 <div id="license" class="section level1">
@@ -164,7 +162,7 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2 data-toc-skip>Links</h2>
+<h2>Links</h2>
 <ul class="list-unstyled">
 <li>Browse source code at <br><a href="https://github.com/OHDSI/DataQualityDashboard/">https://​github.com/​OHDSI/​DataQualityDashboard/​</a>
 </li>
@@ -174,17 +172,20 @@
 </li>
 </ul>
 </div>
-
 <div class="license">
-<h2 data-toc-skip>License</h2>
+<h2>License</h2>
 <ul class="list-unstyled">
 <li>Apache License 2.0</li>
 </ul>
 </div>
-
-
+<div class="citation">
+<h2>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html">Citing DataQualityDashboard</a></li>
+</ul>
+</div>
 <div class="developers">
-<h2 data-toc-skip>Developers</h2>
+<h2>Developers</h2>
 <ul class="list-unstyled">
 <li>Clair Blacketer <br><small class="roles"> Author, maintainer </small>  </li>
 <li>Ajit Londhe <br><small class="roles"> Author </small>  </li>
@@ -195,26 +196,23 @@
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
+  <div class="dev-status">
+<h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/OHDSI/DataQualityDashboard" class="external-link"><img src="https://travis-ci.org/OHDSI/DataQualityDashboard.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://codecov.io/github/OHDSI/DataQualityDashboard?branch=master" class="external-link"><img src="https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=master" alt="codecov.io"></a></li>
+<li><a href="https://travis-ci.org/OHDSI/DataQualityDashboard"><img src="https://travis-ci.org/OHDSI/DataQualityDashboard.svg?branch=master" alt="Build Status"></a></li>
+<li><a href="https://codecov.io/github/OHDSI/DataQualityDashboard?branch=master"><img src="https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=master" alt="codecov.io"></a></li>
 </ul>
 </div>
-
-  </div>
+</div>
 </div>
 
 
       <footer><div class="copyright">
-  <p></p>
-<p>Developed by Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
+  <p>Developed by Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -222,8 +220,6 @@
 
   
 
-
-  
 
   </body>
 </html>
