@@ -26,7 +26,7 @@ executeDqChecks(
   tableCheckThresholdLoc = "default",
   fieldCheckThresholdLoc = "default",
   conceptCheckThresholdLoc = "default",
-  actions = list(CLEANSE = FALSE, EXECUTE = TRUE)
+  actions = list(CAPTURE = FALSE, CLEANSE = FALSE, EXECUTE = TRUE)
 )
 }
 \arguments{
@@ -71,6 +71,11 @@ with the fields cohort_definition_id and subject_id.}
 \item{fieldCheckThresholdLoc}{The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.}
 
 \item{conceptCheckThresholdLoc}{The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.}
+
+\item{actions}{List indicating which combinations of actions to perform.  CAPTURE=TRUE instructs DQD to
+to save rows that fail checks to an archive table.  CLEANSE=TRUE instructs DQD to remove
+rows that fail checks from their respective table.  EXECUTE=TRUE instructs DQD to run the 
+checks without saving or removing rows that fail checks.  The default is actions = list(CAPTURE=FALSE, CLEANSE=FALSE, EXECUTE=TRUE).}
 }
 \value{
 If sqlOnly = FALSE, a list object of results

@@ -15,7 +15,7 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 }
 **********/
 
-{@CLEANSE} ? {
+{@CAPTURE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
 		SELECT cdmTable.*, getdate()
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
@@ -24,7 +24,9 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 			ON cdmTable.person_id = plausibleTable.person_id
 		    }
 		WHERE CAST(@plausibleTemporalAfterFieldName AS DATE) > CAST(cdmTable.@cdmFieldName AS DATE); 
+}
 	
+{@CLEANSE} ? {
 	DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmTableName_ID IN (
 	   SELECT cdmTable.@cdmTableName_ID
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable

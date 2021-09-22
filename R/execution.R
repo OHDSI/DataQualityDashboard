@@ -156,6 +156,10 @@
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
+#' @param actions                   List indicating which combinations of actions to perform.  CAPTURE=TRUE instructs DQD to
+#'                                  to save rows that fail checks to an archive table.  CLEANSE=TRUE instructs DQD to remove
+#'                                  rows that fail checks from their respective table.  EXECUTE=TRUE instructs DQD to run the 
+#'                                  checks without saving or removing rows that fail checks.  The default is actions = list(CAPTURE=FALSE, CLEANSE=FALSE, EXECUTE=TRUE). 
 #' 
 #' @return If sqlOnly = FALSE, a list object of results
 #' 
@@ -181,7 +185,7 @@ executeDqChecks <- function(connectionDetails,
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
                             conceptCheckThresholdLoc = "default",
-							actions = list(CLEANSE=FALSE, EXECUTE=TRUE)) {
+							actions = list(CAPTURE=FALSE, CLEANSE=FALSE, EXECUTE=TRUE)) {
   
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
@@ -319,7 +323,9 @@ if (conceptCheckThresholdLoc == "default"){
   fieldChecks$cdmFieldName <- toupper(fieldChecks$cdmFieldName)
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
     
-  if (actions$CLEANSE) {
+  wasSqlOnly <- sqlOnly # preserve the original setting
+
+  if (actions$CAPTURE || actions$CLEANSE) {
   
     # Check if archive tables exist, if not, create them.
     prepCleanse(connectionDetails,
@@ -337,15 +343,15 @@ if (conceptCheckThresholdLoc == "default"){
 	# Create files for cleaning DML and turn off normal execution of dqd.
 	# This is necessary since we have both SELECT and DML in a single SQL file.
 	
-	sqlOnly <- TRUE
-	actions <- list(CLEANSE=TRUE, EXECUTE=FALSE)
+	sqlOnly <- TRUE  # Set to TRUE to create the DML sql files to execute for capture and cleanse
+	actions <- list(CAPTURE=actions$CAPTURE, CLEANSE=actions$CLEANSE, EXECUTE=FALSE)
 	
     cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
     resultsList <- ParallelLogger::clusterApply(
       cluster = cluster, x = checkDescriptions,
       fun = .runCheck, 
-      tableChecks, # tableChecks[-which(tableChecks$cdmTableName == "NOTE_NLP"),], # removing NOTE_NLP for now
-      fieldChecks, # fieldChecks[-which(fieldChecks$cdmTableName == "NOTE_NLP"),], # removing NOTE_NLP for now
+      tableChecks,
+      fieldChecks,
       conceptChecks,
       connectionDetails, 
       connection,
@@ -364,9 +370,9 @@ if (conceptCheckThresholdLoc == "default"){
 	performCleanse(connectionDetails,checksToInclude,outputFolder)
   }
   
-  # Turn sqlOnly off, cleanse off, to resume normal (ie, non-cleanse) execution of DQD
-  sqlOnly <- FALSE
-  actions <- list(CLEANSE=FALSE, EXECUTE=TRUE)
+  # Reset sqlOnly to its original value, turn capture and cleanse off to resume normal (ie, non-cleanse) execution of DQD
+  sqlOnly <- wasSqlOnly
+  actions <- list(CAPTURE=FALSE, CLEANSE=FALSE, EXECUTE=TRUE)
   
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
   resultsList <- ParallelLogger::clusterApply(
@@ -469,7 +475,7 @@ if (conceptCheckThresholdLoc == "default"){
         setNames(check[c], c)
       })
       
-	  if (actions$CLEANSE) {
+	  if (actions$CAPTURE || actions$CLEANSE) {
 		params <- c(list(dbms = connectionDetails$dbms),
 					  list(sqlFilename = checkDescription$sqlFile),
 					  list(packageName = "DataQualityDashboard"),
@@ -479,7 +485,8 @@ if (conceptCheckThresholdLoc == "default"){
 					  list(cohortDefinitionId = cohortDefinitionId),
 					  list(vocabDatabaseSchema = vocabDatabaseSchema),
 					  list(cohort = cohort),
-					  list(CLEANSE = TRUE),
+					  list(CAPTURE = actions$CAPTURE),
+					  list(CLEANSE = actions$CLEANSE),
 					  list(EXECUTE = FALSE),
 					  unlist(columns, recursive = FALSE))
       
@@ -499,6 +506,7 @@ if (conceptCheckThresholdLoc == "default"){
 					  list(cohortDefinitionId = cohortDefinitionId),
 					  list(vocabDatabaseSchema = vocabDatabaseSchema),
 					  list(cohort = cohort),
+					  list(CAPTURE = FALSE),
 					  list(CLEANSE = FALSE),
 					  list(EXECUTE = TRUE),
 					  unlist(columns, recursive = FALSE))
@@ -825,7 +833,7 @@ writeJsonResultsToTable <- function(connectionDetails,
   autoCommit
 }
 
-# If cleansing prior to execution, create archive tables if they do not already exist.
+# If capturing or cleansing prior to execution, create archive tables if they do not already exist.
 # Find the names of the tables that participate in DQD.  For each table, create a corresponding "ARCHIVE"
 # table to store results prior to deleting or updating.
 

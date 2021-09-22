@@ -14,12 +14,14 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 }
 **********/
 
-{@CLEANSE} ? {
+{@CAPTURE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
 		SELECT cdmTable.*, getdate() 
 		  FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		 WHERE cdmTable.@cdmFieldName IS NULL; 
+}
 	
+{@CLEANSE} ? {
 	DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmFieldName IS NULL;
 }
 

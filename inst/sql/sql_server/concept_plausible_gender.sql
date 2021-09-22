@@ -14,7 +14,7 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 }
 **********/
 
-{@CLEANSE} ? {
+{@CAPTURE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
 		SELECT cdmTable.*, getdate() 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
@@ -22,7 +22,9 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 		ON cdmTable.person_id = p.person_id			
 		WHERE cdmTable.@cdmFieldName = @conceptId
 		AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532}; 
+}
 
+{@CLEANSE} ? {
 	DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmTableName_ID IN ( 
 		SELECT cdmTable.@cdmTableName_ID 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable

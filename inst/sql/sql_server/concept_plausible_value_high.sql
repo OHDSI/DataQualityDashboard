@@ -16,7 +16,7 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 }
 **********/
 
-{@CLEANSE} ? {
+{@CAPTURE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
 		SELECT m.*, getdate() 
 		FROM @cdmDatabaseSchema.@cdmTableName m
@@ -24,7 +24,9 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 		AND m.unit_concept_id = @unitConceptId
 		AND m.value_as_number IS NOT NULL
 		AND m.value_as_number > @plausibleValueHigh; 
-	
+}
+
+{@CLEANSE} ? {	
 	UPDATE @cdmDatabaseSchema.@cdmTableName SET value_as_number = NULL 
 		WHERE @cdmFieldName = @conceptId
 		AND unit_concept_id = @unitConceptId

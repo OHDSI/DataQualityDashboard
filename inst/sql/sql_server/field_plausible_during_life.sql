@@ -13,13 +13,15 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 }
 **********/
 
-{@CLEANSE} ? {
+{@CAPTURE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
 		SELECT cdmTable.*, getdate()
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		JOIN @cdmDatabaseSchema.death de ON cdmTable.person_id = de.person_id
 		WHERE CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(DAY, 60, CAST(de.death_date AS DATE)); 
+}
 	
+{@CLEANSE} ? {
 	DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmTableName_ID IN (
 		SELECT cdmTable.@cdmTableName_ID
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable

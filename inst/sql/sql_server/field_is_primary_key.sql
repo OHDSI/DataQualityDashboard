@@ -14,7 +14,7 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 }
 **********/
 
-{@CLEANSE} ? {
+{@CAPTURE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
 		SELECT cdmTable.*, getdate() 
 		  FROM @cdmDatabaseSchema.@cdmTableName cdmTable
@@ -22,7 +22,9 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 		                                     FROM @cdmDatabaseSchema.@cdmTableName
 									        GROUP BY @cdmFieldName
 											HAVING COUNT_BIG(*) > 1 ); 
+}
 	
+{@CLEANSE} ? {
 	DELETE FROM @cdmDatabaseSchema.@cdmTableName 
 	WHERE @cdmFieldName IN ( SELECT @cdmFieldName 
 		                       FROM @cdmDatabaseSchema.@cdmTableName

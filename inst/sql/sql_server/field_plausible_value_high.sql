@@ -14,7 +14,7 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 }
 **********/
 
-{@CLEANSE} ? {
+{@CAPTURE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
 		SELECT cdmTable.*, getdate()
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
@@ -23,7 +23,9 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 		}:{
 		WHERE cdmTable.@cdmFieldName > @plausibleValueHigh;
         }
+}
 	
+{@CLEANSE} ? {
 	{@cdmDatatype == "datetime" | @cdmDatatype == "date"}?{
 	UPDATE @cdmDatabaseSchema.@cdmTableName SET @cdmFieldName = NULL
 	WHERE CAST(@cdmFieldName AS DATE) > CAST(@plausibleValueHigh AS DATE);

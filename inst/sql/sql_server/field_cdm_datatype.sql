@@ -10,13 +10,15 @@ cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 **********/
 
-{@CLEANSE} ? {
+{@CAPTURE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
 		SELECT cdmTable.*, getdate() 
 		  FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		 WHERE ISNUMERIC(abs(cdmTable.@cdmFieldName)) = 0 
 		   AND cdmTable.@cdmFieldName IS NOT NULL; 
+}
 	
+{@CLEANSE} ? {
 	DELETE FROM @cdmDatabaseSchema.@cdmTableName 
     WHERE ISNUMERIC(abs(@cdmFieldName)) = 0 
     AND @cdmFieldName IS NOT NULL;	

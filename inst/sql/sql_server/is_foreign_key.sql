@@ -16,14 +16,16 @@ cohortDatabaseSchema = @cohortDatabaseSchema
 }
 **********/
 
-{@CLEANSE} ? {
+{@CAPTURE} ? {
 	INSERT INTO @cdmDatabaseSchema.@cdmTableName_archive
 		SELECT cdmTable.*, getdate() 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		LEFT JOIN {'@fkTableName' IN ('CONCEPT','DOMAIN')}?{@vocabDatabaseSchema.@fkTableName}:{@cdmDatabaseSchema.@fkTableName} fkTable
 		ON cdmTable.@cdmFieldName = fkTable.@fkFieldName
 		WHERE fkTable.@fkFieldName IS NULL AND cdmTable.@cdmFieldName IS NOT NULL ; 
+}
 	
+{@CLEANSE} ? {
 	{'@cdmTableName' IN ('FACT_RELATIONSHIP')}?{
 		DELETE FROM @cdmDatabaseSchema.@cdmTableName WHERE @cdmFieldName IN ( 
 		SELECT cdmTable.@cdmFieldName 
