@@ -64,6 +64,15 @@ Getting Started
     docker build -t dqd-service --build-arg prop=prod .
     docker run -d --network host --name dqd-service dqd-service
 
+Development
+==========
+
+### R server
+
+    cd R
+    docker build -t r-serve --build-arg prop=prod .
+    docker run -p 6311:6311 -d --name r-serve r-serve
+
 License
 =======
 DataQualityDashboard is licensed under Apache License 2.0

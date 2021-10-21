@@ -1,7 +1,6 @@
 package com.arcadia.DataQualityDashboard.service;
 
 import com.arcadia.DataQualityDashboard.dto.DbSettings;
-import com.arcadia.DataQualityDashboard.dto.ProgressNotificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
@@ -11,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
+import static com.arcadia.DataQualityDashboard.dto.ProgressNotificationStatus.FAILED;
+import static com.arcadia.DataQualityDashboard.dto.ProgressNotificationStatus.FINISHED;
 import static java.lang.String.format;
 
 @Service
@@ -36,11 +37,11 @@ public class CheckDataQualityService {
             String jsonResult = rConnection.checkDataQuality(dbSettings, userId);
             rConnection.close();
             String result = storageService.store(format("%s.json", userId), jsonResult);
-            webSocketHandler.sendMessageToUser("Result json generated", userId, ProgressNotificationStatus.FINISHED);
+            webSocketHandler.sendMessageToUser("Result json generated", userId, FINISHED);
 
             return new AsyncResult<>(result);
         } catch (RException | DbTypeNotSupportedException e) {
-            webSocketHandler.sendMessageToUser(e.getMessage(), userId, ProgressNotificationStatus.FAILED);
+            webSocketHandler.sendMessageToUser(e.getMessage(), userId, FAILED);
             throw e;
         }
     }

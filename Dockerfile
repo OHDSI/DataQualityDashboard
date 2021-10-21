@@ -15,7 +15,7 @@ RUN chmod 770 mvnw
 COPY .mvn .mvn
 COPY pom.xml .
 
-RUN ./mvnw install -DskipTests -P${prop}
+RUN ./mvnw install -P${prop}
 
 # 2nd Run Step
 FROM openjdk:15-oracle

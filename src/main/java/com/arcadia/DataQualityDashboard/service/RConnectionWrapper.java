@@ -20,6 +20,8 @@ public class RConnectionWrapper {
 
     private final RConnection rConnection;
 
+    private static final int defaultThreadCount = 1;
+
     @SneakyThrows({REXPMismatchException.class, REngineException.class})
     public void loadScripts(List<String> scriptsPaths) throws RException {
         for (String path : scriptsPaths) {
@@ -32,7 +34,7 @@ public class RConnectionWrapper {
     }
 
     public String checkDataQuality(DbSettings dbSettings, String userId) throws RException, DbTypeNotSupportedException {
-        return checkDataQuality(dbSettings, userId, 1);
+        return checkDataQuality(dbSettings, userId, defaultThreadCount);
     }
 
     @SneakyThrows({REXPMismatchException.class, REngineException.class})

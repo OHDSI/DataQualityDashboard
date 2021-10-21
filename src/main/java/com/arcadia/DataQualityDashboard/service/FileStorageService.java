@@ -7,6 +7,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.PostConstruct;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,6 +33,10 @@ public class FileStorageService implements StorageService {
     @Autowired
     public FileStorageService(StorageProperties storageProperties) {
         this.rootLocation = Paths.get(storageProperties.getLocation());
+        File directory = rootLocation.toFile();
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
     }
 
     @SneakyThrows

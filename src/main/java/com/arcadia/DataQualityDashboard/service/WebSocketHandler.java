@@ -15,8 +15,10 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.arcadia.DataQualityDashboard.dto.ProgressNotificationStatus.IN_PROGRESS;
+import static java.util.function.Function.identity;
 
 @Service
 public class WebSocketHandler extends TextWebSocketHandler {
@@ -29,7 +31,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public WebSocketHandler(List<MessageSender> senderList) {
         this.senderMap = senderList
                 .stream()
-                .collect(Collectors.toMap(MessageSender::getStatus, Function.identity()));
+                .collect(Collectors.toMap(MessageSender::getStatus, identity()));
     }
 
     @SneakyThrows
@@ -40,7 +42,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         WebSocketSession destinationSession = sessions.get(messageToUser.getUserId());
 
-        MessageSender sender = senderMap.get(ProgressNotificationStatus.IN_PROGRESS);
+        MessageSender sender = senderMap.get(IN_PROGRESS);
         sender.send(destinationSession, messageToUser.getPayload());
     }
 
@@ -58,7 +60,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @SneakyThrows
     public void sendMessageToUser(String message, String userId) {
-        sendMessageToUser(message, userId, ProgressNotificationStatus.IN_PROGRESS);
+        sendMessageToUser(message, userId, IN_PROGRESS);
     }
 
     @SneakyThrows
