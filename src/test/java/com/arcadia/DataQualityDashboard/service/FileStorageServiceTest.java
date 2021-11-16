@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.arcadia.DataQualityDashboard.TestProperties.storageProperties;
-import static com.arcadia.DataQualityDashboard.TestProperties.uploadsLocation;
+import static com.arcadia.DataQualityDashboard.service.TestProperties.storageProperties;
+import static com.arcadia.DataQualityDashboard.service.TestProperties.uploadsLocation;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

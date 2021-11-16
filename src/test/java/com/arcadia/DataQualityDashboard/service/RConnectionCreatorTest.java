@@ -3,7 +3,7 @@ package com.arcadia.DataQualityDashboard.service;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static com.arcadia.DataQualityDashboard.TestProperties.rServerProperties;
+import static com.arcadia.DataQualityDashboard.service.TestProperties.rServerProperties;
 
 class RConnectionCreatorTest {
 

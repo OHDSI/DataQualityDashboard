@@ -7,9 +7,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static com.arcadia.DataQualityDashboard.TestProperties.dbSettings;
-import static com.arcadia.DataQualityDashboard.TestProperties.rServerProperties;
-import static java.lang.String.format;
+import static com.arcadia.DataQualityDashboard.service.TestProperties.dbSettings;
+import static com.arcadia.DataQualityDashboard.service.TestProperties.rServerProperties;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class RConnectionWrapperTest {
@@ -44,7 +43,7 @@ class RConnectionWrapperTest {
             String result = connection.checkDataQuality(dbSettings, "", threadCount);
             long durationInSeconds = (System.currentTimeMillis() - startTime) / 1000;
 
-            System.out.println(format("%d threads: %d seconds", threadCount, durationInSeconds));
+            System.out.printf("%d threads: %d seconds%n", threadCount, durationInSeconds);
 
             assertNotNull(result);
         }
