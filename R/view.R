@@ -35,5 +35,5 @@ viewDqDashboard <- function(jsonPath, launch.browser=NULL, display.mode=NULL, ..
       launch.browser=TRUE
   }
 
-  shiny::runApp(appDir = appDir, launch.browser, display.mode, ...)
+  shiny::runApp(appDir = appDir, launch.browser = launch.browser, display.mode = display.mode, ...)
 }
