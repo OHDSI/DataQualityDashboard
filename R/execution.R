@@ -283,6 +283,9 @@ if (conceptCheckThresholdLoc == "default"){
     conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude,]
   }
   
+  ## remove offset from being checked
+  fieldChecks <- fieldChecks[!fieldChecks$cdmFieldName %in% c("\"offset\"")]
+  
   library(magrittr)
   # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   # fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
