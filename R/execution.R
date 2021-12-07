@@ -793,7 +793,7 @@ executeDqChecks <- function(connectionDetails,
   resultJson <- jsonlite::toJSON(result)
   
   if (nchar(outputFile)==0)  {
-    endTimestamp <- format(Sys.time(), "%Y%m%d%H%M%S")
+    endTimestamp <- format(endTime, "%Y%m%d%H%M%S")
     outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp)
   }
   
