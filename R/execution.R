@@ -145,6 +145,8 @@
 #' @param outputFile                (OPTIONAL) File to write results JSON object 
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
+#' @param writeToCsv                Boolean to indicate if the check results will be written to the csv file
+#' @param csvFile                   (OPTIONAL) CSV file to write results
 #'                                  in the resultsDatabaseSchema. Default is TRUE.
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
 #' @param checkNames                (OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv
@@ -172,6 +174,8 @@ executeDqChecks <- function(connectionDetails,
                             verboseMode = FALSE,
                             writeToTable = TRUE,
                             writeTableName = "dqdashboard_results",
+                            writeToCsv = FALSE,
+                            csvFile = "",
                             checkLevels = c("TABLE", "FIELD", "CONCEPT"),
                             checkNames = c(),
                             cohortDefinitionId = c(),
@@ -373,6 +377,16 @@ executeDqChecks <- function(connectionDetails,
                          checkResults = allResults$CheckResults,
                          writeTableName = writeTableName,
                          cohortDefinitionId = cohortDefinitionId)
+  }
+  
+  # write to CSV ----------------------------------------------------------------------
+  
+  if (!sqlOnly & writeToCsv) {
+    if (nchar(csvFile)==0)  {
+      csvFile <- sprintf("%s.csv", sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(allResults$outputFile)))
+    }
+    .writeResultsToCsv(checkResults = allResults$CheckResults, 
+                       csvPath = file.path(outputFolder, csvFile))
   }
   
   if (sqlOnly) {
@@ -718,7 +732,8 @@ executeDqChecks <- function(connectionDetails,
   countTotal <- nrow(checkResults)
   countThresholdFailed <- nrow(checkResults[checkResults$FAILED == 1 & 
                                               is.na(checkResults$ERROR),])
-  countErrorFailed <- nrow(checkResults[!is.na(checkResults$ERROR),])
+  countErrorFailed <- nrow(checkResults[checkResults$FAILED == 1 & 
+                                          !is.na(checkResults$ERROR),])
   countOverallFailed <- nrow(checkResults[checkResults$FAILED == 1,])
   
   countPassed <- nrow(checkResults[checkResults$PASSED == 1,]) #countTotal - countOverallFailed
@@ -752,8 +767,8 @@ executeDqChecks <- function(connectionDetails,
     countErrorFailed = countErrorFailed,
     countThresholdFailed = countThresholdFailed,
     countOverallFailed = countOverallFailed,
-    percentPassed = round(countPassed / countTotal * 100),
-    percentFailed = round(countOverallFailed / countTotal * 100),
+    percentPassed = round(countPassed / (countPassed +countOverallFailed) * 100),
+    percentFailed = round(countOverallFailed / (countPassed +countOverallFailed) * 100),
     countTotalPlausibility = countTotalPlausibility,
     countTotalConformance = countTotalConformance,
     countTotalCompleteness = countTotalCompleteness,
@@ -778,7 +793,7 @@ executeDqChecks <- function(connectionDetails,
   resultJson <- jsonlite::toJSON(result)
   
   if (nchar(outputFile)==0)  {
-    endTimestamp <- format(endTime,"%Y%m%d%H%M%S")
+    endTimestamp <- format(Sys.time(), "%Y%m%d%H%M%S")
     outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp)
   }
   
@@ -879,6 +894,84 @@ writeJsonResultsToTable <- function(connectionDetails,
     }
   )
 }
+
+.writeResultsToCsv <- function(checkResults,
+                           csvPath,
+                           columns = c("checkId", "FAILED", "PASSED", 
+                                       "IS_ERROR", "NOT_APPLICABLE",
+                                       "CHECK_NAME", "CHECK_DESCRIPTION",
+                                       "THRESHOLD_VALUE", "NOTES_VALUE",
+                                       "CHECK_LEVEL", "CATEGORY",
+                                       "SUBCATEGORY", "CONTEXT",
+                                       "CHECK_LEVEL", "CDM_TABLE_NAME",
+                                       "CDM_FIELD_NAME", "CONCEPT_ID",
+                                       "UNIT_CONCEPT_ID", "NUM_VIOLATED_ROWS",
+                                       "PCT_VIOLATED_ROWS", "NUM_DENOMINATOR_ROWS",
+                                       "EXECUTION_TIME", "NOT_APPLICABLE_REASON",
+                                       "ERROR", "QUERY_TEXT"),
+                           delimiter = "\t") {
+  tryCatch(
+    expr = { 
+      ParallelLogger::logInfo(sprintf("Writing results to CSV file %s", csvPath))
+      columns <- intersect(union(c("checkId", "FAILED", "PASSED", "IS_ERROR", "NOT_APPLICABLE"), columns), colnames(checkResults))
+      if (is.element("QUERY_TEXT", columns)) {
+        checkResults$QUERY_TEXT <- stringr::str_replace_all(checkResults$QUERY_TEXT, "\n", " ")
+        checkResults$QUERY_TEXT <- stringr::str_replace_all(checkResults$QUERY_TEXT, "\r", " ")
+        checkResults$QUERY_TEXT <- stringr::str_replace_all(checkResults$QUERY_TEXT, "\t", " ")
+      }
+      if (is.element("ERROR", columns)) {
+        checkResults$ERROR <- stringr::str_replace_all(checkResults$ERROR, "\n", " ")
+        checkResults$ERROR <- stringr::str_replace_all(checkResults$ERROR, "\r", " ")
+        checkResults$ERROR <- stringr::str_replace_all(checkResults$ERROR, "\t", " ")
+      }
+      write.table(dplyr::select(checkResults, columns), file = csvPath, sep = delimiter, row.names = FALSE, na = "")
+      ParallelLogger::logInfo("Finished writing to CSV file")
+    },
+    error = function(e) {
+      ParallelLogger::logError(sprintf("Writing to CSV file failed: %s", e$message))
+    }
+  )
+}
+
+#' Write JSON Results to SQL Table
+#' 
+#' @param jsonPath    Path to the JSON results file generated using the execute function
+#' @param csvPath     Path to the CSV output file
+#' @param columns     (OPTIONAL) List of desired columns
+#' @param delimiter   (OPTIONAL) CSV delimiter
+#' 
+#' @export
+writeJsonResultsToCsv <- function(jsonPath,
+                                  csvPath,
+                                  columns = c("checkId", "FAILED", "PASSED", 
+                                              "IS_ERROR", "NOT_APPLICABLE",
+                                              "CHECK_NAME", "CHECK_DESCRIPTION",
+                                              "THRESHOLD_VALUE", "NOTES_VALUE",
+                                              "CHECK_LEVEL", "CATEGORY",
+                                              "SUBCATEGORY", "CONTEXT",
+                                              "CHECK_LEVEL", "CDM_TABLE_NAME",
+                                              "CDM_FIELD_NAME", "CONCEPT_ID",
+                                              "UNIT_CONCEPT_ID", "NUM_VIOLATED_ROWS",
+                                              "PCT_VIOLATED_ROWS", "NUM_DENOMINATOR_ROWS",
+                                              "EXECUTION_TIME", "NOT_APPLICABLE_REASON",
+                                              "ERROR", "QUERY_TEXT"),
+                                  delimiter = "\t") {
+  tryCatch(
+    expr = {
+      ParallelLogger::logInfo(sprintf("Loading results from %s", jsonPath))
+      jsonData <- jsonlite::read_json(jsonPath)
+      checkResults <- lapply(jsonData$CheckResults, function(cr) {
+        cr[sapply(cr, is.null)] <- NA
+        as.data.frame(cr)
+      })
+      .writeResultsToCsv(checkResults = do.call(plyr::rbind.fill, checkResults), csvPath, columns, delimiter)
+    },
+    error = function(e) {
+      ParallelLogger::logError(sprintf("Writing to CSV file failed: %s", e$message))
+    }
+  )
+}
+
 
 .needsAutoCommit <- function(connection) {
   autoCommit <- FALSE
