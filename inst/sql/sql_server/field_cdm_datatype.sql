@@ -18,9 +18,11 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
+		/*violatedRowsBegin*/
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.* 
 		  FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		 WHERE ISNUMERIC(abs(cdmTable.@cdmFieldName)) = 0 AND cdmTable.@cdmFieldName IS NOT NULL
+		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
 ( 
