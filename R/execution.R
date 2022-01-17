@@ -211,16 +211,20 @@ executeDqChecks <- function(connectionDetails,
   options(scipen = 999)
   
   # capture metadata -----------------------------------------------------------------------
-  connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
-  sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
+  if (!sqlOnly) {
+    connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
+    sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
                            cdmDatabaseSchema = cdmDatabaseSchema)
-  sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
-  metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
-  if (nrow(metadata)<1) {
-    stop("Please populate the cdm_source table before executing data quality checks.")
+    sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
+    metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
+    if (nrow(metadata)<1) {
+      stop("Please populate the cdm_source table before executing data quality checks.")
+    }
+    metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
+    DatabaseConnector::disconnect(connection)
+  } else {
+    metadata <- NA
   }
-  metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
-  DatabaseConnector::disconnect(connection)
   
   if (!dir.exists(outputFolder)) {
     dir.create(path = outputFolder, recursive = TRUE)
