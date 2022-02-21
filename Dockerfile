@@ -22,6 +22,8 @@ RUN ./mvnw install -DskipTests -P${prop}
 FROM openjdk:15-oracle
 VOLUME /tmp
 
+EXPOSE 8001
+
 ARG JAR_FILE=/workspace/app/target/*.jar
 COPY --from=build ${JAR_FILE} app.jar
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar /app.jar ${0} ${@}"]

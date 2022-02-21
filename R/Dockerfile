@@ -37,4 +37,6 @@ COPY java-secure java-secure
 RUN tr -d '\015' <./java-secure >./java-secure.tmp && mv ./java-secure.tmp ./java-secure && chmod 700 ./java-secure
 RUN ./java-secure
 
+EXPOSE 6311
+
 ENTRYPOINT R -e "Rserve::run.Rserve(remote=TRUE)"
