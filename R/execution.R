@@ -284,7 +284,7 @@ if (conceptCheckThresholdLoc == "default"){
   }
   
   ## remove offset from being checked
-  fieldChecks <- fieldChecks[!fieldChecks$cdmFieldName %in% c("\"offset\"")]
+  fieldChecks <- subset(fieldChecks, cdmFieldName != '"offset"')
   
   library(magrittr)
   # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
