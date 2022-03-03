@@ -243,7 +243,7 @@ PROVIDER,specialty_source_value,No,,,varchar(50),0,,,,No,,,No,,,,,,,,,,,No,,,Yes
 PROVIDER,specialty_source_concept_id,No,,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,100,,No,,,Yes,100,,No,,,,,,,,,,,,,,,No,,,No
 PROVIDER,gender_source_value,No,,,varchar(50),0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,Yes,100,,GENDER_CONCEPT_ID,,,,,,,,,,,,No,,,No
 PROVIDER,gender_source_concept_id,No,,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
-PAYER_PLAN_PERIOD,payer_plan_period_id,Yes,0,,integer,0,,,,Yes,0,,Yes,0,,PERSON,PERSON_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,Yes
+PAYER_PLAN_PERIOD,payer_plan_period_id,Yes,0,,integer,0,,,,Yes,0,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,Yes
 PAYER_PLAN_PERIOD,person_id,Yes,0,,integer,0,,,,No,,,Yes,0,,PERSON,PERSON_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,Yes
 PAYER_PLAN_PERIOD,payer_plan_period_start_date,Yes,0,,date,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,Yes
 PAYER_PLAN_PERIOD,payer_plan_period_end_date,Yes,0,,date,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,Yes,PAYER_PLAN_PERIOD,PAYER_PLAN_PERIOD_START_DATE,1,,No,,,Yes
