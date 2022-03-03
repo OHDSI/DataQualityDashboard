@@ -297,7 +297,7 @@ COST,total_cost,No,,,FLOAT,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,
 COST,total_paid,No,,,FLOAT,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
 COST,paid_by_payer,No,,,FLOAT,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
 COST,paid_by_patient,No,,,FLOAT,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
-COST,paid_patient_copay,No,,,FLOAT,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
+COST,paid_patient_copay,No,,,FLOAT,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
 COST,paid_patient_coinsurance,No,,,FLOAT,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
 COST,paid_patient_deductible,No,,,FLOAT,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
 COST,paid_by_primary,No,,,FLOAT,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,No
