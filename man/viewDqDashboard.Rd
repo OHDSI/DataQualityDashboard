@@ -4,10 +4,12 @@
 \alias{viewDqDashboard}
 \title{View DQ Dashboard}
 \usage{
-viewDqDashboard(jsonPath)
+viewDqDashboard(jsonPath, launch.browser = NULL, display.mode = NULL, ...)
 }
 \arguments{
 \item{jsonPath}{The path to the JSON file produced by  \code{\link{executeDqChecks}}}
+
+\item{...}{Extra parameters for shiny::runApp() like "port" or "host"}
 }
 \description{
 View DQ Dashboard
