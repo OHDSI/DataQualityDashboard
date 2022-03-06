@@ -1,0 +1,38 @@
+---
+title: "CDM SOURCE"
+
+output:
+  html_document:
+    theme: flatly
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r df, include=FALSE}
+library(jsonlite)
+library(dplyr)
+
+jsonFilePath <- "synthea.json"
+
+data <- data.frame(fromJSON(jsonFilePath))
+
+data <- tibble(data)
+
+dataM <- select(data, contains("Metadata")) %>%
+  rename_(.dots=setNames(names(.), gsub("Metadata.", "", names(.)))) %>%
+  filter(row_number()==1)
+```
+
+
+CDM Source Name: `r dataM$CDM_SOURCE_NAME`  
+CDM Source Abbreviation: `r dataM$CDM_SOURCE_ABBREVIATION`  
+CDM Holder: `r dataM$CDM_HOLDER`  
+Source Description: `r dataM$SOURCE_DESCRIPTION`  
+Source Release Date: `r dataM$CDM_RELEASE_DATE`  
+CDM Version: `r dataM$CDM_VERSION`  
+Vocabulary Version: `r dataM$VOCABULARY_VERSION`  
+Data Quality Dashboard version: `r dataM$DQD_VERSION`

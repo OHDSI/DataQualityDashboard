@@ -86,7 +86,7 @@ server <- function(input, output) {
   
   
   ################################################
-  #### Panel: TABLE CENTRIC PIVOT             ####
+  #### Panel: Results                         ####
   ################################################
   
   output$summary_dt2 <- renderUI({
@@ -142,8 +142,7 @@ server <- function(input, output) {
                                          align = "left",
                                          grouped = JS("function(cellInfo) {
                                                    return cellInfo.value
-                                                             }")
-              ),
+                                                             }")),
               FAILED = colDef(name = "# Failed",
                               align = "center",
                               footer =  function(values) comma(sum(values), digits=0),
@@ -183,7 +182,7 @@ server <- function(input, output) {
                                          sortable = FALSE,
                                          format = 
                                            colFormat(separators = TRUE, digits = 0)),
-              NUM_DENOMINATOR_ROWS = colDef(name = "Denominator Count",
+              NUM_DENOMINATOR_ROWS = colDef(name = "Total # of Rows",
                                             align = "center",
                                             footer =  function(values) comma(sum(values), digits=0),
                                             aggregate = "sum",
@@ -258,11 +257,11 @@ server <- function(input, output) {
   })
   
   ################################################
-  #### Panel: METADATA                       ####
+  #### Panel: CDM SOURCE                     ####
   ################################################
   
   getPageMeta <- function() {
-    return(includeHTML("Metadata.html"))
+    return(includeHTML("CDMSource.html"))
   }
   output$meta <- renderUI({
     getPageMeta()
