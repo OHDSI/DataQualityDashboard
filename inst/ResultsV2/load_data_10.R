@@ -4,7 +4,7 @@ library(tidyr)
 library(jsonlite)
 library(janitor)
 
-jsonFilePath <- "synpuf1k-20211209174755.json"
+jsonFilePath <- "synthea.json"
 
 data <- data.frame(fromJSON(jsonFilePath))
 

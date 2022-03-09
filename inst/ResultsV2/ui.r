@@ -41,7 +41,7 @@ ui <- navbarPage(title = div("DATA QUALITY ASSESSMENT",
                  #### Panel: TABLE CENTRIC PIVOT             ####
                  ################################################
                  
-                 tabPanel("TABLE CENTRIC PIVOT",
+                 tabPanel("RESULTS",
                           sidebarLayout(
                             mainPanel(
                               uiOutput("summary_dt2"),
@@ -101,7 +101,7 @@ ui <- navbarPage(title = div("DATA QUALITY ASSESSMENT",
                  #### Panel: METATDATA                      ####
                  ################################################
                  
-                 tabPanel("METADATA",
+                 tabPanel("CDM SOURCE",
                           fluidPage(htmlOutput("meta"))
                  ),
                  
