@@ -1,0 +1,30 @@
+server:
+  port: 8000
+  error:
+    include-message: always
+  servlet:
+    context-path: /data-quality
+
+rserve:
+  path:
+  host: localhost
+  port: 6311
+
+files-manager:
+  url: http://localhost:10500/files-manager
+
+spring:
+  application:
+    name: Data Quality Dashboard
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shared
+    username: dqd
+    password: password
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false

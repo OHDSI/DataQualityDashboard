@@ -1,0 +1,89 @@
+package com.arcadia.DataQualityDashboard.service.r;
+
+import com.arcadia.DataQualityDashboard.model.DataQualityScan;
+import com.arcadia.DataQualityDashboard.model.DbSettings;
+import com.arcadia.DataQualityDashboard.service.error.RException;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.rosuda.REngine.REXP;
+import org.rosuda.REngine.REXPMismatchException;
+import org.rosuda.REngine.REngineException;
+import org.rosuda.REngine.Rserve.RConnection;
+
+import java.util.List;
+
+import static com.arcadia.DataQualityDashboard.util.DbTypeAdapter.*;
+import static com.arcadia.DataQualityDashboard.util.OperationSystem.isUnix;
+import static java.lang.String.format;
+
+@RequiredArgsConstructor
+public class  RConnectionWrapper {
+    private static final int DEFAULT_THREAD_COUNT = 1;
+
+    private final RConnection rConnection;
+
+    @SneakyThrows({REXPMismatchException.class, REngineException.class})
+    public void loadScripts(List<String> scriptsPaths) throws RException {
+        for (String path : scriptsPaths) {
+            String cmd = format("source('%s')", path);
+            REXP runResponse = rConnection.parseAndEval(toTryCmd(cmd));
+            if (runResponse.inherits("try-error")) {
+                throw new RException(runResponse.asString());
+            }
+        }
+    }
+
+    public String checkDataQuality(DataQualityScan scan) throws RException {
+        return checkDataQuality(scan, DEFAULT_THREAD_COUNT);
+    }
+
+    @SneakyThrows({REXPMismatchException.class, REngineException.class})
+    public String checkDataQuality(DataQualityScan scan, int threadCount) throws RException {
+        DbSettings dbSettings = scan.getDbSettings();
+        Long scanId = scan.getId();
+        String dbType = adaptDbType(dbSettings.getDbType());
+        String dqdCmd = format("dataQualityCheck(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %d, %d)",
+                dbType,
+                adaptServer(dbType, dbSettings.getServer(), dbSettings.getDatabase()),
+                dbSettings.getPort(),
+                adaptDataBaseSchema(dbSettings.getDatabase(), dbSettings.getSchema()),
+                dbSettings.getUser(),
+                dbSettings.getPassword(),
+                scanId,
+                threadCount
+        );
+        REXP runResponse = rConnection.parseAndEval(toTryCmd(dqdCmd));
+        if (runResponse.inherits("try-error")) {
+            throw new RException(runResponse.asString());
+        }
+
+        return runResponse.asString();
+    }
+
+    @SneakyThrows
+    public Integer getRServerPid() {
+        String cmd = "Sys.getpid()";
+        return rConnection.eval(cmd).asInteger();
+    }
+
+    @SneakyThrows
+    public void abort(int pid) {
+        rConnection.eval("tools::pskill("+ pid + ")");
+        rConnection.eval("tools::pskill("+ pid + ", tools::SIGKILL)");
+
+        this.close();
+    }
+
+    @SneakyThrows
+    public void close() {
+        if (isUnix()) {
+            this.rConnection.close();
+        } else {
+            this.rConnection.shutdown();
+        }
+    }
+
+    private String toTryCmd(String cmd) {
+        return "try(eval(" + cmd + "),silent=TRUE)";
+    }
+}

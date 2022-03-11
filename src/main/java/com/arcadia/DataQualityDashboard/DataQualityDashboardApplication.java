@@ -13,5 +13,4 @@ public class DataQualityDashboardApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DataQualityDashboardApplication.class, args);
 	}
-
 }

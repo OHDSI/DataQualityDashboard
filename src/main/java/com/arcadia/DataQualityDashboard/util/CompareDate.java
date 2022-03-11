@@ -12,4 +12,5 @@ public class CompareDate {
 
         return HOURS.convert(diffInMilliseconds, MILLISECONDS);
     }
+
 }

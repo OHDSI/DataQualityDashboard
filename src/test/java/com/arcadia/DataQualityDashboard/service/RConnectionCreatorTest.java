@@ -1,5 +1,8 @@
 package com.arcadia.DataQualityDashboard.service;
 
+import com.arcadia.DataQualityDashboard.service.error.RException;
+import com.arcadia.DataQualityDashboard.service.r.RConnectionCreator;
+import com.arcadia.DataQualityDashboard.service.r.RConnectionWrapper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

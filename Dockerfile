@@ -1,5 +1,5 @@
 # 1st Build Step
-FROM openjdk:15-oracle as build
+FROM openjdk:17 as build
 
 ARG prop=dev
 
@@ -18,7 +18,7 @@ COPY pom.xml .
 RUN ./mvnw install -P${prop}
 
 # 2nd Run Step
-FROM openjdk:15-oracle
+FROM openjdk:17 as build
 VOLUME /tmp
 
 ARG JAR_FILE=/workspace/app/target/*.jar
