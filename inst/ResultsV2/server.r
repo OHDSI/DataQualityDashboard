@@ -188,7 +188,7 @@ server <- function(input, output) {
           minWidth = 170,
           align = "left",
           footer = "TOTAL",
-          grouped = JS("function(cellInfo) {
+          aggregated = JS("function(cellInfo) {
                                                  return cellInfo.value
                                                             }")
         ),
