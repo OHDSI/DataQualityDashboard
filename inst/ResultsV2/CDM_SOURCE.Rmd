@@ -2,9 +2,7 @@
 title: "CDM SOURCE"
 
 output:
-  html_document:
-    theme: flatly
-    highlight: pygments
+  html_document
 ---
 
 ```{r setup, include=FALSE}
