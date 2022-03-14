@@ -547,7 +547,8 @@ if (conceptCheckThresholdLoc == "default"){
     
     if (!is.na(checkResults[i,]$ERROR)) {
       checkResults[i,]$FAILED <- 1
-    } else if (is.na(thresholdValue)) {
+    } else if (is.na(thresholdValue) | thresholdValue == 0) {
+      # If no threshold, or threshold is 0%, then any violating records will cause this check to fail
       if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults[i,]$NUM_VIOLATED_ROWS > 0) {
         checkResults[i,]$FAILED <- 1
       }
