@@ -1,0 +1,46 @@
+---
+params:
+  results: null
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Data Quality Delta Report
+This report summarizes changes in data quality across two executions of the data quality dashboard package.
+
+### Metadata
+TODO: add the dates for the two reports here
+
+### Summaries
+```{r echo=FALSE}
+knitr::kable(params$results$overview, format="html") %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed","responsive"))
+```
+
+
+### New Issues
+The following issues were not present in the prior data quality execution but are now appearing as issues.
+```{r echo=FALSE}
+knitr::kable(params$results$newIssues, format="html") %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+### Fixed Issues
+The following issues were present in the prior data quality execution but are no longer issues.
+```{r echo=FALSE}
+knitr::kable(params$results$fixedIssues, format="html") %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+### Arising Issues
+The following checks are not failing, however the percentage of violating rows has increased since last execution.
+```{r echo=FALSE}
+knitr::kable(params$results$arisingIssues, format="html") %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+### Improving Issues
+The following checks are failing, however the percentage of violating rows has decreased since last execution.
+```{r echo=FALSE}
+knitr::kable(params$results$improvingIssues, format="html") %>% kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
