@@ -160,9 +160,13 @@ executeDqChecks <- function(connectionDetails,
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
                             conceptCheckThresholdLoc = "default",
-                            messageSender = list(send <- function() {})) {
+                            logger,
+                            interruptor) {
 
-  messageSender$send("Execution started")
+  if (interruptor$isAborted()) {
+    stop("Process was aborted by user")
+  }
+  logger$info("Execution started")
 
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
@@ -184,8 +188,10 @@ executeDqChecks <- function(connectionDetails,
   # Setup output folder -----
   options(scipen = 999)
 
+  print("Connecting to CDM database...")
   # capture metadata -----------------------------------------------------------------------
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+  print("Successfully connected to CDM database!")
   sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
                            cdmDatabaseSchema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
@@ -324,7 +330,8 @@ executeDqChecks <- function(connectionDetails,
                                               cohortDefinitionId,
                                               outputFolder,
                                               sqlOnly,
-                                              messageSender)
+                                              logger,
+                                              interruptor)
   ParallelLogger::stopCluster(cluster = cluster)
   
   if (numThreads == 1 & !sqlOnly) {
@@ -348,7 +355,7 @@ executeDqChecks <- function(connectionDetails,
                                     metadata = metadata)
 
     message <- "Execution Completed"
-    messageSender$send(message)
+    logger$info(message)
     ParallelLogger::logInfo(message)
   }
 
@@ -389,10 +396,14 @@ executeDqChecks <- function(connectionDetails,
                       cohortDefinitionId,
                       outputFolder, 
                       sqlOnly,
-                      messageSender) {
+                      logger,
+                      interruptor) {
+  if (interruptor$isAborted()) {
+    stop("Process was aborted by User")
+  }
   library(magrittr)
   message <- sprintf("Processing check description: %s", checkDescription$checkName)
-  messageSender$send(message)
+  logger$info(message)
   ParallelLogger::logInfo(message)
   
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",

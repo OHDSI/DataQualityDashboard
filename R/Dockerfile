@@ -12,7 +12,6 @@ RUN apt-get install -y libxml2-dev
 RUN R -e "install.packages('DatabaseConnector')"
 RUN R -e "install.packages('SqlRender')"
 RUN R -e "install.packages('ParallelLogger')"
-RUN R -e "install.packages('websocket')"
 RUN R -e "install.packages('devtools')"
 RUN R -e "install.packages('properties')"
 RUN R -e "devtools::install_github('OHDSI/DataQualityDashboard')"
@@ -29,8 +28,8 @@ RUN mkdir root/R/properties
 
 COPY properties/${prop}.properties root/R/properties/default.properties
 COPY execution.R root/R/execution.R
-COPY messageSender.R root/R/messageSender.R
-COPY rServer.R root/R/rServer.R
+COPY dqd-database-manager.R root/R/dqd-database-manager.R
+COPY data-quality-check.R root/R/data-quality-check.R
 
 # Enable tls 1.0, 1.1
 COPY java-secure java-secure

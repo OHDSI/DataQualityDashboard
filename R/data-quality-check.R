@@ -11,7 +11,8 @@ init <- function () {
 
 init()
 
-dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, password, wsUserId, threadCount) {
+dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, password, scanId, threadCount) {
+  print("Starting Data Quality Check process..")
   connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dataType,
                                                                   user = user,
                                                                   password = password,
@@ -47,9 +48,8 @@ dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, passw
   # which CDM tables to exclude? ------------------------------------
   tablesToExclude <- c()
 
-  messageSender <- createMessageSender(wsUserId)
-
-  messageSender$connect()
+  print("Creating databae manager...")
+  dqdDataBaseManager <- createDqdDatabaseManager(scanId)
 
   result <- executeDqChecks(connectionDetails = connectionDetails,
                             cdmDatabaseSchema = cdmDatabaseSchema,
@@ -63,11 +63,10 @@ dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, passw
                             checkLevels = checkLevels,
                             tablesToExclude = tablesToExclude,
                             checkNames = checkNames,
-                            messageSender = messageSender)
-
-  messageSender$close()
-
+                            logger = dqdDataBaseManager$logger,
+                            interruptor = dqdDataBaseManager$interruptor)
   jsonResult <- resultToJson(result)
+  print("Data Quality Check process finished!")
 
   return(jsonResult)
 }
