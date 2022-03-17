@@ -143,16 +143,23 @@
   <script type="text/javascript">
     const queryString = window.location.search
     const urlParams = new URLSearchParams(queryString)
-    const fileName = urlParams.get('result')
-    const url = `api/download/${fileName}`
-
-    $.ajax({
-      dataType: "json",
-      url,
-      success: function (results) {
-        loadResults(results);
-      }
-    })
+    const scanId = urlParams.get('scanId')
+    const username = urlParams.get('username')
+    if (!scanId || !username) {
+      alert('Error: url parameters not specified')
+    } else {
+      $.ajax({
+        dataType: 'json',
+        url: `api/result/${scanId}`,
+        headers: { 'Username': username },
+        success: function (results) {
+          loadResults(results);
+        },
+        error: function (error) {
+          alert(error.responseJSON?.message ? `Error: ${error.responseJSON?.message}` : 'Error: Can not load result json file')
+        }
+      })
+    }
   </script>
 
 </body>
