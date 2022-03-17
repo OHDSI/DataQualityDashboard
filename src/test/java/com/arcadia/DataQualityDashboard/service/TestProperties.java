@@ -8,11 +8,12 @@ public class TestProperties {
     public static final RServeProperties rServerProperties = new RServeProperties(
             "C:/Program Files/R/R-4.0.3/bin/x64/R.exe",
             "127.0.0.1",
-            6311
+            6311,
+            false
     );
 
     public static final List<String> loadScripts = List.of(
-            "R/dqd.R",
+            "R/data-quality-check.R",
             "R/dqd-database-manager.R",
             "R/execution.R"
     );

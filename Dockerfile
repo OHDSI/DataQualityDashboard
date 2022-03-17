@@ -7,7 +7,13 @@ WORKDIR /workspace/app
 
 # Source
 COPY src src
-COPY inst/shinyApps/www/ src/main/resources/static/
+COPY inst/shinyApps/www/css src/main/resources/static/
+COPY inst/shinyApps/www/htmlwidgets src/main/resources/static/
+COPY inst/shinyApps/www/img src/main/resources/static/
+COPY inst/shinyApps/www/js src/main/resources/static/
+COPY inst/shinyApps/www/vendor src/main/resources/static/
+COPY inst/shinyApps/www/favicon.ico src/main/resources/static/
+COPY inst/shinyApps/www/index.html src/main/resources/static/
 
 # Maven
 COPY mvnw .

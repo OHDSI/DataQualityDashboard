@@ -4,6 +4,7 @@ import com.arcadia.DataQualityDashboard.model.DataQualityScan;
 import com.arcadia.DataQualityDashboard.service.r.RConnectionCreator;
 import com.arcadia.DataQualityDashboard.service.r.RConnectionWrapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import static com.arcadia.DataQualityDashboard.util.FileUtil.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DataQualityProcessServiceImpl implements DataQualityProcessService {
     private final RConnectionCreator rConnectionCreator;
     private final DataQualityResultService resultService;
@@ -34,6 +36,7 @@ public class DataQualityProcessServiceImpl implements DataQualityProcessService 
             RConnectionWrapper rConnection = rConnectionCreator.createRConnection();
             String jsonResult = rConnection.checkDataQuality(scan);
             rConnection.close();
+            log.info("Data quality check process successfully finished");
 
             String resultJsonFilePath = toResultJsonFilePath(generateRandomFileName());
             File resultJsonFile = new File(resultJsonFilePath);
@@ -42,11 +45,13 @@ public class DataQualityProcessServiceImpl implements DataQualityProcessService 
                 writer.write(jsonResult);
                 writer.close();
                 resultService.saveCompletedResult(resultJsonFile, scan.getId());
+                log.info("Result json file successfully saved");
             } finally {
                 resultJsonFile.delete();
             }
         } catch (Exception e) {
-            resultService.saveFailedResult(scan.getId());
+            log.error("Failed to run data quality check process: " + e.getMessage());
+            resultService.saveFailedResult(scan.getId(), e.getMessage());
         }
 
         return new AsyncResult<>(null);

@@ -3,27 +3,28 @@ package com.arcadia.DataQualityDashboard.service.r;
 import com.arcadia.DataQualityDashboard.model.DataQualityScan;
 import com.arcadia.DataQualityDashboard.model.DbSettings;
 import com.arcadia.DataQualityDashboard.service.error.RException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.rosuda.REngine.REXP;
-import org.rosuda.REngine.REXPMismatchException;
-import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RConnection;
 
 import java.util.List;
 
 import static com.arcadia.DataQualityDashboard.util.DbTypeAdapter.*;
-import static com.arcadia.DataQualityDashboard.util.OperationSystem.isUnix;
 import static java.lang.String.format;
 
 @RequiredArgsConstructor
-public class  RConnectionWrapper {
+public class RConnectionWrapper {
     private static final int DEFAULT_THREAD_COUNT = 1;
 
     private final RConnection rConnection;
 
-    @SneakyThrows({REXPMismatchException.class, REngineException.class})
-    public void loadScripts(List<String> scriptsPaths) throws RException {
+    @Getter
+    private final boolean isUnix;
+
+    @SneakyThrows
+    public void loadScripts(List<String> scriptsPaths) {
         for (String path : scriptsPaths) {
             String cmd = format("source('%s')", path);
             REXP runResponse = rConnection.parseAndEval(toTryCmd(cmd));
@@ -33,20 +34,22 @@ public class  RConnectionWrapper {
         }
     }
 
-    public String checkDataQuality(DataQualityScan scan) throws RException {
+    public String checkDataQuality(DataQualityScan scan) {
         return checkDataQuality(scan, DEFAULT_THREAD_COUNT);
     }
 
-    @SneakyThrows({REXPMismatchException.class, REngineException.class})
-    public String checkDataQuality(DataQualityScan scan, int threadCount) throws RException {
+    @SneakyThrows
+    public String checkDataQuality(DataQualityScan scan, int threadCount) {
         DbSettings dbSettings = scan.getDbSettings();
         Long scanId = scan.getId();
         String dbType = adaptDbType(dbSettings.getDbType());
+        String server = adaptServer(dbType, dbSettings.getServer(), dbSettings.getDatabase());
+        String schema = adaptDataBaseSchema(dbSettings.getDatabase(), dbSettings.getSchema());
         String dqdCmd = format("dataQualityCheck(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %d, %d)",
                 dbType,
-                adaptServer(dbType, dbSettings.getServer(), dbSettings.getDatabase()),
+                server,
                 dbSettings.getPort(),
-                adaptDataBaseSchema(dbSettings.getDatabase(), dbSettings.getSchema()),
+                schema,
                 dbSettings.getUser(),
                 dbSettings.getPassword(),
                 scanId,
@@ -76,11 +79,15 @@ public class  RConnectionWrapper {
 
     @SneakyThrows
     public void close() {
-        if (isUnix()) {
+        if (isUnix) {
             this.rConnection.close();
         } else {
             this.rConnection.shutdown();
         }
+    }
+
+    @SneakyThrows
+    public void downloadJdbcDrivers() {
     }
 
     private String toTryCmd(String cmd) {

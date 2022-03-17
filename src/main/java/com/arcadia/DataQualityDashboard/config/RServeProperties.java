@@ -10,7 +10,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "rserve")
 public class RServeProperties {
-    private String path;
+    private String path; /* For Windows */
     private String host;
     private int port;
+    private boolean unix;
 }

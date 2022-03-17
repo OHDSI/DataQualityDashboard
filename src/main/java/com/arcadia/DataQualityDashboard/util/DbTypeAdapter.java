@@ -13,13 +13,7 @@ public class DbTypeAdapter {
             "sql server",
             "postgresql",
             "oracle",
-            "pdw",
-            "redshift",
-            "netezza",
-            "impala",
-            "hive",
-            "bigquery",
-            "sqlite"
+            "redshift"
     );
 
     private static final List<String> dbRequireSchema = List.of(

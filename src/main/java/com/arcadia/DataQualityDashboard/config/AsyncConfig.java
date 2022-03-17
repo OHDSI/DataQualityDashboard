@@ -19,7 +19,6 @@ public class AsyncConfig {
                 .queueCapacity(16)
                 .threadNamePrefix("DQD-")
                 .build();
-
         executor.initialize();
 
         return executor;

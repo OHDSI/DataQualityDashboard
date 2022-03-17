@@ -2,6 +2,7 @@ package com.arcadia.DataQualityDashboard.service.r;
 
 import com.arcadia.DataQualityDashboard.config.RServeProperties;
 import com.arcadia.DataQualityDashboard.service.error.RException;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
@@ -10,22 +11,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.arcadia.DataQualityDashboard.util.OperationSystem.isUnix;
-
 @Service
 public class RConnectionCreator {
-    /* For Windows */
-    private final String exeFilePath;
-
+    private final String exeFilePath; /* For Windows */
     private final String host;
-
     private final int port;
+    private final boolean isUnix;
+    private volatile int currentPort; /* For Windows */
 
-    /* For Windows */
-    private volatile int currentPort;
-
+    @Getter
     private List<String> loadScripts = List.of(
-            "~/R/dqd.R",
+            "~/R/data-quality-check.R",
             "~/R/dqd-database-manager.R",
             "~/R/execution.R"
     );
@@ -40,6 +36,7 @@ public class RConnectionCreator {
         exeFilePath = properties.getPath();
         host = properties.getHost();
         port = properties.getPort();
+        isUnix = properties.isUnix();
         currentPort = port;
     }
 
@@ -51,16 +48,17 @@ public class RConnectionCreator {
     public RConnectionWrapper createRConnection() throws RException {
         try {
             RConnection connection;
-
-            if (isUnix()) {
+            if (isUnix) {
                 connection = new RConnection(host, port);
             } else {
                 int currentPort = getAndIncrementCurrentPort();
                 createRServeProcess(currentPort);
                 connection = new RConnection(host, currentPort);
             }
-
-            RConnectionWrapper connectionWrapper = new RConnectionWrapper(connection);
+            RConnectionWrapper connectionWrapper = new RConnectionWrapper(connection, isUnix);
+            if (!isUnix) {
+                connectionWrapper.downloadJdbcDrivers();
+            }
             connectionWrapper.loadScripts(loadScripts);
 
             return connectionWrapper;

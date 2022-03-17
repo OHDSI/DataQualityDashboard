@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.SEQUENCE;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
 @Builder
@@ -20,8 +20,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Entity(name = "data_quality_logs")
 public class DataQualityLog {
     @Id
-    @SequenceGenerator(name = "data_quality_log_id_sequence", sequenceName = "data_quality_log_id_sequence")
-    @GeneratedValue(strategy = SEQUENCE, generator = "data_quality_log_id_sequence")
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 1000)

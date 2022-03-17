@@ -21,7 +21,6 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 @Slf4j
 public class FilesManagerServiceImpl implements FilesManagerService {
     private final FilesManagerProperties filesManagerProperties;
-
     private final RestTemplate restTemplate;
 
     @Override
