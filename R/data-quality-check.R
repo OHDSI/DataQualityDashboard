@@ -1,18 +1,10 @@
 library(DatabaseConnector)
 library(SqlRender)
 
-init <- function () {
-  Sys.setenv('DATABASECONNECTOR_JAR_FOLDER' = '~/jdbcDrivers')
-  DatabaseConnector::downloadJdbcDrivers('sql server')
-  DatabaseConnector::downloadJdbcDrivers('postgresql')
-  DatabaseConnector::downloadJdbcDrivers('oracle')
-  DatabaseConnector::downloadJdbcDrivers('redshift')
-}
-
-init()
 
 dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, password, scanId, threadCount) {
   print("Starting Data Quality Check process..")
+  Sys.setenv('DATABASECONNECTOR_JAR_FOLDER' = '~/jdbcDrivers')
   connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dataType,
                                                                   user = user,
                                                                   password = password,
@@ -34,7 +26,7 @@ dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, passw
   outputFolder <- "output"
 
   # logging type -------------------------------------------------------------------------------------
-  verboseMode <- FALSE # set to TRUE if you want to see activity written to the console
+  verboseMode <- TRUE # set to TRUE if you want to see activity written to the console
 
   # write results to table? ------------------------------------------------------------------------------
   writeToTable <- FALSE # set to FALSE if you want to skip writing to a SQL table in the results schema
@@ -63,7 +55,7 @@ dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, passw
                             checkLevels = checkLevels,
                             tablesToExclude = tablesToExclude,
                             checkNames = checkNames,
-                            logger = dqdDataBaseManager$logger,
+                            dbLogger = dqdDataBaseManager$logger,
                             interruptor = dqdDataBaseManager$interruptor)
   jsonResult <- resultToJson(result)
   print("Data Quality Check process finished!")

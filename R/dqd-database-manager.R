@@ -16,7 +16,9 @@ createDqdDatabaseManager <- function(scanId) {
 }
 
 createFakeDqdDatabaseManager <- function() {
-  # todo
+  message <- "Fake DQD Database Manager not implemented"
+  print(message)
+  stop(message)
 }
 
 createRealDqdDatabaseManager <- function(scanId) {
@@ -46,12 +48,12 @@ createRealDqdDatabaseManager <- function(scanId) {
     ERROR_STATUS <- list(code = 4, name = "ERROR")
 
     incrementCompletedStepsCount <- function() {
-      completedStepsCount <- completedStepsCount + 1
+      completedStepsCount <<- completedStepsCount + 1
     }
 
     log <- function(message, status) {
       print(paste0("Log message: ", message))
-      percent <- completedStepsCount / STEPS_COUNT * 100
+      percent <- completedStepsCount * 100 / STEPS_COUNT
       time <- Sys.time()
       print("Connectiong to DQD database...")
       if (nchar(message) > 1000) {
@@ -125,7 +127,6 @@ createRealDqdDatabaseManager <- function(scanId) {
       DatabaseConnector::disconnect(connection)
       result <- currentStatusCode == ABORT_STATUS_CODE
       print(paste0("Current scan process status name: ", currentStatusName))
-      print(paste0("Is ABORTED status code: ", result))
 
       return(result)
     }

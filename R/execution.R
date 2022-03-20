@@ -16,6 +16,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+createDqdLogAppender <- function(dbLogger, layout = ParallelLogger::layoutSimple) {
+  appendFunction <- function (this, level, message, echoToConsole) {
+    # Avoid note in check:
+    missing(this)
+    if (echoToConsole) {
+      prefix <- '#DQD '
+      if (startsWith(message, '#DQD ')) {
+        msg <- substr(message, nchar(prefix), nchar(message))
+        if (level == "INFO") {
+          dbLogger$info(msg)
+          dbLogger$incrementCompletedStepsCount()
+        } else if (level == "DEBUG") {
+          dbLogger$debug(msg)
+        } else if (level == "WARN") {
+          dbLogger$warning(msg)
+        } else if (level == "ERROR" || level == "FATAL") {
+          dbLogger$error(msg)
+        }
+      }
+      writeLines(message, con = stdout())
+    }
+  }
+
+  appender <- list(appendFunction = appendFunction, layout = layout)
+  class(appender) <- "Appender"
+  return(appender)
+}
+
 .recordResult <- function(result = NULL, check, 
                           checkDescription, sql, 
                           executionTime = NA,
@@ -95,7 +123,7 @@
                     executionTime = sprintf("%f %s", delta, attr(delta, "units")))
     },
     warning = function(w) {
-      ParallelLogger::logWarn(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
+      ParallelLogger::logWarn(sprintf("#DQD [Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s",
                                       checkDescription$checkLevel,
                                       checkDescription$checkName, 
                                       check["cdmTableName"], 
@@ -103,7 +131,7 @@
       recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
     },
     error = function(e) {
-      ParallelLogger::logError(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
+      ParallelLogger::logError(sprintf("#DQD [Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s",
                                        checkDescription$checkLevel,
                                        checkDescription$checkName, 
                                        check["cdmTableName"], 
@@ -160,13 +188,12 @@ executeDqChecks <- function(connectionDetails,
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
                             conceptCheckThresholdLoc = "default",
-                            logger,
+                            dbLogger,
                             interruptor) {
 
   if (interruptor$isAborted()) {
     stop("Process was aborted by user")
   }
-  logger$info("Execution started")
 
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
@@ -196,7 +223,7 @@ executeDqChecks <- function(connectionDetails,
                            cdmDatabaseSchema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
   metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
-  if (nrow(metadata)<1) {
+  if (nrow(metadata) < 1) {
     stop("Please populate the cdm_source table before executing data quality checks.")
   }
   metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
@@ -215,22 +242,12 @@ executeDqChecks <- function(connectionDetails,
   
   # Log execution -----------------------------------------------------------------------------------------------------------------
   ParallelLogger::clearLoggers()
-  logFileName <- sprintf("log_DqDashboard_%s.txt", cdmSourceName)
-  unlink(file.path(outputFolder, logFileName))
-  
-  if (verboseMode) {
-    appenders <- list(ParallelLogger::createConsoleAppender(),
-                      ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
-                                                         fileName = file.path(outputFolder, logFileName)))    
-  } else {
-    appenders <- list(ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
-                                                         fileName = file.path(outputFolder, logFileName)))    
-  }
 
-  logger <- ParallelLogger::createLogger(name = "DqDashboard",
-                                         threshold = "INFO",
-                                         appenders = appenders)
-  ParallelLogger::registerLogger(logger)   
+  appenders <- list(createDqdLogAppender(dbLogger))
+  parallelLogger <- ParallelLogger::createLogger(name = "DqDashboard", threshold = "INFO", appenders = appenders)
+  ParallelLogger::registerLogger(parallelLogger)
+
+  ParallelLogger::logInfo("#DQD Execution started")
   
   # load CSVs ----------------------------------------------------------------------------------------
   
@@ -271,7 +288,7 @@ executeDqChecks <- function(connectionDetails,
   
   if (length(tablesToExclude) > 0) {
     tablesToExclude <- toupper(tablesToExclude)
-    ParallelLogger::logInfo(sprintf("CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
+    ParallelLogger::logWarn(sprintf("#DQD CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
     tableChecks <- tableChecks[!tableChecks$cdmTableName %in% tablesToExclude,]
     fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude &
                                  !fieldChecks$fkTableName %in% tablesToExclude &
@@ -330,7 +347,7 @@ executeDqChecks <- function(connectionDetails,
                                               cohortDefinitionId,
                                               outputFolder,
                                               sqlOnly,
-                                              logger,
+                                              dbLogger,
                                               interruptor)
   ParallelLogger::stopCluster(cluster = cluster)
   
@@ -354,9 +371,7 @@ executeDqChecks <- function(connectionDetails,
                                     conceptChecks = conceptChecks,
                                     metadata = metadata)
 
-    message <- "Execution Completed"
-    logger$info(message)
-    ParallelLogger::logInfo(message)
+    ParallelLogger::logInfo("#DQD Execution Completed")
   }
 
   
@@ -396,15 +411,15 @@ executeDqChecks <- function(connectionDetails,
                       cohortDefinitionId,
                       outputFolder, 
                       sqlOnly,
-                      logger,
+                      dbLogger,
                       interruptor) {
   if (interruptor$isAborted()) {
-    stop("Process was aborted by User")
+    message <- "Process was aborted by User"
+    print(message)
+    stop(message)
   }
   library(magrittr)
-  message <- sprintf("Processing check description: %s", checkDescription$checkName)
-  logger$info(message)
-  ParallelLogger::logInfo(message)
+  ParallelLogger::logInfo(sprintf("#DQD Processing check description: %s", checkDescription$checkName))
   
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",
                               tolower(checkDescription$checkLevel),
@@ -453,7 +468,7 @@ executeDqChecks <- function(connectionDetails,
     })
     do.call(rbind, dfs)
   } else {
-    ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
+    ParallelLogger::logWarn(paste0("#DQD Warning: Evaluation resulted in no checks: ", filterExpression))
     data.frame()
   }
 }
@@ -652,7 +667,7 @@ writeJsonResultToFile <- function(resultJson, outputFolder) {
   endTimestamp <- gsub(":","",endTimestamp)
 
   resultFilename <- file.path(outputFolder, sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp))
-  ParallelLogger::logInfo(sprintf("Writing results to file: %s", resultFilename))
+  ParallelLogger::logInfo(sprintf("#DQD Writing results to file: %s", resultFilename))
   write(resultJson, resultFilename)
 }
 
@@ -685,7 +700,7 @@ writeJsonResultsToTable <- function(connectionDetails,
     tableName <- sprintf("%s.%s_%s", resultsDatabaseSchema,writeTableName, cohortDefinitionId)
   } else {tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)}
   
-  ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
+  ParallelLogger::logInfo(sprintf("#DQD Writing results to table %s", tableName))
   
   if ("UNIT_CONCEPT_ID" %in% colnames(df)){
     ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
@@ -702,10 +717,10 @@ writeJsonResultsToTable <- function(connectionDetails,
       DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = df, 
                                      dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE,
                                      progressBar = TRUE)
-      ParallelLogger::logInfo("Finished writing table")
+      ParallelLogger::logInfo("#DQD Finished writing table")
     },
     error = function(e) {
-      ParallelLogger::logError(sprintf("Writing table failed: %s", e$message))
+      ParallelLogger::logError(sprintf("#DQD Writing table failed: %s", e$message))
     }
   )
   
@@ -727,7 +742,7 @@ writeJsonResultsToTable <- function(connectionDetails,
     tableName <- sprintf("%s.%s_%s", resultsDatabaseSchema,writeTableName, cohortDefinitionId)
   } else {tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)}
   
-  ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
+  ParallelLogger::logInfo(sprintf("#DQD Writing results to table %s", tableName))
   
   ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_dataframe_ddl.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
  
@@ -737,10 +752,10 @@ writeJsonResultsToTable <- function(connectionDetails,
     expr = {
       DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = checkResults, 
                                      dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE)
-      ParallelLogger::logInfo("Finished writing table")
+      ParallelLogger::logInfo("#DQD Finished writing table")
     },
     error = function(e) {
-      ParallelLogger::logError(sprintf("Writing table failed: %s", e$message))
+      ParallelLogger::logError(sprintf("#DQD Writing table failed: %s", e$message))
     }
   )
 }
