@@ -16,7 +16,7 @@ import static java.lang.String.format;
 
 @RequiredArgsConstructor
 public class RConnectionWrapper {
-    private static final int DEFAULT_THREAD_COUNT = 1;
+    private static final int DEFAULT_THREAD_COUNT = 3;
 
     private final RConnection rConnection;
 
@@ -24,13 +24,18 @@ public class RConnectionWrapper {
     private final boolean isUnix;
 
     @SneakyThrows
+    public void loadScript(String path) {
+        String cmd = format("source('%s')", path);
+        REXP runResponse = rConnection.parseAndEval(toTryCmd(cmd));
+        if (runResponse.inherits("try-error")) {
+            throw new RException(runResponse.asString());
+        }
+    }
+
+    @SneakyThrows
     public void loadScripts(List<String> scriptsPaths) {
         for (String path : scriptsPaths) {
-            String cmd = format("source('%s')", path);
-            REXP runResponse = rConnection.parseAndEval(toTryCmd(cmd));
-            if (runResponse.inherits("try-error")) {
-                throw new RException(runResponse.asString());
-            }
+            loadScript(path);
         }
     }
 
@@ -84,10 +89,6 @@ public class RConnectionWrapper {
         } else {
             this.rConnection.shutdown();
         }
-    }
-
-    @SneakyThrows
-    public void downloadJdbcDrivers() {
     }
 
     private String toTryCmd(String cmd) {

@@ -16,20 +16,21 @@ public class RConnectionCreator {
     private final String exeFilePath; /* For Windows */
     private final String host;
     private final int port;
-    private final boolean isUnix;
     private volatile int currentPort; /* For Windows */
 
     @Getter
-    private List<String> loadScripts = List.of(
+    private final boolean isUnix;
+
+    @Getter
+    private final List<String> loadScripts = List.of(
             "~/R/data-quality-check.R",
             "~/R/dqd-database-manager.R",
             "~/R/execution.R"
     );
 
-    public RConnectionCreator setLoadScripts(List<String> loadScripts) {
-        this.loadScripts = loadScripts;
-        return this;
-    }
+    @Getter
+    private final String downloadJdbcDriversScript =
+            "~/R/download-jdbc-drivers.R";
 
     @Autowired
     public RConnectionCreator(RServeProperties properties) {
@@ -57,7 +58,7 @@ public class RConnectionCreator {
             }
             RConnectionWrapper connectionWrapper = new RConnectionWrapper(connection, isUnix);
             if (!isUnix) {
-                connectionWrapper.downloadJdbcDrivers();
+                connectionWrapper.loadScript(downloadJdbcDriversScript);
             }
             connectionWrapper.loadScripts(loadScripts);
 
