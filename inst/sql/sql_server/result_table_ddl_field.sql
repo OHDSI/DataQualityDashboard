@@ -18,7 +18,7 @@ CREATE TABLE @tableName
   category              varchar(255),
   subcategory           varchar(255),
   context               varchar(255),
-  checkid               integer,
+  checkid               varchar(1024),
   failed                integer,
   threshold_value       integer,
   notes_value           varchar(8000),

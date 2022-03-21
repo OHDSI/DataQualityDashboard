@@ -9,9 +9,7 @@ connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "", user 
 cdmDatabaseSchema <- "yourCdmSchema" # the fully qualified database schema name of the CDM
 resultsDatabaseSchema <- "yourResultsSchema" # the fully qualified database schema name of the results schema (that you can write to)
 cdmSourceName <- "Your CDM Source" # a human readable name for your CDM source
-
-# determine how many threads (concurrent SQL sessions) to use ----------------------------------------
-numThreads <- 3 # on Redshift, 3 seems to work well
+cdmVersion <- "5.4" # the CDM version you are targetting. Currently supporst 5.2.2, 5.3.1, and 5.4
 
 # specify if you want to execute the queries or inspect them ------------------------------------------
 sqlOnly <- FALSE # set to TRUE if you just want to get the SQL scripts and not actually run the queries
@@ -61,13 +59,14 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                               checkNames = checkNames)
 
 # inspect logs ----------------------------------------------------------------------------
-ParallelLogger::launchLogViewer(logFileName = file.path(outputFolder, cdmSourceName, 
+ParallelLogger::launchLogViewer(logFileName = file.path(outputFolder, 
                                                         sprintf("log_DqDashboard_%s.txt", cdmSourceName)))
 
 # (OPTIONAL) if you want to write the JSON file to the results table separately -----------------------------
-jsonFilePath <- ""
+jsonFilePath <- "" # put the path to the outputted JSON file
 DataQualityDashboard::writeJsonResultsToTable(connectionDetails = connectionDetails, 
                                               resultsDatabaseSchema = resultsDatabaseSchema, 
                                               jsonFilePath = jsonFilePath)
 
-DataQualityDashboard::viewDqDashboard(file.path(getwd(),outputFolder, cdmSourceName, paste0("results_", cdmSourceName, ".json")))
+# View the Data Quality Dashboard using the integrated shiny application
+DataQualityDashboard::viewDqDashboard(jsonFilePath)

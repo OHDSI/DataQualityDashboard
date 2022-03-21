@@ -18,7 +18,25 @@
 
 ABORT_MESSAGE <- "Process was aborted by User"
 
-.recordResult <- function(result = NULL, check, 
+.getCheckId <- function(checkLevel, checkName, cdmTableName,
+                        cdmFieldName = NA, conceptId = NA,
+                        unitConceptId = NA) {
+  tolower(
+    paste(
+      na.omit(c(
+        dplyr::na_if(gsub(" ", "", checkLevel), ""),
+        dplyr::na_if(gsub(" ", "", checkName), ""),
+        dplyr::na_if(gsub(" ", "", cdmTableName), ""),
+        dplyr::na_if(gsub(" ", "", cdmFieldName), ""),
+        dplyr::na_if(gsub(" ", "", conceptId), ""),
+        dplyr::na_if(gsub(" ", "", unitConceptId), "")
+      )),
+      collapse = "_"
+    )
+  )
+}
+
+.recordResult <- function(result = NULL, check,
                           checkDescription, sql, 
                           executionTime = NA,
                           warning = NA, error = NA) {
@@ -49,7 +67,9 @@ ABORT_MESSAGE <- "Process was aborted by User"
     SUBCATEGORY = checkDescription$kahnSubcategory,
     CONTEXT = checkDescription$kahnContext,
     WARNING = warning,
-    ERROR = error, row.names = NULL, stringsAsFactors = FALSE
+    ERROR = error,
+    checkId = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"]),
+    row.names = NULL, stringsAsFactors = FALSE
   )
   
   if (!is.null(result)) {
@@ -60,8 +80,7 @@ ABORT_MESSAGE <- "Process was aborted by User"
   reportResult
 }
 
-.processCheck <- function(recordResult,
-                          connection,
+.processCheck <- function(connection,
                           connectionDetails, 
                           check, 
                           checkDescription, 
@@ -84,7 +103,7 @@ ABORT_MESSAGE <- "Process was aborted by User"
   tryCatch(
     expr = {
       if (singleThreaded) {
-        if (.needsAutoCommit(connection, connectionDetails)) {
+        if (.needsAutoCommit(connectionDetails, connection)) {
           rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
         }  
       }
@@ -93,7 +112,7 @@ ABORT_MESSAGE <- "Process was aborted by User"
                                             errorReportFile = errorReportFile)
       
       delta <- difftime(Sys.time(), start, units = "secs")
-      recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,
+      .recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
                     executionTime = sprintf("%f %s", delta, attr(delta, "units")))
     },
     warning = function(w) {
@@ -102,7 +121,7 @@ ABORT_MESSAGE <- "Process was aborted by User"
                                       checkDescription$checkName, 
                                       check["cdmTableName"], 
                                       check["cdmFieldName"], w$message))
-      recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
+      .recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
     },
     error = function(e) {
       ParallelLogger::logError(sprintf("#DQD [Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s",
@@ -110,7 +129,7 @@ ABORT_MESSAGE <- "Process was aborted by User"
                                        checkDescription$checkName, 
                                        check["cdmTableName"], 
                                        check["cdmFieldName"], e$message))
-      recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message)
+      .recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message)  
     }
   ) 
 }
@@ -125,6 +144,7 @@ ABORT_MESSAGE <- "Process was aborted by User"
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #' @param outputFolder              The folder to output logs and SQL files to
+#' @param outputFile                (OPTIONAL) File to write results JSON object
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
 #'                                  in the resultsDatabaseSchema. Default is TRUE.
@@ -150,6 +170,7 @@ executeDqChecks <- function(connectionDetails,
                             numThreads = 1,
                             sqlOnly = FALSE,
                             outputFolder = "output",
+                            outputFile = "",
                             verboseMode = FALSE,
                             writeToTable = TRUE,
                             writeTableName = "dqdashboard_results",
@@ -164,7 +185,7 @@ executeDqChecks <- function(connectionDetails,
                             conceptCheckThresholdLoc = "default",
                             dbLogger,
                             interruptor) {
-
+  # Check is aborted -----------
   if (interruptor$isAborted()) {
     print(ABORT_MESSAGE)
     stop(ABORT_MESSAGE)
@@ -223,7 +244,7 @@ executeDqChecks <- function(connectionDetails,
   ParallelLogger::registerLogger(parallelLogger)
 
   ParallelLogger::logInfo("#DQD Execution started")
-  
+
   # load CSVs ----------------------------------------------------------------------------------------
   
   startTime <- Sys.time()
@@ -263,7 +284,7 @@ executeDqChecks <- function(connectionDetails,
   
   if (length(tablesToExclude) > 0) {
     tablesToExclude <- toupper(tablesToExclude)
-    ParallelLogger::logWarn(sprintf("#DQD CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
+    ParallelLogger::logInfo(sprintf("#DQD CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
     tableChecks <- tableChecks[!tableChecks$cdmTableName %in% tablesToExclude,]
     fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude &
                                  !fieldChecks$fkTableName %in% tablesToExclude &
@@ -271,6 +292,9 @@ executeDqChecks <- function(connectionDetails,
     conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude,]
   }
   
+  ## remove offset from being checked
+  fieldChecks <- subset(fieldChecks, cdmFieldName != '"offset"')
+
   library(magrittr)
   # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   # fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
@@ -307,23 +331,25 @@ executeDqChecks <- function(connectionDetails,
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
 
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
-  resultsList <- ParallelLogger::clusterApply(cluster = cluster, x = checkDescriptions,
-                                              fun = .runCheck,
-                                              .processCheck,
-                                              .recordResult,
-                                              tableChecks,
-                                              fieldChecks,
-                                              conceptChecks,
-                                              connectionDetails, 
-                                              connection,
-                                              cdmDatabaseSchema, 
-                                              vocabDatabaseSchema,
-                                              cohortDatabaseSchema,
-                                              cohortDefinitionId,
-                                              outputFolder,
-                                              sqlOnly,
-                                              dbLogger,
-                                              interruptor)
+  resultsList <- ParallelLogger::clusterApply(
+    cluster = cluster,
+    x = checkDescriptions,
+    fun = .runCheck,
+    tableChecks,
+    fieldChecks,
+    conceptChecks,
+    connectionDetails,
+    connection,
+    cdmDatabaseSchema,
+    vocabDatabaseSchema,
+    cohortDatabaseSchema,
+    cohortDefinitionId,
+    outputFolder,
+    sqlOnly,
+    progressBar = TRUE,
+    dbLogger,
+    interruptor
+  )
   ParallelLogger::stopCluster(cluster = cluster)
   
   if (numThreads == 1 & !sqlOnly) {
@@ -340,6 +366,7 @@ executeDqChecks <- function(connectionDetails,
                                     checkResults = checkResults,
                                     cdmSourceName = cdmSourceName, 
                                     outputFolder = outputFolder,
+                                    outputFile = outputFile,
                                     startTime = startTime,
                                     tableChecks = tableChecks, 
                                     fieldChecks = fieldChecks,
@@ -372,9 +399,7 @@ executeDqChecks <- function(connectionDetails,
   return(allResults)
 }
 
-.runCheck <- function(checkDescription,
-                      processCheck,
-                      recordResult,
+.runCheck <- function(checkDescription, 
                       tableChecks,
                       fieldChecks,
                       conceptChecks,
@@ -392,6 +417,7 @@ executeDqChecks <- function(connectionDetails,
     print(ABORT_MESSAGE)
     stop(ABORT_MESSAGE)
   }
+
   library(magrittr)
   ParallelLogger::logInfo(sprintf("#DQD Processing check description: %s", checkDescription$checkName))
   
@@ -431,13 +457,12 @@ executeDqChecks <- function(connectionDetails,
                                         sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
         data.frame()
       } else {
-        processCheck(recordResult = recordResult,
-                     connection = connection,
-                     connectionDetails = connectionDetails,
-                     check = check,
-                     checkDescription = checkDescription,
-                     sql = sql,
-                     outputFolder = outputFolder)
+        .processCheck(connection = connection,
+                      connectionDetails = connectionDetails,
+                      check = check, 
+                      checkDescription = checkDescription, 
+                      sql = sql,
+                      outputFolder = outputFolder)
       }    
     })
     do.call(rbind, dfs)
@@ -558,6 +583,7 @@ executeDqChecks <- function(connectionDetails,
                               checkResults,
                               cdmSourceName,
                               outputFolder,
+                              outputFile,
                               startTime,
                               tableChecks,
                               fieldChecks,
@@ -634,15 +660,19 @@ resultToJson <- function(result) {
   return(jsonlite::toJSON(result))
 }
 
-writeJsonResultToFile <- function(resultJson, outputFolder) {
-  endTimestamp <- endTime
-  endTimestamp <- gsub("-","",endTimestamp)
-  endTimestamp <- gsub(" ","-",endTimestamp)
-  endTimestamp <- gsub(":","",endTimestamp)
+writeJsonResultToFile <- function(resultJson, outputFolder, outputFile) {
+  if (nchar(outputFile)==0)  {
+    endTimestamp <- format(endTime,"%Y%m%d%H%M%S")
+    outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp)
+  }
 
-  resultFilename <- file.path(outputFolder, sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp))
-  ParallelLogger::logInfo(sprintf("#DQD Writing results to file: %s", resultFilename))
+  resultFilename <- file.path(outputFolder,outputFile)
+  result$outputFile <- outputFile
+
+  ParallelLogger::logInfo(sprintf("Writing results to file: %s", resultFilename))
   write(resultJson, resultFilename)
+
+  result
 }
 
 #' Write JSON Results to SQL Table
@@ -734,7 +764,7 @@ writeJsonResultsToTable <- function(connectionDetails,
   )
 }
 
-.needsAutoCommit <- function(connection, connectionDetails) {
+.needsAutoCommit <- function(connectionDetails, connection) {
   autoCommit <- FALSE
   if (!is.null(connection)) {
     if (inherits(connection, "DatabaseConnectorJdbcConnection")) {

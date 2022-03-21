@@ -23,7 +23,7 @@ CREATE TABLE @tableName
   context               varchar(255),
   warning               varchar(255),
   error                 varchar(8000),
-  checkid               integer,
+  checkid               varchar(1024),
   failed                integer,
   threshold_value       integer,
   notes_value           varchar(8000)
