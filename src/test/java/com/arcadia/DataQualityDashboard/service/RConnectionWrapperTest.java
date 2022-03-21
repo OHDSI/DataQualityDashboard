@@ -4,7 +4,7 @@ import com.arcadia.DataQualityDashboard.model.DataQualityScan;
 import com.arcadia.DataQualityDashboard.model.DbSettings;
 import com.arcadia.DataQualityDashboard.service.error.DbTypeNotSupportedException;
 import com.arcadia.DataQualityDashboard.service.error.RException;
-import com.arcadia.DataQualityDashboard.service.r.RConnectionCreator;
+import com.arcadia.DataQualityDashboard.service.r.RConnectionCreatorImpl;
 import com.arcadia.DataQualityDashboard.service.r.RConnectionWrapper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static com.arcadia.DataQualityDashboard.service.DataQualityServiceTest.createTestDbSettings;
 import static com.arcadia.DataQualityDashboard.service.DataQualityServiceTest.createTestScan;
 import static com.arcadia.DataQualityDashboard.service.TestProperties.rServerProperties;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,7 +22,7 @@ class RConnectionWrapperTest {
     @Disabled
     @Test
     void dataQualityCheck() throws RException, IOException {
-        RConnectionWrapper connection = new RConnectionCreator(rServerProperties)
+        RConnectionWrapper connection = new RConnectionCreatorImpl(rServerProperties)
                 .createRConnection();
         DataQualityScan scan = createTestScan();
         String result = connection.checkDataQuality(scan);
@@ -42,13 +41,13 @@ class RConnectionWrapperTest {
     void performanceTest() throws RException, DbTypeNotSupportedException {
         int[] threadCounts = {1, 2, 3, 4, 5, 7};
 
-        RConnectionWrapper connection = new RConnectionCreator(rServerProperties)
+        RConnectionWrapper connection = new RConnectionCreatorImpl(rServerProperties)
                 .createRConnection();
 
         for (int threadCount : threadCounts) {
             long startTime = System.currentTimeMillis();
-            DbSettings dbSettings = createTestDbSettings();
             DataQualityScan scan = createTestScan();
+            DbSettings dbSettings = scan.getDbSettings();
             String result = connection.checkDataQuality(scan, threadCount);
             long durationInSeconds = (System.currentTimeMillis() - startTime) / 1000;
 

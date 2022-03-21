@@ -11,11 +11,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
 import static com.arcadia.DataQualityDashboard.model.ScanStatus.IN_PROGRESS;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 public class DataQualityServiceTest {
@@ -52,15 +55,44 @@ public class DataQualityServiceTest {
         assertEquals(scan, scanById);
     }
 
+    @Test
+    void notFoundScanById() {
+        DataQualityScan scan = createTestScan();
+        long id = scan.getId() + 1;
+        Mockito.when(scanRepository.findById(id)).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
+                () -> dataQualityService.findScanById(id, scan.getUsername())
+        );
+        assertEquals(format("404 NOT_FOUND \"Data Quality Scan not found by id %d\"", id), exception.getMessage());
+    }
+
+    @Test
+    void foundScanByIdButForbidden() {
+        DataQualityScan scan = createTestScan();
+        Mockito.when(scanRepository.findById(scan.getId())).thenReturn(Optional.of(scan));
+        String username = "Achilles";
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
+                () -> dataQualityService.findScanById(scan.getId(), username)
+        );
+        assertEquals("403 FORBIDDEN \"Forbidden to get Data Quality Scan for other user\"", exception.getMessage());
+    }
+
     public static DataQualityScan createTestScan() {
-        return DataQualityScan.builder()
+        DbSettings dbSettings = createTestDbSettings();
+        DataQualityScan result = DataQualityScan.builder()
                 .id(1L)
                 .username("Perseus")
                 .project("Data Quality")
                 .statusCode(IN_PROGRESS.getCode())
                 .statusName(IN_PROGRESS.getName())
-                .dbSettings(createTestDbSettings())
+                .dbSettings(dbSettings)
                 .build();
+        dbSettings.setDataQualityScan(result);
+
+        return result;
     }
 
     public static DbSettings createTestDbSettings() {
