@@ -1,8 +1,9 @@
 Improve parallel scanning:
-    - Configure aborting by User for parallel scanning
+- Configure aborting by User for parallel scanning
 
-Improve abort checking
-    - Do call abort checking frequently
+Improve abort checking:
+    
+- Do call abort checking frequently
 
 Remove writing error reports to the files - transfer to database
 
