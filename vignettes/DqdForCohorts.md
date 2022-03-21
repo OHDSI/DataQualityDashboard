@@ -1,7 +1,7 @@
 ---
 title: "Running the DQD on a Cohort"
 author: "Clair Blacketer"
-date: "2020-08-07"
+date: "2021-05-07"
 header-includes:
     - \usepackage{fancyhdr}
     - \pagestyle{fancy}
@@ -33,7 +33,7 @@ Running the Data Quality Dashboard for a cohort is fairly straightforward. There
                                       resultsDatabaseSchema = resultsDatabaseSchema,
                                       cdmSourceName = "IBM_CCAE_cohort_123",
                                       cohortDefinitionId = 123,
-                                      cohortDatabaseSchema = "IBM_CCAE.results"
+                                      cohortDatabaseSchema = "IBM_CCAE.results",
                                       numThreads = numThreads,
                                       sqlOnly = sqlOnly, 
                                       outputFolder = outputFolder, 

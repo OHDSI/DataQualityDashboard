@@ -1,4 +1,4 @@
-FROM r-base
+FROM r-base:4.1.3
 
 ARG prop=default
 

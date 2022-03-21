@@ -13,6 +13,7 @@ executeDqChecks(
   numThreads = 1,
   sqlOnly = FALSE,
   outputFolder = "output",
+  outputFile = "",
   verboseMode = FALSE,
   writeToTable = TRUE,
   writeTableName = "dqdashboard_results",
@@ -43,6 +44,8 @@ executeDqChecks(
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
 
 \item{outputFolder}{The folder to output logs and SQL files to}
+
+\item{outputFile}{(OPTIONAL) File to write results JSON object}
 
 \item{verboseMode}{Boolean to determine if the console will show all execution steps. Default = FALSE}
 

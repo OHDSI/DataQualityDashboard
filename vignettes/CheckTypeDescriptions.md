@@ -1,7 +1,7 @@
 ---
 title: "Data Quality Check Type Definitions"
 author: "Clair Blacketer"
-date: "2020-08-10"
+date: "2021-05-07"
 header-includes:
     - \usepackage{fancyhdr}
     - \pagestyle{fancy}
@@ -266,7 +266,7 @@ This article will detail each check type, its name, check level, description, de
 
 **Name**: plausibleGender
 <br>**Level**: Concept check
-<br>**Context**: Verification
+<br>**Context**: Validation
 <br>**Category**: Plausibility
 <br>**Subcategory**: Atemporal
 
