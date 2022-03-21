@@ -3,6 +3,7 @@ package com.arcadia.DataQualityDashboard.service.r;
 import com.arcadia.DataQualityDashboard.model.DataQualityScan;
 import com.arcadia.DataQualityDashboard.model.DbSettings;
 import com.arcadia.DataQualityDashboard.service.error.RException;
+import com.arcadia.DataQualityDashboard.service.response.TestConnectionResultResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -39,6 +40,32 @@ public class RConnectionWrapperImpl implements RConnectionWrapper {
         for (String path : scriptsPaths) {
             loadScript(path);
         }
+    }
+
+    @SneakyThrows
+    @Override
+    public TestConnectionResultResponse testConnection(DbSettings dbSettings) {
+        String dbType = adaptDbType(dbSettings.getDbType());
+        String server = adaptServer(dbType, dbSettings.getServer(), dbSettings.getDatabase());
+        String schema = adaptDataBaseSchema(dbSettings.getDatabase(), dbSettings.getSchema());
+        String dqdCmd = format("testConnection(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")",
+                dbType,
+                server,
+                dbSettings.getPort(),
+                schema,
+                dbSettings.getUser(),
+                dbSettings.getPassword()
+        );
+        REXP runResponse = rConnection.parseAndEval(toTryCmd(dqdCmd));
+        if (runResponse.inherits("try-error")) {
+            return TestConnectionResultResponse.builder()
+                    .canConnect(false)
+                    .message(runResponse.asString())
+                    .build();
+        }
+        return TestConnectionResultResponse.builder()
+                .canConnect(true)
+                .build();
     }
 
     @Override

@@ -26,7 +26,8 @@ public class RConnectionCreatorImpl implements RConnectionCreator {
             "~/R/data-quality-check.R",
             "~/R/dqd-database-manager.R",
             "~/R/execution.R",
-            "~/R/log-appender.R"
+            "~/R/log-appender.R",
+            "~/R/test-connection.R"
     );
 
     @Getter
