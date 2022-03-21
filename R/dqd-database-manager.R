@@ -2,6 +2,10 @@ library(DatabaseConnector)
 library(SqlRender)
 library(properties)
 
+#' DQD DatabaseManager
+#'
+#' @param scanId - primary key of data_quality_scans table
+#' @return return DQD databaseManager if scan id not null
 createDqdDatabaseManager <- function(scanId) {
   result <- NULL
   if (is.null(scanId)) {
@@ -15,12 +19,21 @@ createDqdDatabaseManager <- function(scanId) {
   return(result)
 }
 
+#' DatabaseManager for development
+#' Not implemented
 createFakeDqdDatabaseManager <- function() {
   message <- "Fake DQD Database Manager not implemented"
   print(message)
   stop(message)
 }
 
+#' DQD database manager
+#'
+#' @param scanId - primary key of data_quality_scans table
+#' @export
+#' @return list of dbLogger and interruptor
+#' dbLogger - log progress messages to database
+#' interruptor - check is data_quality_scans status code ABORT
 createRealDqdDatabaseManager <- function(scanId) {
   props <- properties::read.properties('~/R/properties/default.properties')
   dataType <- props$dbms

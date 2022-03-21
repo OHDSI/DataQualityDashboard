@@ -50,8 +50,14 @@ public class DataQualityProcessServiceImpl implements DataQualityProcessService 
                 resultJsonFile.delete();
             }
         } catch (Exception e) {
-            log.error("Failed to run data quality check process: " + e.getMessage());
-            resultService.saveFailedResult(scan.getId(), e.getMessage());
+            String errorMessage = e.getMessage();
+            String abortMessage = "Process was aborted by User";
+            if (errorMessage.contains(abortMessage)) {
+                log.warn(abortMessage);
+            } else {
+                log.error("Failed to run data quality check process: " + errorMessage);
+                resultService.saveFailedResult(scan.getId(), errorMessage);
+            }
         }
 
         return new AsyncResult<>(null);

@@ -26,7 +26,7 @@ dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, passw
   outputFolder <- "output"
 
   # logging type -------------------------------------------------------------------------------------
-  verboseMode <- TRUE # set to TRUE if you want to see activity written to the console
+  verboseMode <- FALSE # set to TRUE if you want to see activity written to the console
 
   # write results to table? ------------------------------------------------------------------------------
   writeToTable <- FALSE # set to FALSE if you want to skip writing to a SQL table in the results schema

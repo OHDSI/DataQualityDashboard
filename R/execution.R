@@ -16,33 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-createDqdLogAppender <- function(dbLogger, layout = ParallelLogger::layoutSimple) {
-  appendFunction <- function (this, level, message, echoToConsole) {
-    # Avoid note in check:
-    missing(this)
-    if (echoToConsole) {
-      prefix <- '#DQD '
-      if (startsWith(message, '#DQD ')) {
-        msg <- substr(message, nchar(prefix), nchar(message))
-        if (level == "INFO") {
-          dbLogger$info(msg)
-          dbLogger$incrementCompletedStepsCount()
-        } else if (level == "DEBUG") {
-          dbLogger$debug(msg)
-        } else if (level == "WARN") {
-          dbLogger$warning(msg)
-        } else if (level == "ERROR" || level == "FATAL") {
-          dbLogger$error(msg)
-        }
-      }
-      writeLines(message, con = stdout())
-    }
-  }
-
-  appender <- list(appendFunction = appendFunction, layout = layout)
-  class(appender) <- "Appender"
-  return(appender)
-}
+ABORT_MESSAGE <- "Process was aborted by User"
 
 .recordResult <- function(result = NULL, check, 
                           checkDescription, sql, 
@@ -192,7 +166,8 @@ executeDqChecks <- function(connectionDetails,
                             interruptor) {
 
   if (interruptor$isAborted()) {
-    stop("Process was aborted by user")
+    print(ABORT_MESSAGE)
+    stop(ABORT_MESSAGE)
   }
 
   # Check input -------------------------------------------------------------------------------------------------------------------
@@ -414,9 +389,8 @@ executeDqChecks <- function(connectionDetails,
                       dbLogger,
                       interruptor) {
   if (interruptor$isAborted()) {
-    message <- "Process was aborted by User"
-    print(message)
-    stop(message)
+    print(ABORT_MESSAGE)
+    stop(ABORT_MESSAGE)
   }
   library(magrittr)
   ParallelLogger::logInfo(sprintf("#DQD Processing check description: %s", checkDescription$checkName))

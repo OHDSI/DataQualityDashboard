@@ -31,6 +31,7 @@ COPY execution.R root/R/execution.R
 COPY dqd-database-manager.R root/R/dqd-database-manager.R
 COPY data-quality-check.R root/R/data-quality-check.R
 COPY download-jdbc-drivers.R root/R/download-jdbc-drivers.R
+COPY log-appender.R root/R/log-appender.R
 
 # Enable tls 1.0, 1.1
 COPY java-secure java-secure

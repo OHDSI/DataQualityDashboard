@@ -25,7 +25,8 @@ public class RConnectionCreator {
     private final List<String> loadScripts = List.of(
             "~/R/data-quality-check.R",
             "~/R/dqd-database-manager.R",
-            "~/R/execution.R"
+            "~/R/execution.R",
+            "~/R/log-appender.R"
     );
 
     @Getter

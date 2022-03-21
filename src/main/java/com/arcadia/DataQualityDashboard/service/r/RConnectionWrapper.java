@@ -16,7 +16,7 @@ import static java.lang.String.format;
 
 @RequiredArgsConstructor
 public class RConnectionWrapper {
-    private static final int DEFAULT_THREAD_COUNT = 3;
+    private static final int DEFAULT_THREAD_COUNT = 1;
 
     private final RConnection rConnection;
 
