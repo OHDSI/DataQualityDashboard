@@ -17,6 +17,7 @@ public class DbTypeAdapter {
     );
 
     private static final List<String> dbRequireSchema = List.of(
+            "sql server",
             "postgresql",
             "oracle"
     );
