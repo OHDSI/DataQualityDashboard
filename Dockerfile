@@ -1,8 +1,6 @@
 # 1st Build Step
 FROM openjdk:17 as build
 
-ARG prop=dev
-
 WORKDIR /workspace/app
 
 # Source
@@ -17,14 +15,15 @@ COPY inst/shinyApps/www/index.html src/main/resources/static/
 
 # Maven
 COPY mvnw .
-RUN chmod 770 mvnw
 COPY .mvn .mvn
 COPY pom.xml .
 
-RUN ./mvnw install -P${prop}
+RUN tr -d '\015' <./mvnw >./mvnw.sh && mv ./mvnw.sh ./mvnw && chmod 770 mvnw
+
+RUN ./mvnw package
 
 # 2nd Run Step
-FROM openjdk:17 as build
+FROM openjdk:17
 VOLUME /tmp
 
 ARG JAR_FILE=/workspace/app/target/*.jar

@@ -9,3 +9,5 @@ Improve abort checking:
 Remove writing error reports to the files - transfer to database
 
 Add user ability to set types of Data Quality Checks
+
+Docker R container - set env on run stage

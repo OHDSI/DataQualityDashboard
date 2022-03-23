@@ -3,7 +3,7 @@ server:
   error:
     include-message: always
   servlet:
-    context-path: /data-quality-check
+    context-path: /data-quality-dashboard
 
 rserve:
   path:
