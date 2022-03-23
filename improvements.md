@@ -4,6 +4,7 @@ Improve parallel scanning:
 Improve abort checking:
     
 - Do call abort checking frequently
+- In java catch block fetch scan status from db and compare it with ABORT status
 
 Remove writing error reports to the files - transfer to database
 
