@@ -13,5 +13,5 @@ import org.springframework.core.io.FileSystemResource;
 public class FileSaveRequest {
     private String username;
     private String dataKey;
-    private FileSystemResource scanReport;
+    private FileSystemResource file;
 }

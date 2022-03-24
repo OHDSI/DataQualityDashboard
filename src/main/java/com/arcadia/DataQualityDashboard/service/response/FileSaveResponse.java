@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileSaveResponse {
-    private String hash;
+    private Long id;
     private String username;
     private String dataKey;
 }

@@ -24,11 +24,11 @@ public class FilesManagerServiceImpl implements FilesManagerService {
     private final RestTemplate restTemplate;
 
     @Override
-    public ByteArrayResource getFile(String key) {
+    public ByteArrayResource getFile(Long userDataId) {
         return restTemplate.getForObject(
-                filesManagerProperties.getUrl() + "/api/{key}",
+                filesManagerProperties.getUrl() + "/api/{userDataId}",
                 ByteArrayResource.class,
-                key
+                userDataId
         );
     }
 
@@ -41,7 +41,7 @@ public class FilesManagerServiceImpl implements FilesManagerService {
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
         map.add("username", model.getUsername());
         map.add("dataKey", model.getDataKey());
-        map.add("file", model.getScanReport());
+        map.add("file", model.getFile());
 
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
 

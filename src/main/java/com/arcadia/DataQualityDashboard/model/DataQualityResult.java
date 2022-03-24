@@ -30,8 +30,8 @@ public class DataQualityResult {
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
-    @Column(name = "file_key")
-    private String fileKey;
+    @Column(name = "file_id")
+    private Long fileId;
 
     @JsonIgnore
     @OneToOne(optional = false, fetch = LAZY)

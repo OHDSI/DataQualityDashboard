@@ -43,7 +43,7 @@ public class DataQualityResultServiceImpl implements DataQualityResultService {
         logRepository.save(log);
         DataQualityResult result = DataQualityResult.builder()
                 .fileName(scan.getDbSettings().getDatabase() + ".json")
-                .fileKey(fileSaveResponse.getHash())
+                .fileId(fileSaveResponse.getId())
                 .time(new Timestamp(System.currentTimeMillis()))
                 .dataQualityScan(scan)
                 .build();

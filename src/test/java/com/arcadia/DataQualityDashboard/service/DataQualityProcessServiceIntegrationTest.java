@@ -73,7 +73,7 @@ class DataQualityProcessServiceIntegrationTest {
         String resultJson = "{}";
         Mockito.when(rConnectionWrapper.checkDataQuality(scan)).thenReturn(resultJson);
         FileSaveResponse fileSaveResponse = FileSaveResponse.builder()
-                .hash("test")
+                .id(1L)
                 .username(scan.getUsername())
                 .dataKey(DATA_KEY)
                 .build();

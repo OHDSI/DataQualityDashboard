@@ -54,7 +54,7 @@ public class CheckDataQualityController {
                                                            @PathVariable Long scanId) {
         log.info("Rest request to download Data Quality Check result json file by id {}", scanId);
         DataQualityResult result = dataQualityService.result(scanId, username);
-        Resource resource = filesManagerService.getFile(result.getFileKey());
+        Resource resource = filesManagerService.getFile(result.getFileId());
         return ok()
                 .contentType(APPLICATION_JSON)
                 .header(CONTENT_DISPOSITION, format("attachment; filename=\"%S\"", result.getFileName()))
