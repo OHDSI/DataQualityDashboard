@@ -199,6 +199,10 @@ executeDqChecks <- function(connectionDetails,
   stopifnot(is.null(checkNames) | is.character(checkNames), is.null(tablesToExclude) | is.character(tablesToExclude))
   stopifnot(is.character(cdmVersion))
   
+  # Use UTF-8 encoding to address issue: "special characters in metadata #33"
+  saveEncoding <- getOption("encoding")
+  options("encoding" = "UTF-8")
+
   # Setup output folder ------------------------------------------------------------------------------------------------------------
   options(scipen = 999)
 
@@ -379,10 +383,12 @@ if (conceptCheckThresholdLoc == "default"){
   } else {
     allResults  
   }
-  
-  
+    
   ParallelLogger::unregisterLogger("DqDashboard")
   
+  # Reset encoding to previous value 
+  options("encoding" = saveEncoding)
+
   return(allResults)
 }
 
@@ -646,7 +652,7 @@ if (conceptCheckThresholdLoc == "default"){
   
   ParallelLogger::logInfo(sprintf("Writing results to file: %s", resultFilename))
   write(resultJson, resultFilename)
-  
+   
   result
 }
 
