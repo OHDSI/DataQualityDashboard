@@ -9,7 +9,7 @@ The goal of the Data Quality Dashboard (DQD) project is to design and develop an
 Introduction
 ============
 
-This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.3.1 and v5.2.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way. 
+This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.4, v5.3.1 and v5.2.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way. 
 
 Overview
 ========
@@ -33,7 +33,7 @@ Version 1 of the tool includes 20 different check types organized into Kahn cont
 After systematically applying the 20 check types to an OMOP CDM version approximately 3,351 individual data quality checks are resolved, run against the database, and evaluated based on a pre-specified threshold. The R package then creates a json object that is read into an RShiny application to view the results.
 
 
-<img src="https://github.com/OHDSI/DataQualityDashboard/raw/master/extras/dqDashboardScreenshot.png"/>
+<img src="https://github.com/OHDSI/DataQualityDashboard/raw/main/extras/dqDashboardScreenshot.png"/>
 
 
 Features
@@ -81,7 +81,7 @@ DataQualityDashboard is licensed under Apache License 2.0
 
 ### Development status
 
-V1.0 ready for use. 
+V1.4 ready for use. 
 
 # Acknowledgements
 
