@@ -1,6 +1,6 @@
 /*********
 FIELD LEVEL check:
-WITHIN_VISIT_DATES - find events that occur before the corresponding visit_start_date or after the corresponding visit_end_date
+WITHIN_VISIT_DATES - find events that occur one week before the corresponding visit_start_date or one week after the corresponding visit_end_date
 
 Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema
@@ -30,8 +30,8 @@ FROM
     	  }
           JOIN @cdmDatabaseSchema.visit_occurrence vo
             ON cdmTable.visit_occurrence_id = vo.visit_occurrence_id
-         WHERE cdmTable.@cdmFieldName < vo.visit_start_date
-            OR cdmTable.@cdmFieldName > vo.visit_end_date 
+         WHERE cdmTable.@cdmFieldName < dateadd(day, -7, vo.visit_start_date)
+            OR cdmTable.@cdmFieldName > dateadd(day, 7, vo.visit_end_date) 
 	) violated_rows
 ) violated_row_count,
 (
