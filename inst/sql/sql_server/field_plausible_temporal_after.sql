@@ -32,7 +32,7 @@ FROM
       ON cdmTable.PERSON_ID = c.SUBJECT_ID
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId}
     WHERE 
-    {@cdmDatabaseSchema.@cdmTableName != @cdmDatabaseSchema.@plausibleTemporalAfterTableName}?{
+    {'@plausibleTemporalAfterTableName' == 'PERSON'}?{
 		COALESCE(CAST(plausibleTable.@plausibleTemporalAfterFieldName AS DATE),CAST(CONCAT(plausibleTable.YEAR_OF_BIRTH,'-06-01') AS DATE)) 
 	}:{
 		CAST(cdmTable.@plausibleTemporalAfterFieldName AS DATE)
