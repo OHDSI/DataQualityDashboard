@@ -44,7 +44,7 @@ SELECT
   ,'' as warning
   ,'' as error
   ,'@checkid' as checkid
-  ,CASE WHEN cte.pct_violated_rows > @threshold_value THEN 1 ELSE 0 END as failed
+  ,CASE WHEN (cte.pct_violated_rows * 100) > @threshold_value THEN 1 ELSE 0 END as failed
   ,@threshold_value as threshold_value
   ,'' as notes_value
 FROM cte
