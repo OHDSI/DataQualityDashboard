@@ -203,6 +203,7 @@ executeDqChecks <- function(connectionDetails,
   options(scipen = 999)
 
   # capture metadata -----------------------------------------------------------------------
+if (!sqlOnly) {
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
   sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
                            cdmDatabaseSchema = cdmDatabaseSchema)
@@ -213,6 +214,7 @@ executeDqChecks <- function(connectionDetails,
   }
   metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
   DatabaseConnector::disconnect(connection)
+}
   
   if (!dir.exists(outputFolder)) {
     dir.create(path = outputFolder, recursive = TRUE)
@@ -434,7 +436,53 @@ if (conceptCheckThresholdLoc == "default"){
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)
       
       if (sqlOnly) {
-        write(x = sql, file = file.path(outputFolder, 
+		sql2 <- str_replace(sql,';','')
+		check_description = SqlRender::render(sql=checkDescription$checkDescription
+		                                      ,warnOnMissingParameters=FALSE
+		                                      ,cdmFieldName=params$cdmFieldName
+		                                      ,cdmTableName=params$cdmTableName
+		                                      ,conceptId=params$conceptId
+		                                      ,conceptName=params$conceptName
+		                                      ,unitConceptId=params$unitConceptId
+		                                      ,unitConceptName=params$unitConceptName
+		                                      ,plausibleGender=params$plausibleGender
+		                                      ,plausibleValueHigh=params$plausibleValueHigh
+		                                      ,plausibleValueLow=params$plausibleValueLow
+		                                      ,fkClass=params$fkClass
+		                                      ,fkDomain=params$fkDomain
+		                                      ,fkTableName=params$fkTableName
+		                                      ,plausibleTemporalAfterFieldName=params$plausibleTemporalAfterFieldName
+		                                      ,plausibleTemporalAfterTableName=params$plausibleTemporalAfterTableName
+		                                  )
+		
+		thresholdValue <- .evaluateOneThreshold(check_name = checkDescription$checkName,
+								  check_level = checkDescription$checkLevel,
+								  cdm_table_name = check["cdmTableName"],
+								  cdm_field_name = check["cdmFieldName"],
+								  concept_id = check["conceptId"],
+								  unit_concept_id = check["unitConceptId"],
+								  tableChecks = tableChecks, 
+								  fieldChecks = fieldChecks,
+								  conceptChecks = conceptChecks)
+									  
+		sql3 <- SqlRender::loadRenderTranslateSql(sqlFilename = "insert_into_results_table.sql", packageName="DataQualityDashboard", dbms=connectionDetails$dbms
+							,tableName = "dqdashboard_results"
+							,query_text = sql2
+							,check_name = checkDescription$checkName
+							,check_level = checkDescription$checkLevel
+							,check_description = check_description
+							,cdm_table_name = check["cdmTableName"]
+							,cdm_field_name = check["cdmFieldName"]
+							,concept_id = check["conceptId"]
+							,unit_concept_id = check["unitConceptId"]
+							,sql_file = checkDescription$sqlFile
+							,category = checkDescription$kahnCategory
+							,subcategory = checkDescription$kahnSubcategory
+							,context = checkDescription$kahnContext
+							,checkid = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"])
+							,threshold_value =  thresholdValue
+					)
+        write(x = sql3, file = file.path(outputFolder, 
                                         sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
         data.frame()
       } else {
@@ -452,6 +500,77 @@ if (conceptCheckThresholdLoc == "default"){
     data.frame()
   }
 }
+
+.evaluateOneThreshold <- function(check_name,
+								check_level,
+								cdm_table_name,
+								cdm_field_name,
+								concept_id,
+								unit_concept_id,
+								tableChecks,
+								fieldChecks,
+								conceptChecks) {
+								
+    thresholdField <- sprintf("%sThreshold", check_name)
+	
+    # find if field exists -----------------------------------------------
+    thresholdFieldExists <- eval(parse(text = 
+                                         sprintf("'%s' %%in%% colnames(%sChecks)", 
+                                                 thresholdField, 
+                                                 tolower(check_level))))
+    
+    if (!thresholdFieldExists) {
+      thresholdValue <- NA
+    } else {
+      if (check_level == "TABLE") {
+        
+        thresholdFilter <- sprintf("tableChecks$%s[tableChecks$cdmTableName == '%s']",
+                                   thresholdField, cdm_table_name)
+        
+      } else if (check_level == "FIELD") {
+        
+        thresholdFilter <- sprintf("fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
+                                fieldChecks$cdmFieldName == '%s']",
+                                   thresholdField, 
+                                   cdm_table_name,
+                                   cdm_field_name)
+        
+      } else if (check_level == "CONCEPT") {
+        
+        if (is.na(unit_concept_id)) {
+          
+          thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                  conceptChecks$cdmFieldName == '%s' &
+                                  conceptChecks$conceptId == %s]",
+                                     thresholdField, 
+                                     cdm_table_name,
+                                     cdm_field_name,
+                                     concept_id)
+        } else {
+          
+          thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                  conceptChecks$cdmFieldName == '%s' &
+                                  conceptChecks$conceptId == %s &
+                                  conceptChecks$unitConceptId == '%s']",
+                                     thresholdField, 
+                                     cdm_table_name,
+                                     cdm_field_name,
+                                     concept_id,
+                                     as.integer(unit_concept_id))
+        } 
+      }
+      
+      thresholdValue <- eval(parse(text = thresholdFilter))
+	}
+	  
+	# Need value of 0 for NA in generated SQL
+	if (is.na(thresholdValue)) {
+		thresholdValue <- 0
+	}
+	
+    thresholdValue
+}
+								
 
 .evaluateThresholds <- function(checkResults,
                                 tableChecks,
