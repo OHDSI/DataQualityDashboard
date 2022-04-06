@@ -480,13 +480,13 @@ executeDqChecks <- function(connectionDetails,
                                      dbms) {
   result <- TRUE
   
-  if (!is.na(errorMessage) & !is.na(dbms)) {
-    if (dbms == "postgresql") {
-      result <- 
-        stringr::str_detect(errorMessage, "relation(?s)(.*)does not exist") |
-        stringr::str_detect(errorMessage, "column(?s)(.*)does not exist")
-    }
-  }
+  #if (!is.na(errorMessage) & !is.na(dbms)) {
+  #  if (dbms == "postgresql") {
+  #    result <- 
+  #      stringr::str_detect(errorMessage, "relation(?s)(.*)does not exist") |
+  #      stringr::str_detect(errorMessage, "column(?s)(.*)does not exist")
+  #  }
+  #}
   
   result
 }
