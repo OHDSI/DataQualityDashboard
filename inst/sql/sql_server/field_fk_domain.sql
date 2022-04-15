@@ -44,5 +44,6 @@ FROM
     	ON cdmTable.PERSON_ID = c.SUBJECT_ID
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
     	}
+        WHERE cdmTable.@cdmFieldName != 0 
 ) denominator
 ;
