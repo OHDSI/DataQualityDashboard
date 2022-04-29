@@ -1,7 +1,7 @@
 ---
 title: "Failure Thresholds and How to Change Them"
 author: "Clair Blacketer"
-date: "2020-08-07"
+date: "2021-05-07"
 header-includes:
     - \usepackage{fancyhdr}
     - \pagestyle{fancy}

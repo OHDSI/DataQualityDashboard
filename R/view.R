@@ -20,10 +20,20 @@
 #' View DQ Dashboard
 #' 
 #' @param jsonPath       The path to the JSON file produced by  \code{\link{executeDqChecks}}
-#' 
+#' @param ...            Extra parameters for shiny::runApp() like "port" or "host"
+#'
 #' @export
-viewDqDashboard <- function(jsonPath) {
+viewDqDashboard <- function(jsonPath, launch.browser=NULL, display.mode=NULL, ...) {
   Sys.setenv(jsonPath = jsonPath)
   appDir <- system.file("shinyApps", package = "DataQualityDashboard")
-  shiny::runApp(appDir = appDir, display.mode = "normal", launch.browser = TRUE)
+
+  if(is.null(display.mode)){
+      display.mode="normal"
+  }
+
+  if(is.null(launch.browser)){
+      launch.browser=TRUE
+  }
+
+  shiny::runApp(appDir = appDir, launch.browser = launch.browser, display.mode = display.mode, ...)
 }

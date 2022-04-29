@@ -61,6 +61,10 @@ function loadResults(results) {
             '<td>' + d.UNIT_CONCEPT_ID + '</td>' +
             '</tr>' +
             '<tr>' +
+            '<td>Check Id:</td>' +
+            '<td>' + d.checkId + '</td>' +
+            '</tr>' +
+            '<tr>' +
             '<td># Rows Violated:</td>' +
             '<td>' + d.NUM_VIOLATED_ROWS + '</td>' +
             '</tr>' +
@@ -93,7 +97,22 @@ function loadResults(results) {
         order: [[10, "desc"]],
         buttons: [
             'colvis',
-            'csvHtml5'
+            {
+                extend: 'csv',
+                filename: 'dqd_results',
+                text: 'Export',
+                header: true,
+                exportOptions: {
+                    // All but the first (empty) column
+                    columns: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+                    // Header without drop down options
+                    format: {
+                        header: function(innerHTML, index, node) {
+                            return innerHTML.replace(/<.+/, '').replace(/&nbsp;/g, ' ');
+                        }
+                    }
+                }
+            }
         ],
         data: results.CheckResults,
         initComplete: function () {
