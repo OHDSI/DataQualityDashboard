@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -85,13 +85,13 @@
 
       
 
-      </header><script src="CheckTypeDescriptions_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="CheckTypeDescriptions_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Data Quality Check Type Definitions</h1>
                         <h4 class="author">Clair Blacketer</h4>
             
-            <h4 class="date">2021-09-20</h4>
+            <h4 class="date">2022-03-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/master/vignettes/CheckTypeDescriptions.rmd"><code>vignettes/CheckTypeDescriptions.rmd</code></a></small>
       <div class="hidden name"><code>CheckTypeDescriptions.rmd</code></div>
@@ -251,7 +251,7 @@
 <div id="plausiblegender" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plausiblegender" class="anchor"></a>plausibleGender</h2>
-<p><strong>Name</strong>: plausibleGender <br><strong>Level</strong>: Concept check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Plausibility <br><strong>Subcategory</strong>: Atemporal</p>
+<p><strong>Name</strong>: plausibleGender <br><strong>Level</strong>: Concept check <br><strong>Context</strong>: Validation <br><strong>Category</strong>: Plausibility <br><strong>Subcategory</strong>: Atemporal</p>
 <p><strong>Description</strong>: For a CONCEPT_ID <strong>conceptId</strong> (<strong>conceptName</strong>), the number and percent of records associated with patients with an implausible gender (correct gender = <strong>plausibleGender</strong>).</p>
 <p><strong>Definition</strong>: This check will count the number of records that have an incorrect gender associated with a gender-specific concept_id. This check is concept specific and therefore the denominator will only be the records with the specified concept. For example it will count the number of records of prostate cancer that are associated with female persons.</p>
 </div>

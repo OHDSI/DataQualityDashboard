@@ -266,7 +266,7 @@ This article will detail each check type, its name, check level, description, de
 
 **Name**: plausibleGender
 <br>**Level**: Concept check
-<br>**Context**: Verification
+<br>**Context**: Validation
 <br>**Category**: Plausibility
 <br>**Subcategory**: Atemporal
 
