@@ -101,7 +101,7 @@
   tryCatch(
     expr = {
       if (singleThreaded) {
-        if (.needsAutoCommit(connection)) {
+        if (.needsAutoCommit(connectionDetails, connection)) {
           rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
         }  
       }
@@ -298,6 +298,9 @@ executeDqChecks <- function(connectionDetails,
                                  !fieldChecks$plausibleTemporalAfterTableName %in% tablesToExclude,]
     conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude,]
   }
+  
+  ## remove offset from being checked
+  fieldChecks <- subset(fieldChecks, cdmFieldName != '"offset"')
   
   library(magrittr)
   # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
@@ -594,7 +597,8 @@ executeDqChecks <- function(connectionDetails,
       } else {
         checkResults[i,]$IS_ERROR <- 1
       }
-    } else if (is.na(thresholdValue)) {
+    } else if (is.na(thresholdValue) | thresholdValue == 0) {
+      # If no threshold, or threshold is 0%, then any violating records will cause this check to fail
       if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults[i,]$NUM_VIOLATED_ROWS > 0) {
         checkResults[i,]$FAILED <- 1
       }
@@ -980,8 +984,7 @@ writeJsonResultsToCsv <- function(jsonPath,
   )
 }
 
-
-.needsAutoCommit <- function(connection) {
+.needsAutoCommit <- function(connectionDetails, connection) {
   autoCommit <- FALSE
   if (!is.null(connection)) {
     if (inherits(connection, "DatabaseConnectorJdbcConnection")) {

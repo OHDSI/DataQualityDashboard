@@ -33,7 +33,7 @@ FROM
     	ON cdmTable.PERSON_ID = c.SUBJECT_ID
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
     	}
-		 WHERE co.concept_id != 0 AND co.domain_id != '@fkDomain'
+		 WHERE co.concept_id != 0 AND co.domain_id NOT IN ('@fkDomain')
 		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
