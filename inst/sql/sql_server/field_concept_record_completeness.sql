@@ -1,7 +1,6 @@
 /*********
 CONCEPT_RECORD_COMPLETENESS
-number of 0s / total number of records {@cdmTableName in ('OBSERVATION', 'MEASUREMENT')}?{*for the OBSERVATION.unit_concept_id and MEASUREMENT.unit_concept_id 
-the numerator and denominator are limited to records where value_as_number IS NOT NULL}
+number of 0s / total number of records {@cdmTableName == 'OBSERVATION' | @cdmTableName == 'MEASUREMENT'}?{* for the OBSERVATION.unit_concept_id and MEASUREMENT.unit_concept_id the numerator and denominator are limited to records where value_as_number IS NOT NULL}
 
 Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema
@@ -28,7 +27,7 @@ FROM
   	ON cdmTable.PERSON_ID = c.SUBJECT_ID
   	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
   	}
-		WHERE cdmTable.@cdmFieldName = 0 {@cdmFieldName in ('UNIT_CONCEPT_ID') AND @cdmTableName in ('MEASUREMENT')}?{AND cdmTable.value_as_number IS NOT NULL}
+		WHERE cdmTable.@cdmFieldName = 0 {@cdmFieldName == 'UNIT_CONCEPT_ID' & (@cdmTableName == 'MEASUREMENT' | @cdmTableName == 'OBSERVATION')}?{AND cdmTable.value_as_number IS NOT NULL}
 		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
@@ -40,6 +39,6 @@ FROM
   	ON cdmTable.PERSON_ID = c.SUBJECT_ID
   	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
   	}
-	{@cdmFieldName in ('UNIT_CONCEPT_ID') AND @cdmTableName in ('MEASUREMENT')}?{WHERE cdmTable.value_as_number IS NOT NULL}
+	{@cdmFieldName == 'UNIT_CONCEPT_ID' & (@cdmTableName == 'MEASUREMENT' | @cdmTableName == 'OBSERVATION')}?{WHERE cdmTable.value_as_number IS NOT NULL}
 ) denominator
 ;
