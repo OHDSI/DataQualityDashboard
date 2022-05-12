@@ -8,7 +8,7 @@ import com.arcadia.DataQualityDashboard.service.response.ScanWithLogsResponse;
 public interface DataQualityService {
     DataQualityScan findScanById(Long scanId, String username);
 
-    DataQualityScan runCheckDataQualityProcess(DbSettings dbSettings, String username);
+    DataQualityScan createDataQualityScan(DbSettings dbSettings, String username);
 
     ScanWithLogsResponse scanInfoWithLogs(Long scanId, String username);
 

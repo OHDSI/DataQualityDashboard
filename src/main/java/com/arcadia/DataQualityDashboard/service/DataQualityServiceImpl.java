@@ -29,7 +29,6 @@ public class DataQualityServiceImpl implements DataQualityService {
     private final DataQualityScanRepository scanRepository;
     private final DataQualityLogRepository logRepository;
     private final DataQualityResultRepository resultRepository;
-    private final DataQualityProcessService processService;
 
     @Override
     public DataQualityScan findScanById(Long scanId, String username) {
@@ -43,7 +42,7 @@ public class DataQualityServiceImpl implements DataQualityService {
 
     @Transactional
     @Override
-    public DataQualityScan runCheckDataQualityProcess(DbSettings dbSettings, String username) {
+    public DataQualityScan createDataQualityScan(DbSettings dbSettings, String username) {
         String project = dbSettings.getDatabase();
         DataQualityScan scan = DataQualityScan.builder()
                 .username(username)
@@ -54,7 +53,6 @@ public class DataQualityServiceImpl implements DataQualityService {
                 .build();
         dbSettings.setDataQualityScan(scan);
         scanRepository.saveAndFlush(scan);
-        processService.runCheckDataQualityProcess(scan);
 
         return scan;
     }

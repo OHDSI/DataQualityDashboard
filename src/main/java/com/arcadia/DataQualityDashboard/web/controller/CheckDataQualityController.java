@@ -3,6 +3,7 @@ package com.arcadia.DataQualityDashboard.web.controller;
 import com.arcadia.DataQualityDashboard.model.DataQualityResult;
 import com.arcadia.DataQualityDashboard.model.DataQualityScan;
 import com.arcadia.DataQualityDashboard.model.DbSettings;
+import com.arcadia.DataQualityDashboard.service.DataQualityProcessService;
 import com.arcadia.DataQualityDashboard.service.DataQualityService;
 import com.arcadia.DataQualityDashboard.service.FilesManagerService;
 import com.arcadia.DataQualityDashboard.service.response.ScanWithLogsResponse;
@@ -26,12 +27,15 @@ import static org.springframework.http.ResponseEntity.ok;
 public class CheckDataQualityController {
     private final DataQualityService dataQualityService;
     private final FilesManagerService filesManagerService;
+    private final DataQualityProcessService processService;
 
     @PostMapping("/scan")
     public ResponseEntity<DataQualityScan> runScanProcess(@RequestHeader("Username") String username,
                                                           @Validated @RequestBody DbSettings dbSettings) {
         log.info("Rest request to run Data Quality Check process");
-        return ok(dataQualityService.runCheckDataQualityProcess(dbSettings, username));
+        DataQualityScan scan = dataQualityService.createDataQualityScan(dbSettings, username);
+        processService.runCheckDataQualityProcess(scan);
+        return ok(scan);
     }
 
     @GetMapping("/abort/{scanId}")
