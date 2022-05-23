@@ -23,6 +23,7 @@ FROM
 	SELECT COUNT_BIG(*) AS num_violated_rows
 	FROM
 	(
+		/*violatedRowsBegin*/
 		SELECT cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 			INNER JOIN @cdmDatabaseSchema.person p
@@ -33,9 +34,9 @@ FROM
     	ON cdmTable.PERSON_ID = c.SUBJECT_ID
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
     	}
-			
 		WHERE cdmTable.@cdmFieldName = @conceptId
 		AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
+		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
 ( 
