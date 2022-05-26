@@ -10,7 +10,7 @@ This repository forked from https://github.com/OHDSI/DataQualityDashboard.
 
 This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.3.1 and v5.2.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way. 
 
-This service wraps **DataQualityDashboard** functional in Web-service that used by Perseus https://github.com/SoftwareCountry/Perseus.
+This service wraps **DataQualityDashboard** functional in Web-service that used by Perseus https://github.com/SoftwareCountry/Perseus. 
 
 Overview
 ========
