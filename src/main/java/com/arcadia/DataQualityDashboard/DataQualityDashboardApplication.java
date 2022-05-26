@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Bean;
 @ConfigurationPropertiesScan
 @Slf4j
 public class DataQualityDashboardApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(DataQualityDashboardApplication.class, args);
 	}
