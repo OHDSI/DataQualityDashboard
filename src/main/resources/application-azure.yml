@@ -19,8 +19,8 @@ spring:
     name: Data Quality Dashboard
   datasource:
     url: ${SHARED_DB_URL}
-    username: ${SHARED_DB_USERNAME}
-    password: ${SHARED_DB_PASSWORD}
+    username: ${SHARED_DB_DQD_USERNAME}
+    password: ${SHARED_DB_DQD_PASSWORD}
   jpa:
     properties:
       hibernate:
