@@ -951,7 +951,7 @@ writeJsonResultsToTable <- function(connectionDetails,
   )
 }
 
-#' Write JSON Results to SQL Table
+#' Write JSON Results to CSV file
 #' 
 #' @param jsonPath    Path to the JSON results file generated using the execute function
 #' @param csvPath     Path to the CSV output file
