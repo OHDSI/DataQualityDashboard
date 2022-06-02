@@ -28,5 +28,8 @@ VOLUME /tmp
 
 ARG JAR_FILE=/workspace/app/target/*.jar
 COPY --from=build ${JAR_FILE} app.jar
+
+EXPOSE 8001
+
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar /app.jar ${0} ${@}"]
 

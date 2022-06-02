@@ -17,8 +17,6 @@ RUN R -e "install.packages('properties')"
 RUN R -e "devtools::install_github('OHDSI/DataQualityDashboard')"
 RUN R -e "install.packages('Rserve',, 'http://rforge.net/', type='source')"
 
-EXPOSE 6311
-
 VOLUME /rserve
 
 WORKDIR .
@@ -39,4 +37,6 @@ COPY java-secure java-secure
 RUN chmod 700 ./java-secure
 RUN ./java-secure
 
-ENTRYPOINT R -e "Rserve::run.Rserve(remote=TRUE)"
+EXPOSE 6311
+
+ENTRYPOINT ["R", "-e", "Rserve::run.Rserve(remote=TRUE)"]

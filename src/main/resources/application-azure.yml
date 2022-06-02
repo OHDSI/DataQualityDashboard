@@ -1,0 +1,31 @@
+server:
+  port: 8001
+  error:
+    include-message: always
+  servlet:
+    context-path: /data-quality-dashboard
+
+rserve:
+  path:
+  host: ${RSERV_HOST}
+  port: ${RSERV_PORT}
+  unix: true
+
+files-manager:
+  url: ${FILE_MANAGER_URL}
+
+spring:
+  application:
+    name: Data Quality Dashboard
+  datasource:
+    url: ${SHARED_DB_URL}
+    username: ${SHARED_DB_DQD_USERNAME}
+    password: ${SHARED_DB_DQD_PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: false
