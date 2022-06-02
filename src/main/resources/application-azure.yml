@@ -7,25 +7,33 @@ server:
 
 rserve:
   path:
-  host: ${RSERV_HOST}
-  port: ${RSERV_PORT}
+  host: ${RservHost}
+  port: ${RservPort}
   unix: true
 
 files-manager:
-  url: ${FILE_MANAGER_URL}
+  url: ${FilesManagerUrl}
 
 spring:
   application:
     name: Data Quality Dashboard
   datasource:
-    url: ${SHARED_DB_URL}
-    username: ${SHARED_DB_DQD_USERNAME}
-    password: ${SHARED_DB_DQD_PASSWORD}
+    url: ${SharedDbUrl}
+    username: ${SharedDbDqdUser}
+    password: ${SharedDbDqdPass}
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
     hibernate:
       ddl-auto: update
     show-sql: false
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          property-source-enabled: true
+          property-sources:
+            -
+              credential:
+                client-id: ${AZURE_CLIENT_ID}
+              endpoint: https://kv-perseus.vault.azure.net/
+              profile:
+                tenant-id: ${AZURE_TENANT_ID}
