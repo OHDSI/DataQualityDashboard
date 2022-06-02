@@ -2,5 +2,10 @@
 
 export(executeDqChecks)
 export(listDqChecks)
+export(plotCompareDqdResults)
+export(plotConceptCoverage)
+export(tableCompareDqdResults)
 export(viewDqDashboard)
 export(writeJsonResultsToTable)
+import(dplyr)
+import(ggplot2)
