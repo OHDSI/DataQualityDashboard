@@ -141,6 +141,7 @@
 #' @param numThreads                The number of concurrent threads to use to execute the queries
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
+#' @param sqlOnlyUnionCount         How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel)
 #' @param outputFolder              The folder to output logs and SQL files to
 #' @param outputFile                (OPTIONAL) File to write results JSON object 
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
@@ -167,6 +168,7 @@ executeDqChecks <- function(connectionDetails,
                             cdmSourceName,
                             numThreads = 1,
                             sqlOnly = FALSE,
+                            sqlOnlyUnionCount = 1,
                             outputFolder = "output",
                             outputFile = "",
                             verboseMode = FALSE,
@@ -190,6 +192,7 @@ executeDqChecks <- function(connectionDetails,
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
+  stopifnot(is.numeric(sqlOnlyUnionCount))
   
   if (!all(checkLevels %in% c("TABLE", "FIELD", "CONCEPT"))) {
     stop('checkLevels argument must be a subset of c("TABLE", "FIELD", "CONCEPT"). 
@@ -337,6 +340,7 @@ if (conceptCheckThresholdLoc == "default"){
     cohortDatabaseSchema,
     cohortDefinitionId,
     outputFolder, 
+    sqlOnlyUnionCount,
     sqlOnly,
     progressBar = TRUE
   )
@@ -399,6 +403,7 @@ if (conceptCheckThresholdLoc == "default"){
                       cohortDatabaseSchema,
                       cohortDefinitionId,
                       outputFolder, 
+                      sqlOnlyUnionCount,
                       sqlOnly) {
   
   library(magrittr)
@@ -416,6 +421,10 @@ if (conceptCheckThresholdLoc == "default"){
   }
   
   if (nrow(checks) > 0) {
+
+    sql_to_union <<- c()
+    qnum <<- 0
+    
     dfs <- apply(X = checks, MARGIN = 1, function(check) {
       
       columns <- lapply(names(check), function(c) {
@@ -436,55 +445,73 @@ if (conceptCheckThresholdLoc == "default"){
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)
       
       if (sqlOnly) {
-		sql2 <- str_replace(sql,';','')
-		check_description = SqlRender::render(sql=checkDescription$checkDescription
-		                                      ,warnOnMissingParameters=FALSE
-		                                      ,cdmFieldName=params$cdmFieldName
-		                                      ,cdmTableName=params$cdmTableName
-		                                      ,conceptId=params$conceptId
-		                                      ,conceptName=params$conceptName
-		                                      ,unitConceptId=params$unitConceptId
-		                                      ,unitConceptName=params$unitConceptName
-		                                      ,plausibleGender=params$plausibleGender
-		                                      ,plausibleValueHigh=params$plausibleValueHigh
-		                                      ,plausibleValueLow=params$plausibleValueLow
-		                                      ,fkClass=params$fkClass
-		                                      ,fkDomain=params$fkDomain
-		                                      ,fkTableName=params$fkTableName
-		                                      ,plausibleTemporalAfterFieldName=params$plausibleTemporalAfterFieldName
-		                                      ,plausibleTemporalAfterTableName=params$plausibleTemporalAfterTableName
-		                                  )
+    		sql2 <- str_replace(sql,';','')
+    		check_description = SqlRender::render(sql=checkDescription$checkDescription
+    		                                      ,warnOnMissingParameters=FALSE
+    		                                      ,cdmFieldName=params$cdmFieldName
+    		                                      ,cdmTableName=params$cdmTableName
+    		                                      ,conceptId=params$conceptId
+    		                                      ,conceptName=params$conceptName
+    		                                      ,unitConceptId=params$unitConceptId
+    		                                      ,unitConceptName=params$unitConceptName
+    		                                      ,plausibleGender=params$plausibleGender
+    		                                      ,plausibleValueHigh=params$plausibleValueHigh
+    		                                      ,plausibleValueLow=params$plausibleValueLow
+    		                                      ,fkClass=params$fkClass
+    		                                      ,fkDomain=params$fkDomain
+    		                                      ,fkTableName=params$fkTableName
+    		                                      ,plausibleTemporalAfterFieldName=params$plausibleTemporalAfterFieldName
+    		                                      ,plausibleTemporalAfterTableName=params$plausibleTemporalAfterTableName
+    		                                  )
 		
-		thresholdValue <- .evaluateOneThreshold(check_name = checkDescription$checkName,
-								  check_level = checkDescription$checkLevel,
-								  cdm_table_name = check["cdmTableName"],
-								  cdm_field_name = check["cdmFieldName"],
-								  concept_id = check["conceptId"],
-								  unit_concept_id = check["unitConceptId"],
-								  tableChecks = tableChecks, 
-								  fieldChecks = fieldChecks,
-								  conceptChecks = conceptChecks)
+    		thresholdValue <- .evaluateOneThreshold(check_name = checkDescription$checkName,
+    								  check_level = checkDescription$checkLevel,
+    								  cdm_table_name = check["cdmTableName"],
+    								  cdm_field_name = check["cdmFieldName"],
+    								  concept_id = check["conceptId"],
+    								  unit_concept_id = check["unitConceptId"],
+    								  tableChecks = tableChecks, 
+    								  fieldChecks = fieldChecks,
+    								  conceptChecks = conceptChecks)
+    		
+    		qnum <<- qnum + 1
 									  
-		sql3 <- SqlRender::loadRenderTranslateSql(sqlFilename = "insert_into_results_table.sql", packageName="DataQualityDashboard", dbms=connectionDetails$dbms
-							,tableName = "dqdashboard_results"
-							,query_text = sql2
-							,check_name = checkDescription$checkName
-							,check_level = checkDescription$checkLevel
-							,check_description = check_description
-							,cdm_table_name = check["cdmTableName"]
-							,cdm_field_name = check["cdmFieldName"]
-							,concept_id = check["conceptId"]
-							,unit_concept_id = check["unitConceptId"]
-							,sql_file = checkDescription$sqlFile
-							,category = checkDescription$kahnCategory
-							,subcategory = checkDescription$kahnSubcategory
-							,context = checkDescription$kahnContext
-							,checkid = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"])
-							,threshold_value =  thresholdValue
-					)
-        write(x = sql3, file = file.path(outputFolder, 
-                                        sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
-        data.frame()
+    		sql3 <- SqlRender::loadRenderTranslateSql(sqlFilename = "cte_sql_for_results_table.sql", packageName="DataQualityDashboard", dbms=connectionDetails$dbms
+    							,query_text = sql2
+    							,check_name = checkDescription$checkName
+    							,check_level = checkDescription$checkLevel
+    							,check_description = check_description
+    							,cdm_table_name = check["cdmTableName"]
+    							,cdm_field_name = check["cdmFieldName"]
+    							,concept_id = check["conceptId"]
+    							,unit_concept_id = check["unitConceptId"]
+    							,sql_file = checkDescription$sqlFile
+    							,category = checkDescription$kahnCategory
+    							,subcategory = checkDescription$kahnSubcategory
+    							,context = checkDescription$kahnContext
+    							,checkid = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"])
+    							,threshold_value =  thresholdValue
+    							,query_num = qnum
+    					)
+    		
+    		sql_to_union <<- append(sql_to_union, sql3)
+    		
+    		#params = c(qnum,length(sql_to_union))
+    		#print(params)
+    		
+
+    		if (sqlOnlyUnionCount <= 1) {
+          sql4 <- SqlRender::loadRenderTranslateSql(sqlFilename = "insert_ctes_into_result_table.sql"
+                                                    ,packageName="DataQualityDashboard"
+                                                    ,tableName = "dqdashboard_results"
+                                                    ,dbms=connectionDetails$dbms
+                                                    ,query_text = sql3    
+          )          
+          write(x = sql4, file = file.path(outputFolder, 
+                                          sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
+          data.frame()
+    		}
+        
       } else {
         .processCheck(connection = connection,
                       connectionDetails = connectionDetails,
@@ -492,9 +519,37 @@ if (conceptCheckThresholdLoc == "default"){
                       checkDescription = checkDescription, 
                       sql = sql,
                       outputFolder = outputFolder)
-      }    
+      } 
+      data.frame()
+      
     })
     do.call(rbind, dfs)
+    
+    if (sqlOnly && sqlOnlyUnionCount > 1 && length(sql_to_union) > 0) {
+      # Now write union of 'sqlOnlyUnionCount' at a time SQL statements
+      
+      ustart <- 1
+      uend <- 1
+      #print(length(sql_to_union))
+      while (ustart < length(sql_to_union)) {
+        uend <- min(ustart + sqlOnlyUnionCount - 1, length(sql_to_union))
+        #params = c(ustart,':',uend)
+        #print(params)
+        apart <- sql_to_union[ustart:uend]
+        sql_unioned <- paste(apart,collapse=' UNION ALL ')
+        
+        sql4 <- SqlRender::loadRenderTranslateSql(sqlFilename = "insert_ctes_into_result_table.sql"
+                                                  ,packageName="DataQualityDashboard"
+                                                  ,tableName = "dqdashboard_results"
+                                                  ,dbms=connectionDetails$dbms
+                                                  ,query_text = sql_unioned    
+        )
+        write(x = sql4, file = file.path(outputFolder, 
+                                         sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
+        
+        ustart <- ustart + sqlOnlyUnionCount
+      }
+    }
   } else {
     ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
     data.frame()
