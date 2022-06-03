@@ -337,6 +337,7 @@ if (conceptCheckThresholdLoc == "default"){
     connection,
     cdmDatabaseSchema, 
     vocabDatabaseSchema,
+    resultsDatabaseSchema,
     cohortDatabaseSchema,
     cohortDefinitionId,
     outputFolder, 
@@ -400,6 +401,7 @@ if (conceptCheckThresholdLoc == "default"){
                       connection,
                       cdmDatabaseSchema, 
                       vocabDatabaseSchema,
+                      resultsDatabaseSchema,
                       cohortDatabaseSchema,
                       cohortDefinitionId,
                       outputFolder, 
@@ -504,6 +506,7 @@ if (conceptCheckThresholdLoc == "default"){
           sql4 <- SqlRender::loadRenderTranslateSql(sqlFilename = "insert_ctes_into_result_table.sql"
                                                     ,packageName="DataQualityDashboard"
                                                     ,tableName = "dqdashboard_results"
+                                                    ,resultsDatabaseSchema = resultsDatabaseSchema
                                                     ,dbms=connectionDetails$dbms
                                                     ,query_text = sql3    
           )          
@@ -541,6 +544,7 @@ if (conceptCheckThresholdLoc == "default"){
         sql4 <- SqlRender::loadRenderTranslateSql(sqlFilename = "insert_ctes_into_result_table.sql"
                                                   ,packageName="DataQualityDashboard"
                                                   ,tableName = "dqdashboard_results"
+                                                  ,resultsDatabaseSchema = resultsDatabaseSchema
                                                   ,dbms=connectionDetails$dbms
                                                   ,query_text = sql_unioned    
         )
