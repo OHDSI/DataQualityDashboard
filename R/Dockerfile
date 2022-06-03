@@ -9,6 +9,12 @@ RUN apt-get install -y libssl-dev
 RUN apt-get install -y default-jdk
 RUN apt-get install -y libxml2-dev
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssh-server \
+    && export ROOTPASS=$(head -c 12 /dev/urandom |base64 -) && echo "root:$ROOTPASS" | chpasswd
+
+COPY sshd_config /etc/ssh/
+
 RUN R -e "install.packages('DatabaseConnector')"
 RUN R -e "install.packages('SqlRender')"
 RUN R -e "install.packages('ParallelLogger')"

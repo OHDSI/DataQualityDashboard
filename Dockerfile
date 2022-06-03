@@ -1,5 +1,5 @@
 # 1st Build Step
-FROM openjdk:17 as build
+FROM openjdk:17-alpine as build
 
 WORKDIR /workspace/app
 
@@ -23,7 +23,14 @@ RUN tr -d '\015' <./mvnw >./mvnw.sh && mv ./mvnw.sh ./mvnw && chmod 770 mvnw
 RUN ./mvnw package
 
 # 2nd Run Step
-FROM openjdk:17
+FROM openjdk:17-alpine
+
+RUN apk update \
+    && apk add openssh-server \
+    && export ROOTPASS=$(head -c 12 /dev/urandom |base64 -) && echo "root:$ROOTPASS" | chpasswd
+
+COPY sshd_config /etc/ssh/
+
 VOLUME /tmp
 
 ARG JAR_FILE=/workspace/app/target/*.jar
