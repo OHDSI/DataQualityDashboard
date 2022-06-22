@@ -21,9 +21,9 @@ FROM
 		SELECT  cdmTable.*
 	FROM cdm_synthea_v1.visit_occurrence cdmTable
     WHERE  (cdmTable.visit_concept_id =9203 AND
-          (date_part('day',cdmTable.visit_end_date) - date_part('day',cdmTable.visit_start_date)) >2)
+          (DAY(cdmTable.visit_end_date) - DAY(cdmTable.visit_start_date)) <2)
           OR  (cdmTable.visit_concept_id = 9201 AND
-           (date_part('day',cdmTable.visit_end_date) - date_part('day',cdmTable.visit_start_date)) >1)
+           (DAY(cdmTable.visit_end_date) - DAY(cdmTable.visit_start_date)) <1)
 	) violated_rows
 ) violated_row_count,
 (
@@ -46,9 +46,9 @@ FROM
          AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
         }
     WHERE  (cdmTable.visit_concept_id =9203 AND
-          (date_part('day',cdmTable.visit_end_date) - date_part('day',cdmTable.visit_start_date)) >2)
+          (DAY(cdmTable.visit_end_date) - DAY(cdmTable.visit_start_date)) <2)
           OR  (cdmTable.visit_concept_id = 9201 AND
-           (date_part('day',cdmTable.visit_end_date) - date_part('day',cdmTable.visit_start_date)) >1)
+           (DAY(cdmTable.visit_end_date) - DAY(cdmTable.visit_start_date)) <1)
 	) violated_rows
 ) violated_row_count,
 (
