@@ -28,14 +28,14 @@ Imports:
     rjson,
     lubridate,
     SqlRender (>= 1.6.0),
-    plyr,
-    Eunomia
+    plyr
 Suggests:
     testthat,
     knitr,
     rmarkdown,
     markdown,
     shiny,
-    ggplot2
+    ggplot2,
+    Eunomia
 RoxygenNote: 7.1.1
 Encoding: UTF-8
