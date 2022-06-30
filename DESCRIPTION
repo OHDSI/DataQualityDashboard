@@ -21,21 +21,21 @@ Depends:
   R (>= 3.2.2),
   DatabaseConnector (>= 2.0.2)
 Imports:
-  magrittr,
-  ParallelLogger,
-  dplyr,
-  jsonlite,
-  rjson,
-  lubridate,
-  SqlRender (>= 1.6.0),
-  plyr
+    magrittr,
+    ParallelLogger,
+    dplyr,
+    jsonlite,
+    rjson,
+    lubridate,
+    SqlRender (>= 1.6.0),
+    plyr,
+    Eunomia
 Suggests:
-  testthat,
-  knitr,
-  rmarkdown,
-  markdown,
-  shiny,
-  ggplot2,
-  Eunomia
+    testthat,
+    knitr,
+    rmarkdown,
+    markdown,
+    shiny,
+    ggplot2
 RoxygenNote: 7.1.1
 Encoding: UTF-8
