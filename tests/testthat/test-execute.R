@@ -42,6 +42,7 @@ test_that("Execute DQ checks", {
 
 test_that("Execute DQ checks on Synthea/Eunomia", {
   
+  skip_if_not_installed("Eunomia")
   results <- DataQualityDashboard::executeDqChecks(connectionDetails = Eunomia::getEunomiaConnectionDetails(), 
                                                    cdmDatabaseSchema = "main", 
                                                    resultsDatabaseSchema = "temp",
