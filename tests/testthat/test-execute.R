@@ -1,4 +1,5 @@
 library(testthat)
+library(Eunomia)
 
 test_that("Execute DQ checks", {
   
