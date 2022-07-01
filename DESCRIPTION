@@ -37,5 +37,7 @@ Suggests:
     shiny,
     ggplot2,
     Eunomia
+Remotes:
+    ohdsi/Eunomia
 RoxygenNote: 7.1.1
 Encoding: UTF-8

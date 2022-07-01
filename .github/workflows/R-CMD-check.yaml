@@ -20,10 +20,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: 'release'}  # Does not appear to have Java 32-bit, hence the --no-multiarch
+          #- {os: windows-latest, r: 'release'}  # Does not appear to have Java 32-bit, hence the --no-multiarch
           - {os: macOS-latest, r: 'release'}
-          - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          #- {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          #- {os: ubuntu-20.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -125,42 +125,3 @@ jobs:
         if: runner.os == 'macOS'
         run: covr::codecov()
         shell: Rscript {0}
-        
-  Release:
-    needs: R-CMD-Check
-  
-    runs-on: macOS-latest
-    
-    env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
-
-    steps:
-    
-      - uses: r-lib/actions/setup-r@v1
-
-      - name: Install drat
-        run: |
-          install.packages('drat')
-        shell: Rscript {0}
-        
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0    
-
-      - name: Remove any tarballs that already exists
-        run: |
-          rm -f *.tar.gz
-          
-      - name: Download package tarball
-        uses: actions/download-artifact@v2
-        with:
-          name: package_tarball    
-          
-      - name: Tag and push to drat and BroadSea
-        run: |
-          perl compare_versions --tag && \
-          bash deploy.sh && \
-          curl --data "build=true" -X POST https://registry.hub.docker.com/u/ohdsi/broadsea-methodslibrary/trigger/f0b51cec-4027-4781-9383-4b38b42dd4f5/
-          
