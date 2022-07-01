@@ -2,7 +2,6 @@ DataQualityDashboard
 ====================
 
 <!-- badges: start -->
-[![Build Status](https://travis-ci.org/OHDSI/DataQualityDashboard.svg?branch=master)](https://travis-ci.org/OHDSI/DataQualityDashboard)
 [![codecov.io](https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=main)](https://codecov.io/github/OHDSI/DataQualityDashboard?branch=main)
 [![R-CMD-check](https://github.com/katy-sadowski/DataQualityDashboard/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/katy-sadowski/DataQualityDashboard/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
