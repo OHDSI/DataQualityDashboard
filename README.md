@@ -3,7 +3,7 @@ DataQualityDashboard
 
 <!-- badges: start -->
 [![codecov.io](https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=main)](https://codecov.io/github/OHDSI/DataQualityDashboard?branch=main)
-[![R-CMD-check](https://github.com/katy-sadowski/DataQualityDashboard/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/katy-sadowski/DataQualityDashboard/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/OHDSI/DataQualityDashboard/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/OHDSI/DataQualityDashboard/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of the Data Quality Dashboard (DQD) project is to design and develop an open-source tool to expose and evaluate observational data quality. 
