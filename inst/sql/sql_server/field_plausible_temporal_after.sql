@@ -31,7 +31,12 @@ FROM
     JOIN @cohortDatabaseSchema.COHORT c 
       ON cdmTable.PERSON_ID = c.SUBJECT_ID
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId}
-    WHERE cast(@plausibleTemporalAfterFieldName as date) > cast(cdmTable.@cdmFieldName as date)
+    WHERE 
+    {'@plausibleTemporalAfterTableName' == 'PERSON'}?{
+		COALESCE(CAST(plausibleTable.@plausibleTemporalAfterFieldName AS DATE),CAST(CONCAT(plausibleTable.YEAR_OF_BIRTH,'-06-01') AS DATE)) 
+	}:{
+		CAST(cdmTable.@plausibleTemporalAfterFieldName AS DATE)
+	} > CAST(cdmTable.@cdmFieldName AS DATE)
 	) violated_rows
 ) violated_row_count,
 (
