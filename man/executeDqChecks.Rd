@@ -52,6 +52,8 @@ executeDqChecks(
 \item{writeToTable}{Boolean to indicate if the check results will be written to the dqdashboard_results table
 in the resultsDatabaseSchema. Default is TRUE.}
 
+\item{writeTableName}{The name of the results table. Defaults to `dqdashboard_results`.}
+
 \item{checkLevels}{Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)}
 
 \item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv}
