@@ -1,4 +1,4 @@
-Package: DataQualityDashboard
+Package: HolmuskDQD
 Type: Package
 Title: Execute and View Data Quality Checks on OMOP CDM Database
 Version: 1.4.1
