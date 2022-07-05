@@ -399,7 +399,6 @@ if (conceptCheckThresholdLoc == "default"){
                       outputFolder, 
                       sqlOnly) {
   
-  library(magrittr)
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
   
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",
@@ -407,7 +406,7 @@ if (conceptCheckThresholdLoc == "default"){
                               checkDescription$evaluationFilter)
   checks <- eval(parse(text = filterExpression))
   
-  if (length(cohortDefinitionId > 0)){cohort = TRUE} else {cohort = FALSE}
+  cohort <- (!is.null(cohortDefinitionId) && length(cohortDefinitionId > 0))
   
   if (sqlOnly) {
     unlink(file.path(outputFolder, sprintf("%s.sql", checkDescription$checkName)))
@@ -416,22 +415,18 @@ if (conceptCheckThresholdLoc == "default"){
   if (nrow(checks) > 0) {
     dfs <- apply(X = checks, MARGIN = 1, function(check) {
       
-      columns <- lapply(names(check), function(c) {
-        setNames(check[c], c)
-      })
+      params <- c(warnOnMissingParameters = FALSE,
+                  cdmDatabaseSchema = cdmDatabaseSchema,
+                  cohortDatabaseSchema = cohortDatabaseSchema,
+                  cohortDefinitionId = cohortDefinitionId,
+                  vocabDatabaseSchema = vocabDatabaseSchema,
+                  cohort = cohort,
+                  checks)
       
-      params <- c(list(dbms = connectionDetails$dbms),
-                  list(sqlFilename = checkDescription$sqlFile),
-                  list(packageName = "DataQualityDashboard"),
-                  list(warnOnMissingParameters = FALSE),
-                  list(cdmDatabaseSchema = cdmDatabaseSchema),
-                  list(cohortDatabaseSchema = cohortDatabaseSchema),
-                  list(cohortDefinitionId = cohortDefinitionId),
-                  list(vocabDatabaseSchema = vocabDatabaseSchema),
-                  list(cohort = cohort),
-                  unlist(columns, recursive = FALSE))
-      
-      sql <- do.call(SqlRender::loadRenderTranslateSql, params)
+      path <- file.path("sql", "sql_server", checkDescription$sqlFile)
+      sql <- SqlRender::readSql(system.file(path, package = "DataQualityDashboard", mustWork = TRUE))
+      sql <- do.call(SqlRender::render, as.list(c(sql = sql, params)))
+      sql <- SqlRender::translate(sql, connectionDetails$dbms)
       
       if (sqlOnly) {
         write(x = sql, file = file.path(outputFolder, 
