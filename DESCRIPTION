@@ -38,5 +38,5 @@ Suggests:
     checkmate
 Remotes:
     ohdsi/Eunomia
-RoxygenNote: 7.2.0
+RoxygenNote: 7.1.2
 Encoding: UTF-8
