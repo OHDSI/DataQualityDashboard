@@ -1,4 +1,4 @@
-FROM r-base
+FROM r-base:4.1.3
 
 ARG prop=default
 
@@ -9,16 +9,19 @@ RUN apt-get install -y libssl-dev
 RUN apt-get install -y default-jdk
 RUN apt-get install -y libxml2-dev
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssh-server \
+    && export ROOTPASS=$(head -c 12 /dev/urandom |base64 -) && echo "root:$ROOTPASS" | chpasswd
+
+COPY sshd_config /etc/ssh/
+
 RUN R -e "install.packages('DatabaseConnector')"
 RUN R -e "install.packages('SqlRender')"
 RUN R -e "install.packages('ParallelLogger')"
-RUN R -e "install.packages('websocket')"
 RUN R -e "install.packages('devtools')"
 RUN R -e "install.packages('properties')"
 RUN R -e "devtools::install_github('OHDSI/DataQualityDashboard')"
 RUN R -e "install.packages('Rserve',, 'http://rforge.net/', type='source')"
-
-EXPOSE 6311
 
 VOLUME /rserve
 
@@ -29,8 +32,11 @@ RUN mkdir root/R/properties
 
 COPY properties/${prop}.properties root/R/properties/default.properties
 COPY execution.R root/R/execution.R
-COPY messageSender.R root/R/messageSender.R
-COPY rServer.R root/R/rServer.R
+COPY dqd-database-manager.R root/R/dqd-database-manager.R
+COPY data-quality-check.R root/R/data-quality-check.R
+COPY download-jdbc-drivers.R root/R/download-jdbc-drivers.R
+COPY log-appender.R root/R/log-appender.R
+COPY test-connection.R root/R/test-connection.R
 
 # Enable tls 1.0, 1.1
 COPY java-secure java-secure
@@ -39,4 +45,4 @@ RUN ./java-secure
 
 EXPOSE 6311
 
-ENTRYPOINT R -e "Rserve::run.Rserve(remote=TRUE)"
+ENTRYPOINT ["R", "-e", "Rserve::run.Rserve(remote=TRUE)"]

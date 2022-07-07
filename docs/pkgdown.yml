@@ -1,9 +1,10 @@
-pandoc: '2.6'
-pkgdown: 1.4.1
+pandoc: 2.11.3.2
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   CheckTypeDescriptions: CheckTypeDescriptions.html
   DataQualityDashboard: DataQualityDashboard.html
   DqdForCohorts: DqdForCohorts.html
   Thresholds: Thresholds.html
+last_built: 2022-03-03T17:52Z
 

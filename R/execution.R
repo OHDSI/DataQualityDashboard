@@ -16,7 +16,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-.recordResult <- function(result = NULL, check, 
+ABORT_MESSAGE <- "Process was aborted by User"
+
+.getCheckId <- function(checkLevel, checkName, cdmTableName,
+                        cdmFieldName = NA, conceptId = NA,
+                        unitConceptId = NA) {
+  tolower(
+    paste(
+      na.omit(c(
+        dplyr::na_if(gsub(" ", "", checkLevel), ""),
+        dplyr::na_if(gsub(" ", "", checkName), ""),
+        dplyr::na_if(gsub(" ", "", cdmTableName), ""),
+        dplyr::na_if(gsub(" ", "", cdmFieldName), ""),
+        dplyr::na_if(gsub(" ", "", conceptId), ""),
+        dplyr::na_if(gsub(" ", "", unitConceptId), "")
+      )),
+      collapse = "_"
+    )
+  )
+}
+
+.recordResult <- function(result = NULL, check,
                           checkDescription, sql, 
                           executionTime = NA,
                           warning = NA, error = NA) {
@@ -47,7 +67,9 @@
     SUBCATEGORY = checkDescription$kahnSubcategory,
     CONTEXT = checkDescription$kahnContext,
     WARNING = warning,
-    ERROR = error, row.names = NULL, stringsAsFactors = FALSE
+    ERROR = error,
+    checkId = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"]),
+    row.names = NULL, stringsAsFactors = FALSE
   )
   
   if (!is.null(result)) {
@@ -58,8 +80,7 @@
   reportResult
 }
 
-.processCheck <- function(recordResult,
-                          connection,
+.processCheck <- function(connection,
                           connectionDetails, 
                           check, 
                           checkDescription, 
@@ -82,7 +103,7 @@
   tryCatch(
     expr = {
       if (singleThreaded) {
-        if (.needsAutoCommit(connection, connectionDetails)) {
+        if (.needsAutoCommit(connectionDetails, connection)) {
           rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
         }  
       }
@@ -91,24 +112,24 @@
                                             errorReportFile = errorReportFile)
       
       delta <- difftime(Sys.time(), start, units = "secs")
-      recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,
+      .recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
                     executionTime = sprintf("%f %s", delta, attr(delta, "units")))
     },
     warning = function(w) {
-      ParallelLogger::logWarn(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
+      ParallelLogger::logWarn(sprintf("#DQD [Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s",
                                       checkDescription$checkLevel,
                                       checkDescription$checkName, 
                                       check["cdmTableName"], 
                                       check["cdmFieldName"], w$message))
-      recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
+      .recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
     },
     error = function(e) {
-      ParallelLogger::logError(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
+      ParallelLogger::logError(sprintf("#DQD [Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s",
                                        checkDescription$checkLevel,
                                        checkDescription$checkName, 
                                        check["cdmTableName"], 
                                        check["cdmFieldName"], e$message))
-      recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message)
+      .recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message)  
     }
   ) 
 }
@@ -123,6 +144,7 @@
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #' @param outputFolder              The folder to output logs and SQL files to
+#' @param outputFile                (OPTIONAL) File to write results JSON object
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
 #'                                  in the resultsDatabaseSchema. Default is TRUE.
@@ -148,6 +170,7 @@ executeDqChecks <- function(connectionDetails,
                             numThreads = 1,
                             sqlOnly = FALSE,
                             outputFolder = "output",
+                            outputFile = "",
                             verboseMode = FALSE,
                             writeToTable = TRUE,
                             writeTableName = "dqdashboard_results",
@@ -160,9 +183,13 @@ executeDqChecks <- function(connectionDetails,
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
                             conceptCheckThresholdLoc = "default",
-                            messageSender = list(send <- function() {})) {
-
-  messageSender$send("Execution started")
+                            dbLogger,
+                            interruptor) {
+  # Check is aborted -----------
+  if (interruptor$isAborted()) {
+    print(ABORT_MESSAGE)
+    stop(ABORT_MESSAGE)
+  }
 
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
@@ -184,13 +211,15 @@ executeDqChecks <- function(connectionDetails,
   # Setup output folder -----
   options(scipen = 999)
 
+  print("Connecting to CDM database...")
   # capture metadata -----------------------------------------------------------------------
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+  print("Successfully connected to CDM database!")
   sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
                            cdmDatabaseSchema = cdmDatabaseSchema)
   sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
   metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
-  if (nrow(metadata)<1) {
+  if (nrow(metadata) < 1) {
     stop("Please populate the cdm_source table before executing data quality checks.")
   }
   metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
@@ -209,23 +238,13 @@ executeDqChecks <- function(connectionDetails,
   
   # Log execution -----------------------------------------------------------------------------------------------------------------
   ParallelLogger::clearLoggers()
-  logFileName <- sprintf("log_DqDashboard_%s.txt", cdmSourceName)
-  unlink(file.path(outputFolder, logFileName))
-  
-  if (verboseMode) {
-    appenders <- list(ParallelLogger::createConsoleAppender(),
-                      ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
-                                                         fileName = file.path(outputFolder, logFileName)))    
-  } else {
-    appenders <- list(ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
-                                                         fileName = file.path(outputFolder, logFileName)))    
-  }
 
-  logger <- ParallelLogger::createLogger(name = "DqDashboard",
-                                         threshold = "INFO",
-                                         appenders = appenders)
-  ParallelLogger::registerLogger(logger)   
-  
+  appenders <- list(createDqdLogAppender(dbLogger))
+  parallelLogger <- ParallelLogger::createLogger(name = "DqDashboard", threshold = "INFO", appenders = appenders)
+  ParallelLogger::registerLogger(parallelLogger)
+
+  ParallelLogger::logInfo("#DQD Execution started")
+
   # load CSVs ----------------------------------------------------------------------------------------
   
   startTime <- Sys.time()
@@ -265,7 +284,7 @@ executeDqChecks <- function(connectionDetails,
   
   if (length(tablesToExclude) > 0) {
     tablesToExclude <- toupper(tablesToExclude)
-    ParallelLogger::logInfo(sprintf("CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
+    ParallelLogger::logInfo(sprintf("#DQD CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
     tableChecks <- tableChecks[!tableChecks$cdmTableName %in% tablesToExclude,]
     fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude &
                                  !fieldChecks$fkTableName %in% tablesToExclude &
@@ -273,6 +292,9 @@ executeDqChecks <- function(connectionDetails,
     conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude,]
   }
   
+  ## remove offset from being checked
+  fieldChecks <- subset(fieldChecks, cdmFieldName != '"offset"')
+
   library(magrittr)
   # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   # fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
@@ -309,22 +331,25 @@ executeDqChecks <- function(connectionDetails,
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
 
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
-  resultsList <- ParallelLogger::clusterApply(cluster = cluster, x = checkDescriptions,
-                                              fun = .runCheck,
-                                              .processCheck,
-                                              .recordResult,
-                                              tableChecks,
-                                              fieldChecks,
-                                              conceptChecks,
-                                              connectionDetails, 
-                                              connection,
-                                              cdmDatabaseSchema, 
-                                              vocabDatabaseSchema,
-                                              cohortDatabaseSchema,
-                                              cohortDefinitionId,
-                                              outputFolder,
-                                              sqlOnly,
-                                              messageSender)
+  resultsList <- ParallelLogger::clusterApply(
+    cluster = cluster,
+    x = checkDescriptions,
+    fun = .runCheck,
+    tableChecks,
+    fieldChecks,
+    conceptChecks,
+    connectionDetails,
+    connection,
+    cdmDatabaseSchema,
+    vocabDatabaseSchema,
+    cohortDatabaseSchema,
+    cohortDefinitionId,
+    outputFolder,
+    sqlOnly,
+    progressBar = TRUE,
+    dbLogger,
+    interruptor
+  )
   ParallelLogger::stopCluster(cluster = cluster)
   
   if (numThreads == 1 & !sqlOnly) {
@@ -341,15 +366,14 @@ executeDqChecks <- function(connectionDetails,
                                     checkResults = checkResults,
                                     cdmSourceName = cdmSourceName, 
                                     outputFolder = outputFolder,
+                                    outputFile = outputFile,
                                     startTime = startTime,
                                     tableChecks = tableChecks, 
                                     fieldChecks = fieldChecks,
                                     conceptChecks = conceptChecks,
                                     metadata = metadata)
 
-    message <- "Execution Completed"
-    messageSender$send(message)
-    ParallelLogger::logInfo(message)
+    ParallelLogger::logInfo("#DQD Execution Completed")
   }
 
   
@@ -375,9 +399,7 @@ executeDqChecks <- function(connectionDetails,
   return(allResults)
 }
 
-.runCheck <- function(checkDescription,
-                      processCheck,
-                      recordResult,
+.runCheck <- function(checkDescription, 
                       tableChecks,
                       fieldChecks,
                       conceptChecks,
@@ -389,11 +411,15 @@ executeDqChecks <- function(connectionDetails,
                       cohortDefinitionId,
                       outputFolder, 
                       sqlOnly,
-                      messageSender) {
+                      dbLogger,
+                      interruptor) {
+  if (interruptor$isAborted()) {
+    print(ABORT_MESSAGE)
+    stop(ABORT_MESSAGE)
+  }
+
   library(magrittr)
-  message <- sprintf("Processing check description: %s", checkDescription$checkName)
-  messageSender$send(message)
-  ParallelLogger::logInfo(message)
+  ParallelLogger::logInfo(sprintf("#DQD Processing check description: %s", checkDescription$checkName))
   
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",
                               tolower(checkDescription$checkLevel),
@@ -431,18 +457,17 @@ executeDqChecks <- function(connectionDetails,
                                         sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
         data.frame()
       } else {
-        processCheck(recordResult = recordResult,
-                     connection = connection,
-                     connectionDetails = connectionDetails,
-                     check = check,
-                     checkDescription = checkDescription,
-                     sql = sql,
-                     outputFolder = outputFolder)
+        .processCheck(connection = connection,
+                      connectionDetails = connectionDetails,
+                      check = check, 
+                      checkDescription = checkDescription, 
+                      sql = sql,
+                      outputFolder = outputFolder)
       }    
     })
     do.call(rbind, dfs)
   } else {
-    ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
+    ParallelLogger::logWarn(paste0("#DQD Warning: Evaluation resulted in no checks: ", filterExpression))
     data.frame()
   }
 }
@@ -558,6 +583,7 @@ executeDqChecks <- function(connectionDetails,
                               checkResults,
                               cdmSourceName,
                               outputFolder,
+                              outputFile,
                               startTime,
                               tableChecks,
                               fieldChecks,
@@ -634,15 +660,19 @@ resultToJson <- function(result) {
   return(jsonlite::toJSON(result))
 }
 
-writeJsonResultToFile <- function(resultJson, outputFolder) {
-  endTimestamp <- endTime
-  endTimestamp <- gsub("-","",endTimestamp)
-  endTimestamp <- gsub(" ","-",endTimestamp)
-  endTimestamp <- gsub(":","",endTimestamp)
+writeJsonResultToFile <- function(resultJson, outputFolder, outputFile) {
+  if (nchar(outputFile)==0)  {
+    endTimestamp <- format(endTime,"%Y%m%d%H%M%S")
+    outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp)
+  }
 
-  resultFilename <- file.path(outputFolder, sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp))
+  resultFilename <- file.path(outputFolder,outputFile)
+  result$outputFile <- outputFile
+
   ParallelLogger::logInfo(sprintf("Writing results to file: %s", resultFilename))
   write(resultJson, resultFilename)
+
+  result
 }
 
 #' Write JSON Results to SQL Table
@@ -674,7 +704,7 @@ writeJsonResultsToTable <- function(connectionDetails,
     tableName <- sprintf("%s.%s_%s", resultsDatabaseSchema,writeTableName, cohortDefinitionId)
   } else {tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)}
   
-  ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
+  ParallelLogger::logInfo(sprintf("#DQD Writing results to table %s", tableName))
   
   if ("UNIT_CONCEPT_ID" %in% colnames(df)){
     ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
@@ -691,10 +721,10 @@ writeJsonResultsToTable <- function(connectionDetails,
       DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = df, 
                                      dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE,
                                      progressBar = TRUE)
-      ParallelLogger::logInfo("Finished writing table")
+      ParallelLogger::logInfo("#DQD Finished writing table")
     },
     error = function(e) {
-      ParallelLogger::logError(sprintf("Writing table failed: %s", e$message))
+      ParallelLogger::logError(sprintf("#DQD Writing table failed: %s", e$message))
     }
   )
   
@@ -716,7 +746,7 @@ writeJsonResultsToTable <- function(connectionDetails,
     tableName <- sprintf("%s.%s_%s", resultsDatabaseSchema,writeTableName, cohortDefinitionId)
   } else {tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)}
   
-  ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
+  ParallelLogger::logInfo(sprintf("#DQD Writing results to table %s", tableName))
   
   ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_dataframe_ddl.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
  
@@ -726,15 +756,15 @@ writeJsonResultsToTable <- function(connectionDetails,
     expr = {
       DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = checkResults, 
                                      dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE)
-      ParallelLogger::logInfo("Finished writing table")
+      ParallelLogger::logInfo("#DQD Finished writing table")
     },
     error = function(e) {
-      ParallelLogger::logError(sprintf("Writing table failed: %s", e$message))
+      ParallelLogger::logError(sprintf("#DQD Writing table failed: %s", e$message))
     }
   )
 }
 
-.needsAutoCommit <- function(connection, connectionDetails) {
+.needsAutoCommit <- function(connectionDetails, connection) {
   autoCommit <- FALSE
   if (!is.null(connection)) {
     if (inherits(connection, "DatabaseConnectorJdbcConnection")) {

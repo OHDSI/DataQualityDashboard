@@ -1,0 +1,39 @@
+server:
+  port: 8001
+  error:
+    include-message: always
+  servlet:
+    context-path: /data-quality-dashboard
+
+rserve:
+  path:
+  host: ${RservHost}
+  port: ${RservPort}
+  unix: true
+
+files-manager:
+  url: ${FilesManagerUrl}
+
+spring:
+  application:
+    name: Data Quality Dashboard
+  datasource:
+    url: ${SharedDbUrl}
+    username: ${SharedDbDqdUser}
+    password: ${SharedDbDqdPass}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          property-source-enabled: true
+          property-sources:
+            -
+              credential:
+                client-id: ${AZURE_CLIENT_ID}
+              endpoint: https://kv-perseus.vault.azure.net/
+              profile:
+                tenant-id: ${AZURE_TENANT_ID}

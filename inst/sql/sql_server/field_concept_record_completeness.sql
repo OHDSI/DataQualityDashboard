@@ -27,7 +27,7 @@ FROM
   	ON cdmTable.PERSON_ID = c.SUBJECT_ID
   	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
   	}
-		WHERE cdmTable.@cdmFieldName = 0 {@cdmFieldName in ('UNIT_CONCEPT_ID')}?{AND cdmTable.value_as_number IS NOT NULL}
+		WHERE cdmTable.@cdmFieldName = 0 {@cdmFieldName in ('UNIT_CONCEPT_ID') AND @cdmTableName in ('MEASUREMENT')}?{AND cdmTable.value_as_number IS NOT NULL}
 	) violated_rows
 ) violated_row_count,
 ( 
@@ -38,6 +38,6 @@ FROM
   	ON cdmTable.PERSON_ID = c.SUBJECT_ID
   	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
   	}
-	{@cdmFieldName in ('UNIT_CONCEPT_ID')}?{WHERE cdmTable.value_as_number IS NOT NULL}
+	{@cdmFieldName in ('UNIT_CONCEPT_ID') AND @cdmTableName in ('MEASUREMENT')}?{WHERE cdmTable.value_as_number IS NOT NULL}
 ) denominator
 ;
