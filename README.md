@@ -56,13 +56,13 @@ Getting Started
 ### R server
 
     cd R
-    docker build -t r-serve --build-arg prop=prod .
-    docker run -d --network host --name r-serve r-serve
+    docker build -t r-serve --build-arg prop='docker' .
+    docker run --name r-serve -d -p 6311:6311 --network=perseus-net r-serve
 
 ### Data-quality-check service
 
-    docker build -t dqd-service --build-arg prop=prod .
-    docker run -d --network host --name dqd-service dqd-service
+    docker build -t data-quality-dashboard .
+    docker run --name data-quality-dashboard -d -p 8001:8001 -e SPRING_PROFILES_ACTIVE='docker' --network=perseus-net data-quality-dashboard
 
 Development
 ==========
@@ -70,8 +70,8 @@ Development
 ### R server
 
     cd R
-    docker build -t r-serve --build-arg prop=prod .
-    docker run -p 6311:6311 -d --name r-serve r-serve
+    docker build -t r-serve --build-arg prop='docker' .
+    docker run --name r-serve -d -p 6311:6311 r-serve
 
 License
 =======
