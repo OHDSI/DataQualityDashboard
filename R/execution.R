@@ -16,6 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#' @importFrom stats na.omit 
 .getCheckId <- function(checkLevel, checkName, cdmTableName,
                         cdmFieldName = NA, conceptId = NA,
                         unitConceptId = NA) {
@@ -34,6 +35,7 @@
   )
 }
 
+#' @importFrom stats setNames
 .recordResult <- function(result = NULL, check, 
                           checkDescription, sql, 
                           executionTime = NA,
@@ -100,11 +102,13 @@
                                        check["cdmFieldName"]))  
   tryCatch(
     expr = {
-      if (singleThreaded) {
-        if (.needsAutoCommit(connectionDetails, connection)) {
-          rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
-        }  
-      }
+      if (singleThreaded &&
+          !is.null(connection) &&
+          inherits(connection, "DatabaseConnectorJdbcConnection") &&
+          connectionDetails$dbms %in% c("postgresql", "redshift")) {
+        
+        rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
+      }  
       
       result <- DatabaseConnector::querySql(connection = connection, sql = sql, 
                                             errorReportFile = errorReportFile)
@@ -146,6 +150,7 @@
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
 #'                                  in the resultsDatabaseSchema. Default is TRUE.
+#' @param writeTableName            The name of the results table. Defaults to `dqdashboard_results`.
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
 #' @param checkNames                (OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv
 #' @param cohortDefinitionId        The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort' 
@@ -159,6 +164,9 @@
 #' 
 #' @return If sqlOnly = FALSE, a list object of results
 #' 
+#' @importFrom magrittr %>%
+#' @import DatabaseConnector
+#' @importFrom utils packageVersion read.csv
 #' @export
 executeDqChecks <- function(connectionDetails,
                             cdmDatabaseSchema,
@@ -186,7 +194,6 @@ executeDqChecks <- function(connectionDetails,
   if (!("connectionDetails" %in% class(connectionDetails))){
     stop("connectionDetails must be an object of class 'connectionDetails'.")
   } 
-  
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
@@ -290,7 +297,6 @@ if (conceptCheckThresholdLoc == "default"){
   ## remove offset from being checked
   fieldChecks <- subset(fieldChecks, cdmFieldName != '"offset"')
   
-  library(magrittr)
   # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   # fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   # conceptChecks <- conceptChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
@@ -405,7 +411,6 @@ if (conceptCheckThresholdLoc == "default"){
                       outputFolder, 
                       sqlOnly) {
   
-  library(magrittr)
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
   
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",
@@ -413,7 +418,7 @@ if (conceptCheckThresholdLoc == "default"){
                               checkDescription$evaluationFilter)
   checks <- eval(parse(text = filterExpression))
   
-  if (length(cohortDefinitionId > 0)){cohort = TRUE} else {cohort = FALSE}
+  cohort <- (!is.null(cohortDefinitionId) && length(cohortDefinitionId > 0))
   
   if (sqlOnly) {
     unlink(file.path(outputFolder, sprintf("%s.sql", checkDescription$checkName)))
@@ -422,22 +427,18 @@ if (conceptCheckThresholdLoc == "default"){
   if (nrow(checks) > 0) {
     dfs <- apply(X = checks, MARGIN = 1, function(check) {
       
-      columns <- lapply(names(check), function(c) {
-        setNames(check[c], c)
-      })
+      params <- c(warnOnMissingParameters = FALSE,
+                  cdmDatabaseSchema = cdmDatabaseSchema,
+                  cohortDatabaseSchema = cohortDatabaseSchema,
+                  cohortDefinitionId = cohortDefinitionId,
+                  vocabDatabaseSchema = vocabDatabaseSchema,
+                  cohort = cohort,
+                  checks)
       
-      params <- c(list(dbms = connectionDetails$dbms),
-                  list(sqlFilename = checkDescription$sqlFile),
-                  list(packageName = "DataQualityDashboard"),
-                  list(warnOnMissingParameters = FALSE),
-                  list(cdmDatabaseSchema = cdmDatabaseSchema),
-                  list(cohortDatabaseSchema = cohortDatabaseSchema),
-                  list(cohortDefinitionId = cohortDefinitionId),
-                  list(vocabDatabaseSchema = vocabDatabaseSchema),
-                  list(cohort = cohort),
-                  unlist(columns, recursive = FALSE))
-      
-      sql <- do.call(SqlRender::loadRenderTranslateSql, params)
+      path <- file.path("sql", "sql_server", checkDescription$sqlFile)
+      sql <- SqlRender::readSql(system.file(path, package = "DataQualityDashboard", mustWork = TRUE))
+      sql <- do.call(SqlRender::render, as.list(c(sql = sql, params)))
+      sql <- SqlRender::translate(sql, connectionDetails$dbms)
       
       if (sqlOnly) {
         write(x = sql, file = file.path(outputFolder, 
@@ -662,14 +663,15 @@ if (conceptCheckThresholdLoc == "default"){
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
 #' @param jsonFilePath              Path to the JSON results file generated using the execute function
+#' @param writeTableName            Name of table in the database to write results to
+#' @param cohortDefinitionId        If writing results for a single cohort this is the ID that will be appended to the table name
 #' 
 #' @export
 writeJsonResultsToTable <- function(connectionDetails,
                                     resultsDatabaseSchema,
                                     jsonFilePath,
                                     writeTableName = "dqdashboard_results",
-                                    cohortDefinitionId = c(), 
-                                    useMppBulkLoad = FALSE) {
+                                    cohortDefinitionId = c()) {
   
   jsonData <- jsonlite::read_json(jsonFilePath)
   checkResults <- lapply(jsonData$CheckResults, function(cr) {
@@ -677,7 +679,7 @@ writeJsonResultsToTable <- function(connectionDetails,
     as.data.frame(cr)
   })
   
-  df <- do.call(plyr::rbind.fill, checkResults)
+  df <- dplyr::bind_rows(checkResults)
   
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   on.exit(DatabaseConnector::disconnect(connection = connection))
@@ -746,14 +748,3 @@ writeJsonResultsToTable <- function(connectionDetails,
   )
 }
 
-.needsAutoCommit <- function(connectionDetails, connection) {
-  autoCommit <- FALSE
-  if (!is.null(connection)) {
-    if (inherits(connection, "DatabaseConnectorJdbcConnection")) {
-      if (connectionDetails$dbms %in% c("postgresql", "redshift")) {
-        autoCommit <- TRUE
-      }
-    }
-  }
-  autoCommit
-}
