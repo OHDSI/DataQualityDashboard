@@ -203,16 +203,21 @@ executeDqChecks <- function(connectionDetails,
   options(scipen = 999)
 
   # capture metadata -----------------------------------------------------------------------
-  connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
-  sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
-                           cdmDatabaseSchema = cdmDatabaseSchema)
-  sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
-  metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
-  if (nrow(metadata)<1) {
-    stop("Please populate the cdm_source table before executing data quality checks.")
-  }
-  metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
-  DatabaseConnector::disconnect(connection)
+  metadata <- list()
+  if (!sqlOnly) {
+    connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
+    sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
+                             cdmDatabaseSchema = cdmDatabaseSchema)
+    sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
+    metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
+    if (nrow(metadata)<1) {
+      stop("Please populate the cdm_source table before executing data quality checks.")
+    }
+    metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
+    DatabaseConnector::disconnect(connection)
+  } else {
+    metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
+  }ev
   
   if (!dir.exists(outputFolder)) {
     dir.create(path = outputFolder, recursive = TRUE)
@@ -459,6 +464,10 @@ if (conceptCheckThresholdLoc == "default"){
                                 conceptChecks) {
   
   checkResults$FAILED <- 0
+  checkResults$PASSED <- 0
+  checkResults$IS_ERROR <- 0
+  checkResults$NOT_APPLICABLE <- 0
+  checkResults$NOT_APPLICABLE_REASON <- NA
   checkResults$THRESHOLD_VALUE <- NA
   checkResults$NOTES_VALUE <- NA
   
@@ -546,7 +555,7 @@ if (conceptCheckThresholdLoc == "default"){
     }
     
     if (!is.na(checkResults[i,]$ERROR)) {
-      checkResults[i,]$FAILED <- 1
+      checkResults[i,]$IS_ERROR <- 1
     } else if (is.na(thresholdValue) | thresholdValue == 0) {
       # If no threshold, or threshold is 0%, then any violating records will cause this check to fail
       if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults[i,]$NUM_VIOLATED_ROWS > 0) {
@@ -554,11 +563,118 @@ if (conceptCheckThresholdLoc == "default"){
       }
     } else if (checkResults[i,]$PCT_VIOLATED_ROWS * 100 > thresholdValue) {
       checkResults[i,]$FAILED <- 1  
-    }  
+    }
   }
+  
+  missingTables <- dplyr::select(
+    dplyr::filter(checkResults, CHECK_NAME == "cdmTable" & FAILED == 1), 
+    CDM_TABLE_NAME)
+  if (nrow(missingTables) > 0) {
+    missingTables$TABLE_IS_MISSING <- 1
+    checkResults <- dplyr::mutate(
+      dplyr::left_join(checkResults, missingTables, by = "CDM_TABLE_NAME"), 
+      TABLE_IS_MISSING = ifelse(CHECK_NAME != "cdmTable" & IS_ERROR == 0, TABLE_IS_MISSING, NA))
+  } else {
+    checkResults$TABLE_IS_MISSING <- NA
+  }
+  
+  missingFields <- dplyr::select(
+    dplyr::filter(checkResults, CHECK_NAME == "cdmField" & FAILED == 1 & is.na(TABLE_IS_MISSING)), 
+    CDM_TABLE_NAME, CDM_FIELD_NAME)
+  if (nrow(missingFields) > 0) {
+    missingFields$FIELD_IS_MISSING <- 1
+    checkResults <- dplyr::mutate(
+      dplyr::left_join(checkResults, missingFields, by = c("CDM_TABLE_NAME", "CDM_FIELD_NAME")), 
+      FIELD_IS_MISSING = ifelse(CHECK_NAME != "cdmField" & IS_ERROR == 0, FIELD_IS_MISSING, NA))
+  } else {
+    checkResults$FIELD_IS_MISSING <- NA
+  }
+  
+  emptyTables <- dplyr::distinct(
+    dplyr::select(
+      dplyr::filter(checkResults, CHECK_NAME == "measureValueCompleteness" & 
+                      NUM_DENOMINATOR_ROWS == 0 & 
+                      IS_ERROR == 0 &
+                      is.na(TABLE_IS_MISSING) & 
+                      is.na(FIELD_IS_MISSING)), 
+      CDM_TABLE_NAME))
+  if (nrow(emptyTables) > 0) {
+    emptyTables$TABLE_IS_EMPTY <- 1
+    checkResults <- dplyr::mutate(
+      dplyr::left_join(checkResults, emptyTables, by = c("CDM_TABLE_NAME")), 
+      TABLE_IS_EMPTY = ifelse(CHECK_NAME != "cdmField" & CHECK_NAME != "cdmTable" & IS_ERROR == 0, TABLE_IS_EMPTY, NA))
+  } else {
+    checkResults$TABLE_IS_EMPTY <- NA
+  }
+  
+  emptyFields <- 
+    dplyr::select(
+      dplyr::filter(checkResults, CHECK_NAME == "measureValueCompleteness" & 
+                      NUM_DENOMINATOR_ROWS == NUM_VIOLATED_ROWS & 
+                      is.na(TABLE_IS_MISSING) & is.na(FIELD_IS_MISSING) & is.na(TABLE_IS_EMPTY)), 
+      CDM_TABLE_NAME, CDM_FIELD_NAME)
+  if (nrow(emptyFields) > 0) {
+    emptyFields$FIELD_IS_EMPTY <- 1
+    checkResults <- dplyr::mutate(
+      dplyr::left_join(checkResults, emptyFields, by = c("CDM_TABLE_NAME", "CDM_FIELD_NAME")), 
+      FIELD_IS_EMPTY = ifelse(CHECK_NAME != "measureValueCompleteness" & CHECK_NAME != "cdmField" & CHECK_NAME != "isRequired" & IS_ERROR == 0, FIELD_IS_EMPTY, NA))
+  } else {
+    checkResults$FIELD_IS_EMPTY <- NA
+  }
+  
+  checkResults <- dplyr::mutate(
+    checkResults,
+    CONCEPT_IS_MISSING = ifelse(
+      IS_ERROR == 0 &
+        is.na(TABLE_IS_MISSING) & 
+        is.na(FIELD_IS_MISSING) & 
+        is.na(TABLE_IS_EMPTY) & 
+        is.na(FIELD_IS_EMPTY) & 
+        CHECK_LEVEL == "CONCEPT" &
+        is.na(UNIT_CONCEPT_ID) &
+        NUM_DENOMINATOR_ROWS == 0,
+      1,
+      NA
+    )
+  )
+  
+  checkResults <- dplyr::mutate(
+    checkResults,
+    CONCEPT_AND_UNIT_ARE_MISSING = ifelse(
+      IS_ERROR == 0 &
+        is.na(TABLE_IS_MISSING) & 
+        is.na(FIELD_IS_MISSING) & 
+        is.na(TABLE_IS_EMPTY) & 
+        is.na(FIELD_IS_EMPTY) & 
+        CHECK_LEVEL == "CONCEPT" &
+        !is.na(UNIT_CONCEPT_ID) &
+        NUM_DENOMINATOR_ROWS == 0,
+      1,
+      NA
+    )
+  )
+  
+  checkResults <- dplyr::mutate(
+    checkResults, 
+    NOT_APPLICABLE = dplyr::coalesce(TABLE_IS_MISSING, FIELD_IS_MISSING, TABLE_IS_EMPTY, FIELD_IS_EMPTY, CONCEPT_IS_MISSING, CONCEPT_AND_UNIT_ARE_MISSING, 0), 
+    NOT_APPLICABLE_REASON = dplyr::case_when(
+      !is.na(TABLE_IS_MISSING) ~ sprintf("Table %s does not exist.", CDM_TABLE_NAME), 
+      !is.na(FIELD_IS_MISSING) ~ sprintf("Field %s.%s does not exist.", CDM_TABLE_NAME, CDM_FIELD_NAME), 
+      !is.na(TABLE_IS_EMPTY) ~ sprintf("Table %s is empty.", CDM_TABLE_NAME),
+      !is.na(FIELD_IS_EMPTY) ~ sprintf("Field %s.%s is not populated.", CDM_TABLE_NAME, CDM_FIELD_NAME), 
+      !is.na(CONCEPT_IS_MISSING) ~ sprintf("%s=%s is missing from the %s table.", CDM_FIELD_NAME, CONCEPT_ID, CDM_TABLE_NAME),
+      !is.na(CONCEPT_AND_UNIT_ARE_MISSING) ~ sprintf("Combination of %s=%s, UNIT_CONCEPT_ID=%s and VALUE_AS_NUMBER IS NOT NULL is missing from the %s table.", CDM_FIELD_NAME, CONCEPT_ID, UNIT_CONCEPT_ID, CDM_TABLE_NAME)
+    )
+  )
+  
+  checkResults <- dplyr::select(checkResults, -c(TABLE_IS_MISSING, FIELD_IS_MISSING, TABLE_IS_EMPTY, FIELD_IS_EMPTY, CONCEPT_IS_MISSING, CONCEPT_AND_UNIT_ARE_MISSING))
+  checkResults <- dplyr::mutate(checkResults, FAILED = ifelse(NOT_APPLICABLE == 1, 0, FAILED))
+  checkResults <- dplyr::mutate(checkResults, PASSED = ifelse(FAILED == 0 & IS_ERROR == 0 & NOT_APPLICABLE == 0, 1, 0))
   
   checkResults
 }
+
+
 
 .summarizeResults <- function(connectionDetails,
                               cdmDatabaseSchema,
@@ -595,16 +711,17 @@ if (conceptCheckThresholdLoc == "default"){
   
   countFailedPlausibility <- nrow(checkResults[checkResults$CATEGORY=='Plausibility' & 
                                                  checkResults$FAILED == 1,])
-  
   countFailedConformance <- nrow(checkResults[checkResults$CATEGORY=='Conformance' &
                                                 checkResults$FAILED == 1,])
-  
   countFailedCompleteness <- nrow(checkResults[checkResults$CATEGORY=='Completeness' &
                                                  checkResults$FAILED == 1,])
   
-  countPassedPlausibility <- countTotalPlausibility - countFailedPlausibility
-  countPassedConformance <- countTotalConformance - countFailedConformance
-  countPassedCompleteness <- countTotalCompleteness - countFailedCompleteness
+  countPassedPlausibility <- nrow(checkResults[checkResults$CATEGORY=='Plausibility' &
+                                                 checkResults$PASSED == 1,]) 
+  countPassedConformance <- nrow(checkResults[checkResults$CATEGORY=='Conformance' &
+                                                checkResults$PASSED == 1,]) 
+  countPassedCompleteness <- nrow(checkResults[checkResults$CATEGORY=='Completeness' &
+                                                 checkResults$PASSED == 1,])
   
   overview <- list(
     countTotal = countTotal, 
@@ -612,8 +729,8 @@ if (conceptCheckThresholdLoc == "default"){
     countErrorFailed = countErrorFailed,
     countThresholdFailed = countThresholdFailed,
     countOverallFailed = countOverallFailed,
-    percentPassed = round(countPassed / countTotal * 100),
-    percentFailed = round(countOverallFailed / countTotal * 100),
+    percentPassed = round(countPassed / (countPassed + countOverallFailed) * 100),
+    percentFailed = round(countOverallFailed / (countPassed + countOverallFailed) * 100),
     countTotalPlausibility = countTotalPlausibility,
     countTotalConformance = countTotalConformance,
     countTotalCompleteness = countTotalCompleteness,
