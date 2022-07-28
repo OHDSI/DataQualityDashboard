@@ -240,7 +240,7 @@ executeDqChecks <- function(connectionDetails,
   ParallelLogger::clearLoggers()
 
   appenders <- list(createDqdLogAppender(dbLogger))
-  parallelLogger <- ParallelLogger::createLogger(name = "DqDashboard", threshold = "INFO", appenders = appenders)
+  parallelLogger <- ParallelLogger::createLogger(name = "DqdDashboard", threshold = "INFO", appenders = appenders)
   ParallelLogger::registerLogger(parallelLogger)
 
   ParallelLogger::logInfo("#DQD Execution started")

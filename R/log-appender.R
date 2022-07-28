@@ -6,11 +6,10 @@
 #' @export
 createDqdLogAppender <- function(dbLogger, layout = ParallelLogger::layoutSimple) {
   appendFunction <- function (this, level, message, echoToConsole) {
-    # Avoid note in check:
     missing(this)
     if (echoToConsole) {
       prefix <- '#DQD '
-      if (startsWith(message, '#DQD ')) {
+      if (startsWith(message, prefix)) {
         msg <- substr(message, nchar(prefix), nchar(message))
         if (level == "INFO") {
           dbLogger$info(msg)

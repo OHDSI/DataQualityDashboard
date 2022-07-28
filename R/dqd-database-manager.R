@@ -1,31 +1,5 @@
 library(DatabaseConnector)
 library(SqlRender)
-library(properties)
-
-#' DQD DatabaseManager
-#'
-#' @param scanId - primary key of data_quality_scans table
-#' @return return DQD databaseManager if scan id not null
-createDqdDatabaseManager <- function(scanId) {
-  result <- NULL
-  if (is.null(scanId)) {
-    result <- createFakeDqdDatabaseManager()
-    print("Created Fake Database Manager!")
-  } else {
-    result <- createRealDqdDatabaseManager(scanId)
-    print("Created DQD Database Manager!")
-  }
-
-  return(result)
-}
-
-#' DatabaseManager for development
-#' Not implemented
-createFakeDqdDatabaseManager <- function() {
-  message <- "Fake DQD Database Manager not implemented"
-  print(message)
-  stop(message)
-}
 
 #' DQD database manager
 #'
@@ -34,15 +8,14 @@ createFakeDqdDatabaseManager <- function() {
 #' @return list of dbLogger and interruptor
 #' dbLogger - log progress messages to database
 #' interruptor - check is data_quality_scans status code ABORT
-createRealDqdDatabaseManager <- function(scanId) {
-  props <- properties::read.properties('~/R/properties/default.properties')
-  dataType <- props$dbms
-  server <- paste0(props$server, "/", props$database)
-  port <- props$port
-  schema <- props$schema
-  dbUsername <- props$user
-  password <- props$password
-
+createDqdDatabaseManager <- function(scanId,
+                                     dataType,
+                                     server,
+                                     port,
+                                     schema,
+                                     dbUsername,
+                                     password,
+                                     steps_count = 22) {
   connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dataType,
                                                                   user = dbUsername,
                                                                   password = password,
@@ -52,7 +25,6 @@ createRealDqdDatabaseManager <- function(scanId) {
 
   createLogger <- function() {
     MAX_MESSAGE_LENGTH <- 1000
-    STEPS_COUNT <- 22
     completedStepsCount <- 0
 
     INFO_STATUS <- list(code = 1, name = "INFO")
@@ -66,7 +38,7 @@ createRealDqdDatabaseManager <- function(scanId) {
 
     log <- function(message, status) {
       print(paste0("Log message: ", message))
-      percent <- completedStepsCount * 100 / STEPS_COUNT
+      percent <- completedStepsCount * 100 / steps_count
       time <- Sys.time()
       print("Connectiong to DQD database...")
       if (nchar(message) > 1000) {
