@@ -2,19 +2,30 @@ library(DatabaseConnector)
 library(SqlRender)
 
 
-dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, password, scanId, threadCount) {
+dataQualityCheck <- function(cdm_dataType,
+                             cdm_server,
+                             cdm_port,
+                             cdm_dataBaseSchema,
+                             cdm_user,
+                             cdm_password,
+                             scanId,
+                             threadCount,
+                             cdmSourceName,
+                             dqd_dataType,
+                             dqd_server,
+                             dqd_port,
+                             dqd_dataBaseSchema,
+                             dqd_user,
+                             dqd_password) {
   print("Starting Data Quality Check process..")
   Sys.setenv('DATABASECONNECTOR_JAR_FOLDER' = '~/jdbcDrivers')
-  connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dataType,
-                                                                  user = user,
-                                                                  password = password,
-                                                                  server = server,
-                                                                  port = port,
+  connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = cdm_dataType,
+                                                                  user = cdm_user,
+                                                                  password = cdm_password,
+                                                                  server = cdm_server,
+                                                                  port = cdm_port,
                                                                   extraSettings = "")
-
-  cdmDatabaseSchema <- dataBaseSchema # the fully qualified database schema name of the CDM
   resultsDatabaseSchema <- "" # the fully qualified database schema name of the results schema (that you can write to)
-  cdmSourceName <- "" # a human readable name for your CDM source
 
   # determine how many threads (concurrent SQL sessions) to use ----------------------------------------
   numThreads <- threadCount # on Redshift, 3 seems to work well
@@ -41,10 +52,16 @@ dataQualityCheck <- function(dataType, server, port, dataBaseSchema, user, passw
   tablesToExclude <- c()
 
   print("Creating databae manager...")
-  dqdDataBaseManager <- createDqdDatabaseManager(scanId)
+  dqdDataBaseManager <- createDqdDatabaseManager(scanId = scanId,
+                                                 dataType = dqd_dataType,
+                                                 server = dqd_server,
+                                                 port = dqd_port,
+                                                 schema = dqd_dataBaseSchema,
+                                                 dbUsername = dqd_user,
+                                                 password = dqd_password)
 
   result <- executeDqChecks(connectionDetails = connectionDetails,
-                            cdmDatabaseSchema = cdmDatabaseSchema,
+                            cdmDatabaseSchema = cdm_dataBaseSchema,
                             resultsDatabaseSchema = resultsDatabaseSchema,
                             cdmSourceName = cdmSourceName,
                             numThreads = numThreads,

@@ -1,5 +1,6 @@
 package com.arcadia.DataQualityDashboard.service.r;
 
+import com.arcadia.DataQualityDashboard.config.DqdDatabaseProperties;
 import com.arcadia.DataQualityDashboard.config.RServeProperties;
 import com.arcadia.DataQualityDashboard.service.error.RException;
 import lombok.Getter;
@@ -34,13 +35,16 @@ public class RConnectionCreatorImpl implements RConnectionCreator {
     private final String downloadJdbcDriversScript =
             "~/R/download-jdbc-drivers.R";
 
+    private final DqdDatabaseProperties dqdDatabaseProperties;
+
     @Autowired
-    public RConnectionCreatorImpl(RServeProperties properties) {
+    public RConnectionCreatorImpl(RServeProperties properties, DqdDatabaseProperties dqdDatabaseProperties) {
         exeFilePath = properties.getPath();
         host = properties.getHost();
         port = properties.getPort();
         isUnix = properties.isUnix();
         currentPort = port;
+        this.dqdDatabaseProperties = dqdDatabaseProperties;
     }
 
     /* Multithreading
@@ -59,7 +63,7 @@ public class RConnectionCreatorImpl implements RConnectionCreator {
                 createRServeProcess(currentPort);
                 connection = new RConnection(host, currentPort);
             }
-            RConnectionWrapper connectionWrapper = new RConnectionWrapperImpl(connection, isUnix);
+            RConnectionWrapper connectionWrapper = new RConnectionWrapperImpl(connection, isUnix, dqdDatabaseProperties);
             if (!isUnix) {
                 connectionWrapper.loadScript(downloadJdbcDriversScript);
             }

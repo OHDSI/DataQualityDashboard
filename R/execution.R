@@ -116,7 +116,7 @@ ABORT_MESSAGE <- "Process was aborted by User"
                     executionTime = sprintf("%f %s", delta, attr(delta, "units")))
     },
     warning = function(w) {
-      ParallelLogger::logWarn(sprintf("#DQD [Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s",
+      ParallelLogger::logWarn(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s",
                                       checkDescription$checkLevel,
                                       checkDescription$checkName, 
                                       check["cdmTableName"], 
@@ -240,7 +240,7 @@ executeDqChecks <- function(connectionDetails,
   ParallelLogger::clearLoggers()
 
   appenders <- list(createDqdLogAppender(dbLogger))
-  parallelLogger <- ParallelLogger::createLogger(name = "DqDashboard", threshold = "INFO", appenders = appenders)
+  parallelLogger <- ParallelLogger::createLogger(name = "DqdDashboard", threshold = "INFO", appenders = appenders)
   ParallelLogger::registerLogger(parallelLogger)
 
   ParallelLogger::logInfo("#DQD Execution started")
