@@ -14,6 +14,15 @@ rserve:
 files-manager:
   url: ${FilesManagerUrl}
 
+dqd-database:
+  dbms: ${SharedDbType}
+  server: ${SharedDbHost}
+  port: ${SharedDbPort}
+  database: ${SharedDbName}
+  schema: ${SharedDbDqdSchema}
+  user: ${SharedDbDqdUser}
+  password: ${SharedDbDqdPass}
+
 spring:
   application:
     name: Data Quality Dashboard
@@ -33,7 +42,7 @@ spring:
           property-sources:
             -
               credential:
-                client-id: ${AZURE_CLIENT_ID}
+                client-id: b54598c7-90a9-44b4-a67d-a8ee90a2b091
               endpoint: https://kv-perseus.vault.azure.net/
               profile:
-                tenant-id: ${AZURE_TENANT_ID}
+                tenant-id: b376f6fd-26d6-4a47-8c9f-05e9bbff476c

@@ -10,7 +10,7 @@ createDqdLogAppender <- function(dbLogger, layout = ParallelLogger::layoutSimple
     if (echoToConsole) {
       prefix <- '#DQD '
       if (startsWith(message, prefix)) {
-        msg <- substr(message, nchar(prefix), nchar(message))
+        msg <- substr(message, nchar(prefix) + 1, nchar(message))
         if (level == "INFO") {
           dbLogger$info(msg)
           dbLogger$incrementCompletedStepsCount()
