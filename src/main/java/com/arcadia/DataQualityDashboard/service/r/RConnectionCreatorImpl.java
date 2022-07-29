@@ -63,13 +63,17 @@ public class RConnectionCreatorImpl implements RConnectionCreator {
                 createRServeProcess(currentPort);
                 connection = new RConnection(host, currentPort);
             }
-            RConnectionWrapper connectionWrapper = new RConnectionWrapperImpl(connection, isUnix, dqdDatabaseProperties);
-            if (!isUnix) {
-                connectionWrapper.loadScript(downloadJdbcDriversScript);
+            try {
+                RConnectionWrapper connectionWrapper = new RConnectionWrapperImpl(connection, isUnix, dqdDatabaseProperties);
+                if (!isUnix) {
+                    connectionWrapper.loadScript(downloadJdbcDriversScript);
+                }
+                connectionWrapper.loadScripts(loadScripts);
+                return connectionWrapper;
+            } catch (Exception e) {
+                connection.close();
+                throw e;
             }
-            connectionWrapper.loadScripts(loadScripts);
-
-            return connectionWrapper;
         } catch (RserveException e) {
             throw new RException(e.getMessage(), e);
         }
