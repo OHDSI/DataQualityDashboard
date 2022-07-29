@@ -1,9 +1,9 @@
 package com.arcadia.DataQualityDashboard.service;
 
-import java.io.File;
+import com.arcadia.DataQualityDashboard.service.response.FileSaveResponse;
 
 public interface DataQualityResultService {
-    void saveCompletedResult(File resultJsonFile, Long scanId);
+    void saveCompletedResult(FileSaveResponse fileSaveResponse, Long scanId);
 
     void saveFailedResult(Long scanId, String errorMessage);
 }
