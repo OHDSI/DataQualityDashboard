@@ -20,7 +20,7 @@ public class FileUtil {
     public static void createDirectory(String name) {
         Path path = Path.of(name);
         if (!Files.exists(path)) {
-            Files.createDirectory(path);
+            Files.createDirectories(path);
         }
     }
 }
