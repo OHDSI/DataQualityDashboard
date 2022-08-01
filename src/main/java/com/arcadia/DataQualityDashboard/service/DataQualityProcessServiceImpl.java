@@ -20,6 +20,7 @@ import java.util.concurrent.Future;
 
 import static com.arcadia.DataQualityDashboard.util.FileSaveRequestUtil.createFileSaveRequest;
 import static com.arcadia.DataQualityDashboard.util.FileUtil.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class DataQualityProcessServiceImpl implements DataQualityProcessService 
 
     @PostConstruct
     public void init() {
-        createDirectory(DATA_QUALITY_CHECK_RESULTS_JSON_LOCATION);
+        createDirectory(RESULTS_JSON_LOCATION);
     }
 
     @Async
@@ -43,18 +44,18 @@ public class DataQualityProcessServiceImpl implements DataQualityProcessService 
                 jsonResult = rConnection.checkDataQuality(scan);
                 log.info("Data quality check process successfully finished");
             }
-            Path resultJsonFile = Path.of(toResultJsonFilePath(generateRandomFileName()));
-            Files.createFile(resultJsonFile);
+            Path resultJsonPath = Path.of(RESULTS_JSON_LOCATION, generateRandomFileName());
+            Files.createFile(resultJsonPath);
             try {
-                try(BufferedWriter writer = new BufferedWriter(new FileWriter(resultJsonFile.toFile()))) {
+                try(BufferedWriter writer = new BufferedWriter(new FileWriter(resultJsonPath.toFile(), UTF_8))) {
                     writer.write(jsonResult);
                 }
-                FileSaveRequest fileSaveRequest = createFileSaveRequest(resultJsonFile, scan);
+                FileSaveRequest fileSaveRequest = createFileSaveRequest(resultJsonPath, scan);
                 FileSaveResponse fileSaveResponse = filesManagerService.saveFile(fileSaveRequest);
                 resultService.saveCompletedResult(fileSaveResponse, scan.getId());
                 log.info("Result json file successfully saved");
             } finally {
-                Files.delete(resultJsonFile);
+                Files.delete(resultJsonPath);
             }
         } catch (Exception e) {
             String ABORT_MESSAGE = "Process was aborted by User";

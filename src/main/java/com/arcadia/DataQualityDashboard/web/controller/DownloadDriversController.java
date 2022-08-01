@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
 @RequestMapping("/api/drivers")
@@ -18,9 +21,12 @@ public class DownloadDriversController {
 
     @GetMapping()
     public ResponseEntity<Void> getInfo() {
-        log.info("Rest request to get App info");
-        RConnectionWrapper rConnection = rConnectionCreator.createRConnection();
-        rConnection.loadScript(rConnectionCreator.getDownloadJdbcDriversScript());
-        return ResponseEntity.noContent().build();
+        log.info("Rest request to load JDBC drivers to R server");
+        try(RConnectionWrapper rConnection = rConnectionCreator.createRConnection()) {
+            rConnection.loadScript(rConnectionCreator.getDownloadJdbcDriversScript());
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Can not load JDBC drivers to Rserve: " + e.getMessage(), e);
+        }
     }
 }
