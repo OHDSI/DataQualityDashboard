@@ -150,7 +150,7 @@
     } else {
       $.ajax({
         dataType: 'json',
-        url: `api/result/${scanId}`,
+        url: `json/${scanId}`,
         headers: { 'Username': username },
         success: function (results) {
           loadResults(results);
