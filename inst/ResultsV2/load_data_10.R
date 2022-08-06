@@ -65,38 +65,6 @@ summaryParts2Count <- function(data_tab) {
     ungroup()
 }
 
-summaryParts3 <- function(data_tab, variable) {
-  part <-
-    select(data_tab,
-           c(CATEGORY, CONTEXT, PASSED, FAILED, N.A., IS_ERROR)) %>%
-    mutate(CATEGORY = as.factor(CATEGORY)) %>%
-    mutate(CONTEXT = as.factor(CONTEXT)) %>%
-    group_by(CATEGORY, CONTEXT) %>%
-    dplyr::summarise("sum" := sum({
-      {
-        variable
-      }
-    })) %>%
-    spread(CONTEXT, sum) %>%
-    ungroup()
-}
-
-summaryParts4 <- function(data_tab, variable) {
-  part <-
-    select(data_tab,
-           c(CATEGORY, CONTEXT, FAILED)) %>%
-    mutate(CATEGORY = as.factor(CATEGORY)) %>%
-    mutate(CONTEXT = as.factor(CONTEXT)) %>%
-    group_by(CATEGORY, CONTEXT) %>%
-    dplyr::summarise("sum" := sum({
-      {
-        variable
-      }
-    })) %>%
-    spread(CONTEXT, sum) %>%
-    ungroup()
-}
-
 # Checks if a string is in column name
 # https://stackoverflow.com/questions/60978376/r-to-identify-whether-column-names-in-a-dataframe-contains-string
 checkString <- function(dat, pat)
