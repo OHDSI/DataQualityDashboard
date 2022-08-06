@@ -4,7 +4,6 @@ library(htmlwidgets)
 library(htmltools)
 library(formattable)
 library(shinyWidgets)
-# library(shinythemes)
 library(dplyr)
 source("load_data_10.R")
 
@@ -13,6 +12,248 @@ server <- function(input, output) {
   #### Panel: Overview                        ####
   ################################################
   if (checkString(dataT, "Validation")) {
+    if ("N.A." %in% colnames(dataT)) {
+      output$summary_dt1 <- renderUI({
+        reactable(
+          data1,
+          striped = TRUE,
+          highlight = TRUE,
+          bordered = TRUE,
+          theme = reactableTheme(
+            borderColor = "#dfe2e5",
+            # stripedColor = "#ecf0f1",
+            highlightColor = "#f0f5f9",
+            cellPadding = "8px 12px",
+          ),
+          rowStyle = function(index) {
+            if (index == 4)
+              list(fontWeight = "bold")
+          },
+          columns = list(
+            CATEGORY = colDef(name = "Category", minWidth = 80),
+            Validation.Pass = colDef(
+              name = "Pass",
+              minWidth = 60,
+              align = "center"
+            ),
+            Verification.Pass = colDef(
+              name = "Pass",
+              minWidth = 60,
+              align = "center"
+            ),
+            Total.Pass = colDef(
+              name = "Pass",
+              minWidth = 60,
+              align = "center"
+            ),
+            Validation.Fail = colDef(
+              name = "Fail",
+              minWidth = 60,
+              align = "center",
+              style = list(color = "red")
+            ),
+            Verification.Fail = colDef(
+              name = "Fail",
+              minWidth = 60,
+              align = "center",
+              style = list(color = "red")
+            ),
+            Total.Fail = colDef(
+              name = "Fail",
+              minWidth = 60,
+              align = "center",
+              style = list(color = "red")
+            ),
+            Validation.N.A. = colDef(
+              name = "N.A.",
+              minWidth = 60,
+              align = "center"
+            ),
+            Verification.N.A. = colDef(
+              name = "N.A.",
+              minWidth = 60,
+              align = "center"
+            ),
+            Total.N.A. = colDef(
+              name = "N.A.",
+              minWidth = 60,
+              align = "center"
+            ),
+            Validation.Error = colDef(
+              name = "Error",
+              minWidth = 60,
+              align = "center"
+            ),
+            Verification.Error = colDef(
+              name = "Error",
+              minWidth = 60,
+              align = "center"
+            ),
+            Total.Error = colDef(
+              name = "Error",
+              minWidth = 60,
+              align = "center"
+            ),
+            Validation.PctPass = colDef(
+              name = "% Pass",
+              minWidth = 60,
+              align = "center",
+              format =
+                colFormat(separators = TRUE, digits = 0)
+            ),
+            Verification.PctPass = colDef(
+              name = "% Pass",
+              minWidth = 60,
+              align = "center",
+              format =
+                colFormat(separators = TRUE, digits = 0)
+            ),
+            Total.PctPass = colDef(
+              name = "% Pass",
+              minWidth = 60,
+              align = "center",
+              format =
+                colFormat(separators = TRUE, digits = 0)
+            )
+          ),
+          columnGroups = list(
+            colGroup(
+              name = "Validation",
+              columns = c(
+                "Validation.Pass",
+                "Validation.Fail",
+                "Validation.N.A.",
+                "Validation.Error",
+                "Validation.PctPass"
+              )
+            ),
+            colGroup(
+              name = "Verification",
+              columns = c(
+                "Verification.Pass",
+                "Verification.Fail",
+                "Verification.N.A.",
+                "Verification.Error",
+                "Verification.PctPass"
+              )
+            ),
+            colGroup(
+              name = "Total",
+              columns = c(
+                "Total.Pass",
+                "Total.Fail",
+                "Total.N.A.",
+                "Total.Error",
+                "Total.PctPass"
+              )
+            )
+          )
+        )
+      })
+    } else {
+      output$summary_dt1 <- renderUI({
+        reactable(
+          data1,
+          striped = TRUE,
+          highlight = TRUE,
+          bordered = TRUE,
+          theme = reactableTheme(
+            borderColor = "#dfe2e5",
+            # stripedColor = "#ecf0f1",
+            highlightColor = "#f0f5f9",
+            cellPadding = "8px 12px",
+          ),
+          rowStyle = function(index) {
+            if (index == 4)
+              list(fontWeight = "bold")
+          },
+          columns = list(
+            CATEGORY = colDef(name = "Category", minWidth = 80),
+            Validation.Pass = colDef(
+              name = "Pass",
+              minWidth = 60,
+              align = "center"
+            ),
+            Verification.Pass = colDef(
+              name = "Pass",
+              minWidth = 60,
+              align = "center"
+            ),
+            Total.Pass = colDef(
+              name = "Pass",
+              minWidth = 60,
+              align = "center"
+            ),
+            Validation.Fail = colDef(
+              name = "Fail",
+              minWidth = 60,
+              align = "center",
+              style = list(color = "red")
+            ),
+            Verification.Fail = colDef(
+              name = "Fail",
+              minWidth = 60,
+              align = "center",
+              style = list(color = "red")
+            ),
+            Total.Fail = colDef(
+              name = "Fail",
+              minWidth = 60,
+              align = "center",
+              style = list(color = "red")
+            ),
+            Validation.PctPass = colDef(
+              name = "% Pass",
+              minWidth = 60,
+              align = "center",
+              format =
+                colFormat(separators = TRUE, digits = 0)
+            ),
+            Verification.PctPass = colDef(
+              name = "% Pass",
+              minWidth = 60,
+              align = "center",
+              format =
+                colFormat(separators = TRUE, digits = 0)
+            ),
+            Total.PctPass = colDef(
+              name = "% Pass",
+              minWidth = 60,
+              align = "center",
+              format =
+                colFormat(separators = TRUE, digits = 0)
+            )
+          ),
+          columnGroups = list(
+            colGroup(
+              name = "Validation",
+              columns = c(
+                "Validation.Pass",
+                "Validation.Fail",
+                "Validation.PctPass"
+              )
+            ),
+            colGroup(
+              name = "Verification",
+              columns = c(
+                "Verification.Pass",
+                "Verification.Fail",
+                "Verification.PctPass"
+              )
+            ),
+            colGroup(
+              name = "Total",
+              columns = c(
+                "Total.Pass",
+                "Total.Fail",
+                "Total.PctPass"
+              )
+            )
+          )
+        )
+      })
+    }
+  } else {
     output$summary_dt1 <- renderUI({
       reactable(
         data1,
@@ -31,144 +272,6 @@ server <- function(input, output) {
         },
         columns = list(
           CATEGORY = colDef(name = "Category", minWidth = 80),
-          Validation.Pass = colDef(
-            name = "Pass",
-            minWidth = 60,
-            align = "center"
-          ),
-          Verification.Pass = colDef(
-            name = "Pass",
-            minWidth = 60,
-            align = "center"
-          ),
-          Total.Pass = colDef(
-            name = "Pass",
-            minWidth = 60,
-            align = "center"
-          ),
-          Validation.Fail = colDef(
-            name = "Fail",
-            minWidth = 60,
-            align = "center",
-            style = list(color = "red")
-          ),
-          Verification.Fail = colDef(
-            name = "Fail",
-            minWidth = 60,
-            align = "center",
-            style = list(color = "red")
-          ),
-          Total.Fail = colDef(
-            name = "Fail",
-            minWidth = 60,
-            align = "center",
-            style = list(color = "red")
-          ),
-          Validation.Not_Applicable = colDef(
-            name = "Not Applicable",
-            minWidth = 60,
-            align = "center"
-          ),
-          Verification.Not_Applicable = colDef(
-            name = "Not Applicable",
-            minWidth = 60,
-            align = "center"
-          ),
-          Total.Not_Applicable = colDef(
-            name = "Not Applicable",
-            minWidth = 60,
-            align = "center"
-          ),
-          Validation.Error = colDef(
-            name = "Error",
-            minWidth = 60,
-            align = "center"
-          ),
-          Verification.Error = colDef(
-            name = "Error",
-            minWidth = 60,
-            align = "center"
-          ),
-          Total.Error = colDef(
-            name = "Error",
-            minWidth = 60,
-            align = "center"
-          ),
-          Validation.PctPass = colDef(
-            name = "% Pass",
-            minWidth = 60,
-            align = "center",
-            format =
-              colFormat(separators = TRUE, digits = 0)
-          ),
-          Verification.PctPass = colDef(
-            name = "% Pass",
-            minWidth = 60,
-            align = "center",
-            format =
-              colFormat(separators = TRUE, digits = 0)
-          ),
-          Total.PctPass = colDef(
-            name = "% Pass",
-            minWidth = 60,
-            align = "center",
-            format =
-              colFormat(separators = TRUE, digits = 0)
-          )
-        ),
-        columnGroups = list(
-          colGroup(
-            name = "Validation",
-            columns = c(
-              "Validation.Pass",
-              "Validation.Fail",
-              "Validation.Not_Applicable",
-              "Validation.Error",
-              "Validation.PctPass"
-            )
-          ),
-          colGroup(
-            name = "Verification",
-            columns = c(
-              "Verification.Pass",
-              "Verification.Fail",
-              "Verification.Not_Applicable",
-              "Verification.Error",
-              "Verification.PctPass"
-            )
-          ),
-          colGroup(
-            name = "Total",
-            columns = c(
-              "Total.Pass",
-              "Total.Fail",
-              "Total.Not_Applicable",
-              "Total.Error",
-              "Total.PctPass"
-            )
-          )
-        )
-      )
-    })
-  } else{
-    output$summary_dt1 <- renderUI({
-      reactable(
-        data1,
-        striped = TRUE,
-        highlight = TRUE,
-        bordered = TRUE,
-        theme = reactableTheme(
-          borderColor = "#dfe2e5",
-          # stripedColor = "#ecf0f1",
-          highlightColor = "#f0f5f9",
-          cellPadding = "8px 12px",
-        ),
-        rowStyle = function(index) {
-          if (index == 4)
-            list(fontWeight = "bold")
-        },
-        columns = list(
-          CATEGORY = colDef(name = "Category", minWidth = 80),
           Verification.Pass = colDef(
             name = "Pass",
             minWidth = 60,
@@ -180,8 +283,8 @@ server <- function(input, output) {
             align = "center",
             style = list(color = "red")
           ),
-          Verification.Not_Applicable = colDef(
-            name = "Not Applicable",
+          Verification.N.A. = colDef(
+            name = "N.A.",
             minWidth = 60,
             align = "center"
           ),
@@ -198,18 +301,16 @@ server <- function(input, output) {
               colFormat(separators = TRUE, digits = 0)
           )
         ),
-        columnGroups = list(
-          colGroup(
-            name = "Verification",
-            columns = c(
-              "Verification.Pass",
-              "Verification.Fail",
-              "Verification.Not_Applicable",
-              "Verification.Error",
-              "Verification.PctPass"
-            )
+        columnGroups = list(colGroup(
+          name = "Verification",
+          columns = c(
+            "Verification.Pass",
+            "Verification.Fail",
+            "Verification.N.A.",
+            "Verification.Error",
+            "Verification.PctPass"
           )
-        )
+        ))
       )
     })
   }
