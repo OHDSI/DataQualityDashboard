@@ -21,7 +21,7 @@ public class TestConnectionServiceImpl implements TestConnectionService {
             RConnectionWrapper rConnection = rConnectionCreator.createRConnection();
             return rConnection.testConnection(dbSettings);
         } catch (Exception e) {
-            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Can not get response from R server: " + e.getMessage(), e);
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Could not get response from R server: " + e.getMessage(), e);
         }
     }
 }
