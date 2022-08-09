@@ -156,6 +156,7 @@
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
+#' @param resume                    Boolean to indicate if processing will be resumed
 #' 
 #' @return If sqlOnly = FALSE, a list object of results
 #' 
@@ -180,7 +181,8 @@ executeDqChecks <- function(connectionDetails,
                             cdmVersion = "5.3.1",
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
-                            conceptCheckThresholdLoc = "default") {
+                            conceptCheckThresholdLoc = "default",
+                            resume = FALSE) {
   
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
@@ -198,6 +200,7 @@ executeDqChecks <- function(connectionDetails,
   
   stopifnot(is.null(checkNames) | is.character(checkNames), is.null(tablesToExclude) | is.character(tablesToExclude))
   stopifnot(is.character(cdmVersion))
+  stopifnot(is.logical(resume))
   
   # Setup output folder ------------------------------------------------------------------------------------------------------------
   options(scipen = 999)
@@ -336,6 +339,7 @@ if (conceptCheckThresholdLoc == "default"){
     cohortDefinitionId,
     outputFolder, 
     sqlOnly,
+    resume,
     progressBar = TRUE
   )
   ParallelLogger::stopCluster(cluster = cluster)
@@ -359,7 +363,11 @@ if (conceptCheckThresholdLoc == "default"){
                                     fieldChecks = fieldChecks,
                                     conceptChecks = conceptChecks,
                                     metadata = metadata)
-    
+
+    if (0 == allResults$Overview$countErrorFailed) {
+      unlink(Sys.glob(.checkResultFilePath(outputFolder, "*", "*")))
+    }
+
     ParallelLogger::logInfo("Execution Complete")  
   }
 
@@ -386,40 +394,54 @@ if (conceptCheckThresholdLoc == "default"){
   return(allResults)
 }
 
-.runCheck <- function(checkDescription, 
+.checkResultFilePath <- function(outputFolder, checkLevel, checkName) {
+  file.path(outputFolder, sprintf("check-result-%s-%s.csv", checkLevel, checkName))
+}
+
+.runCheck <- function(checkDescription,
                       tableChecks,
                       fieldChecks,
                       conceptChecks,
                       connectionDetails,
                       connection,
-                      cdmDatabaseSchema, 
+                      cdmDatabaseSchema,
                       vocabDatabaseSchema,
                       cohortDatabaseSchema,
                       cohortDefinitionId,
-                      outputFolder, 
-                      sqlOnly) {
-  
+                      outputFolder,
+                      sqlOnly,
+                      resume) {
+
   library(magrittr)
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
-  
+
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",
                               tolower(checkDescription$checkLevel),
                               checkDescription$evaluationFilter)
   checks <- eval(parse(text = filterExpression))
-  
+
   if (length(cohortDefinitionId > 0)){cohort = TRUE} else {cohort = FALSE}
-  
+
   if (sqlOnly) {
     unlink(file.path(outputFolder, sprintf("%s.sql", checkDescription$checkName)))
   }
-  
+
   if (nrow(checks) > 0) {
+    checkResultsFile <- .checkResultFilePath(outputFolder,
+                                             checkDescription$checkLevel,
+                                             checkDescription$checkName)
+    checkResultsSaved <- NULL
+    recoveredNumber <- 0
+    if (resume & file.exists(checkResultsFile)) {
+      cClasses <- c("QUERY_TEXT"="character","CHECK_NAME"="character","CHECK_LEVEL"="character","CHECK_DESCRIPTION"="character","CDM_TABLE_NAME"="character","CDM_FIELD_NAME"="character","SQL_FILE"="character","CATEGORY"="character","SUBCATEGORY"="character","CONTEXT"="character","WARNING"="character","ERROR"="character","checkId"="character")
+      checkResultsSaved <- read.csv(checkResultsFile, stringsAsFactors = FALSE, colClasses = cClasses)
+    }
     dfs <- apply(X = checks, MARGIN = 1, function(check) {
-      
+
       columns <- lapply(names(check), function(c) {
         setNames(check[c], c)
       })
-      
+
       params <- c(list(dbms = connectionDetails$dbms),
                   list(sqlFilename = checkDescription$sqlFile),
                   list(packageName = "DataQualityDashboard"),
@@ -430,22 +452,50 @@ if (conceptCheckThresholdLoc == "default"){
                   list(vocabDatabaseSchema = vocabDatabaseSchema),
                   list(cohort = cohort),
                   unlist(columns, recursive = FALSE))
-      
+
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)
-      
+
       if (sqlOnly) {
-        write(x = sql, file = file.path(outputFolder, 
+        write(x = sql, file = file.path(outputFolder,
                                         sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
         data.frame()
       } else {
-        .processCheck(connection = connection,
-                      connectionDetails = connectionDetails,
-                      check = check, 
-                      checkDescription = checkDescription, 
-                      sql = sql,
-                      outputFolder = outputFolder)
-      }    
+        checkResult <- NULL
+        if (!is.null(checkResultsSaved)) {
+          currentCheckId <- .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"])
+          checkResultCandidates <- checkResultsSaved %>% dplyr::filter(checkId == currentCheckId & is.na(ERROR))
+          if (1 == nrow(checkResultCandidates)) {
+              checkResult <- checkResultCandidates[1,]
+              recoveredNumber <<- recoveredNumber + 1
+          }
+        }
+
+        if (is.null(checkResult)) {
+          checkResult <- .processCheck(connection = connection,
+                                       connectionDetails = connectionDetails,
+                                       check = check,
+                                       checkDescription = checkDescription,
+                                       sql = sql,
+                                       outputFolder = outputFolder)
+          if (is.na(checkResult$ERROR)) {
+            write.table(x = checkResult,
+                        file = checkResultsFile,
+                        row.names = FALSE,
+                        col.names = !file.exists(checkResultsFile),
+                        append = file.exists(checkResultsFile),
+                        sep = ",",
+                        qmethod = "double")
+          }
+        }
+
+        checkResult
+      }
     })
+
+    if (recoveredNumber > 0) {
+      ParallelLogger::logInfo(sprintf("Recovered %s of %s results from %s", recoveredNumber, nrow(checks), basename(checkResultsFile)))
+    }
+
     do.call(rbind, dfs)
   } else {
     ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
