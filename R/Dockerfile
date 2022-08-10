@@ -19,7 +19,7 @@ RUN R -e "install.packages('DatabaseConnector')"
 RUN R -e "install.packages('SqlRender')"
 RUN R -e "install.packages('ParallelLogger')"
 RUN R -e "install.packages('devtools')"
-RUN R -e "devtools::install_github('OHDSI/DataQualityDashboard')"
+RUN R -e "remotes::install_github('OHDSI/DataQualityDashboard')"
 RUN R -e "install.packages('Rserve',, 'http://rforge.net/', type='source')"
 
 VOLUME /rserve
