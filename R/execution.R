@@ -970,7 +970,7 @@ writeJsonResultsToCsv <- function(jsonPath,
                                               "PCT_VIOLATED_ROWS", "NUM_DENOMINATOR_ROWS",
                                               "EXECUTION_TIME", "NOT_APPLICABLE_REASON",
                                               "ERROR", "QUERY_TEXT"),
-                                  delimiter = "\t") {
+                                  delimiter = ",") {
   tryCatch(
     expr = {
       ParallelLogger::logInfo(sprintf("Loading results from %s", jsonPath))
