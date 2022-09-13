@@ -206,7 +206,9 @@ executeDqChecks <- function(connectionDetails,
   options(scipen = 999)
 
   # capture metadata -----------------------------------------------------------------------
-if (!sqlOnly) {
+  metadata <- list()
+  metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
+  if (!sqlOnly) {
   connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
   sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
                            cdmDatabaseSchema = cdmDatabaseSchema)
