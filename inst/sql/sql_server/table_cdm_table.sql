@@ -17,7 +17,9 @@ FROM
   select num_violated_rows from
   (
     select
-      0 as num_violated_rows
+      case when count_big(*) = 0 then 0
+      else 0
+    end as num_violated_rows
     from @cdmDatabaseSchema.@cdmTableName cdmTable
   ) violated_rows
 ) violated_row_count,

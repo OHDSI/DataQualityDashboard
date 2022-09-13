@@ -185,7 +185,6 @@ executeDqChecks <- function(connectionDetails,
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
                             conceptCheckThresholdLoc = "default") {
-  
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
     stop("connectionDetails must be an object of class 'connectionDetails'.")
@@ -202,6 +201,15 @@ executeDqChecks <- function(connectionDetails,
   
   stopifnot(is.null(checkNames) | is.character(checkNames), is.null(tablesToExclude) | is.character(tablesToExclude))
   stopifnot(is.character(cdmVersion))
+  
+  # Warning if check names for determining NA is missing
+  if (!length(checkNames)==0){
+    for(requiredCheckName in c("cdmTable", "cdmField", "measureValueCompleteness")) {
+      if (!(requiredCheckName %in% checkNames)) {
+        warning(paste(requiredCheckName, "is missing from the provided checkNames. The NA status will not be calculated correctly."))
+      }
+    }
+  }
   
   # Use UTF-8 encoding to address issue: "special characters in metadata #33"
   saveEncoding <- getOption("encoding")
