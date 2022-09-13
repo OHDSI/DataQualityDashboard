@@ -186,14 +186,6 @@ executeDqChecks <- function(connectionDetails,
                             fieldCheckThresholdLoc = "default",
                             conceptCheckThresholdLoc = "default") {
   
-  # Make sure the following checks are included: cdmTable, cdmField, measureValueCompleteness
-  if (!length(checkNames)==0){
-    checkNames <- union(checkNames, c("cdmTable", "cdmField", "measureValueCompleteness"))
-  }
-  if (!length(checkLevels)==0){
-	checkLevels <- union(checkLevels, c("TABLE", "FIELD"))
-  }
-  
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
     stop("connectionDetails must be an object of class 'connectionDetails'.")
