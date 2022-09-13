@@ -40,6 +40,18 @@ Version 1 of the tool includes 20 different check types organized into Kahn cont
 
 This article will detail each check type, its name, check level, description, definition, and to which Kahn context, category, and subcategory it belongs. 
 
+## cdmTable
+
+**Name**: cdmTable
+<br>**Level**: Table check
+<br>**Context**: Verification
+<br>**Category**: Conformance
+<br>**Subcategory**: Relational
+
+**Description**: A value indicating if all tables are present in the database schema.
+
+**Definition**: This check will go through each table and determine if each is present as specified based on the CDM version. If the table is present, the resulting value will be 0; if the table is absent the resulting value will be 100. 
+
 ## measurePersonCompleteness
 
 **Name**: measurePersonCompleteness
