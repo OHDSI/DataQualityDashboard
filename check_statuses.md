@@ -1,19 +1,18 @@
-New Flags
-=========
+# DQD check statuses
 
-**DQ Check Status Flag**
+## Introduction
+In the DataQualityDashboard v2, new check statuses were introduced: `Error` and `Not Applicable`. These were introduced to more accurately reflect the quality of data contained in a CDM instance, addressing scenarios where pass/fail is not appropriate. The new set of mutually exclusive status states are listed below in priority order:
 
-In the initial release of the DQD, all DQ checks were assigned a status of pass or fail resulting in skewed results under certain conditions. In order to provide results that more accurately reflect the quality of data contained in a CDM instance, the number of status flags were expanded to address scenarios where pass/fail is not appropriate. The new set of mutually exclusive status states are listed below in priority order.
+- **Is Error:** if a SQL error occurred during execution
 
--   Is_Error — if SQL error occurred during execution.
+- **Not Applicable:** if DQ check is not applicable for reasons explained in the section below
 
--   Not_applicable — if DQ check is not applicable for reasons explained below.
+- **Failed:** — if percent violating rows is greater than the threshold
 
--   Failed — if (violated rows/denominator) < threshold)
+- **Passed:** — if percent violating rows is smaller than the threshold
 
--   Passed — if (violated rows/denominator) > threshold)
 
-**Not_applicable flag.**
+## Not Applicable
 
 The results of a DQ check may not be applicable to a given CDM instance depending on the implementation and content of the instance. For example, the DQ check for plausible values of HbA1c lab results would pass with no violations even if there were no results for that lab test in the database. It is not uncommon to have \> 1000 DQ checks that do not apply to a given CDM instance. The results from DQ checks that are not applicable skew to overall results. Listed below are the scenarios for which a DQ check result is flagged as Not_applicable:
 
@@ -43,6 +42,3 @@ The results of a DQ check may not be applicable to a given CDM instance dependin
 
     b.  The DQ check includes a UNIT_CONCEPT_ID. A DQ check is flagged as Not_applicable if there are no instances of both concept and unit concept IDs in the table/field. E.g. all DQ checks referencing the concept_ID for HbA1c lab results expressed in mg/dl units will be flagged as Not_applicable if there are no instances of that concept_ID in the table/field addressed by the DQ check.
 
-**Is_error Flag.**
-
-A DQ check is assigned a status of is_error if the check returns a SQL execution error that is not considered structure-related (i. e. caused by a missing table or a missing field). DQD uses new isStructureRelatedError function to parse the error message to determine if it is structure-related or not. This function parses the error message according to the value of the dbms parameter. isStructureRelatedError function will return TRUE if dbms is unknown.
