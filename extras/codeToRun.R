@@ -23,6 +23,10 @@ verboseMode <- FALSE # set to TRUE if you want to see activity written to the co
 # write results to table? -----------------------------------------------------------------------
 writeToTable <- FALSE # set to FALSE if you want to skip writing to results table
 
+# write results to a csv file? -----------------------------------------------------------------------
+writeToCsv <- FALSE # set to FALSE if you want to skip writing to csv file
+csvFile <- "" # only needed if writeToCsv is set to TRUE
+
 # if writing to table and using Redshift, bulk loading can be initialized -------------------------------
 
 # Sys.setenv("AWS_ACCESS_KEY_ID" = "",
@@ -54,6 +58,8 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                               outputFolder = outputFolder, 
                               verboseMode = verboseMode,
                               writeToTable = writeToTable,
+                              writeToCsv = writeToCsv,
+                              csvFile = csvFile,
                               checkLevels = checkLevels,
                               tablesToExclude = tablesToExclude,
                               checkNames = checkNames)
