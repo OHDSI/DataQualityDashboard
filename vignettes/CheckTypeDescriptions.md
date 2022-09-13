@@ -1,13 +1,13 @@
 ---
 title: "Data Quality Check Type Definitions"
 author: "Clair Blacketer"
-date: "2021-05-07"
+date: "2022-09-13"
 header-includes:
     - \usepackage{fancyhdr}
     - \pagestyle{fancy}
     - \fancyhead{}
     - \fancyhead[CO,CE]{Data Quality Check Type Definitions}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version 1.0.0}
+    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version 1.4.1}
     - \fancyfoot[LE,RO]{\thepage}
     - \renewcommand{\headrulewidth}{0.4pt}
     - \renewcommand{\footrulewidth}{0.4pt}
@@ -39,18 +39,6 @@ And, since it is parameterized, we can similarly apply it to DRUG_EXPOSURE.days_
 Version 1 of the tool includes 20 different check types organized into Kahn contexts and categories ([link to paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/)). Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs.
 
 This article will detail each check type, its name, check level, description, definition, and to which Kahn context, category, and subcategory it belongs. 
-
-## cdmTable
-
-**Name**: cdmTable
-<br>**Level**: Table check
-<br>**Context**: Verification
-<br>**Category**: Conformance
-<br>**Subcategory**: Relational
-
-**Description**: A value indicating if all tables are present in the database schema.
-
-**Definition**: This check will go through each table and determine if each is present as specified based on the CDM version. If the table is present, the resulting value will be 0; if the table is absent the resulting value will be 100. 
 
 ## measurePersonCompleteness
 

@@ -3,5 +3,5 @@
 export(executeDqChecks)
 export(listDqChecks)
 export(viewDqDashboard)
-export(writeJsonResultsToTable)
 export(writeJsonResultsToCsv)
+export(writeJsonResultsToTable)

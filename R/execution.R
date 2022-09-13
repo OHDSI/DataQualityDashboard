@@ -145,7 +145,7 @@
 #' @param outputFile                (OPTIONAL) File to write results JSON object 
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
-#' @param writeToCsv                Boolean to indicate if the check results will be written to the csv file
+#' @param writeToCsv                Boolean to indicate if the check results will be written to a csv file
 #' @param csvFile                   (OPTIONAL) CSV file to write results
 #'                                  in the resultsDatabaseSchema. Default is TRUE.
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
