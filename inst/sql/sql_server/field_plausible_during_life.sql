@@ -21,6 +21,7 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
+		/*violatedRowsBegin*/
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.*
     from @cdmDatabaseSchema.@cdmTableName cdmTable
     {@cohort & '@runForCohort' == 'Yes'}?{
@@ -29,7 +30,8 @@ FROM
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
     	}
     join @cdmDatabaseSchema.death de on cdmTable.person_id = de.person_id
-    where cast(cdmTable.@cdmFieldName as date) > dateadd(day, 60, cast(de.death_date as date)) 
+    where cast(cdmTable.@cdmFieldName as date) > dateadd(day, 60, cast(de.death_date as date))
+		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
 (

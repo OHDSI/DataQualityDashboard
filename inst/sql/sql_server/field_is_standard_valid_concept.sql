@@ -22,6 +22,7 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
+		/*violatedRowsBegin*/
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.* 
 		  FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		  {@cohort & '@runForCohort' == 'Yes'}?{
@@ -30,7 +31,8 @@ FROM
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
     	}
 		  join @vocabDatabaseSchema.concept co ON cdmTable.@cdmFieldName = co.concept_id
-		  WHERE co.concept_id != 0 AND (co.standard_concept != 'S' OR co.invalid_reason IS NOT NULL ) 
+		  WHERE co.concept_id != 0 AND (co.standard_concept != 'S' OR co.invalid_reason IS NOT NULL )
+		/*violatedRowsEnd*/
   ) violated_rows
 ) violated_row_count,
 ( 

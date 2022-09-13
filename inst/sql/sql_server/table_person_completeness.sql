@@ -21,6 +21,7 @@ FROM
 	SELECT COUNT_BIG(violated_rows.person_id) AS num_violated_rows
 	FROM
 	(
+		/*violatedRowsBegin*/
 		SELECT cdmTable.* 
 		FROM @cdmDatabaseSchema.person cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
@@ -31,6 +32,7 @@ FROM
 		LEFT JOIN @cdmDatabaseSchema.@cdmTableName cdmTable2
 		ON cdmTable.person_id = cdmTable2.person_id
 		WHERE cdmTable2.person_id IS NULL
+		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
 ( 
