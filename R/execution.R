@@ -485,26 +485,11 @@ executeDqChecks <- function(connectionDetails,
   }
 }
 
-.isStructureRelatedError <- function(errorMessage,
-                                     dbms) {
-  result <- TRUE
-  
-  #if (!is.na(errorMessage) & !is.na(dbms)) {
-  #  if (dbms == "postgresql") {
-  #    result <- 
-  #      stringr::str_detect(errorMessage, "relation(?s)(.*)does not exist") |
-  #      stringr::str_detect(errorMessage, "column(?s)(.*)does not exist")
-  #  }
-  #}
-  
-  result
-}
 
 .evaluateThresholds <- function(checkResults,
                                 tableChecks,
                                 fieldChecks,
-                                conceptChecks,
-                                dbms = NA) {
+                                conceptChecks) {
   
   checkResults$FAILED <- 0
   checkResults$PASSED <- 0
@@ -598,11 +583,7 @@ executeDqChecks <- function(connectionDetails,
     }
     
     if (!is.na(checkResults[i,]$ERROR)) {
-      if (.isStructureRelatedError(checkResults[i,]$ERROR, dbms)) {
-        checkResults[i,]$FAILED <- 1
-      } else {
-        checkResults[i,]$IS_ERROR <- 1
-      }
+      checkResults[i,]$IS_ERROR <- 1
     } else if (is.na(thresholdValue) | thresholdValue == 0) {
       # If no threshold, or threshold is 0%, then any violating records will cause this check to fail
       if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults[i,]$NUM_VIOLATED_ROWS > 0) {
@@ -741,17 +722,15 @@ executeDqChecks <- function(connectionDetails,
   checkResults <- .evaluateThresholds(checkResults = checkResults, 
                                       tableChecks = tableChecks, 
                                       fieldChecks = fieldChecks,
-                                      conceptChecks = conceptChecks,
-                                      dbms = connectionDetails$dbms)
+                                      conceptChecks = conceptChecks)
   
   countTotal <- nrow(checkResults)
   countThresholdFailed <- nrow(checkResults[checkResults$FAILED == 1 & 
                                               is.na(checkResults$ERROR),])
-  countErrorFailed <- nrow(checkResults[checkResults$FAILED == 1 & 
-                                          !is.na(checkResults$ERROR),])
+  countErrorFailed <- nrow(checkResults[!is.na(checkResults$ERROR),])
   countOverallFailed <- nrow(checkResults[checkResults$FAILED == 1,])
   
-  countPassed <- nrow(checkResults[checkResults$PASSED == 1,]) #countTotal - countOverallFailed
+  countPassed <- countTotal - countOverallFailed
   
   countTotalPlausibility <- nrow(checkResults[checkResults$CATEGORY=='Plausibility',])
   countTotalConformance <- nrow(checkResults[checkResults$CATEGORY=='Conformance',])
@@ -766,13 +745,12 @@ executeDqChecks <- function(connectionDetails,
   countFailedCompleteness <- nrow(checkResults[checkResults$CATEGORY=='Completeness' &
                                                  checkResults$FAILED == 1,])
   
-  #countPassedPlausibility <- countTotalPlausibility - countFailedPlausibility
   countPassedPlausibility <- nrow(checkResults[checkResults$CATEGORY=='Plausibility' &
                                                  checkResults$PASSED == 1,]) 
-  #countPassedConformance <- countTotalConformance - countFailedConformance
+
   countPassedConformance <- nrow(checkResults[checkResults$CATEGORY=='Conformance' &
                                                 checkResults$PASSED == 1,]) 
-  #countPassedCompleteness <- countTotalCompleteness - countFailedCompleteness
+
   countPassedCompleteness <- nrow(checkResults[checkResults$CATEGORY=='Completeness' &
                                                  checkResults$PASSED == 1,])
   
@@ -782,8 +760,8 @@ executeDqChecks <- function(connectionDetails,
     countErrorFailed = countErrorFailed,
     countThresholdFailed = countThresholdFailed,
     countOverallFailed = countOverallFailed,
-    percentPassed = round(countPassed / (countPassed +countOverallFailed) * 100),
-    percentFailed = round(countOverallFailed / (countPassed +countOverallFailed) * 100),
+    percentPassed = round(countPassed / (countPassed + countOverallFailed) * 100, 2),
+    percentFailed = round(countOverallFailed / (countPassed + countOverallFailed) * 100, 2),
     countTotalPlausibility = countTotalPlausibility,
     countTotalConformance = countTotalConformance,
     countTotalCompleteness = countTotalCompleteness,
