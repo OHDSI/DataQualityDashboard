@@ -677,8 +677,7 @@ executeDqChecks <- function(connectionDetails,
   checkResults <- dplyr::mutate(
     checkResults, 
     NOT_APPLICABLE = dplyr::coalesce(TABLE_IS_MISSING, FIELD_IS_MISSING, TABLE_IS_EMPTY, FIELD_IS_EMPTY, CONCEPT_IS_MISSING, CONCEPT_AND_UNIT_ARE_MISSING, 0), 
-    NOT_APPLICABLE_REASON = 
-     NOT_APPLICABLE_REASON = dplyr::case_when(
+    NOT_APPLICABLE_REASON = dplyr::case_when(
         !is.na(TABLE_IS_MISSING) ~ sprintf("Table %s does not exist.", CDM_TABLE_NAME), 
         !is.na(FIELD_IS_MISSING) ~ sprintf("Field %s.%s does not exist.", CDM_TABLE_NAME, CDM_FIELD_NAME), 
         !is.na(TABLE_IS_EMPTY) ~ sprintf("Table %s is empty.", CDM_TABLE_NAME),
