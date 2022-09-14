@@ -22,6 +22,7 @@ FROM
 	SELECT COUNT_BIG(violated_rows.violating_field) AS num_violated_rows
 	FROM
 	(
+		/*violatedRowsBegin*/
 		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, cdmTable.*
     FROM @cdmDatabaseSchema.@cdmTableName cdmTable
     {@cdmDatabaseSchema.@cdmTableName != @cdmDatabaseSchema.@plausibleTemporalAfterTableName}?{
@@ -31,7 +32,13 @@ FROM
     JOIN @cohortDatabaseSchema.COHORT c 
       ON cdmTable.PERSON_ID = c.SUBJECT_ID
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId}
-    WHERE cast(@plausibleTemporalAfterFieldName as date) > cast(cdmTable.@cdmFieldName as date)
+    WHERE 
+    {'@plausibleTemporalAfterTableName' == 'PERSON'}?{
+		COALESCE(CAST(plausibleTable.@plausibleTemporalAfterFieldName AS DATE),CAST(CONCAT(plausibleTable.YEAR_OF_BIRTH,'-06-01') AS DATE)) 
+	}:{
+		CAST(cdmTable.@plausibleTemporalAfterFieldName AS DATE)
+	} > CAST(cdmTable.@cdmFieldName AS DATE)
+		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
 (

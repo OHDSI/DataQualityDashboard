@@ -33,6 +33,10 @@ verboseMode <- TRUE # set to FALSE if you don't want the logs to be printed to t
 # write results to table? -----------------------------------------------------------------------
 writeToTable <- FALSE # set to TRUE if you want to write to a SQL table in the results schema
 
+# write results to a csv file? -----------------------------------------------------------------------
+writeToCsv <- FALSE # set to FALSE if you want to skip writing to csv file
+csvFile <- "" # only needed if writeToCsv is set to TRUE
+
 # if writing to table and using Redshift, bulk loading can be initialized -------------------------------
 # Sys.setenv("AWS_ACCESS_KEY_ID" = "",
 #            "AWS_SECRET_ACCESS_KEY" = "",
@@ -61,6 +65,8 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                               outputFolder = outputFolder,
                               verboseMode = verboseMode,
                               writeToTable = writeToTable,
+                              writeToCsv = writeToCsv,
+                              csvFile = csvFile,
                               checkLevels = checkLevels,
                               tablesToExclude = tablesToExclude,
                               checkNames = checkNames)
