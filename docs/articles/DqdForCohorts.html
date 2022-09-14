@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.100</span>
       </span>
     </div>
 
@@ -69,6 +69,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -91,9 +94,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Running the DQD on a Cohort</h1>
-                        <h4 data-toc-skip class="author">Clair Blacketer</h4>
+                        <h4 data-toc-skip class="author">Clair
+Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2022-03-31</h4>
+            <h4 data-toc-skip class="date">2022-09-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/DqdForCohorts.rmd" class="external-link"><code>vignettes/DqdForCohorts.rmd</code></a></small>
       <div class="hidden name"><code>DqdForCohorts.rmd</code></div>
@@ -109,7 +113,18 @@
 <div class="section level2">
 <h2 id="dqd-cohort-functionality">DQD Cohort Functionality<a class="anchor" aria-label="anchor" href="#dqd-cohort-functionality"></a>
 </h2>
-<p>Running the Data Quality Dashboard for a cohort is fairly straightforward. There are two options in the <code>executeDqChecks</code> function, <code>cohortDefinitionId</code> and <code>cohortDatabaseSchema</code>. These options will point the DQD to the schema where the cohort table is located and provide the id of the cohort on which the DQD will be run. The tool assumes that the table being referenced is the standard OHDSI cohort table named <strong>COHORT</strong> with at least the columns <strong>cohort_definition_id</strong> and <strong>subject_id</strong>. For example, if I have a cohort number 123 and the cohort is in the <em>results</em> schema of the <em>IBM_CCAE</em> database, the <code>executeDqChecks</code> function would look like this:</p>
+<p>Running the Data Quality Dashboard for a cohort is fairly
+straightforward. There are two options in the
+<code>executeDqChecks</code> function, <code>cohortDefinitionId</code>
+and <code>cohortDatabaseSchema</code>. These options will point the DQD
+to the schema where the cohort table is located and provide the id of
+the cohort on which the DQD will be run. The tool assumes that the table
+being referenced is the standard OHDSI cohort table named
+<strong>COHORT</strong> with at least the columns
+<strong>cohort_definition_id</strong> and <strong>subject_id</strong>.
+For example, if I have a cohort number 123 and the cohort is in the
+<em>results</em> schema of the <em>IBM_CCAE</em> database, the
+<code>executeDqChecks</code> function would look like this:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>DataQualityDashboard<span class="sc">::</span><span class="fu">executeDqChecks</span>(<span class="at">connectionDetails =</span> connectionDetails, </span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">cdmDatabaseSchema =</span> cdmDatabaseSchema, </span>
@@ -127,7 +142,10 @@
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">tablesToExclude =</span> tablesToExclude,</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">checkNames =</span> checkNames)</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                                    </span></code></pre></div>
-<p>As a note, it is good practice to have the <code>cdmSourceName</code> option and the <code>writeTableName</code> option reflect the name of the cohort so that the results don’t get confused with those of the entire database.</p>
+<p>As a note, it is good practice to have the <code>cdmSourceName</code>
+option and the <code>writeTableName</code> option reflect the name of
+the cohort so that the results don’t get confused with those of the
+entire database.</p>
 </div>
   </div>
 
@@ -148,7 +166,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

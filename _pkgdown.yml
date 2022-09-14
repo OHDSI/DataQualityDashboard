@@ -16,6 +16,7 @@ navbar:
     - intro
     - reference
     - articles
+    - news
     right: github
   components:
     home:
@@ -27,6 +28,9 @@ navbar:
     reference:
       text: Reference
       href: reference/index.html
+    news:
+      text: Changelog
+      href: news/index.html
   
 reference:
   - title: "Execution"
