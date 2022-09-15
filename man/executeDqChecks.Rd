@@ -59,6 +59,8 @@ executeDqChecks(
 \item{csvFile}{(OPTIONAL) CSV file to write results
 in the resultsDatabaseSchema. Default is TRUE.}
 
+\item{writeTableName}{The name of the results table. Defaults to `dqdashboard_results`.}
+
 \item{checkLevels}{Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)}
 
 \item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.}

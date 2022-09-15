@@ -9,6 +9,10 @@ viewDqDashboard(jsonPath, launch.browser = NULL, display.mode = NULL, ...)
 \arguments{
 \item{jsonPath}{The path to the JSON file produced by  \code{\link{executeDqChecks}}}
 
+\item{launch.browser}{Passed on to \code{shiny::runApp}}
+
+\item{display.mode}{Passed on to \code{shiny::runApp}}
+
 \item{...}{Extra parameters for shiny::runApp() like "port" or "host"}
 }
 \description{
