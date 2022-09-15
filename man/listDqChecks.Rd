@@ -2,7 +2,7 @@
 % Please edit documentation in R/listChecks.R
 \name{listDqChecks}
 \alias{listDqChecks}
-\title{List Data Quality Checks}
+\title{Details on all checks defined by the DataQualityDashboard Package.}
 \usage{
 listDqChecks(
   cdmVersion = "5.3.1",
@@ -20,9 +20,6 @@ listDqChecks(
 
 \item{conceptCheckThresholdLoc}{The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.}
 }
-\value{
-A list of four dataframes with details on all checks defined by the DataQualityDashboard Package.
-}
 \description{
-Get detailed information about all data quality checks defined in DataQualityDashboard
+Details on all checks defined by the DataQualityDashboard Package.
 }
