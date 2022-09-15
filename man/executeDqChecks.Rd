@@ -17,6 +17,8 @@ executeDqChecks(
   verboseMode = FALSE,
   writeToTable = TRUE,
   writeTableName = "dqdashboard_results",
+  writeToCsv = FALSE,
+  csvFile = "",
   checkLevels = c("TABLE", "FIELD", "CONCEPT"),
   checkNames = c(),
   cohortDefinitionId = c(),
@@ -50,14 +52,16 @@ executeDqChecks(
 
 \item{verboseMode}{Boolean to determine if the console will show all execution steps. Default = FALSE}
 
-\item{writeToTable}{Boolean to indicate if the check results will be written to the dqdashboard_results table
-in the resultsDatabaseSchema. Default is TRUE.}
+\item{writeToTable}{Boolean to indicate if the check results will be written to the dqdashboard_results table}
 
-\item{writeTableName}{The name of the results table. Defaults to `dqdashboard_results`.}
+\item{writeToCsv}{Boolean to indicate if the check results will be written to a csv file}
+
+\item{csvFile}{(OPTIONAL) CSV file to write results
+in the resultsDatabaseSchema. Default is TRUE.}
 
 \item{checkLevels}{Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)}
 
-\item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv}
+\item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.}
 
 \item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort' 
 with the fields cohort_definition_id and subject_id.}

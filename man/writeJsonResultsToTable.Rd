@@ -9,7 +9,8 @@ writeJsonResultsToTable(
   resultsDatabaseSchema,
   jsonFilePath,
   writeTableName = "dqdashboard_results",
-  cohortDefinitionId = c()
+  cohortDefinitionId = c(),
+  useMppBulkLoad = FALSE
 )
 }
 \arguments{
@@ -18,10 +19,6 @@ writeJsonResultsToTable(
 \item{resultsDatabaseSchema}{The fully qualified database name of the results schema}
 
 \item{jsonFilePath}{Path to the JSON results file generated using the execute function}
-
-\item{writeTableName}{Name of table in the database to write results to}
-
-\item{cohortDefinitionId}{If writing results for a single cohort this is the ID that will be appended to the table name}
 }
 \description{
 Write JSON Results to SQL Table

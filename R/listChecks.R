@@ -1,13 +1,11 @@
-#' List Data Quality Checks
-#' 
-#' Get detailed information about all data quality checks defined in DataQualityDashboard
+#' @name listDqChecks
 #' 
 #' @param cdmVersion                The CDM version to target for the data source. By default, 5.3.1 is used.
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
 #'
-#' @return A list of four dataframes with details on all checks defined by the DataQualityDashboard Package.
+#' @return Details on all checks defined by the DataQualityDashboard Package.
 #'
 #' @export
 listDqChecks <- function(cdmVersion = "5.3.1", tableCheckThresholdLoc = "default", fieldCheckThresholdLoc = "default",conceptCheckThresholdLoc = "default") {
