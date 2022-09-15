@@ -36,8 +36,7 @@ Suggests:
     markdown,
     shiny,
     ggplot2,
-    Eunomia,
-    checkmate
+    Eunomia
 Remotes:
     ohdsi/Eunomia
 RoxygenNote: 7.2.1
