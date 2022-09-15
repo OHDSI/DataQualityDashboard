@@ -54,12 +54,12 @@ executeDqChecks(
 
 \item{writeToTable}{Boolean to indicate if the check results will be written to the dqdashboard_results table}
 
+\item{writeTableName}{The name of the results table. Defaults to `dqdashboard_results`.}
+
 \item{writeToCsv}{Boolean to indicate if the check results will be written to a csv file}
 
 \item{csvFile}{(OPTIONAL) CSV file to write results
 in the resultsDatabaseSchema. Default is TRUE.}
-
-\item{writeTableName}{The name of the results table. Defaults to `dqdashboard_results`.}
 
 \item{checkLevels}{Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)}
 

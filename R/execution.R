@@ -806,6 +806,8 @@ executeDqChecks <- function(connectionDetails,
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
 #' @param jsonFilePath              Path to the JSON results file generated using the execute function
+#' @param writeTableName            Name of table in the database to write results to
+#' @param cohortDefinitionId        If writing results for a single cohort this is the ID that will be appended to the table name
 #' 
 #' @export
 writeJsonResultsToTable <- function(connectionDetails,
