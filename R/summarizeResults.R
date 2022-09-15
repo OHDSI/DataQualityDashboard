@@ -32,10 +32,10 @@
   on.exit(DatabaseConnector::disconnect(connection = connection))
   
   # evaluate thresholds-------------------------------------------------------------------
-  checkResults <- .evaluateThresholds(checkResults = checkResults, 
-                                      tableChecks = tableChecks, 
-                                      fieldChecks = fieldChecks,
-                                      conceptChecks = conceptChecks)
+  checkResults <- DataQualityDashboard:::.evaluateThresholds(checkResults = checkResults, 
+                                                              tableChecks = tableChecks, 
+                                                              fieldChecks = fieldChecks,
+                                                              conceptChecks = conceptChecks)
   
   countTotal <- nrow(checkResults)
   countThresholdFailed <- nrow(checkResults[checkResults$FAILED == 1 & 

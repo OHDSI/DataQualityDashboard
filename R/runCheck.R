@@ -67,12 +67,12 @@
                                         sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
         data.frame()
       } else {
-        .processCheck(connection = connection,
-                      connectionDetails = connectionDetails,
-                      check = check, 
-                      checkDescription = checkDescription, 
-                      sql = sql,
-                      outputFolder = outputFolder)
+        DataQualityDashboard:::.processCheck(connection = connection,
+                                              connectionDetails = connectionDetails,
+                                              check = check, 
+                                              checkDescription = checkDescription, 
+                                              sql = sql,
+                                              outputFolder = outputFolder)
       }    
     })
     do.call(rbind, dfs)
