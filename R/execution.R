@@ -197,6 +197,7 @@ executeDqChecks <- function(connectionDetails,
   if (!("connectionDetails" %in% class(connectionDetails))){
     stop("connectionDetails must be an object of class 'connectionDetails'.")
   }
+
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
@@ -634,6 +635,7 @@ executeDqChecks <- function(connectionDetails,
       TABLE_IS_EMPTY = ifelse(CHECK_NAME != "cdmField" & CHECK_NAME != "cdmTable" & IS_ERROR == 0, TABLE_IS_EMPTY, NA))
   } else {
     checkResults$TABLE_IS_EMPTY <- NA
+
   }
   
   emptyFields <- 
@@ -915,6 +917,61 @@ writeJsonResultsToTable <- function(connectionDetails,
         checkResults$ERROR <- stringr::str_replace_all(checkResults$ERROR, "\n", " ")
         checkResults$ERROR <- stringr::str_replace_all(checkResults$ERROR, "\r", " ")
         checkResults$ERROR <- stringr::str_replace_all(checkResults$ERROR, "\t", " ")
+      }
+      write.table(dplyr::select(checkResults, columns), file = csvPath, sep = delimiter, row.names = FALSE, na = "")
+      ParallelLogger::logInfo("Finished writing to CSV file")
+    },
+    error = function(e) {
+      ParallelLogger::logError(sprintf("Writing to CSV file failed: %s", e$message))
+    }
+  )
+}
+
+#' Write JSON Results to CSV file
+#' 
+#' @param jsonPath    Path to the JSON results file generated using the execute function
+#' @param csvPath     Path to the CSV output file
+#' @param columns     (OPTIONAL) List of desired columns
+#' @param delimiter   (OPTIONAL) CSV delimiter
+#' 
+#' @export
+writeJsonResultsToCsv <- function(jsonPath,
+                                  csvPath,
+                                  columns = c("checkId", "FAILED", "PASSED", 
+                                              "IS_ERROR", "NOT_APPLICABLE",
+                                              "CHECK_NAME", "CHECK_DESCRIPTION",
+                                              "THRESHOLD_VALUE", "NOTES_VALUE",
+                                              "CHECK_LEVEL", "CATEGORY",
+                                              "SUBCATEGORY", "CONTEXT",
+                                              "CHECK_LEVEL", "CDM_TABLE_NAME",
+                                              "CDM_FIELD_NAME", "CONCEPT_ID",
+                                              "UNIT_CONCEPT_ID", "NUM_VIOLATED_ROWS",
+                                              "PCT_VIOLATED_ROWS", "NUM_DENOMINATOR_ROWS",
+                                              "EXECUTION_TIME", "NOT_APPLICABLE_REASON",
+                                              "ERROR", "QUERY_TEXT"),
+                                  delimiter = ",") {
+  tryCatch(
+    expr = {
+      ParallelLogger::logInfo(sprintf("Loading results from %s", jsonPath))
+      jsonData <- jsonlite::read_json(jsonPath)
+      checkResults <- lapply(jsonData$CheckResults, function(cr) {
+        cr[sapply(cr, is.null)] <- NA
+        as.data.frame(cr)
+      })
+      .writeResultsToCsv(checkResults = do.call(plyr::rbind.fill, checkResults), csvPath, columns, delimiter)
+    },
+    error = function(e) {
+      ParallelLogger::logError(sprintf("Writing to CSV file failed: %s", e$message))
+    }
+  )
+}
+
+.needsAutoCommit <- function(connectionDetails, connection) {
+  autoCommit <- FALSE
+  if (!is.null(connection)) {
+    if (inherits(connection, "DatabaseConnectorJdbcConnection")) {
+      if (connectionDetails$dbms %in% c("postgresql", "redshift")) {
+        autoCommit <- TRUE
       }
       write.table(dplyr::select(checkResults, columns), file = csvPath, sep = delimiter, row.names = FALSE, na = "")
       ParallelLogger::logInfo("Finished writing to CSV file")

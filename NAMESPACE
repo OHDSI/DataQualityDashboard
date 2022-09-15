@@ -3,6 +3,7 @@
 export(executeDqChecks)
 export(listDqChecks)
 export(viewDqDashboard)
+export(writeJsonResultsToCsv)
 export(writeJsonResultsToTable)
 import(DatabaseConnector)
 importFrom(magrittr,"%>%")

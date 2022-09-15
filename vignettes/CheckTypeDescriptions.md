@@ -1,13 +1,13 @@
 ---
 title: "Data Quality Check Type Definitions"
 author: "Clair Blacketer"
-date: "2021-05-07"
+date: "2022-09-13"
 header-includes:
     - \usepackage{fancyhdr}
     - \pagestyle{fancy}
     - \fancyhead{}
     - \fancyhead[CO,CE]{Data Quality Check Type Definitions}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version 1.0.0}
+    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version 1.4.1}
     - \fancyfoot[LE,RO]{\thepage}
     - \renewcommand{\headrulewidth}{0.4pt}
     - \renewcommand{\footrulewidth}{0.4pt}
