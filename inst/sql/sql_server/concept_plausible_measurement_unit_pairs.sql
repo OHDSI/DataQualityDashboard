@@ -7,7 +7,7 @@ cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 conceptId = @conceptId
-plausibleUnitConceptIds = @plausibleUnitConceptIds
+plausibleMeasurementUnitPairs = @plausibleMeasurementUnitPairs
 {@cohort}?{
 cohortDefinitionId = @cohortDefinitionId
 cohortDatabaseSchema = @cohortDatabaseSchema
@@ -31,10 +31,10 @@ FROM
   	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
   	}
 		WHERE m.@cdmFieldName = @conceptId
-		AND {@plausibleUnitConceptIds == ''}?{
+		AND {@plausibleMeasurementUnitPairs == ''}?{
 		  m.unit_concept_id IS NOT NULL
 		}:{
-		  m.unit_concept_id NOT IN (@plausibleUnitConceptIds)
+		  m.unit_concept_id NOT IN (@plausibleMeasurementUnitPairs)
 		}
 		/*violatedRowsEnd*/
 	) violated_rows
