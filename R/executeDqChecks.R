@@ -185,7 +185,7 @@ executeDqChecks <- function(connectionDetails,
     tablesToExclude <- toupper(tablesToExclude)
     ParallelLogger::logInfo(sprintf("CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
     tableChecks <- tableChecks[!tableChecks$cdmTableName %in% tablesToExclude,]
-    fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude 
+    fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude, 
                                # &
                                #   !fieldChecks$fkTableName %in% tablesToExclude &
                                #   !fieldChecks$plausibleTemporalAfterTableName %in% tablesToExclude,
