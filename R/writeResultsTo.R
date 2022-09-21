@@ -1,3 +1,21 @@
+#' Write DQD results to json
+#' 
+#' @param result           A DQD results object (list)
+#' @param outputFolder     The output folder
+#' @param outputFile       The output filename
+
+#' @keywords internal
+
+.writeResultsToJson <- function(result, outputFolder, outputFile) {
+  resultJson <- jsonlite::toJSON(result)
+  
+  resultFilename <- file.path(outputFolder, outputFile)
+  result$outputFile <- outputFile
+  
+  ParallelLogger::logInfo(sprintf("Writing results to file: %s", resultFilename))
+  write(resultJson, resultFilename)
+}
+
 #' Internal function to write the check results to a table in the database. Requires write access to the database
 #' 
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database

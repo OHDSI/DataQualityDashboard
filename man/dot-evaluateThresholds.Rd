@@ -9,11 +9,11 @@
 \arguments{
 \item{checkResults}{A dataframe containing the results of the data quality checks}
 
+\item{tableChecks}{A dataframe containing the table checks}
+
 \item{fieldChecks}{A dataframe containing the field checks}
 
 \item{conceptChecks}{A dataframe containing the concept checks}
-
-\item{tablechecks}{A dataframe containing the table checks}
 }
 \description{
 Internal function to evaluate the data quality checks against given thresholds.
