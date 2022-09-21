@@ -235,7 +235,7 @@ executeDqChecks <- function(connectionDetails,
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
   resultsList <- ParallelLogger::clusterApply(
     cluster = cluster, x = checkDescriptions,
-    fun = DataQualityDashboard:::.runCheck, 
+    fun = .runCheck, 
     tableChecks,
     fieldChecks,
     conceptChecks,
@@ -260,7 +260,7 @@ executeDqChecks <- function(connectionDetails,
     checkResults <- do.call(rbind, resultsList)
     
     # evaluate thresholds-------------------------------------------------------------------
-    checkResults <- DataQualityDashboard:::.evaluateThresholds(
+    checkResults <- .evaluateThresholds(
       checkResults = checkResults, 
       tableChecks = tableChecks, 
       fieldChecks = fieldChecks,
@@ -268,7 +268,7 @@ executeDqChecks <- function(connectionDetails,
     )
     
     # create overview
-    overview <- DataQualityDashboard:::.summarizeResults(checkResults = checkResults)
+    overview <- .summarizeResults(checkResults = checkResults)
     
     endTime <- Sys.time()
     delta <- endTime - startTime

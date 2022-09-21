@@ -42,7 +42,7 @@
                                             errorReportFile = errorReportFile)
       
       delta <- difftime(Sys.time(), start, units = "secs")
-      DataQualityDashboard:::.recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
+      .recordResult(result = result, check = check, checkDescription = checkDescription, sql = sql,  
                                             executionTime = sprintf("%f %s", delta, attr(delta, "units")))
     },
     warning = function(w) {
@@ -51,7 +51,7 @@
                                       checkDescription$checkName, 
                                       check["cdmTableName"], 
                                       check["cdmFieldName"], w$message))
-      DataQualityDashboard:::.recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
+      .recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
     },
     error = function(e) {
       ParallelLogger::logError(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
@@ -59,7 +59,7 @@
                                        checkDescription$checkName, 
                                        check["cdmTableName"], 
                                        check["cdmFieldName"], e$message))
-      DataQualityDashboard:::.recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message)  
+      .recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message)  
     }
   ) 
 }

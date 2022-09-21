@@ -9,7 +9,6 @@
 #' @param cdmVersion                The CDM version to target for the data source. By default, 5.3.1 is used.
 #' 
 #' @export
-#' 
  
 reEvaluateThresholds <- function(jsonFilePath,
                                  outputFolder,
@@ -29,17 +28,17 @@ reEvaluateThresholds <- function(jsonFilePath,
   df$CDM_FIELD_NAME <- tolower(df$CDM_FIELD_NAME) # Uppercase in results, lowercase in threshold files
 
   # Read in  new thresholds ----------------------------------------------
-  tableChecks <- DataQualityDashboard:::.readThresholdFile(tableCheckThresholdLoc)
-  fieldChecks <- DataQualityDashboard:::.readThresholdFile(fieldCheckThresholdLoc)
-  conceptChecks <-  DataQualityDashboard:::.readThresholdFile(conceptCheckThresholdLoc)
+  tableChecks <- .readThresholdFile(tableCheckThresholdLoc)
+  fieldChecks <- .readThresholdFile(fieldCheckThresholdLoc)
+  conceptChecks <-  .readThresholdFile(conceptCheckThresholdLoc)
   
-  newCheckResults <- DataQualityDashboard:::.evaluateThresholds(df, tableChecks, fieldChecks, conceptChecks)
+  newCheckResults <- .evaluateThresholds(df, tableChecks, fieldChecks, conceptChecks)
   
-  newOverview <- DataQualityDashboard:::.summarizeResults(newCheckResults)
+  newOverview <- .summarizeResults(newCheckResults)
   
   newDqdResults <- dqdResults
   newDqdResults$CheckResults <- newCheckResults
   newDqdResults$Overview <- newOverview
   
-  DataQualityDashboard:::.writeResultsToJson(newDqdResults, outputFolder, outputFile)
+  .writeResultsToJson(newDqdResults, outputFolder, outputFile)
 }

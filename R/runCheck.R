@@ -65,7 +65,7 @@
                                         sprintf("%s.sql", checkDescription$checkName)), append = TRUE)
         data.frame()
       } else {
-        DataQualityDashboard:::.processCheck(connection = connection,
+        .processCheck(connection = connection,
                                               connectionDetails = connectionDetails,
                                               check = check, 
                                               checkDescription = checkDescription, 
