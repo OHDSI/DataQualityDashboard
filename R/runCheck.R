@@ -13,6 +13,8 @@
 #' @param outputFolder              The folder to output logs and SQL files to
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #' 
+#' @import magrittr
+#' 
 #' @keywords internal
 #' 
 .runCheck <- function(checkDescription, 
@@ -27,7 +29,7 @@
                       cohortDefinitionId,
                       outputFolder, 
                       sqlOnly) {
-  library(magrittr)
+ 
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
   
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",

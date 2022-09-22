@@ -27,10 +27,11 @@ reEvaluateThresholds <- function(jsonFilePath,
   df <- do.call(plyr::rbind.fill, df)
 
   # Read in  new thresholds ----------------------------------------------
-  tableChecks <- .readThresholdFile(tableCheckThresholdLoc)
-  fieldChecks <- .readThresholdFile(fieldCheckThresholdLoc)
+  tableChecks <- .readThresholdFile(tableCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion))
+  fieldChecks <- .readThresholdFile(fieldCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion))
   fieldChecks$cdmFieldName <- toupper(fieldChecks$cdmFieldName) # Uppercase in results, lowercase in threshold files
-  conceptChecks <-  .readThresholdFile(conceptCheckThresholdLoc)
+  conceptChecks <-  .readThresholdFile(conceptCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion))
+  conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
   
   newCheckResults <- .evaluateThresholds(df, tableChecks, fieldChecks, conceptChecks)
   
@@ -41,4 +42,6 @@ reEvaluateThresholds <- function(jsonFilePath,
   newDqdResults$Overview <- newOverview
   
   .writeResultsToJson(newDqdResults, outputFolder, outputFile)
+  
+  return(newDqdResults)
 }
