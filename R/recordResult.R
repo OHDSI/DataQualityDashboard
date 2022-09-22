@@ -47,7 +47,7 @@
     CONTEXT = checkDescription$kahnContext,
     WARNING = warning,
     ERROR = error,
-    checkId = DataQualityDashboard:::.getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"]),
+    checkId = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"]),
     row.names = NULL, stringsAsFactors = FALSE
   )
   

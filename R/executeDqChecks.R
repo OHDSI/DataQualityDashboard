@@ -1,4 +1,4 @@
-# @file execution.R
+# @file executeDqChecks.R
 #
 # Copyright 2020 Observational Health Data Sciences and Informatics
 #
@@ -152,32 +152,33 @@ executeDqChecks <- function(connectionDetails,
                                          appenders = appenders)
   ParallelLogger::registerLogger(logger)   
   
-  # load CSVs ----------------------------------------------------------------------------------------
+  # load Threshold CSVs ----------------------------------------------------------------------------------------
   
   startTime <- Sys.time()
   
-  checkDescriptionsDf <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion), 
-                                              package = "DataQualityDashboard"), 
-                                  stringsAsFactors = FALSE)
+  checkDescriptionsDf <- read.csv(
+    file = system.file(
+      "csv", 
+      sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion), 
+      package = "DataQualityDashboard"
+    ),
+    stringsAsFactors = FALSE
+  )
   
+  tableChecks <- .readThresholdFile(
+    checkThresholdLoc = tableCheckThresholdLoc, 
+    defaultLoc = sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion)
+  )
   
-  if (tableCheckThresholdLoc == "default"){
-    tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
-                                        package = "DataQualityDashboard"), 
-                            stringsAsFactors = FALSE, na.strings = c(" ",""))} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
-                                                                                                             stringsAsFactors = FALSE, na.strings = c(" ",""))}
+  fieldChecks <- .readThresholdFile(
+    checkThresholdLoc = fieldCheckThresholdLoc, 
+    defaultLoc = sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion)
+  )
   
-  if (fieldCheckThresholdLoc == "default"){ 
-    fieldChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
-                                        package = "DataQualityDashboard"), 
-                            stringsAsFactors = FALSE, na.strings = c(" ",""))} else {fieldChecks <- read.csv(fieldCheckThresholdLoc, 
-                                                                                                             stringsAsFactors = FALSE, na.strings = c(" ",""))}
-  
-  if (conceptCheckThresholdLoc == "default"){ 
-    conceptChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion),
-                                          package = "DataQualityDashboard"), 
-                              stringsAsFactors = FALSE, na.strings = c(" ",""))} else {conceptChecks <- read.csv(conceptCheckThresholdLoc, 
-                                                                                                                 stringsAsFactors = FALSE, na.strings = c(" ",""))}
+  conceptChecks <- .readThresholdFile(
+    checkThresholdLoc = conceptCheckThresholdLoc, 
+    defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion)
+  )
   
   # ensure we use only checks that are intended to be run -----------------------------------------
   
@@ -234,7 +235,7 @@ executeDqChecks <- function(connectionDetails,
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
   resultsList <- ParallelLogger::clusterApply(
     cluster = cluster, x = checkDescriptions,
-    fun = DataQualityDashboard:::.runCheck, 
+    fun = .runCheck, 
     tableChecks,
     fieldChecks,
     conceptChecks,
@@ -258,17 +259,37 @@ executeDqChecks <- function(connectionDetails,
   if (!sqlOnly) {
     checkResults <- do.call(rbind, resultsList)
     
-    allResults <- DataQualityDashboard:::.summarizeResults(connectionDetails = connectionDetails, 
-                                                            cdmDatabaseSchema = cdmDatabaseSchema, 
-                                                            checkResults = checkResults,
-                                                            cdmSourceName = cdmSourceName, 
-                                                            outputFolder = outputFolder,
-                                                            outputFile = outputFile,
-                                                            startTime = startTime,
-                                                            tableChecks = tableChecks, 
-                                                            fieldChecks = fieldChecks,
-                                                            conceptChecks = conceptChecks,
-                                                            metadata = metadata)
+    # evaluate thresholds-------------------------------------------------------------------
+    checkResults <- .evaluateThresholds(
+      checkResults = checkResults, 
+      tableChecks = tableChecks, 
+      fieldChecks = fieldChecks,
+      conceptChecks = conceptChecks
+    )
+    
+    # create overview
+    overview <- .summarizeResults(checkResults = checkResults)
+    
+    endTime <- Sys.time()
+    delta <- endTime - startTime
+    
+    # Create result
+    result <- list(
+      startTimestamp = startTime, 
+      endTimestamp = endTime,
+      executionTime = sprintf("%.0f %s", delta, attr(delta, "units")),
+      CheckResults = checkResults, 
+      Metadata = metadata, 
+      Overview = overview
+    )
+    
+    # Write result
+    if (nchar(outputFile)==0)  {
+      endTimestamp <- format(endTime, "%Y%m%d%H%M%S")
+      outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp)
+    }
+    
+    .writeResultsToJson(result, outputFolder, outputFile)
     
     ParallelLogger::logInfo("Execution Complete")  
   }

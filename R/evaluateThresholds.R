@@ -1,7 +1,7 @@
 #' Internal function to evaluate the data quality checks against given thresholds.
 #' 
 #' @param checkResults              A dataframe containing the results of the data quality checks
-#' @param tablechecks               A dataframe containing the table checks
+#' @param tableChecks               A dataframe containing the table checks
 #' @param fieldChecks               A dataframe containing the field checks
 #' @param conceptChecks             A dataframe containing the concept checks
 #' 
