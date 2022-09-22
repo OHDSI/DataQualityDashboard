@@ -25,11 +25,11 @@ reEvaluateThresholds <- function(jsonFilePath,
     as.data.frame(cr)
   })
   df <- do.call(plyr::rbind.fill, df)
-  df$CDM_FIELD_NAME <- tolower(df$CDM_FIELD_NAME) # Uppercase in results, lowercase in threshold files
 
   # Read in  new thresholds ----------------------------------------------
   tableChecks <- .readThresholdFile(tableCheckThresholdLoc)
   fieldChecks <- .readThresholdFile(fieldCheckThresholdLoc)
+  fieldChecks$cdmFieldName <- toupper(fieldChecks$cdmFieldName) # Uppercase in results, lowercase in threshold files
   conceptChecks <-  .readThresholdFile(conceptCheckThresholdLoc)
   
   newCheckResults <- .evaluateThresholds(df, tableChecks, fieldChecks, conceptChecks)

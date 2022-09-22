@@ -27,6 +27,7 @@
                       cohortDefinitionId,
                       outputFolder, 
                       sqlOnly) {
+  library(magrittr)
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
   
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",
