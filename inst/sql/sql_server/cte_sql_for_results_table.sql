@@ -1,9 +1,8 @@
 /*********
-SQL to create query for insertion into results table.  These may be unioned together prior to insert.
-Note that this  does not include information about SQL errors or performance
+SQL to create query for insertion into results table. These may be unioned together prior to insert.
+Note that this does not include information about SQL errors or performance
 
 Parameters used in this template:
-query_text = @query_text
 check_name = @check_name
 check_level = @check_level
 check_description = @check_description

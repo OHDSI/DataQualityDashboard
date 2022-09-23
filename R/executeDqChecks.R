@@ -76,7 +76,7 @@ executeDqChecks <- function(connectionDetails,
                             fieldCheckThresholdLoc = "default",
                             conceptCheckThresholdLoc = "default") {
   # Check input -------------------------------------------------------------------------------------------------------------------
-  if (!("connectionDetails" %in% class(connectionDetails))){
+  if (!sqlOnly && !("connectionDetails" %in% class(connectionDetails))){
     stop("connectionDetails must be an object of class 'connectionDetails'.")
   }
   
@@ -110,8 +110,6 @@ executeDqChecks <- function(connectionDetails,
   options(scipen = 999)
   
   # capture metadata -----------------------------------------------------------------------
-  metadata <- list()
-  metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
   if (!sqlOnly) {
     connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
     sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
@@ -124,10 +122,10 @@ executeDqChecks <- function(connectionDetails,
     metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
     DatabaseConnector::disconnect(connection)
   } else {
-    metadata <- NA
+    metadata <- list(
+      DQD_VERSION = as.character(packageVersion("DataQualityDashboard"))
+    )
   }
-  metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
-  DatabaseConnector::disconnect(connection)
   
 
   # create output folder --------------------------------------------------------------------------------------------
@@ -325,19 +323,17 @@ executeDqChecks <- function(connectionDetails,
     .writeResultsToCsv(checkResults = allResults$CheckResults, 
                        csvPath = file.path(outputFolder, csvFile))
   }
-  
-  if (sqlOnly) {
-    invisible(allResults)
-  } else {
-    allResults  
-  }
     
   ParallelLogger::unregisterLogger("DqDashboard")
   
   # Reset encoding to previous value 
   options("encoding" = saveEncoding)
 
-  return(allResults)
+  if (sqlOnly) {
+    invisible(allResults)
+  } else {
+    allResults  
+  }
 }
 
 .needsAutoCommit <- function(connectionDetails, connection) {

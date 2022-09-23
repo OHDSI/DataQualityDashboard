@@ -42,7 +42,7 @@
     sqlFilename = "cte_sql_for_results_table.sql"
     ,packageName = "DataQualityDashboard"
     ,dbms = connectionDetails$dbms
-    ,query_text = str_replace(sql, ';', '')
+    ,query_text = gsub(";", "", sql)
     ,check_name = checkDescription$checkName
     ,check_level = checkDescription$checkLevel
     ,check_description = check_description
