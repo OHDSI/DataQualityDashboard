@@ -1,2 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.github$
+^LICENSE$
+_pkgdown.yml/*
+compare_versions
+docs/*
+extras/*
