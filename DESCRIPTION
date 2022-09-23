@@ -13,27 +13,31 @@ Authors@R: c(
   )
 Maintainer: Clair Blacketer <mblacke@its.jnj.com>
 Description: An R package for assessing data quality in standardized OMOP Common Data Model data sources.
-License: Apache License 2.0
+License: Apache License (>= 2)
 VignetteBuilder: knitr
 URL: https://github.com/OHDSI/DataQualityDashboard
 BugReports: https://github.com/OHDSI/DataQualityDashboard/issues
 Depends:
-  R (>= 3.2.2),
-  DatabaseConnector (>= 2.0.2)
+    R (>= 3.2.2),
+    DatabaseConnector (>= 2.0.2)
 Imports:
-  magrittr,
-  ParallelLogger,
-  dplyr,
-  jsonlite,
-  rjson,
-  lubridate,
-  SqlRender (>= 1.6.0),
-  plyr
+    magrittr,
+    ParallelLogger,
+    dplyr,
+    jsonlite,
+    rJava,
+    SqlRender (>= 1.6.0),
+    plyr,
+    stringr
 Suggests:
-  testthat,
-  knitr,
-  rmarkdown,
-  shiny,
-  ggplot2
+    testthat,
+    knitr,
+    rmarkdown,
+    markdown,
+    shiny,
+    ggplot2,
+    Eunomia
+Remotes:
+    ohdsi/Eunomia
 RoxygenNote: 7.2.1
 Encoding: UTF-8
