@@ -24,6 +24,7 @@ FROM
 	SELECT COUNT_BIG(*) AS num_violated_rows
 	FROM
 	(
+		/*violatedRowsBegin*/
 		SELECT cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
@@ -33,6 +34,7 @@ FROM
     	}
 		WHERE (cdmTable.@cdmFieldName = 0 OR cdmTable.@cdmFieldName IS NULL)
 		AND (cdmTable.@cdmSourceFieldName = 0 OR cdmTable.@cdmSourceFieldName IS NULL)
+		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
 ( 

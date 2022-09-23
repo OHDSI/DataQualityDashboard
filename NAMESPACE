@@ -2,5 +2,8 @@
 
 export(executeDqChecks)
 export(listDqChecks)
+export(reEvaluateThresholds)
 export(viewDqDashboard)
+export(writeJsonResultsToCsv)
 export(writeJsonResultsToTable)
+import(magrittr)
