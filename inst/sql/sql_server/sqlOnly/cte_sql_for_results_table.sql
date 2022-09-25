@@ -26,7 +26,7 @@ SELECT
   ,0 as is_error
   ,0 as not_applicable
   ,CASE WHEN (cte.pct_violated_rows * 100) > @threshold_value THEN 1 ELSE 0 END as failed
-  ,CASE WHEN (cte.pct_violated_rows * 100) > @threshold_value THEN 0 ELSE 1 END as passed
+  ,CASE WHEN (cte.pct_violated_rows * 100) <= @threshold_value THEN 1 ELSE 0 END as passed
   ,NULL as not_applicable_reason
   ,@threshold_value as threshold_value
   ,'' as notes_value
