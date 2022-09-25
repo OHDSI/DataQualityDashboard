@@ -54,7 +54,7 @@
     query_text = gsub(";", "", sql),
     check_name = checkDescription$checkName,
     check_level = checkDescription$checkLevel,
-    check_description = check_description,  # TODO: escale quotes
+    check_description = gsub("'", "''", check_description),
     cdm_table_name = check["cdmTableName"],
     cdm_field_name = check["cdmFieldName"],
     concept_id = check["conceptId"],

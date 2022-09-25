@@ -7,6 +7,6 @@ WITH cte_all AS (
   @query_text
 )
 INSERT INTO @resultsDatabaseSchema.@tableName
-SELECT 
+SELECT *
 FROM cte_all
 ;
