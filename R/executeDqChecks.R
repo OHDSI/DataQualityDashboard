@@ -285,7 +285,7 @@ executeDqChecks <- function(connectionDetails,
     delta <- endTime - startTime
     
     # Create result
-    result <- list(
+    allResults <- list(
       startTimestamp = startTime, 
       endTimestamp = endTime,
       executionTime = sprintf("%.0f %s", delta, attr(delta, "units")),
@@ -300,7 +300,7 @@ executeDqChecks <- function(connectionDetails,
       outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp)
     }
     
-    .writeResultsToJson(result, outputFolder, outputFile)
+    .writeResultsToJson(allResults, outputFolder, outputFile)
     
     ParallelLogger::logInfo("Execution Complete")  
   }
@@ -325,7 +325,6 @@ executeDqChecks <- function(connectionDetails,
     .writeResultsToCsv(checkResults = allResults$CheckResults, 
                        csvPath = file.path(outputFolder, csvFile))
   }
-    
   ParallelLogger::unregisterLogger("DqDashboard")
   
   # Reset encoding to previous value 
@@ -334,7 +333,7 @@ executeDqChecks <- function(connectionDetails,
   if (sqlOnly) {
     invisible(allResults)
   } else {
-    allResults  
+    return(allResults)
   }
 }
 
