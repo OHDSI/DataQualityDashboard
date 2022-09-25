@@ -91,12 +91,12 @@
     # Now write union of 'sqlOnlyUnionCount' at a time SQL statements
     ustart <- 1
     uend <- 1
-    #print(length(sql_to_union))
-    while (ustart < length(sql_to_union)) {
+
+    while (ustart <= length(sql_to_union)) {
       uend <- min(ustart + sqlOnlyUnionCount - 1, length(sql_to_union))
-      #params = c(ustart,':',uend)
-      #print(params)
+
       apart <- sql_to_union[ustart:uend]
+
       sql_unioned <- paste(apart,collapse=' UNION ALL ')
       
       sql4 <- SqlRender::loadRenderTranslateSql(

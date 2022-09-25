@@ -43,5 +43,5 @@ reEvaluateThresholds <- function(jsonFilePath,
   
   .writeResultsToJson(newDqdResults, outputFolder, outputFile)
   
-  return(newDqdResults)
+  invisible(newDqdResults)
 }

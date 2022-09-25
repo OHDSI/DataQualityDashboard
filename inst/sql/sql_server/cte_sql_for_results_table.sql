@@ -1,22 +1,6 @@
 /*********
 SQL to create query for insertion into results table. These may be unioned together prior to insert.
-Note that this does not include information about SQL errors or performance
-
-Parameters used in this template:
-check_name = @check_name
-check_level = @check_level
-check_description = @check_description
-cdm_table_name = @cdm_table_name
-cdm_field_name = @cdm_field_name
-concept_id = @concept_id
-unit_concept_id = @unit_concept_id
-sql_file = @sql_file
-category = @category
-subcategory = @subcategory
-context = @context
-checkid = @checkid
-threshold_value = @threshold_value
-query_num = @query_num
+Note that this does not include information about SQL errors or performance.
 **********/
 
 SELECT 
@@ -39,7 +23,10 @@ SELECT
   ,'' as warning
   ,'' as error
   ,'@checkid' as checkid
+  ,0 as is_error
+  ,0 as not_applicable
   ,CASE WHEN (cte.pct_violated_rows * 100) > @threshold_value THEN 1 ELSE 0 END as failed
+  ,CASE WHEN (cte.pct_violated_rows * 100) > @threshold_value THEN 0 ELSE 1 END as passed
   ,@threshold_value as threshold_value
   ,'' as notes_value
 FROM (
