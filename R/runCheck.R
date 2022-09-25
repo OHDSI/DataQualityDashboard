@@ -9,6 +9,7 @@
 #' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema
 #' @param vocabDatabaseSchema       The fully qualified database name of the vocabulary schema (default is to set it as the cdmDatabaseSchema)
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
+#' @param writeTableName            The table tor write DQD results to. Used when sqlOnly or writeToTable is True.
 #' @param cohortDatabaseSchema      The schema where the cohort table is located.
 #' @param cohortDefinitionId        The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort' 
 #' @param outputFolder              The folder to output logs and SQL files to
@@ -19,7 +20,6 @@
 #' 
 #' @keywords internal
 #' 
-#' TODO: create a sqlOnly '.runCheck' function
 .runCheck <- function(checkDescription, 
                       tableChecks,
                       fieldChecks,
@@ -29,6 +29,7 @@
                       cdmDatabaseSchema, 
                       vocabDatabaseSchema,
                       resultsDatabaseSchema,
+                      writeTableName,
                       cohortDatabaseSchema,
                       cohortDefinitionId,
                       outputFolder, 
@@ -78,24 +79,19 @@
       .createSqlOnlyQueries(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, resultsDatabaseSchema, outputFolder, checkDescription, sqlOnlyUnionCount)
       data.frame()
     } else {
-      .processCheck(connection = connection,
-                    connectionDetails = connectionDetails,
-                    check = check, 
-                    checkDescription = checkDescription, 
-                    sql = sql,
-                    outputFolder = outputFolder)
+      .processCheck(
+        connection = connection,
+        connectionDetails = connectionDetails,
+        check = check, 
+        checkDescription = checkDescription, 
+        sql = sql,
+        outputFolder = outputFolder
+      )
     }
   })
 
   if (sqlOnly && sqlOnlyUnionCount > 1 && length(sql_to_union) > 0) {
-    .writeSqlOnlyQueries(
-      sql_to_union,
-      sqlOnlyUnionCount,
-      resultsDatabaseSchema,
-      connectionDetails$dbms,
-      outputFolder,
-      checkDescription$checkName
-    )
+    .writeSqlOnlyQueries(sql_to_union, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription$checkName)
   }
   
   do.call(rbind, dfs)

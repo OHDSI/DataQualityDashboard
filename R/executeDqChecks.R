@@ -28,11 +28,12 @@
 #' @param numThreads                The number of concurrent threads to use to execute the queries
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
-#' @param sqlOnlyUnionCount         How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel)
+#' @param sqlOnlyUnionCount         (OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.
 #' @param outputFolder              The folder to output logs and SQL files to
 #' @param outputFile                (OPTIONAL) File to write results JSON object 
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
+#' @param writeTableName            The table tor write DQD results to. Used when sqlOnly or writeToTable is True.
 #' @param writeToCsv                Boolean to indicate if the check results will be written to a csv file
 #' @param csvFile                   (OPTIONAL) CSV file to write results
 #'                                  in the resultsDatabaseSchema. Default is TRUE.
@@ -251,6 +252,7 @@ executeDqChecks <- function(connectionDetails,
     cdmDatabaseSchema, 
     vocabDatabaseSchema,
     resultsDatabaseSchema,
+    writeTableName,
     cohortDatabaseSchema,
     cohortDefinitionId,
     outputFolder, 

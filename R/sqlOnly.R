@@ -51,7 +51,7 @@
   qnum <<- qnum + 1
   
   sql3 <- SqlRender::loadRenderTranslateSql(
-    sqlFilename = "cte_sql_for_results_table.sql"
+    sqlFilename = file.path("sqlOnly", "cte_sql_for_results_table.sql")
     ,packageName = "DataQualityDashboard"
     ,dbms = connectionDetails$dbms
     ,query_text = gsub(";", "", sql)
@@ -103,6 +103,7 @@
   sql_to_union,
   sqlOnlyUnionCount,
   resultsDatabaseSchema,
+  writeTableName,
   dbms,
   outputFolder,
   checkName
@@ -117,9 +118,9 @@
     sql_unioned <- paste(apart, collapse=' UNION ALL ')
     
     sql4 <- SqlRender::loadRenderTranslateSql(
-      sqlFilename = "insert_ctes_into_result_table.sql"
+      sqlFilename = file.path("sqlOnly", "insert_ctes_into_result_table.sql")
       ,packageName = "DataQualityDashboard"
-      ,tableName = "dqdashboard_results"
+      ,tableName = writeTableName
       ,resultsDatabaseSchema = resultsDatabaseSchema
       ,dbms = dbms
       ,query_text = sql_unioned    
