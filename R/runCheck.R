@@ -76,7 +76,7 @@
     sql <- do.call(SqlRender::loadRenderTranslateSql, params)
     
     if (sqlOnly) {
-      .createSqlOnlyQueries(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, resultsDatabaseSchema, outputFolder, checkDescription, sqlOnlyUnionCount)
+      .createSqlOnlyQueries(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, checkDescription)
       data.frame()
     } else {
       .processCheck(
@@ -90,7 +90,7 @@
     }
   })
 
-  if (sqlOnly && sqlOnlyUnionCount > 1 && length(sql_to_union) > 0) {
+  if (sqlOnly && length(sql_to_union) > 0) {
     .writeSqlOnlyQueries(sql_to_union, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription$checkName)
   }
   
