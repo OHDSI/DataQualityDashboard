@@ -1,10 +1,22 @@
 
-#' Internal function create query when running in SqlOnly mode
+#' Internal function to create queries when running in SqlOnly mode
 #' 
 #' @noRd
 #' @keywords internal
 #' 
-.createSqlOnlyQuery <- function(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, resultsDatabaseSchema, outputFolder, checkDescription, sqlOnlyUnionCount) {
+.createSqlOnlyQueries <- function(
+    params,
+    check,
+    tableChecks,
+    fieldChecks,
+    conceptChecks,
+    sql,
+    connectionDetails,
+    resultsDatabaseSchema,
+    outputFolder,
+    checkDescription,
+    sqlOnlyUnionCount
+) {
   check_description = SqlRender::render(
     sql = checkDescription$checkDescription
     ,warnOnMissingParameters = FALSE
@@ -80,4 +92,47 @@
     )
   }
 }
+
+
+#' Internal function to write queries when running in SqlOnly mode
+#' 
+#' @noRd
+#' @keywords internal
+#' 
+.writeSqlOnlyQueries <- function(
+  sql_to_union,
+  sqlOnlyUnionCount,
+  resultsDatabaseSchema,
+  dbms,
+  outputFolder,
+  checkName
+) {
+  ustart <- 1
   
+  while (ustart <= length(sql_to_union)) {
+    uend <- min(ustart + sqlOnlyUnionCount - 1, length(sql_to_union))
+    
+    apart <- sql_to_union[ustart:uend]
+    
+    sql_unioned <- paste(apart, collapse=' UNION ALL ')
+    
+    sql4 <- SqlRender::loadRenderTranslateSql(
+      sqlFilename = "insert_ctes_into_result_table.sql"
+      ,packageName = "DataQualityDashboard"
+      ,tableName = "dqdashboard_results"
+      ,resultsDatabaseSchema = resultsDatabaseSchema
+      ,dbms = dbms
+      ,query_text = sql_unioned    
+    )
+    write(
+      x = sql4,
+      file = file.path(
+        outputFolder, 
+        sprintf("%s.sql", checkName)
+      ), 
+      append = TRUE)
+    
+    ustart <- ustart + sqlOnlyUnionCount
+  }
+}
+    

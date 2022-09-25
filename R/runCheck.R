@@ -75,48 +75,28 @@
     sql <- do.call(SqlRender::loadRenderTranslateSql, params)
     
     if (sqlOnly) {
-      .createSqlOnlyQuery(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, resultsDatabaseSchema, outputFolder, checkDescription, sqlOnlyUnionCount)
+      .createSqlOnlyQueries(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, resultsDatabaseSchema, outputFolder, checkDescription, sqlOnlyUnionCount)
       data.frame()
     } else {
       .processCheck(connection = connection,
-                                            connectionDetails = connectionDetails,
-                                            check = check, 
-                                            checkDescription = checkDescription, 
-                                            sql = sql,
-                                            outputFolder = outputFolder)
+                    connectionDetails = connectionDetails,
+                    check = check, 
+                    checkDescription = checkDescription, 
+                    sql = sql,
+                    outputFolder = outputFolder)
     }
   })
 
   if (sqlOnly && sqlOnlyUnionCount > 1 && length(sql_to_union) > 0) {
-    # Now write union of 'sqlOnlyUnionCount' at a time SQL statements
-    ustart <- 1
-    uend <- 1
-
-    while (ustart <= length(sql_to_union)) {
-      uend <- min(ustart + sqlOnlyUnionCount - 1, length(sql_to_union))
-
-      apart <- sql_to_union[ustart:uend]
-
-      sql_unioned <- paste(apart,collapse=' UNION ALL ')
-      
-      sql4 <- SqlRender::loadRenderTranslateSql(
-        sqlFilename = "insert_ctes_into_result_table.sql"
-        ,packageName = "DataQualityDashboard"
-        ,tableName = "dqdashboard_results"
-        ,resultsDatabaseSchema = resultsDatabaseSchema
-        ,dbms = connectionDetails$dbms
-        ,query_text = sql_unioned    
-      )
-      write(
-        x = sql4,
-        file = file.path(
-          outputFolder, 
-          sprintf("%s.sql", checkDescription$checkName)
-        ), 
-        append = TRUE)
-      
-      ustart <- ustart + sqlOnlyUnionCount
-    }
+    .writeSqlOnlyQueries(
+      sql_to_union,
+      sqlOnlyUnionCount,
+      resultsDatabaseSchema,
+      connectionDetails$dbms,
+      outputFolder,
+      checkDescription$checkName
+    )
   }
+  
   do.call(rbind, dfs)
 }
