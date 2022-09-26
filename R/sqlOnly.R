@@ -1,3 +1,4 @@
+#' @file sqlOnly.R
 
 #' Internal function to create queries when running in SqlOnly mode
 #' 
@@ -67,9 +68,10 @@
     threshold_value = thresholdValue,
     query_num = qnum
   )
-  
+
   sql_to_union <<- append(sql_to_union, check_query)
 }
+
 
 #' Internal function to write queries when running in SqlOnly mode
 #' 
@@ -83,10 +85,17 @@
   writeTableName,
   dbms,
   outputFolder,
-  checkName
+  checkDescription
 ) {
+  outFile <-file.path(
+    outputFolder, 
+    sprintf("%s_%s.sql", checkDescription$checkLevel, checkDescription$checkName)
+  )
+
+  # Delete existing file
+  unlink(outFile)
+
   ustart <- 1
-  
   while (ustart <= length(sql_to_union)) {
     uend <- min(ustart + sqlOnlyUnionCount - 1, length(sql_to_union))
     
@@ -98,19 +107,44 @@
       dbms = dbms,
       resultsDatabaseSchema = resultsDatabaseSchema,
       tableName = writeTableName,
-      query_text = sql_unioned    
+      query_text = sql_unioned
     )
     
     write(
       x = sql,
-      file = file.path(
-        outputFolder, 
-        sprintf("%s.sql", checkName)
-      ), 
-      append = TRUE)
+      file = outFile,
+      append = TRUE
+    )
     
     ustart <- ustart + sqlOnlyUnionCount
   }
+}
+
+
+#' Internal function to write the DDL to outputFolder
+#' @noRd
+#' @keywords internal
+.writeDDL <- function(
+    resultsDatabaseSchema,
+    writeTableName,
+    dbms,
+    outputFolder
+) {
+  sql <- SqlRender::loadRenderTranslateSql(
+    sqlFilename = "result_dataframe_ddl.sql",
+    packageName = "DataQualityDashboard",
+    dbms = dbms,
+    resultsDatabaseSchema = resultsDatabaseSchema,
+    tableName = writeTableName
+  )
+  
+  write(
+    x = sql,
+    file = file.path(
+      outputFolder, 
+      "ddlDqdResults.sql"
+    )
+  )
 }
 
 

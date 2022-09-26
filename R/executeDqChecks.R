@@ -124,7 +124,8 @@ executeDqChecks <- function(connectionDetails,
     DatabaseConnector::disconnect(connection)
   } else {
     metadata <- list(
-      DQD_VERSION = as.character(packageVersion("DataQualityDashboard"))
+      DQD_VERSION = as.character(packageVersion("DataQualityDashboard")),
+      CDM_SOURCE_NAME = cdmSourceName
     )
   }
   
@@ -289,9 +290,9 @@ executeDqChecks <- function(connectionDetails,
       startTimestamp = startTime, 
       endTimestamp = endTime,
       executionTime = sprintf("%.0f %s", delta, attr(delta, "units")),
-      CheckResults = checkResults, 
-      Metadata = metadata, 
-      Overview = overview
+      Metadata = metadata,
+      Overview = overview,
+      CheckResults = checkResults
     )
     
     # Write result
@@ -303,8 +304,9 @@ executeDqChecks <- function(connectionDetails,
     .writeResultsToJson(allResults, outputFolder, outputFile)
     
     ParallelLogger::logInfo("Execution Complete")  
+  } else {
+    .writeDDL(resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder)
   }
-  
   
   # write to table ----------------------------------------------------------------------
   
@@ -325,6 +327,7 @@ executeDqChecks <- function(connectionDetails,
     .writeResultsToCsv(checkResults = allResults$CheckResults, 
                        csvPath = file.path(outputFolder, csvFile))
   }
+
   ParallelLogger::unregisterLogger("DqDashboard")
   
   # Reset encoding to previous value 

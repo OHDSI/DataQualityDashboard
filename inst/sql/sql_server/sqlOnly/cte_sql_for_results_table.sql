@@ -8,7 +8,7 @@ SELECT
   ,cte.pct_violated_rows
   ,cte.num_denominator_rows
   ,'' as execution_time
-  ,'Query # @query_num' as query_text
+  ,'Query @query_num' as query_text
   ,'@check_name' as check_name
   ,'@check_level' as check_level
   ,'@check_description' as check_description

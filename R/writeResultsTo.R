@@ -36,12 +36,20 @@
   on.exit(DatabaseConnector::disconnect(connection = connection))
   
   if (length(cohortDefinitionId > 0)){
-    tableName <- sprintf("%s.%s_%s", resultsDatabaseSchema,writeTableName, cohortDefinitionId)
-  } else {tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)}
+    tableName <- sprintf("%s_%s", writeTableName, cohortDefinitionId)
+  } else {
+    tableName <- writeTableName
+  }
   
   ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
   
-  ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_dataframe_ddl.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
+  ddl <- SqlRender::loadRenderTranslateSql(
+    sqlFilename = "result_dataframe_ddl.sql", 
+    packageName = "DataQualityDashboard", 
+    resultsDatabaseSchema = resultsDatabaseSchema,
+    tableName = tableName,
+    dbms = connectionDetails$dbms
+  )
   
   DatabaseConnector::executeSql(connection = connection, sql = ddl, progressBar = TRUE)
   

@@ -35,6 +35,7 @@
                       outputFolder, 
                       sqlOnlyUnionCount,
                       sqlOnly) {
+
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
   
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",
@@ -53,7 +54,6 @@
     # Global variables for tracking SQL of checks
     sql_to_union <<- c()
     qnum <<- 0
-    unlink(file.path(outputFolder, sprintf("%s.sql", checkDescription$checkName)))
   }
   
   dfs <- apply(X = checks, MARGIN = 1, function(check) {
@@ -91,7 +91,7 @@
   })
 
   if (sqlOnly && length(sql_to_union) > 0) {
-    .writeSqlOnlyQueries(sql_to_union, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription$checkName)
+    .writeSqlOnlyQueries(sql_to_union, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
   }
   
   do.call(rbind, dfs)
