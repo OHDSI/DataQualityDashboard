@@ -46,3 +46,4 @@ spring:
               endpoint: ${AZURE_KEY_VAULT_ENDPOINT}
               profile:
                 tenant-id: ${AZURE_TENANT_ID}
+              refresh-interval: 1m
