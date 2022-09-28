@@ -123,7 +123,7 @@ executeDqChecks <- function(connectionDetails,
     metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
     DatabaseConnector::disconnect(connection)
   } else {
-    metadata <- list(
+    metadata <- data.frame(
       DQD_VERSION = as.character(packageVersion("DataQualityDashboard")),
       CDM_SOURCE_NAME = cdmSourceName
     )

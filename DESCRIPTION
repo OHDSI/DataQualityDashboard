@@ -27,7 +27,7 @@ Imports:
   jsonlite,
   rjson,
   lubridate,
-  SqlRender (>= 1.6.0),
+  SqlRender (>= 1.10.1),
   plyr
 Suggests:
   testthat,

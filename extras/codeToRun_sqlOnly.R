@@ -18,7 +18,7 @@ cdmDatabaseSchema <- ""
 resultsDatabaseSchema <- ""
 writeTableName <- "dqdashboard_results"
 
-outputFolder <- "./results"
+sqlFolder <- "./results"
 cdmSourceName <- ""
 
 sqlOnly <- TRUE
@@ -27,12 +27,11 @@ sqlOnlyUnionCount <- 100  # Number of check sqls to union in a single query. A s
 verboseMode <- TRUE
 
 cdmVersion <- "5.3.1"
-checkLevels <- c("TABLE", "FIELD")  # Bug in rendering concept level checks
+checkLevels <- c("TABLE", "FIELD", "CONCEPT")
 tablesToExclude <- c()
 checkNames <- c()
 
-# Run DQD. With sqlOnly=TRUE, this creates a sql file for each check type
-t1 <- Sys.time()
+# Run DQD with sqlOnly=TRUE. This will create a sql file for each check type in the output folder
 DataQualityDashboard::executeDqChecks(
   connectionDetails = dbmsConnectionDetails,
   cdmDatabaseSchema = cdmDatabaseSchema,
@@ -41,19 +40,16 @@ DataQualityDashboard::executeDqChecks(
   cdmSourceName = cdmSourceName,
   sqlOnly = sqlOnly,
   sqlOnlyUnionCount = sqlOnlyUnionCount,
-  outputFolder = outputFolder,
+  outputFolder = sqlFolder,
   checkLevels = checkLevels,
   verboseMode = verboseMode,
   cdmVersion = cdmVersion,
   tablesToExclude = tablesToExclude,
   checkNames = checkNames
 )
-t2 <- Sys.time()
-print(t2-t1)
 
 
-# (OPTIONAL) Execute queries against your database
-# Note; this uses some non-exported DQD functions
+# (OPTIONAL) Execute queries against your database, save to json results and view.
 library(DatabaseConnector)
 cdmSourceName <- ""
 sqlFolder <- "./results"
@@ -74,17 +70,16 @@ connectionDetails <- DatabaseConnector::createConnectionDetails(
   password = password,
   pathToDriver = pathToDriver
 )
-t1 <- Sys.time()
 
 c <- DatabaseConnector::connect(connectionDetails)
 
 # Create results table
-ddlFile <- file.path(outputFolder, "ddlDqdResults.sql")
+ddlFile <- file.path(sqlFolder, "ddlDqdResults.sql")
 ddl <- readChar(ddlFile, file.info(ddlFile)$size)
 DatabaseConnector::executeSql(c, ddl)
 
 # Run checks
-sqlFiles <- Sys.glob(file.path(outputFolder, "*.sql"))
+sqlFiles <- Sys.glob(file.path(sqlFolder, "*.sql"))
 for (sqlFile in sqlFiles) {
   if (sqlFile == ddlFile) {
     next
@@ -99,7 +94,7 @@ checkResults <- DatabaseConnector::querySql(
   c,
   SqlRender::render(
     "SELECT * FROM @resultsDatabaseSchema.@writeTableName", 
-    resultsDatabaseSchema=  resultsDatabaseSchema, 
+    resultsDatabaseSchema =  resultsDatabaseSchema,
     writeTableName = writeTableName
   )
 )
@@ -108,20 +103,17 @@ DatabaseConnector::disconnect(c)
 # Summarize overview
 overview <- DataQualityDashboard:::.summarizeResults(checkResults = checkResults)
 
-t2 <- Sys.time()
-print(t2-t1)
-
 # Create results object
 result <- list(
   startTimestamp = Sys.time(), 
   endTimestamp = Sys.time(),
   executionTime = 0,
-  CheckResults = checkResults, 
-  Metadata = list(
+  Metadata = data.frame(
     DQD_VERSION = as.character(packageVersion("DataQualityDashboard")),
     CDM_SOURCE_NAME = cdmSourceName
   ),
-  Overview = overview
+  Overview = overview,
+  CheckResults = checkResults
 )
 
 DataQualityDashboard:::.writeResultsToJson(result, jsonOutputFolder, jsonOutputFile)
