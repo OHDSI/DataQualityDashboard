@@ -8,7 +8,6 @@ import java.util.Set;
 import static java.lang.String.format;
 
 public class DbTypeAdapter {
-
     private static final Set<String> dbTypes = Set.of(
             "sql server",
             "postgresql",

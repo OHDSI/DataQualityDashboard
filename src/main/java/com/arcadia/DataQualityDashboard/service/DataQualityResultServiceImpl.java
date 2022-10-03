@@ -7,14 +7,11 @@ import com.arcadia.DataQualityDashboard.model.LogStatus;
 import com.arcadia.DataQualityDashboard.repository.DataQualityLogRepository;
 import com.arcadia.DataQualityDashboard.repository.DataQualityResultRepository;
 import com.arcadia.DataQualityDashboard.repository.DataQualityScanRepository;
-import com.arcadia.DataQualityDashboard.service.request.FileSaveRequest;
 import com.arcadia.DataQualityDashboard.service.response.FileSaveResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.sql.Timestamp;
 
 import static com.arcadia.DataQualityDashboard.model.LogStatus.ERROR;
@@ -25,20 +22,14 @@ import static com.arcadia.DataQualityDashboard.model.ScanStatus.FAILED;
 @Service
 @RequiredArgsConstructor
 public class DataQualityResultServiceImpl implements DataQualityResultService {
-    public static final String DATA_KEY = "data-quality";
-
     private final DataQualityScanRepository scanRepository;
     private final DataQualityResultRepository resultRepository;
     private final DataQualityLogRepository logRepository;
-    private final FilesManagerService filesManagerService;
 
     @Transactional
     @Override
-    public void saveCompletedResult(File resultJsonFile, Long scanId) {
+    public void saveCompletedResult(FileSaveResponse fileSaveResponse, Long scanId) {
         DataQualityScan scan = findScanById(scanId);
-        FileSystemResource resource = new FileSystemResource(resultJsonFile);
-        FileSaveRequest fileSaveRequest = new FileSaveRequest(scan.getUsername(), DATA_KEY, resource);
-        FileSaveResponse fileSaveResponse = filesManagerService.saveFile(fileSaveRequest);
         DataQualityLog log = createLastLog("Result json file successfully saved", INFO, scan);
         logRepository.save(log);
         DataQualityResult result = DataQualityResult.builder()

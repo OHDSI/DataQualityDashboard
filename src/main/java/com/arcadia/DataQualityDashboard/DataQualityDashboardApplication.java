@@ -21,9 +21,13 @@ public class DataQualityDashboardApplication {
 	CommandLineRunner run(RConnectionCreator rConnectionCreator) {
 		return args -> {
 			if (rConnectionCreator.isUnix()) {
-				RConnectionWrapper rConnection = rConnectionCreator.createRConnection();
-				rConnection.loadScript(rConnectionCreator.getDownloadJdbcDriversScript());
-				log.info("Jdbc drivers successfully loaded to Rserve");
+				try(RConnectionWrapper rConnection = rConnectionCreator.createRConnection()) {
+					rConnection.loadScript(rConnectionCreator.getDownloadJdbcDriversScript());
+					log.info("JDBC drivers successfully loaded to Rserve");
+				} catch (Exception e) {
+					log.error("Can not load JDBC drivers to Rserve: {}", e.getMessage());
+					e.printStackTrace();
+				}
 			}
 		};
 	}

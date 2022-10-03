@@ -10,7 +10,7 @@
 
 	<groupId>com.arcadia</groupId>
 	<artifactId>DataQualityDashboard</artifactId>
-	<version>0.0.4</version>
+	<version>0.4.0</version>
 	<name>DataQualityDashboard</name>
 	<description>Data Quality Dashboard</description>
 

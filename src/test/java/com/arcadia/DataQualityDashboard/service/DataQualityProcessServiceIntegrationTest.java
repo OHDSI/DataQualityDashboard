@@ -23,8 +23,8 @@ import org.springframework.web.client.RestClientException;
 import java.util.List;
 
 import static com.arcadia.DataQualityDashboard.model.ScanStatus.*;
-import static com.arcadia.DataQualityDashboard.service.DataQualityResultServiceImpl.DATA_KEY;
 import static com.arcadia.DataQualityDashboard.service.DataQualityServiceTest.createTestDbSettings;
+import static com.arcadia.DataQualityDashboard.util.FileSaveRequestUtil.DATA_KEY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -56,12 +56,12 @@ class DataQualityProcessServiceIntegrationTest {
         DataQualityResultServiceImpl resultService = new DataQualityResultServiceImpl(
                 scanRepository,
                 resultRepository,
-                logRepository,
-                filesManagerService
+                logRepository
         );
         dataQualityProcessService = new DataQualityProcessServiceImpl(
                 rConnectionCreator,
-                resultService
+                resultService,
+                filesManagerService
         );
     }
 

@@ -56,7 +56,7 @@ public class CheckDataQualityController {
     @GetMapping("/result/{scanId}")
     public ResponseEntity<Resource> downloadResultJsonFile(@RequestHeader("Username") String username,
                                                            @PathVariable Long scanId) {
-        log.info("Rest request to download Data Quality Check result json file by id {}", scanId);
+        log.info("Rest request to download Data Quality Check result json file by id {} via API path", scanId);
         DataQualityResult result = dataQualityService.result(scanId, username);
         Resource resource = filesManagerService.getFile(result.getFileId());
         return ok()

@@ -24,13 +24,17 @@ public class DataQualityProcessServiceTest {
     @MockBean
     RConnectionWrapper rConnectionWrapper;
 
+    @MockBean
+    FilesManagerService filesManagerService;
+
     DataQualityProcessService dataQualityProcessService;
 
     @BeforeEach
     void setUp() {
         dataQualityProcessService = new DataQualityProcessServiceImpl(
                 rConnectionCreator,
-                resultService
+                resultService,
+                filesManagerService
         );
     }
 

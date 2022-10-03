@@ -19,18 +19,13 @@ RUN R -e "install.packages('DatabaseConnector')"
 RUN R -e "install.packages('SqlRender')"
 RUN R -e "install.packages('ParallelLogger')"
 RUN R -e "install.packages('devtools')"
-RUN R -e "install.packages('properties')"
-RUN R -e "devtools::install_github('OHDSI/DataQualityDashboard')"
+RUN R -e "remotes::install_github('OHDSI/DataQualityDashboard')"
 RUN R -e "install.packages('Rserve',, 'http://rforge.net/', type='source')"
 
 VOLUME /rserve
 
 WORKDIR .
 
-RUN mkdir root/R
-RUN mkdir root/R/properties
-
-COPY properties/${prop}.properties root/R/properties/default.properties
 COPY execution.R root/R/execution.R
 COPY dqd-database-manager.R root/R/dqd-database-manager.R
 COPY data-quality-check.R root/R/data-quality-check.R
@@ -43,6 +38,9 @@ COPY java-secure java-secure
 RUN tr -d '\015' <./java-secure >./java-secure.tmp && mv ./java-secure.tmp ./java-secure && chmod 700 ./java-secure
 RUN ./java-secure
 
-EXPOSE 6311
+COPY entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
 
-ENTRYPOINT ["R", "-e", "Rserve::run.Rserve(remote=TRUE)"]
+EXPOSE 6311 2222
+
+CMD ["./entrypoint.sh"]

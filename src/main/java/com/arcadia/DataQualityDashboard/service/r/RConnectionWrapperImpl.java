@@ -1,5 +1,6 @@
 package com.arcadia.DataQualityDashboard.service.r;
 
+import com.arcadia.DataQualityDashboard.config.DqdDatabaseProperties;
 import com.arcadia.DataQualityDashboard.model.DataQualityScan;
 import com.arcadia.DataQualityDashboard.model.DbSettings;
 import com.arcadia.DataQualityDashboard.service.error.RException;
@@ -13,6 +14,7 @@ import org.rosuda.REngine.Rserve.RConnection;
 import java.util.List;
 
 import static com.arcadia.DataQualityDashboard.util.DbTypeAdapter.*;
+import static com.arcadia.DataQualityDashboard.util.RConnectionWrapperUtil.createDataQualityCheckCommand;
 import static java.lang.String.format;
 
 @RequiredArgsConstructor
@@ -23,6 +25,8 @@ public class RConnectionWrapperImpl implements RConnectionWrapper {
 
     @Getter
     private final boolean isUnix;
+
+    private final DqdDatabaseProperties dqdDatabaseProperties;
 
     @Override
     @SneakyThrows
@@ -77,19 +81,16 @@ public class RConnectionWrapperImpl implements RConnectionWrapper {
     @SneakyThrows
     public String checkDataQuality(DataQualityScan scan, int threadCount) {
         DbSettings dbSettings = scan.getDbSettings();
-        Long scanId = scan.getId();
-        String dbType = adaptDbType(dbSettings.getDbType());
-        String server = adaptServer(dbType, dbSettings.getServer(), dbSettings.getDatabase());
-        String schema = adaptDataBaseSchema(dbSettings.getDatabase(), dbSettings.getSchema());
-        String dqdCmd = format("dataQualityCheck(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %d, %d)",
-                dbType,
-                server,
-                dbSettings.getPort(),
-                schema,
-                dbSettings.getUser(),
-                dbSettings.getPassword(),
-                scanId,
-                threadCount
+        String cdmDbType = adaptDbType(dbSettings.getDbType());
+        String cdmServer = adaptServer(cdmDbType, dbSettings.getServer(), dbSettings.getDatabase());
+        String cdmSchema = adaptDataBaseSchema(dbSettings.getDatabase(), dbSettings.getSchema());
+        String dqdCmd = createDataQualityCheckCommand(
+                scan,
+                cdmDbType,
+                cdmServer,
+                cdmSchema,
+                threadCount,
+                dqdDatabaseProperties
         );
         REXP runResponse = rConnection.parseAndEval(toTryCmd(dqdCmd));
         if (runResponse.inherits("try-error")) {

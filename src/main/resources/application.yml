@@ -14,6 +14,15 @@ rserve:
 files-manager:
   url: http://localhost:10500/files-manager
 
+dqd-database:
+  dbms: postgresql
+  server: shareddb
+  port: 5432
+  database: shared
+  schema: dqd
+  user: dqd
+  password: password
+
 spring:
   application:
     name: Data Quality Dashboard
@@ -27,5 +36,5 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: false

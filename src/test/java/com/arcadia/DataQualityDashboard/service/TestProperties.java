@@ -1,5 +1,6 @@
 package com.arcadia.DataQualityDashboard.service;
 
+import com.arcadia.DataQualityDashboard.config.DqdDatabaseProperties;
 import com.arcadia.DataQualityDashboard.config.RServeProperties;
 
 import java.util.List;
@@ -16,5 +17,15 @@ public class TestProperties {
             "R/data-quality-check.R",
             "R/dqd-database-manager.R",
             "R/execution.R"
+    );
+
+    public static DqdDatabaseProperties dqdDatabaseProperties = new DqdDatabaseProperties(
+            "postgresql",
+            "localhost",
+            5432,
+            "shared",
+            "dqd",
+            "dqd",
+            "password"
     );
 }
