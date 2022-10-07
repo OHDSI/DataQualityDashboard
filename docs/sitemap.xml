@@ -52,7 +52,40 @@
     <loc>/authors.html</loc>
   </url>
   <url>
+    <loc>/check_statuses.html</loc>
+  </url>
+  <url>
     <loc>/index.html</loc>
+  </url>
+  <url>
+    <loc>/news/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-evaluateThresholds.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-getCheckId.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-processCheck.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-recordResult.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-runCheck.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-summarizeResults.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-writeResultsToCsv.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-writeResultsToJson.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-writeResultsToTable.html</loc>
   </url>
   <url>
     <loc>/reference/executeDqChecks.html</loc>
@@ -61,7 +94,16 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/listDqChecks.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reEvaluateThresholds.html</loc>
+  </url>
+  <url>
     <loc>/reference/viewDqDashboard.html</loc>
+  </url>
+  <url>
+    <loc>/reference/writeJsonResultsToCsv.html</loc>
   </url>
   <url>
     <loc>/reference/writeJsonResultsToTable.html</loc>

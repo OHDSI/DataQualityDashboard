@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.100</span>
       </span>
     </div>
 
@@ -50,6 +50,9 @@
       <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
     </li>
   </ul></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
@@ -66,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Write JSON Results to SQL Table</h1>
-    <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/R/execution.R" class="external-link"><code>R/execution.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/R/writeJsonResultsTo.R" class="external-link"><code>R/writeJsonResultsTo.R</code></a></small>
     <div class="hidden name"><code>writeJsonResultsToTable.Rd</code></div>
     </div>
 
@@ -75,24 +78,36 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">writeJsonResultsToTable</span><span class="op">(</span>
-  <span class="va">connectionDetails</span>,
-  <span class="va">resultsDatabaseSchema</span>,
-  <span class="va">jsonFilePath</span>,
-  writeTableName <span class="op">=</span> <span class="st">"dqdashboard_results"</span>,
-  cohortDefinitionId <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,
-  useMppBulkLoad <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">writeJsonResultsToTable</span><span class="op">(</span></span>
+<span>  <span class="va">connectionDetails</span>,</span>
+<span>  <span class="va">resultsDatabaseSchema</span>,</span>
+<span>  <span class="va">jsonFilePath</span>,</span>
+<span>  writeTableName <span class="op">=</span> <span class="st">"dqdashboard_results"</span>,</span>
+<span>  cohortDefinitionId <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>connectionDetails</dt>
 <dd><p>A connectionDetails object for connecting to the CDM database</p></dd>
+
+
 <dt>resultsDatabaseSchema</dt>
 <dd><p>The fully qualified database name of the results schema</p></dd>
+
+
 <dt>jsonFilePath</dt>
 <dd><p>Path to the JSON results file generated using the execute function</p></dd>
+
+
+<dt>writeTableName</dt>
+<dd><p>Name of table in the database to write results to</p></dd>
+
+
+<dt>cohortDefinitionId</dt>
+<dd><p>If writing results for a single cohort this is the ID that will be appended to the table name</p></dd>
+
 </dl></div>
 
   </div>
@@ -107,7 +122,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
