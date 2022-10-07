@@ -9,7 +9,8 @@
 #' @param error                     Any errors returned from the server
 #' 
 #' @keywords internal
-#'
+#' @importFrom stats setNames
+#' 
 
 
 .recordResult <- function(result = NULL, 

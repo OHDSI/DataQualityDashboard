@@ -9,6 +9,7 @@
 #' @param unitConceptId             The unit concept id the quality check is applied to
 #' 
 #' @keywords internal
+#' @importFrom stats na.omit
 #'
 
 .getCheckId <- function(checkLevel, 

@@ -32,6 +32,7 @@
 #' @param outputFile                (OPTIONAL) File to write results JSON object 
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
+#' @param writeTableName            The name of the results table. Defaults to `dqdashboard_results`.
 #' @param writeToCsv                Boolean to indicate if the check results will be written to a csv file
 #' @param csvFile                   (OPTIONAL) CSV file to write results
 #'                                  in the resultsDatabaseSchema. Default is TRUE.
@@ -47,6 +48,10 @@
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
 #' 
 #' @return If sqlOnly = FALSE, a list object of results
+#' 
+#' @importFrom magrittr %>%
+#' @import DatabaseConnector
+#' @importFrom utils packageVersion read.csv
 #' 
 #' @export
 #' 
@@ -195,7 +200,7 @@ executeDqChecks <- function(connectionDetails,
   }
   
   ## remove offset from being checked
-  fieldChecks <- subset(fieldChecks, cdmFieldName != '"offset"')
+  fieldChecks <- subset(fieldChecks, cdmFieldName != "offset")
   
   # library(magrittr)
   # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
