@@ -1,5 +1,4 @@
 checkLevel,checkName,checkDescription,kahnContext,kahnCategory,kahnSubcategory,sqlFile,evaluationFilter
-TABLE,cdmTable,A yes or no value indicating if @cdmTableName table is present as expected based on the specification. ,Verification,Conformance,Relational,table_cdm_table.sql,cdmTableName!=''
 TABLE,measurePersonCompleteness,The number and percent of persons in the CDM that do not have at least one record in the @cdmTableName table,Validation,Completeness,,table_person_completeness.sql,measurePersonCompleteness=='Yes'
 FIELD,cdmField,A yes or no value indicating if @cdmFieldName is present in the @cdmTableName table as expected based on the specification. ,Verification,Conformance,Relational,field_cdm_field.sql,cdmFieldName!=''
 FIELD,isRequired,The number and percent of records with a NULL value in the @cdmFieldName of the @cdmTableName that is considered not nullable.,Validation,Conformance,Relational,field_is_not_nullable.sql,isRequired=='Yes'
@@ -21,3 +20,5 @@ FIELD,withinVisitDates,The number and percent of records not within one week on 
 CONCEPT,plausibleValueLow,"For the combination of CONCEPT_ID @conceptId (@conceptName) and UNIT_CONCEPT_ID @unitConceptId (@unitConceptName), the number and percent of records that have a value less than @plausibleValueLow.",Verification,Plausibility,Atemporal,concept_plausible_value_low.sql,plausibleValueLow!=''
 CONCEPT,plausibleValueHigh,"For the combination of CONCEPT_ID @conceptId (@conceptName) and UNIT_CONCEPT_ID @unitConceptId (@unitConceptName), the number and percent of records that have a value higher than @plausibleValueHigh.",Verification,Plausibility,Atemporal,concept_plausible_value_high.sql,plausibleValueHigh!=''
 CONCEPT,plausibleGender,"For a CONCEPT_ID @conceptId (@conceptName), the number and percent of records associated with patients with an implausible gender (correct gender = @plausibleGender).",Validation,Plausibility,Atemporal,concept_plausible_gender.sql,plausibleGender!=''
+TABLE,measureConditionEraCompleteness,"The number and Percent of persons that does not have condition_era built successfully 
+for all persons in condition_occurrence",Validation,Completeness,,table_condition_era_completeness.sql,measureConditionEraCompleteness=='Yes'
