@@ -26,16 +26,17 @@ FROM
 		SELECT m.* 
 		FROM @cdmDatabaseSchema.@cdmTableName m
 		{@cohort}?{
-  	JOIN @cohortDatabaseSchema.COHORT c
-  	ON m.PERSON_ID = c.SUBJECT_ID
-  	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
-  	}
+  					JOIN @cohortDatabaseSchema.COHORT c
+  					ON m.PERSON_ID = c.SUBJECT_ID
+  					AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+  					}
 		WHERE m.@cdmFieldName = @conceptId
 		AND {@plausibleUnitConceptIds == '' | @plausibleUnitConceptIds == 'NA'}?{
 		  m.unit_concept_id IS NOT NULL
 		}:{
 		  m.unit_concept_id NOT IN (@plausibleUnitConceptIds)
 		}
+		AND m.value_as_number IS NOT NULL
 		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
@@ -48,5 +49,6 @@ FROM
 	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
 	}
 	WHERE m.@cdmFieldName = @conceptId
+	AND value_as_number IS NOT NULL
 ) denominator
 ;
