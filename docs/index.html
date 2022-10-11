@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.100</span>
       </span>
     </div>
 
@@ -69,6 +69,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -93,6 +96,7 @@
 <div class="section level1">
 <div class="page-header"><h1 id="dataqualitydashboard">DataQualityDashboard<a class="anchor" aria-label="anchor" href="#dataqualitydashboard"></a>
 </h1></div>
+<!-- badges: start -->
 
 <p>The goal of the Data Quality Dashboard (DQD) project is to design and develop an open-source tool to expose and evaluate observational data quality.</p>
 </div>
@@ -113,7 +117,7 @@
 <p><em>The number and percent of records with a value in the <strong>days_supply</strong> field of the <strong>DRUG_EXPOSURE</strong> table less than <strong>0</strong>.</em></p>
 <p>Version 1 of the tool includes 20 different check types organized into Kahn contexts and categories. Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs. For a detailed description and definition of each check type please click <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions" class="external-link">here</a>.</p>
 <p>After systematically applying the 20 check types to an OMOP CDM version approximately 3,351 individual data quality checks are resolved, run against the database, and evaluated based on a pre-specified threshold. The R package then creates a json object that is read into an RShiny application to view the results.</p>
-<p><img src="https://github.com/OHDSI/DataQualityDashboard/raw/main/extras/dqDashboardScreenshot.png"></p>
+<p><img src="reference/figures/dqDashboardScreenshot.png"></p>
 </div>
 <div class="section level1">
 <h1 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
@@ -250,7 +254,7 @@
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li>Apache License 2.0</li>
+<li>Apache License (&gt;= 2)</li>
 </ul>
 </div>
 
@@ -277,8 +281,8 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/OHDSI/DataQualityDashboard" class="external-link"><img src="https://travis-ci.org/OHDSI/DataQualityDashboard.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://codecov.io/github/OHDSI/DataQualityDashboard?branch=master" class="external-link"><img src="https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=master" alt="codecov.io"></a></li>
+<li><a href="https://codecov.io/github/OHDSI/DataQualityDashboard?branch=main" class="external-link"><img src="https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=main" alt="codecov.io"></a></li>
+<li><a href="https://github.com/OHDSI/DataQualityDashboard/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/OHDSI/DataQualityDashboard/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
@@ -293,7 +297,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

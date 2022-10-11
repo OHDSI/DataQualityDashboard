@@ -81,6 +81,10 @@ function loadResults(results) {
             '<td>' + d.EXECUTION_TIME + '</td>' +
             '</tr>' +
             '<tr>' +
+            '<td>Not applicable reason:</td>' +
+            '<td>' + d.NOT_APPLICABLE_REASON + '</td>' +
+            '</tr>' +
+            '<tr>' +
             '<td>SQL Query:</td>' +
             '<td><pre>' + d.QUERY_TEXT + '</pre></td>' +
             '</tr>' +
@@ -145,7 +149,7 @@ function loadResults(results) {
                 "data": null,
                 "defaultContent": ''
             },
-            { data: function (d) { if (d.FAILED == 0) { return "PASS" } else { return "FAIL" } }, title: "STATUS", className: 'dt-body-right' },
+            { data: function (d) { if (d.IS_ERROR == 1) { return "ERROR" } else if (d.NOT_APPLICABLE == 1) { return "NOT APPLICABLE" } else if (d.FAILED == 1) { return "FAIL" } else {return "PASS"} }, title: "STATUS", className: 'dt-body-right' },
             /*{ data: function (d) { return d.CONTEXT ? d.CONTEXT : "None"; }, title: "CONTEXT" },*/
             { data: "CDM_TABLE_NAME", title: "TABLE"},
             { data: function (d) { return d.CDM_FIELD_NAME ? d.CDM_FIELD_NAME : "None"; }, title: "FIELD", visible: false },

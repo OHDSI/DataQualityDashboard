@@ -24,6 +24,7 @@ FROM
 	SELECT COUNT_BIG(*) AS num_violated_rows
 	FROM
 	(
+		/*violatedRowsBegin*/
 		SELECT m.* 
 		FROM @cdmDatabaseSchema.@cdmTableName m
 		{@cohort}?{
@@ -35,6 +36,7 @@ FROM
 		AND m.unit_concept_id = @unitConceptId
 		AND m.value_as_number IS NOT NULL
 		AND m.value_as_number > @plausibleValueHigh
+		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
 ( 

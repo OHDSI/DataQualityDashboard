@@ -1,8 +1,10 @@
 DataQualityDashboard
 ====================
 
-[![Build Status](https://travis-ci.org/OHDSI/DataQualityDashboard.svg?branch=master)](https://travis-ci.org/OHDSI/DataQualityDashboard)
-[![codecov.io](https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=master)](https://codecov.io/github/OHDSI/DataQualityDashboard?branch=master)
+<!-- badges: start -->
+[![codecov.io](https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=main)](https://codecov.io/github/OHDSI/DataQualityDashboard?branch=main)
+[![R-CMD-check](https://github.com/OHDSI/DataQualityDashboard/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/OHDSI/DataQualityDashboard/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
 
 The goal of the Data Quality Dashboard (DQD) project is to design and develop an open-source tool to expose and evaluate observational data quality. 
 
@@ -33,7 +35,7 @@ Version 1 of the tool includes 20 different check types organized into Kahn cont
 After systematically applying the 20 check types to an OMOP CDM version approximately 3,351 individual data quality checks are resolved, run against the database, and evaluated based on a pre-specified threshold. The R package then creates a json object that is read into an RShiny application to view the results.
 
 
-<img src="https://github.com/OHDSI/DataQualityDashboard/raw/main/extras/dqDashboardScreenshot.png"/>
+<img src="man/figures/dqDashboardScreenshot.png"/>
 
 
 Features

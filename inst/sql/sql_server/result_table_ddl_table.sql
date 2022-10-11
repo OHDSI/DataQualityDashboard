@@ -18,7 +18,11 @@ CREATE TABLE @tableName
   subcategory           varchar(255),
   context               varchar(255),
   checkid               varchar(1024),
+  is_error              integer,
+  not_applicable        integer,
   failed                integer,
+  passed                integer,
+  not_applicable_reason varchar(8000),  
   threshold_value       integer,
   notes_value           varchar(8000),
   x_row                 varchar(255)
