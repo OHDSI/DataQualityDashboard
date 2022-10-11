@@ -21,26 +21,26 @@ FROM
 	FROM
 	(
 		SELECT DISTINCT co.person_id
-FROM
-  @cdmDatabaseSchema.condition_occurrence co
-		{@cohort & '@runForCohort' == 'Yes'}?{
-    	JOIN @cohortDatabaseSchema.COHORT c 
-    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
-    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
-    	}
-LEFT JOIN @cdmDatabaseSchema.cdmTableName cdmTable
-  ON
-    co.person_id = cdmTable.person_id
-  WHERE
-  cdmTable.person_id IS NULL
+		FROM
+  	  	@cdmDatabaseSchema.condition_occurrence co
+			{@cohort & '@runForCohort' == 'Yes'}?{
+    		JOIN @cohortDatabaseSchema.COHORT c 
+    		ON co.PERSON_ID = c.SUBJECT_ID
+    		AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    		}
+		LEFT JOIN @cdmDatabaseSchema.@cdmTableName cdmTable
+  	  	ON
+    	co.person_id = cdmTable.person_id
+  	WHERE
+  	cdmTable.person_id IS NULL
 	) violated_rows
 ) violated_row_count,
 ( 
 	SELECT COUNT_BIG(DISTINCT person_id) AS num_rows
-	FROM @cdmDatabaseSchema.condition_occurrence cdmTable2
+	FROM @cdmDatabaseSchema.condition_occurrence co
 	{@cohort & '@runForCohort' == 'Yes'}?{
     	JOIN @cohortDatabaseSchema.COHORT c 
-    	ON cdmTable2.PERSON_ID = c.SUBJECT_ID
+    	ON co.PERSON_ID = c.SUBJECT_ID
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
     	}
 ) denominator
