@@ -36,7 +36,8 @@ FROM
 		}:{
 		  m.unit_concept_id NOT IN (@plausibleUnitConceptIds)
 		}
-		AND m.value_as_number IS NOT NULL
+		AND m.value_as_number IS NOT NULL 
+		AND (m.unit_source_value IS NOT NULL OR m.unit_source_value <> '')
 		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
@@ -50,5 +51,6 @@ FROM
 	}
 	WHERE m.@cdmFieldName = @conceptId
 	AND value_as_number IS NOT NULL
+	AND (m.unit_source_value IS NOT NULL OR m.unit_source_value <> '')
 ) denominator
 ;

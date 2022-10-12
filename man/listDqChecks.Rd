@@ -2,7 +2,7 @@
 % Please edit documentation in R/listChecks.R
 \name{listDqChecks}
 \alias{listDqChecks}
-\title{Details on all checks defined by the DataQualityDashboard Package.}
+\title{List DQ checks}
 \usage{
 listDqChecks(
   cdmVersion = "5.3.1",

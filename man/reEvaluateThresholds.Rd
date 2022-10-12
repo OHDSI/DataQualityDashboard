@@ -2,7 +2,7 @@
 % Please edit documentation in R/reEvaluateThresholds.R
 \name{reEvaluateThresholds}
 \alias{reEvaluateThresholds}
-\title{Re-evaluate an existing DQD result against an updated thresholds file.}
+\title{Re-evaluate Thresholds}
 \usage{
 reEvaluateThresholds(
   jsonFilePath,
