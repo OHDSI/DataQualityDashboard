@@ -265,7 +265,7 @@ checkLevels &lt;- c(&quot;TABLE&quot;, &quot;FIELD&quot;, &quot;CONCEPT&quot;)
 
 # which DQ checks to run? ------------------------------------
 
-checkNames &lt;- c() # Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Descriptions.csv
+checkNames &lt;- c() # Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descriptions.csv
 
 # run the job --------------------------------------------------------------------------------------
 DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails, 
@@ -324,12 +324,8 @@ DataQualityDashboard::writeJsonResultsToTable(connectionDetails = connectionDeta
 
 <p>To see description of checks using R, execute the command below:</p>
 
-<pre><code>View(read.csv(
-  system.file(&quot;csv&quot;,&quot;OMOP_CDMv5.3.1_Check_Descriptions.csv&quot;,
-    package=&quot;DataQualityDashboard&quot;
-  ),
-  as.is=T)
-)
+<pre><code>checks &lt;- DataQualityDashboard::listDqChecks(cdmVersion = &quot;5.3&quot;) # Put the version of the CDM you are using
+
 </code></pre>
 
 </body>

@@ -59,6 +59,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/AddNewCheck.html">Add a New Data Quality Check</a>
+    </li>
+    <li>
+      <a href="articles/CheckStatusDefinitions.html">Check Status Descriptions</a>
+    </li>
+    <li>
       <a href="articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
     </li>
     <li>
@@ -103,7 +109,7 @@
 <div class="section level1">
 <h1 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h1>
-<p>This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.4, v5.3.1 and v5.2.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way.</p>
+<p>This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.4, v5.3 and v5.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way.</p>
 </div>
 <div class="section level1">
 <h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -115,8 +121,8 @@
 <p><em>The number and percent of records with a value in the <strong>year_of_birth</strong> field of the <strong>PERSON</strong> table less than <strong>1850</strong>.</em></p>
 <p>And, since it is parameterized, we can similarly apply it to DRUG_EXPOSURE.days_supply:</p>
 <p><em>The number and percent of records with a value in the <strong>days_supply</strong> field of the <strong>DRUG_EXPOSURE</strong> table less than <strong>0</strong>.</em></p>
-<p>Version 1 of the tool includes 20 different check types organized into Kahn contexts and categories. Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs. For a detailed description and definition of each check type please click <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions" class="external-link">here</a>.</p>
-<p>After systematically applying the 20 check types to an OMOP CDM version approximately 3,351 individual data quality checks are resolved, run against the database, and evaluated based on a pre-specified threshold. The R package then creates a json object that is read into an RShiny application to view the results.</p>
+<p>Version 1 of the tool includes 24 different check types organized into Kahn contexts and categories. Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs. For a detailed description and definition of each check type please click <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions" class="external-link">here</a>.</p>
+<p>After systematically applying the 24 check types to an OMOP CDM version approximately 4,000 individual data quality checks are resolved, run against the database, and evaluated based on a pre-specified threshold. The R package then creates a json object that is read into an RShiny application to view the results.</p>
 <p><img src="reference/figures/dqDashboardScreenshot.png"></p>
 </div>
 <div class="section level1">
@@ -228,7 +234,7 @@
 <div class="section level3">
 <h3 id="development-status">Development status<a class="anchor" aria-label="anchor" href="#development-status"></a>
 </h3>
-<p>V1.4 ready for use.</p>
+<p>V2.0 ready for use.</p>
 </div>
 </div>
 <div class="section level1">

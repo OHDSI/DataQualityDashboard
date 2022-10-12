@@ -59,6 +59,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/AddNewCheck.html">Add a New Data Quality Check</a>
+    </li>
+    <li>
+      <a href="../articles/CheckStatusDefinitions.html">Check Status Descriptions</a>
+    </li>
+    <li>
       <a href="../articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
     </li>
     <li>
@@ -97,7 +103,7 @@
                         <h4 data-toc-skip class="author">Clair
 Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2022-10-07</h4>
+            <h4 data-toc-skip class="date">2022-10-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/DataQualityDashboard.rmd" class="external-link"><code>vignettes/DataQualityDashboard.rmd</code></a></small>
       <div class="hidden name"><code>DataQualityDashboard.rmd</code></div>
@@ -179,7 +185,7 @@ prior to running the DQD.</p>
 <span></span>
 <span><span class="co"># which DQ checks to run? ------------------------------------</span></span>
 <span></span>
-<span><span class="va">checkNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Descriptions.csv</span></span>
+<span><span class="va">checkNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descriptions.csv</span></span>
 <span></span>
 <span><span class="co"># run the job --------------------------------------------------------------------------------------</span></span>
 <span><span class="fu">DataQualityDashboard</span><span class="fu">::</span><span class="fu"><a href="../reference/executeDqChecks.html">executeDqChecks</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>, </span>
@@ -229,12 +235,7 @@ inst/shinyApps/www</p></li>
 <h2 id="view-checks">View checks<a class="anchor" aria-label="anchor" href="#view-checks"></a>
 </h2>
 <p>To see description of checks using R, execute the command below:</p>
-<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"csv"</span>,<span class="st">"OMOP_CDMv5.3.1_Check_Descriptions.csv"</span>,</span>
-<span>    package<span class="op">=</span><span class="st">"DataQualityDashboard"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  as.is<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre>
+<pre><code><span><span class="va">checks</span> <span class="op">&lt;-</span> <span class="fu">DataQualityDashboard</span><span class="fu">::</span><span class="fu"><a href="../reference/listDqChecks.html">listDqChecks</a></span><span class="op">(</span>cdmVersion <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span> <span class="co"># Put the version of the CDM you are using</span></span></code></pre>
 </div>
   </div>
 

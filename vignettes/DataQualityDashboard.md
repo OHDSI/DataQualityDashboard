@@ -1,7 +1,7 @@
 ---
 title: "Getting Started"
 author: "Clair Blacketer"
-date: "2022-09-16"
+date: "2022-10-12"
 header-includes:
     - \usepackage{fancyhdr}
     - \pagestyle{fancy}
@@ -84,7 +84,7 @@ checkLevels <- c("TABLE", "FIELD", "CONCEPT")
 
 # which DQ checks to run? ------------------------------------
 
-checkNames <- c() # Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Descriptions.csv
+checkNames <- c() # Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descriptions.csv
 
 # run the job --------------------------------------------------------------------------------------
 DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails, 
@@ -143,10 +143,6 @@ View checks
 ===========
 To see description of checks using R, execute the command below:
 ```
-View(read.csv(
-  system.file("csv","OMOP_CDMv5.3.1_Check_Descriptions.csv",
-    package="DataQualityDashboard"
-  ),
-  as.is=T)
-)
+checks <- DataQualityDashboard::listDqChecks(cdmVersion = "5.3") # Put the version of the CDM you are using
+
 ```

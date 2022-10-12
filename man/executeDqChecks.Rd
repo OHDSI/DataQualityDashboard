@@ -25,7 +25,7 @@ executeDqChecks(
   cohortDatabaseSchema = resultsDatabaseSchema,
   tablesToExclude = c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR",
     "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
-  cdmVersion = "5.3.1",
+  cdmVersion = "5.3",
   tableCheckThresholdLoc = "default",
   fieldCheckThresholdLoc = "default",
   conceptCheckThresholdLoc = "default"
@@ -72,7 +72,7 @@ with the fields cohort_definition_id and subject_id.}
 
 \item{tablesToExclude}{(OPTIONAL) Choose which CDM tables to exclude from the execution.}
 
-\item{cdmVersion}{The CDM version to target for the data source. By default, 5.3.1 is used.}
+\item{cdmVersion}{The CDM version to target for the data source. Options are "5.2", "5.3", or "5.4". By default, "5.3" is used.}
 
 \item{tableCheckThresholdLoc}{The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.}
 

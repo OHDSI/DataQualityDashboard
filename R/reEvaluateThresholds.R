@@ -26,7 +26,7 @@
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
-#' @param cdmVersion                The CDM version to target for the data source. By default, 5.3.1 is used.
+#' @param cdmVersion                The CDM version to target for the data source. By default, 5.3 is used.
 #' 
 #' @export
  
@@ -36,7 +36,7 @@ reEvaluateThresholds <- function(jsonFilePath,
                                  tableCheckThresholdLoc = "default",
                                  fieldCheckThresholdLoc = "default",
                                  conceptCheckThresholdLoc = "default",
-                                 cdmVersion = '5.3.1') {
+                                 cdmVersion = '5.3') {
   # Read in results to data frame --------------------------------------
   dqdResults <- jsonlite::read_json(path = jsonFilePath)
   
