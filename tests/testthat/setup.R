@@ -1,11 +1,5 @@
-library(withr)
 
 jdbcDriverFolder <- tempfile("jdbcDrivers")
-
-withr::defer({
-  unlink(jdbcDriverFolder, recursive = TRUE, force = TRUE)
-}, testthat::teardown_env())
-
 
 dbms <- getOption("dbms", default = "sqlite")
 if (dbms == "sqlite") {
@@ -45,7 +39,6 @@ if (dbms == "oracle") {
   
   # Restore temp schema setting after tests complete
   oldTempSchema <- getOption("sqlRenderTempEmulationSchema")
-  withr::defer(options("sqlRenderTempEmulationSchema" = oldTempSchema), testthat::teardown_env())
   options("sqlRenderTempEmulationSchema" = Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA"))
   cdmVersion <- 5
 }
