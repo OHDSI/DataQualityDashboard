@@ -1,4 +1,6 @@
 library(testthat)
+library(withr)
+jdbcDriverFolder <- tempfile("jdbcDrivers")
 
 test_that("listDqChecks works", {
   checks <- listDqChecks()
@@ -77,7 +79,8 @@ test_that("Execute a single DQ check on remote databases", {
                                          user = sysUser,
                                          password = sysPassword,
                                          server = sysServer,
-                                         extraSettings = sysExtraSettings)
+                                         extraSettings = sysExtraSettings,
+                                         pathToDriver = jdbcDriverFolder)
 
       results <- executeDqChecks(connectionDetails = connectionDetails,
                                  cdmDatabaseSchema = cdmDatabaseSchema,
