@@ -1,3 +1,5 @@
+library(withr)
+
 jdbcDriverFolder <- tempfile("jdbcDrivers")
 
 withr::defer({

@@ -1,6 +1,11 @@
 library(testthat)
 library(withr)
+
 jdbcDriverFolder <- tempfile("jdbcDrivers")
+DatabaseConnector::downloadJdbcDrivers("postgresql", pathToDriver = jdbcDriverFolder)
+DatabaseConnector::downloadJdbcDrivers("sql server", pathToDriver = jdbcDriverFolder)
+DatabaseConnector::downloadJdbcDrivers("oracle", pathToDriver = jdbcDriverFolder)
+
 
 test_that("listDqChecks works", {
   checks <- listDqChecks()
