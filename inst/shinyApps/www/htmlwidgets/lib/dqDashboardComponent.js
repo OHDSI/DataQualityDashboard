@@ -136,6 +136,13 @@ class DqDashboard extends HTMLElement {
             </tr>
         </tbody>
     </table>
+    {{#if Total.Total.NA}}
+    <div class="text-muted">
+      <div>{{Total.Total.NA}} out of {{Total.Total.Pass}} passed checks are Not Applicable, due to empty tables or fields.</div>
+      <div>{{Total.Total.Error}} out of {{Total.Total.Fail}} failed checks are SQL errors.</div>
+      <div>Corrected pass percentage for NA and Errors: {{Total.Total.NAPercentPass}}  ({{Total.Total.NaTotalPassed}}/{{Total.Total.NaTotal}}).</div>
+    </div>
+    {{/if}}
     `;
   }
 
@@ -164,13 +171,13 @@ class DqDashboard extends HTMLElement {
 
     // Verification Plausibility
     const VerificationPlausibilityPass = this.results.filter(
-      c => c.FAILED == 0 &&
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
         c.CONTEXT == "Verification"
         && c.CATEGORY == "Plausibility"
     ).length;
 
     const VerificationPlausibilityFail = this.results.filter(
-      c => c.FAILED == 1 &&
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
         c.CONTEXT == "Verification"
         && c.CATEGORY == "Plausibility"
     ).length;
@@ -184,13 +191,13 @@ class DqDashboard extends HTMLElement {
 
     // Verification Conformance
     const VerificationConformancePass = this.results.filter(
-      c => c.FAILED == 0 &&
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
         c.CONTEXT == "Verification"
         && c.CATEGORY == "Conformance"
     ).length;
 
     const VerificationConformanceFail = this.results.filter(
-      c => c.FAILED == 1 &&
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
         c.CONTEXT == "Verification"
         && c.CATEGORY == "Conformance"
     ).length;
@@ -204,13 +211,13 @@ class DqDashboard extends HTMLElement {
 
     // Verification Completeness
     const VerificationCompletenessPass = this.results.filter(
-      c => c.FAILED == 0 &&
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
         c.CONTEXT == "Verification"
         && c.CATEGORY == "Completeness"
     ).length;
 
     const VerificationCompletenessFail = this.results.filter(
-      c => c.FAILED == 1 &&
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
         c.CONTEXT == "Verification"
         && c.CATEGORY == "Completeness"
     ).length;
@@ -224,12 +231,12 @@ class DqDashboard extends HTMLElement {
 
     // Verification Totals
     const VerificationPass = this.results.filter(
-      c => c.FAILED == 0 &&
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
         c.CONTEXT == "Verification"
     ).length;
 
     const VerificationFail = this.results.filter(
-      c => c.FAILED == 1 &&
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
         c.CONTEXT == "Verification"
     ).length;
 
@@ -241,13 +248,13 @@ class DqDashboard extends HTMLElement {
 
     // Validation Plausibility
     const ValidationPlausibilityPass = this.results.filter(
-      c => c.FAILED == 0 &&
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
         c.CONTEXT == "Validation"
         && c.CATEGORY == "Plausibility"
     ).length;
 
     const ValidationPlausibilityFail = this.results.filter(
-      c => c.FAILED == 1 &&
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
         c.CONTEXT == "Validation"
         && c.CATEGORY == "Plausibility"
     ).length;
@@ -261,13 +268,13 @@ class DqDashboard extends HTMLElement {
 
     // Validation Conformance
     const ValidationConformancePass = this.results.filter(
-      c => c.FAILED == 0 &&
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
         c.CONTEXT == "Validation"
         && c.CATEGORY == "Conformance"
     ).length;
 
     const ValidationConformanceFail = this.results.filter(
-      c => c.FAILED == 1 &&
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
         c.CONTEXT == "Validation"
         && c.CATEGORY == "Conformance"
     ).length;
@@ -281,13 +288,13 @@ class DqDashboard extends HTMLElement {
 
     // Validation Completeness
     const ValidationCompletenessPass = this.results.filter(
-      c => c.FAILED == 0 &&
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
         c.CONTEXT == "Validation"
         && c.CATEGORY == "Completeness"
     ).length;
 
     const ValidationCompletenessFail = this.results.filter(
-      c => c.FAILED == 1 &&
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
         c.CONTEXT == "Validation"
         && c.CATEGORY == "Completeness"
     ).length;
@@ -301,12 +308,12 @@ class DqDashboard extends HTMLElement {
 
     // Validation
     const ValidationPass = this.results.filter(
-      c => c.FAILED == 0 &&
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
         c.CONTEXT == "Validation"
     ).length;
 
     const ValidationFail = this.results.filter(
-      c => c.FAILED == 1 &&
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
         c.CONTEXT == "Validation"
     ).length;
 
@@ -318,12 +325,12 @@ class DqDashboard extends HTMLElement {
 
     // Plausibility
     const PlausibilityPass = this.results.filter(
-      c => c.FAILED == 0 &&
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
         c.CATEGORY == "Plausibility"
     ).length;
 
     const PlausibilityFail = this.results.filter(
-      c => c.FAILED == 1 &&
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
         c.CATEGORY == "Plausibility"
     ).length;
 
@@ -335,12 +342,12 @@ class DqDashboard extends HTMLElement {
 
     // Conformance
     const ConformancePass = this.results.filter(
-      c => c.FAILED == 0
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0)
         && c.CATEGORY == "Conformance"
     ).length;
 
     const ConformanceFail = this.results.filter(
-      c => c.FAILED == 1
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1)
         && c.CATEGORY == "Conformance"
     ).length;
 
@@ -352,12 +359,12 @@ class DqDashboard extends HTMLElement {
 
     // Completeness
     const CompletenessPass = this.results.filter(
-      c => c.FAILED == 0
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0)
         && c.CATEGORY == "Completeness"
     ).length;
 
     const CompletenessFail = this.results.filter(
-      c => c.FAILED == 1
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1)
         && c.CATEGORY == "Completeness"
     ).length;
 
@@ -369,17 +376,30 @@ class DqDashboard extends HTMLElement {
 
     // All
     const AllPass = this.results.filter(
-      c => c.FAILED == 0
+      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0)
     ).length;
 
     const AllFail = this.results.filter(
-      c => c.FAILED == 1
+      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1)
     ).length;
 
     const AllTotal = this.results.length;
 
     const AllPercentPass = AllTotal == 0 ? "-" : Math.round(AllPass / AllTotal * 100) + "%";
-
+    
+    // v2.0 statuses
+    const AllNA = this.results.filter(
+      c => c.NOT_APPLICABLE == 1
+    ).length;    
+    
+    const AllError= this.results.filter(
+      c => c.IS_ERROR == 1
+    ).length;
+    
+    const NaTotalPassed = AllPass-AllNA;
+    const NaTotal = AllTotal-AllError-AllNA;
+    const NAPercentPass = NaTotal == 0 ? "-" : Math.round(NaTotalPassed / NaTotal * 100) + "%";
+    
     const derivedResults = {
       "Verification": {
         "Plausibility": {
@@ -456,7 +476,12 @@ class DqDashboard extends HTMLElement {
           "Pass": AllPass,
           "Fail": AllFail,
           "Total": AllTotal,
-          "PercentPass": AllPercentPass
+          "PercentPass": AllPercentPass,
+          "NA": AllNA,
+          "Error": AllError,
+          "NaTotalPassed": NaTotalPassed,
+          "NaTotal": NaTotal,
+          "NAPercentPass": NAPercentPass
         }
       }
     }

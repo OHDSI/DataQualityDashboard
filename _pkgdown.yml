@@ -6,6 +6,8 @@ home:
   links:
   - text: Ask a question
     href: http://forums.ohdsi.org
+  - text: DQD Example Output
+    href: https://data.ohdsi.org/DataQualityDashboardMDCD/
     
 navbar:
   structure:
@@ -14,6 +16,7 @@ navbar:
     - intro
     - reference
     - articles
+    - news
     right: github
   components:
     home:
@@ -25,6 +28,9 @@ navbar:
     reference:
       text: Reference
       href: reference/index.html
+    news:
+      text: Changelog
+      href: news/index.html
   
 reference:
   - title: "Execution"
@@ -38,3 +44,16 @@ reference:
       Function for viewing the data quality dashboard
     contents:
       - viewDqDashboard
+  - title: "Re-evaluate Thresholds"
+    desc: >
+      Function to take a set of DQD results and re-evaluate them against new thresholds
+    contents: reEvaluateThresholds
+  - title: "List all DQD Checks"
+    desc: > 
+      Function to list all checks run by the application
+    contents: listDqChecks
+  - title: "Write DQD results to a CSV"
+    desc: > 
+      Function to write the JSON results to a csv file
+    contents: writeJsonResultsToCsv
+    

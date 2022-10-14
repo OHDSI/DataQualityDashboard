@@ -24,7 +24,11 @@ CREATE TABLE @tableName
   warning               varchar(255),
   error                 varchar(8000),
   checkid               varchar(1024),
+  is_error              integer,
+  not_applicable        integer,
   failed                integer,
+  passed                integer,
+  not_applicable_reason varchar(8000),  
   threshold_value       integer,
   notes_value           varchar(8000)
 );
