@@ -55,18 +55,18 @@ test_that("Execute FIELD checks on Synthea/Eunomia", {
   expect_true(nrow(results$CheckResults) > 0)
 })
 
-# This test takes a long time to run
-# test_that("Execute CONCEPT checks on Synthea/Eunomia", {
-#   results <- executeDqChecks(connectionDetails = Eunomia::getEunomiaConnectionDetails(),
-#                              cdmDatabaseSchema = "main",
-#                              resultsDatabaseSchema = "temp",
-#                              cdmSourceName = "Eunomia",
-#                              checkLevels = "CONCEPT",
-#                              outputFolder = tempdir(),
-#                              writeToTable = F)
-#
-#   expect_true(nrow(results$CheckResults) > 0)
-# })
+test_that("Execute CONCEPT checks on Synthea/Eunomia", {
+  results <- executeDqChecks(connectionDetails = Eunomia::getEunomiaConnectionDetails(),
+                             cdmDatabaseSchema = "main",
+                             resultsDatabaseSchema = "temp",
+                             cdmSourceName = "Eunomia",
+                             checkLevels = "CONCEPT",
+                             conceptCheckThresholdLoc = "inst/csv/unittest_OMOP_CDMv5.4_Concept_Level.csv",
+                             outputFolder = tempdir(),
+                             writeToTable = F)
+
+  expect_true(nrow(results$CheckResults) > 0)
+})
 
 test_that("Execute a single DQ check on remote databases", {
   dbTypes <- c(
