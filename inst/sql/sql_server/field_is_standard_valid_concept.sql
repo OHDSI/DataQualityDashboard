@@ -34,8 +34,8 @@ FROM
 			cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 			{@cohort & '@runForCohort' == 'Yes'}?{
-    			JOIN @cohortDatabaseSchema.COHORT c ON cdmTable.PERSON_ID = c.SUBJECT_ID
-    				AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    			JOIN @cohortDatabaseSchema.cohort c ON cdmTable.person_id = c.subject_id
+    				AND c.cohort_definition_id = @cohortDefinitionId
     		}
 		  	JOIN @vocabDatabaseSchema.concept co ON cdmTable.@cdmFieldName = co.concept_id
 		WHERE co.concept_id != 0 
@@ -48,8 +48,8 @@ FROM
 		COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
-    		JOIN @cohortDatabaseSchema.COHORT c ON cdmTable.PERSON_ID = c.SUBJECT_ID
-    			AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    		JOIN @cohortDatabaseSchema.cohort c ON cdmTable.person_id = c.subject_id
+    			AND c.cohort_definition_id = @cohortDefinitionId
     	}
 ) denominator
 ;
