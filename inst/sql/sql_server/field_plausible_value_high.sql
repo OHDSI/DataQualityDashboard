@@ -28,7 +28,7 @@ FROM
     	JOIN @cohortDatabaseSchema.COHORT c 
     	ON cdmTable.PERSON_ID = c.SUBJECT_ID
     	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
-    	}
+    }
     {@cdmDatatype == "datetime" | @cdmDatatype == "date"}?{
       where cast(cdmTable.@cdmFieldName as date) > cast(@plausibleValueHigh as date)
     }:{
