@@ -185,22 +185,12 @@ executeDqChecks <- function(connectionDetails,
     tablesToExclude <- toupper(tablesToExclude)
     ParallelLogger::logInfo(sprintf("CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
     tableChecks <- tableChecks[!tableChecks$cdmTableName %in% tablesToExclude,]
-    fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude, 
-                               # &
-                               #   !fieldChecks$fkTableName %in% tablesToExclude &
-                               #   !fieldChecks$plausibleTemporalAfterTableName %in% tablesToExclude,
-                               ]
+    fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude,]
     conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude,]
   }
   
   ## remove offset from being checked
   fieldChecks <- subset(fieldChecks, cdmFieldName != "offset")
-  
-  # library(magrittr)
-  # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
-  # fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
-  # conceptChecks <- conceptChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
-
   
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |
