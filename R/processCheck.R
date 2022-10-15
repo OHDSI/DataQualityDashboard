@@ -53,7 +53,7 @@
   tryCatch(
     expr = {
       if (singleThreaded) {
-        if (.needsAutoCommit(connectionDetails, connection)) {
+        if (.needsAutoCommit(connectionDetails = connectionDetails, connection = connection)) {
           rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
         }
       }

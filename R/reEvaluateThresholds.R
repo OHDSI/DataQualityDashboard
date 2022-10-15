@@ -51,15 +51,20 @@ reEvaluateThresholds <- function(jsonFilePath,
   conceptChecks <- .readThresholdFile(conceptCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion))
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
 
-  newCheckResults <- .evaluateThresholds(df, tableChecks, fieldChecks, conceptChecks)
+  newCheckResults <- .evaluateThresholds(checkResults = df,
+                                         tableChecks = tableChecks,
+                                         fieldChecks = fieldChecks,
+                                         conceptChecks = conceptChecks)
 
-  newOverview <- .summarizeResults(newCheckResults)
+  newOverview <- .summarizeResults(checkResults = newCheckResults)
 
   newDqdResults <- dqdResults
   newDqdResults$CheckResults <- newCheckResults
   newDqdResults$Overview <- newOverview
 
-  .writeResultsToJson(newDqdResults, outputFolder, outputFile)
+  .writeResultsToJson(result = newDqdResults, 
+                      outputFolder = outputFolder, 
+                      outputFile = outputFile)
 
   return(newDqdResults)
 }
