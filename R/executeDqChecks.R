@@ -104,13 +104,6 @@ executeDqChecks <- function(connectionDetails,
     }
   }
   
-  # Use UTF-8 encoding to address issue: "special characters in metadata #33"
-  saveEncoding <- getOption("encoding")
-  options("encoding" = "UTF-8")
-
-  # Setup output folder ------------------------------------------------------------------------------------------------------------
-  options(scipen = 999)
-  
   # capture metadata -----------------------------------------------------------------------
   if (!sqlOnly) {
     connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
@@ -127,6 +120,7 @@ executeDqChecks <- function(connectionDetails,
     metadata <- NA
   }
   
+  # Setup output folder ------------------------------------------------------------------------------------------------------------
   if (!dir.exists(outputFolder)) {
     dir.create(path = outputFolder, recursive = TRUE)
   }
@@ -321,9 +315,6 @@ executeDqChecks <- function(connectionDetails,
   }
   
   ParallelLogger::unregisterLogger("DqDashboard")
-  
-  # Reset encoding to previous value 
-  options("encoding" = saveEncoding)
 
   if (sqlOnly) {
     invisible(allResults)
