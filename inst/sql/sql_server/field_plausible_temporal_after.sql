@@ -36,17 +36,18 @@ FROM
     		{@cdmDatabaseSchema.@cdmTableName != @cdmDatabaseSchema.@plausibleTemporalAfterTableName}?{
 				JOIN @cdmDatabaseSchema.@plausibleTemporalAfterTableName plausibleTable ON cdmTable.person_id = plausibleTable.person_id}
 			{@cohort & '@runForCohort' == 'Yes'}?{
-    			JOIN @cohortDatabaseSchema.COHORT c ON cdmTable.PERSON_ID = c.SUBJECT_ID
-    				AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    			JOIN @cohortDatabaseSchema.cohort c ON cdmTable.person_id = c.subject_id
+    				AND c.cohort_definition_id = @cohortDefinitionId
 			}
     WHERE 
     	{'@plausibleTemporalAfterTableName' == 'PERSON'}?{
 			COALESCE(
 				CAST(plausibleTable.@plausibleTemporalAfterFieldName AS DATE),
-				CAST(CONCAT(plausibleTable.YEAR_OF_BIRTH,'-06-01') AS DATE)
+				CAST(CONCAT(plausibleTable.year_of_birth,'-06-01') AS DATE)
 			) 
-		}:
-		{CAST(cdmTable.@plausibleTemporalAfterFieldName AS DATE)} > CAST(cdmTable.@cdmFieldName AS DATE)
+		}:{
+			CAST(cdmTable.@plausibleTemporalAfterFieldName AS DATE)
+		} > CAST(cdmTable.@cdmFieldName AS DATE)
 		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
@@ -55,8 +56,8 @@ FROM
 		COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
-  			JOIN @cohortDatabaseSchema.COHORT c ON cdmTable.PERSON_ID = c.SUBJECT_ID
-    			AND c.COHORT_DEFINITION_ID = @cohortDefinitionId 
+  			JOIN @cohortDatabaseSchema.cohort c ON cdmTable.person_id = c.subject_id
+    			AND c.cohort_definition_id = @cohortDefinitionId 
 		}
 ) denominator
 ;
