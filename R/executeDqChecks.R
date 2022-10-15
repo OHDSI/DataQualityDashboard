@@ -163,7 +163,7 @@ executeDqChecks <- function(connectionDetails,
     threshold = "INFO",
     appenders = appenders
   )
-  ParallelLogger::registerLogger(logger)
+  ParallelLogger::registerLogger(logger = logger)
 
   # load Threshold CSVs ----------------------------------------------------------------------------------------
 
@@ -333,7 +333,7 @@ executeDqChecks <- function(connectionDetails,
     )
   }
 
-  ParallelLogger::unregisterLogger("DqDashboard")
+  ParallelLogger::unregisterLogger(x = "DqDashboard")
 
   # Reset encoding to previous value
   options("encoding" = saveEncoding)
