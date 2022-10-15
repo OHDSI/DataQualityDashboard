@@ -1,5 +1,5 @@
 #' Internal function to put the results of each quality check into a dataframe.
-#' 
+#'
 #' @param result                    The result of the data quality check
 #' @param check                     The data quality check
 #' @param checkDescription          The description of the data quality check
@@ -7,28 +7,29 @@
 #' @param executionTime             The total time it took to execute the data quality check
 #' @param warning                   Any warnings returned from the server
 #' @param error                     Any errors returned from the server
-#' 
+#'
 #' @keywords internal
 #' @importFrom stats setNames
-#' 
+#'
 
 
-.recordResult <- function(result = NULL, 
-                          check, 
-                          checkDescription, 
-                          sql, 
+.recordResult <- function(result = NULL,
+                          check,
+                          checkDescription,
+                          sql,
                           executionTime = NA,
-                          warning = NA, 
+                          warning = NA,
                           error = NA) {
-  
   columns <- lapply(names(check), function(c) {
     setNames(check[c], c)
   })
-  
-  params <- c(list(sql = checkDescription$checkDescription),
-              list(warnOnMissingParameters = FALSE),
-              lapply(unlist(columns, recursive = FALSE), toupper))
-  
+
+  params <- c(
+    list(sql = checkDescription$checkDescription),
+    list(warnOnMissingParameters = FALSE),
+    lapply(unlist(columns, recursive = FALSE), toupper)
+  )
+
   reportResult <- data.frame(
     NUM_VIOLATED_ROWS = NA,
     PCT_VIOLATED_ROWS = NA,
@@ -51,7 +52,7 @@
     checkId = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"]),
     row.names = NULL, stringsAsFactors = FALSE
   )
-  
+
   if (!is.null(result)) {
     reportResult$NUM_VIOLATED_ROWS <- result$NUM_VIOLATED_ROWS
     reportResult$PCT_VIOLATED_ROWS <- result$PCT_VIOLATED_ROWS

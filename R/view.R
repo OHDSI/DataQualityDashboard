@@ -18,26 +18,25 @@
 
 
 #' View DQ Dashboard
-#' 
+#'
 #' @param jsonPath       The path to the JSON file produced by  \code{\link{executeDqChecks}}
 #' @param launch.browser Passed on to \code{shiny::runApp}
 #' @param display.mode   Passed on to \code{shiny::runApp}
 #' @param ...            Extra parameters for shiny::runApp() like "port" or "host"
 #'
 #' @export
-viewDqDashboard <- function(jsonPath, launch.browser=NULL, display.mode=NULL, ...) {
-  
+viewDqDashboard <- function(jsonPath, launch.browser = NULL, display.mode = NULL, ...) {
   ensure_installed("shiny")
-  
+
   Sys.setenv(jsonPath = jsonPath)
   appDir <- system.file("shinyApps", package = "DataQualityDashboard")
 
-  if(is.null(display.mode)){
-      display.mode="normal"
+  if (is.null(display.mode)) {
+    display.mode <- "normal"
   }
 
-  if(is.null(launch.browser)){
-      launch.browser=TRUE
+  if (is.null(launch.browser)) {
+    launch.browser <- TRUE
   }
 
   shiny::runApp(appDir = appDir, launch.browser = launch.browser, display.mode = display.mode, ...)
@@ -50,10 +49,11 @@ is_installed <- function(pkg, version = 0) {
   installed_version <-
     tryCatch(
       utils::packageVersion(pkg),
-      error = function(e)
+      error = function(e) {
         NA
+      }
     )
-  ! is.na(installed_version) && installed_version >= version
+  !is.na(installed_version) && installed_version >= version
 }
 
 # Borrowed and adapted from devtools:
