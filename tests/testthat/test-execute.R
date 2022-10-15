@@ -61,7 +61,11 @@ test_that("Execute CONCEPT checks on Synthea/Eunomia", {
                              resultsDatabaseSchema = "temp",
                              cdmSourceName = "Eunomia",
                              checkLevels = "CONCEPT",
-                             conceptCheckThresholdLoc = "inst/csv/unittest_OMOP_CDMv5.4_Concept_Level.csv",
+                             conceptCheckThresholdLoc = system.file(
+                               "csv",
+                               "unittest_OMOP_CDMv5.4_Concept_Level.csv",
+                               package = "DataQualityDashboard"
+                             ),
                              outputFolder = tempdir(),
                              writeToTable = F)
 
