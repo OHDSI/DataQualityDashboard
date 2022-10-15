@@ -49,11 +49,20 @@ writeJsonResultsToTable <- function(connectionDetails,
   ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
 
   if ("UNIT_CONCEPT_ID" %in% colnames(df)) {
-    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
+    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", 
+                                            packageName = "DataQualityDashboard", 
+                                            tableName = tableName, 
+                                            dbms = connectionDetails$dbms)
   } else if ("CDM_FIELD_NAME" %in% colnames(df)) {
-    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_field.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
+    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_field.sql",
+                                            packageName = "DataQualityDashboard", 
+                                            tableName = tableName, 
+                                            dbms = connectionDetails$dbms)
   } else {
-    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_table.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
+    ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_table.sql", 
+                                             packageName = "DataQualityDashboard", 
+                                             tableName = tableName, 
+                                             dbms = connectionDetails$dbms)
   }
 
   DatabaseConnector::executeSql(connection = connection, sql = ddl, progressBar = TRUE)
@@ -112,7 +121,10 @@ writeJsonResultsToCsv <- function(jsonPath,
         cr[sapply(cr, is.null)] <- NA
         as.data.frame(cr)
       })
-      .writeResultsToCsv(checkResults = do.call(plyr::rbind.fill, checkResults), csvPath, columns, delimiter)
+      .writeResultsToCsv(checkResults = do.call(plyr::rbind.fill, checkResults), 
+                         csvPath = csvPath, 
+                         columns = columns, 
+                         delimeter = delimiter)
     },
     error = function(e) {
       ParallelLogger::logError(sprintf("Writing to CSV file failed: %s", e$message))
