@@ -124,7 +124,7 @@ writeJsonResultsToCsv <- function(jsonPath,
       .writeResultsToCsv(checkResults = do.call(plyr::rbind.fill, checkResults), 
                          csvPath = csvPath, 
                          columns = columns, 
-                         delimeter = delimiter)
+                         delimiter = delimiter)
     },
     error = function(e) {
       ParallelLogger::logError(sprintf("Writing to CSV file failed: %s", e$message))
