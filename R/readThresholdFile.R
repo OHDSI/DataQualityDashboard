@@ -5,15 +5,15 @@
         "csv",
         defaultLoc,
         package = "DataQualityDashboard"
-      ), 
-      stringsAsFactors = FALSE, 
-      na.strings = c(" ","")
+      ),
+      stringsAsFactors = FALSE,
+      na.strings = c(" ", "")
     )
   } else {
     result <- read.csv(
-      file = checkThresholdLoc, 
-      stringsAsFactors = FALSE, 
-      na.strings = c(" ","")
+      file = checkThresholdLoc,
+      stringsAsFactors = FALSE,
+      na.strings = c(" ", "")
     )
   }
   return(result)
