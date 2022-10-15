@@ -1,13 +1,13 @@
 ---
 title: "Getting Started"
 author: "Clair Blacketer"
-date: "2022-10-12"
+date: "2022-10-14"
 header-includes:
     - \usepackage{fancyhdr}
     - \pagestyle{fancy}
     - \fancyhead{}
     - \fancyhead[CO,CE]{Getting Started}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version 2.0.0.100}
+    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version 2.0.0}
     - \fancyfoot[LE,RO]{\thepage}
     - \renewcommand{\headrulewidth}{0.4pt}
     - \renewcommand{\footrulewidth}{0.4pt}
