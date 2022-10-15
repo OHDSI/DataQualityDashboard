@@ -31,8 +31,8 @@ FROM
 		SELECT m.* 
 		FROM @cdmDatabaseSchema.@cdmTableName m
 		{@cohort}?{
-  	JOIN @cohortDatabaseSchema.COHORT c
-  	ON m.PERSON_ID = c.SUBJECT_ID
+  	JOIN @cohortDatabaseSchema.cohort c
+  	ON m.person_id = c.subject_id
   	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
   	}
 		WHERE m.@cdmFieldName = @conceptId
@@ -46,9 +46,9 @@ FROM
 	SELECT COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName m
 	{@cohort}?{
-	JOIN @cohortDatabaseSchema.COHORT c
-	ON m.PERSON_ID = c.SUBJECT_ID
-	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+	JOIN @cohortDatabaseSchema.cohort c
+	ON m.person_id = c.subject_id
+	AND c.cohort_definition_id = @cohortDefinitionId
 	}
 	WHERE m.@cdmFieldName = @conceptId
 	AND unit_concept_id = @unitConceptId

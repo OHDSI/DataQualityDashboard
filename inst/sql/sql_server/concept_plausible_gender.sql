@@ -35,8 +35,8 @@ FROM
 			
 			{@cohort}?{
     	JOIN @cohortDatabaseSchema.COHORT c
-    	ON cdmTable.PERSON_ID = c.SUBJECT_ID
-    	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+    	ON cdmTable.person_id = c.subject_id
+    	AND c.cohort_definition_id = @cohortDefinitionId
     	}
 		WHERE cdmTable.@cdmFieldName = @conceptId
 		AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
@@ -48,9 +48,9 @@ FROM
 	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 	
 	{@cohort}?{
-	JOIN @cohortDatabaseSchema.COHORT c
-	ON cdmTable.PERSON_ID = c.SUBJECT_ID
-	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+	JOIN @cohortDatabaseSchema.cohort c
+	ON cdmTable.person_id = c.subject_id
+	AND c.cohort_definition_id = @cohortDefinitionId
 	}
 	
 	WHERE @cdmFieldName = @conceptId

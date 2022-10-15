@@ -33,8 +33,8 @@ FROM
 		FROM @cdmDatabaseSchema.@cdmTableName m
 		{@cohort}?{
   	JOIN @cohortDatabaseSchema.COHORT c
-  	ON m.PERSON_ID = c.SUBJECT_ID
-  	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+  	ON m.person_id = c.subject_id
+  	AND c.cohort_definition_id = @cohortDefinitionId
   	}
 		WHERE m.@cdmFieldName = @conceptId
 		AND m.unit_concept_id = @unitConceptId
@@ -48,8 +48,8 @@ FROM
 	FROM @cdmDatabaseSchema.@cdmTableName m
 	{@cohort}?{
 	JOIN @cohortDatabaseSchema.COHORT c
-	ON m.PERSON_ID = c.SUBJECT_ID
-	AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
+	ON m.person_id = c.subject_id
+	AND c.cohort_definition_id = @cohortDefinitionId
 	}
 	WHERE m.@cdmFieldName = @conceptId
 	AND unit_concept_id = @unitConceptId
