@@ -22,14 +22,16 @@
 
 #' @keywords internal
 
-.writeResultsToJson <- function(result, outputFolder, outputFile) {
+.writeResultsToJson <- function(result, 
+                                outputFolder, 
+                                outputFile) {
   resultJson <- jsonlite::toJSON(result)
 
   resultFilename <- file.path(outputFolder, outputFile)
   result$outputFile <- outputFile
 
   ParallelLogger::logInfo(sprintf("Writing results to file: %s", resultFilename))
-  write(resultJson, resultFilename)
+  write(resultJson, file = resultFilename)
 }
 
 #' Internal function to write the check results to a table in the database. Requires write access to the database
@@ -58,9 +60,18 @@
 
   ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
 
-  ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_dataframe_ddl.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
+  ddl <- SqlRender::loadRenderTranslateSql(
+    sqlFilename = "result_dataframe_ddl.sql", 
+    packageName = "DataQualityDashboard", 
+    tableName = tableName, 
+    dbms = connectionDetails$dbms
+  )
 
-  DatabaseConnector::executeSql(connection = connection, sql = ddl, progressBar = TRUE)
+  DatabaseConnector::executeSql(
+    connection = connection, 
+    sql = ddl, 
+    progressBar = TRUE
+  )
 
   tryCatch(
     expr = {
