@@ -126,66 +126,38 @@ jobs:
         run: covr::codecov()
         shell: Rscript {0}
 
-# Release:
-#     needs: R-CMD-Check
+  Release:
+    needs: R-CMD-Check
 
-#     runs-on: macOS-latest
+    runs-on: macOS-latest
 
-#     env:
-#       GH_TOKEN: ${{ github.token }}
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
 
-#     if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
 
-#     steps:
+    steps:
 
-#       - uses: actions/checkout@v2
-#         with:
-#           fetch-depth: 0
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-#       - name: Check if version has increased
-#         run: |
-#           echo "new_version="$(perl compare_versions --tag) >> $GITHUB_ENV
-#       - name: Display new version number
-#         if: ${{ env.new_version != '' }}
-#         run: |
-#           echo "${{ env.new_version }}"
-#       - name: Create release
-#         if: ${{ env.new_version != '' }}
-#         uses: actions/create-release@v1
-#         env:
-#           GITHUB_TOKEN: ${{ github.token }}
-#         with:
-#           tag_name: ${{ env.new_version }}
-#           release_name: Release ${{ env.new_version }}
-#           body: |
-#             See NEWS.md for release notes.
-#           draft: false
-#           prerelease: false
-
-#       - uses: r-lib/actions/setup-r@v1
-#         if: ${{ env.new_version != '' }}
-
-#       - name: Install drat
-#         if: ${{ env.new_version != '' }}
-#         run: |
-#           install.packages('drat')
-#         shell: Rscript {0}
-
-#       - name: Remove any tarballs that already exists
-#         if: ${{ env.new_version != '' }}
-#         run: |
-#           rm -f *.tar.gz
-#       - name: Download package tarball
-#         if: ${{ env.new_version != '' }}
-#         uses: actions/download-artifact@v2
-#         with:
-#           name: package_tarball
-
-#       - name: Push to drat
-#         if: ${{ env.new_version != '' }}
-#         run: |
-#           bash deploy.sh
-#       - name: Push to BroadSea
-#         if: ${{ env.new_version != '' }}
-#         run: |
-#           curl --data "build=true" -X POST https://registry.hub.docker.com/u/ohdsi/broadsea-methodslibrary/trigger/f0b51cec-4027-4781-9383-4b38b42dd4f5/
+      - name: Check if version has increased
+        run: |
+          echo "new_version="$(perl compare_versions --tag) >> $GITHUB_ENV
+      - name: Display new version number
+        if: ${{ env.new_version != '' }}
+        run: |
+          echo "${{ env.new_version }}"
+      - name: Create release
+        if: ${{ env.new_version != '' }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag_name: ${{ env.new_version }}
+          release_name: Release ${{ env.new_version }}
+          body: |
+            See NEWS.md for release notes.
+          draft: false
+          prerelease: false

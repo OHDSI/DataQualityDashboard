@@ -65,7 +65,7 @@ in the resultsDatabaseSchema. Default is TRUE.}
 
 \item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.}
 
-\item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort' 
+\item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
 with the fields cohort_definition_id and subject_id.}
 
 \item{cohortDatabaseSchema}{The schema where the cohort table is located.}

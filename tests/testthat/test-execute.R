@@ -7,6 +7,7 @@ test_that("listDqChecks works", {
 })
 
 test_that("Execute a single DQ check on Synthea/Eunomia", {
+
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
   
@@ -48,22 +49,27 @@ test_that("Execute FIELD checks on Synthea/Eunomia", {
                              checkLevels = "FIELD",
                              outputFolder = outputFolder,
                              writeToTable = F)
-  
   expect_true(nrow(results$CheckResults) > 0)
 })
 
-# This test takes a long time to run
-# test_that("Execute CONCEPT checks on Synthea/Eunomia", {
-#   results <- executeDqChecks(connectionDetails = Eunomia::getEunomiaConnectionDetails(),
-#                              cdmDatabaseSchema = "main",
-#                              resultsDatabaseSchema = "temp",
-#                              cdmSourceName = "Eunomia",
-#                              checkLevels = "CONCEPT",
-#                              outputFolder = tempdir(),
-#                              writeToTable = F)
-# 
-#   expect_true(nrow(results$CheckResults) > 0)
-# })
+test_that("Execute CONCEPT checks on Synthea/Eunomia", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+  results <- executeDqChecks(connectionDetails = connectionDetails,
+                             cdmDatabaseSchema = "main",
+                             resultsDatabaseSchema = "temp",
+                             cdmSourceName = "Eunomia",
+                             checkLevels = "CONCEPT",
+                             conceptCheckThresholdLoc = system.file(
+                               "csv",
+                               "unittest_OMOP_CDMv5.3_Concept_Level.csv",
+                               package = "DataQualityDashboard"
+                             ),
+                             outputFolder = outputFolder,
+                             writeToTable = F)
+  expect_true(nrow(results$CheckResults) > 0)
+})
+                             
 
 test_that("Execute a single DQ check on remote databases", {
   outputFolder <- tempfile("dqd_")
@@ -79,11 +85,11 @@ test_that("Execute a single DQ check on remote databases", {
     sysServer <- Sys.getenv(sprintf("CDM5_%s_SERVER", toupper(dbType)))
     sysExtraSettings <- Sys.getenv(sprintf("CDM5_%s_EXTRA_SETTINGS", toupper(dbType)))
     if (sysUser != "" &
-        sysPassword != "" &
-        sysServer != "") {
+      sysPassword != "" &
+      sysServer != "") {
       cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM_SCHEMA", toupper(dbType)))
       resultsDatabaseSchema <- Sys.getenv("CDM5_%s_OHDSI_SCHEMA", toupper(dbType))
-      
+
       connectionDetails <- createConnectionDetails(dbms = dbType,
                                                    user = sysUser,
                                                    password = sysPassword,
