@@ -43,6 +43,20 @@ reEvaluateThresholds <- function(jsonFilePath,
     as.data.frame(cr)
   })
   df <- do.call(plyr::rbind.fill, df)
+  
+  # Add required fields that might be missing due to writing to json
+  if (!("CDM_FIELD_NAME" %in% colnames(df))) {
+    df$CDM_FIELD_NAME <- NA
+  }
+  if (!("ERROR" %in% colnames(df))) {
+    df$ERROR <- NA
+  }  
+  if (!("CONCEPT_ID" %in% colnames(df))) {
+    df$CONCEPT_ID <- NA
+  }
+  if (!("UNIT_CONCEPT_ID" %in% colnames(df))) {
+    df$UNIT_CONCEPT_ID <- NA
+  }
 
   # Read in  new thresholds ----------------------------------------------
   tableChecks <- .readThresholdFile(tableCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion))
