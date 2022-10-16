@@ -36,7 +36,7 @@ reEvaluateThresholds <- function(jsonFilePath,
                                  tableCheckThresholdLoc = "default",
                                  fieldCheckThresholdLoc = "default",
                                  conceptCheckThresholdLoc = "default",
-                                 cdmVersion = '5.3') {
+                                 cdmVersion = "5.3") {
   # Read in results to data frame --------------------------------------
   dqdResults <- jsonlite::read_json(path = jsonFilePath)
   
