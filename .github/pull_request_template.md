@@ -2,7 +2,7 @@ Before you do a pull request, you should always **file an issue** and make sure 
 
 Additional requirements for pull requests:
 
--   Adhere to the [Developer Guidelines](https://ohdsi.github.io/MethodsLibrary/developerGuidelines.html) as well as the [OHDSI Code Style](https://ohdsi.github.io/MethodsLibrary/codeStyle.html).
+-   Adhere to the [Developer Guidelines](https://ohdsi.github.io/Hades/developerGuidelines.html) as well as the [OHDSI Code Style](https://ohdsi.github.io/Hades/codeStyle.html).
 
 -   If possible, add unit tests for new functionality you add.
 
