@@ -95,10 +95,11 @@ executeDqChecks <- function(connectionDetails,
 
   # Warning if check names for determining NA is missing
   if (!length(checkNames) == 0) {
-    for (requiredCheckName in c("cdmTable", "cdmField", "measureValueCompleteness")) {
-      if (!(requiredCheckName %in% checkNames)) {
-        warning(paste(requiredCheckName, "is missing from the provided checkNames. The 'Not Applicable' status will not be calculated correctly."))
-      }
+    naCheckNames <- c("cdmTable", "cdmField", "measureValueCompleteness")
+    missingNAChecks <- !(naCheckNames %in% checkNames)
+    if (any(missingNAChecks)) {
+      missingNACheckNames <- paste(naCheckNames[missingNAChecks], collapse = ', ')
+      warning(sprintf("Missing check names to calculate the 'Not Applicable' status: %s", missingNACheckNames))
     }
   }
 
