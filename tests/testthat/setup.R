@@ -3,9 +3,9 @@ if (Sys.getenv("DONT_DOWNLOAD_JDBC_DRIVERS", "") == "TRUE") {
 } else {
   jdbcDriverFolder <- tempfile("jdbcDrivers")
   dir.create(jdbcDriverFolder)
-  downloadJdbcDrivers("postgresql")
-  downloadJdbcDrivers("sql server")
-  downloadJdbcDrivers("oracle")
+  downloadJdbcDrivers("postgresql", jdbcDriverFolder)
+  downloadJdbcDrivers("sql server", jdbcDriverFolder)
+  downloadJdbcDrivers("oracle", jdbcDriverFolder)
 }
 
 # dbms <- getOption("dbms", default = "sqlite")
