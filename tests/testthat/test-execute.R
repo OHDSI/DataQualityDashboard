@@ -128,7 +128,7 @@ test_that("Write JSON results", {
       outputFolder = outputFolder,
       writeToTable = FALSE
     ),
-    "missing from the provided checkNames"
+    regexp = "^Missing check names.*"
   )
   
   jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)
