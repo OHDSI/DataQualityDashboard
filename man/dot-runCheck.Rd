@@ -16,7 +16,8 @@
   cohortDatabaseSchema,
   cohortDefinitionId,
   outputFolder,
-  sqlOnly
+  sqlOnly,
+  resume
 )
 }
 \arguments{
@@ -41,6 +42,8 @@
 \item{outputFolder}{The folder to output logs and SQL files to}
 
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
+
+\item{resume}{Boolean to indicate if processing will be resumed}
 
 \item{tablechecks}{A dataframe containing the table checks}
 }
