@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.100</span>
       </span>
     </div>
 
@@ -50,13 +52,19 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/AddNewCheck.html">Add a New Data Quality Check</a>
+    </li>
+    <li>
+      <a href="../articles/CheckStatusDefinitions.html">Check Status Descriptions</a>
+    </li>
+    <li>
       <a href="../articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
     </li>
     <li>
@@ -67,10 +75,13 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/OHDSI/DataQualityDashboard/">
+  <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -85,15 +96,16 @@
 
       
 
-      </header><script src="DataQualityDashboard_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getting Started</h1>
-                        <h4 class="author">Clair Blacketer</h4>
+                        <h4 data-toc-skip class="author">Clair
+Blacketer</h4>
             
-            <h4 class="date">2022-03-03</h4>
+            <h4 data-toc-skip class="date">2022-10-12</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/master/vignettes/DataQualityDashboard.rmd"><code>vignettes/DataQualityDashboard.rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/DataQualityDashboard.rmd" class="external-link"><code>vignettes/DataQualityDashboard.rmd</code></a></small>
       <div class="hidden name"><code>DataQualityDashboard.rmd</code></div>
 
     </div>
@@ -104,110 +116,108 @@
 %\VignetteEngine{knitr::knitr}
 %\VignetteIndexEntry{Getting Started}
 -->
-<div id="getting-started" class="section level1">
-<h1 class="hasAnchor">
-<a href="#getting-started" class="anchor"></a>Getting Started</h1>
+<div class="section level2">
+<h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+</h2>
 <hr>
 </div>
-<div id="r-installation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#r-installation" class="anchor"></a>R Installation</h1>
+<div class="section level2">
+<h2 id="r-installation">R Installation<a class="anchor" aria-label="anchor" href="#r-installation"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"OHDSI/DataQualityDashboard"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"OHDSI/DataQualityDashboard"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="note" class="section level1">
-<h1 class="hasAnchor">
-<a href="#note" class="anchor"></a>Note</h1>
-<p>To view the JSON results in the shiny application the package requires that the CDM_SOURCE table has at least one row with some details about the database. This is to ensure that some metadata is delivered along with the JSON, should it be shared. As a best practice it is recommended to always fill in this table during ETL or at least prior to running the DQD.</p>
+<div class="section level2">
+<h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a>
+</h2>
+<p>To view the JSON results in the shiny application the package
+requires that the CDM_SOURCE table has at least one row with some
+details about the database. This is to ensure that some metadata is
+delivered along with the JSON, should it be shared. As a best practice
+it is recommended to always fill in this table during ETL or at least
+prior to running the DQD.</p>
 </div>
-<div id="executing-data-quality-checks" class="section level1">
-<h1 class="hasAnchor">
-<a href="#executing-data-quality-checks" class="anchor"></a>Executing Data Quality Checks</h1>
+<div class="section level2">
+<h2 id="executing-data-quality-checks">Executing Data Quality Checks<a class="anchor" aria-label="anchor" href="#executing-data-quality-checks"></a>
+</h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co"># fill out the connection details -----------------------------------------------------------------------</span>
-<span class="va">connectionDetails</span> <span class="op">&lt;-</span> <span class="fu">DatabaseConnector</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/DatabaseConnector/reference/createConnectionDetails.html">createConnectionDetails</a></span><span class="op">(</span>dbms <span class="op">=</span> <span class="st">""</span>, 
-                                                              user <span class="op">=</span> <span class="st">""</span>, 
-                                                              password <span class="op">=</span> <span class="st">""</span>, 
-                                                              server <span class="op">=</span> <span class="st">""</span>, 
-                                                              port <span class="op">=</span> <span class="st">""</span>, 
-                                                              extraSettings <span class="op">=</span> <span class="st">""</span><span class="op">)</span>
-
-<span class="va">cdmDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"yourCdmSchema"</span> <span class="co"># the fully qualified database schema name of the CDM</span>
-<span class="va">resultsDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"yourResultsSchema"</span> <span class="co"># the fully qualified database schema name of the results schema (that you can write to)</span>
-<span class="va">cdmSourceName</span> <span class="op">&lt;-</span> <span class="st">"Your CDM Source"</span> <span class="co"># a human readable name for your CDM source</span>
-
-<span class="co"># determine how many threads (concurrent SQL sessions) to use ----------------------------------------</span>
-<span class="va">numThreads</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="co"># on Redshift, 3 seems to work well</span>
-
-<span class="co"># specify if you want to execute the queries or inspect them ------------------------------------------</span>
-<span class="va">sqlOnly</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span> <span class="co"># set to TRUE if you just want to get the SQL scripts and not actually run the queries</span>
-
-<span class="co"># where should the logs go? -------------------------------------------------------------------------</span>
-<span class="va">outputFolder</span> <span class="op">&lt;-</span> <span class="st">"output"</span>
-<span class="va">outputFile</span> <span class="op">&lt;-</span> <span class="st">"results.json"</span>
-
-<span class="co"># logging type -------------------------------------------------------------------------------------</span>
-<span class="va">verboseMode</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span> <span class="co"># set to TRUE if you want to see activity written to the console</span>
-
-<span class="co"># write results to table? ------------------------------------------------------------------------------</span>
-<span class="va">writeToTable</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span> <span class="co"># set to FALSE if you want to skip writing to a SQL table in the results schema</span>
-
-<span class="co"># if writing to table and using Redshift, bulk loading can be initialized -------------------------------</span>
-
-<span class="co"># Sys.setenv("AWS_ACCESS_KEY_ID" = "",</span>
-<span class="co">#            "AWS_SECRET_ACCESS_KEY" = "",</span>
-<span class="co">#            "AWS_DEFAULT_REGION" = "",</span>
-<span class="co">#            "AWS_BUCKET_NAME" = "",</span>
-<span class="co">#            "AWS_OBJECT_KEY" = "",</span>
-<span class="co">#            "AWS_SSE_TYPE" = "AES256",</span>
-<span class="co">#            "USE_MPP_BULK_LOAD" = TRUE)</span>
-
-<span class="co"># which DQ check levels to run -------------------------------------------------------------------</span>
-<span class="va">checkLevels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"TABLE"</span>, <span class="st">"FIELD"</span>, <span class="st">"CONCEPT"</span><span class="op">)</span>
-
-<span class="co"># which DQ checks to run? ------------------------------------</span>
-
-<span class="va">checkNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv</span>
-
-<span class="co"># which CDM tables to exclude? ------------------------------------</span>
-
-<span class="va">tablesToExclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span> 
-
-<span class="co"># run the job --------------------------------------------------------------------------------------</span>
-<span class="fu">DataQualityDashboard</span><span class="fu">::</span><span class="fu"><a href="../reference/executeDqChecks.html">executeDqChecks</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>, 
-                                    cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>, 
-                                    resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,
-                                    cdmSourceName <span class="op">=</span> <span class="va">cdmSourceName</span>, 
-                                    numThreads <span class="op">=</span> <span class="va">numThreads</span>,
-                                    sqlOnly <span class="op">=</span> <span class="va">sqlOnly</span>, 
-                                    outputFolder <span class="op">=</span> <span class="va">outputFolder</span>, 
-                                    outputFile <span class="op">=</span> <span class="va">outputFile</span>,
-                                    verboseMode <span class="op">=</span> <span class="va">verboseMode</span>,
-                                    writeToTable <span class="op">=</span> <span class="va">writeToTable</span>,
-                                    checkLevels <span class="op">=</span> <span class="va">checkLevels</span>,
-                                    tablesToExclude <span class="op">=</span> <span class="va">tablesToExclude</span>,
-                                    checkNames <span class="op">=</span> <span class="va">checkNames</span><span class="op">)</span>
-
-<span class="co"># inspect logs ----------------------------------------------------------------------------</span>
-<span class="fu">ParallelLogger</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/ParallelLogger/reference/launchLogViewer.html">launchLogViewer</a></span><span class="op">(</span>logFileName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">outputFolder</span>, <span class="va">cdmSourceName</span>, 
-                                                      <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"log_DqDashboard_%s.txt"</span>, <span class="va">cdmSourceName</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># (OPTIONAL) if you want to write the JSON file to the results table separately -----------------------------</span>
-<span class="va">jsonFilePath</span> <span class="op">&lt;-</span> <span class="st">""</span>
-<span class="fu">DataQualityDashboard</span><span class="fu">::</span><span class="fu"><a href="../reference/writeJsonResultsToTable.html">writeJsonResultsToTable</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>, 
-                                            resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>, 
-                                            jsonFilePath <span class="op">=</span> <span class="va">jsonFilePath</span><span class="op">)</span>
-                                            </code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># fill out the connection details -----------------------------------------------------------------------</span></span>
+<span><span class="va">connectionDetails</span> <span class="op">&lt;-</span> <span class="fu">DatabaseConnector</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/DatabaseConnector/reference/createConnectionDetails.html" class="external-link">createConnectionDetails</a></span><span class="op">(</span>dbms <span class="op">=</span> <span class="st">""</span>, </span>
+<span>                                                              user <span class="op">=</span> <span class="st">""</span>, </span>
+<span>                                                              password <span class="op">=</span> <span class="st">""</span>, </span>
+<span>                                                              server <span class="op">=</span> <span class="st">""</span>, </span>
+<span>                                                              port <span class="op">=</span> <span class="st">""</span>, </span>
+<span>                                                              extraSettings <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cdmDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"yourCdmSchema"</span> <span class="co"># the fully qualified database schema name of the CDM</span></span>
+<span><span class="va">resultsDatabaseSchema</span> <span class="op">&lt;-</span> <span class="st">"yourResultsSchema"</span> <span class="co"># the fully qualified database schema name of the results schema (that you can write to)</span></span>
+<span><span class="va">cdmSourceName</span> <span class="op">&lt;-</span> <span class="st">"Your CDM Source"</span> <span class="co"># a human readable name for your CDM source</span></span>
+<span></span>
+<span><span class="co"># determine how many threads (concurrent SQL sessions) to use ----------------------------------------</span></span>
+<span><span class="va">numThreads</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="co"># on Redshift, 3 seems to work well</span></span>
+<span></span>
+<span><span class="co"># specify if you want to execute the queries or inspect them ------------------------------------------</span></span>
+<span><span class="va">sqlOnly</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span> <span class="co"># set to TRUE if you just want to get the SQL scripts and not actually run the queries</span></span>
+<span></span>
+<span><span class="co"># where should the logs go? -------------------------------------------------------------------------</span></span>
+<span><span class="va">outputFolder</span> <span class="op">&lt;-</span> <span class="st">"output"</span></span>
+<span></span>
+<span><span class="co"># logging type -------------------------------------------------------------------------------------</span></span>
+<span><span class="va">verboseMode</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span> <span class="co"># set to TRUE if you want to see activity written to the console</span></span>
+<span></span>
+<span><span class="co"># write results to table? ------------------------------------------------------------------------------</span></span>
+<span><span class="va">writeToTable</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span> <span class="co"># set to FALSE if you want to skip writing to a SQL table in the results schema</span></span>
+<span></span>
+<span><span class="co"># if writing to table and using Redshift, bulk loading can be initialized -------------------------------</span></span>
+<span></span>
+<span><span class="co"># Sys.setenv("AWS_ACCESS_KEY_ID" = "",</span></span>
+<span><span class="co">#            "AWS_SECRET_ACCESS_KEY" = "",</span></span>
+<span><span class="co">#            "AWS_DEFAULT_REGION" = "",</span></span>
+<span><span class="co">#            "AWS_BUCKET_NAME" = "",</span></span>
+<span><span class="co">#            "AWS_OBJECT_KEY" = "",</span></span>
+<span><span class="co">#            "AWS_SSE_TYPE" = "AES256",</span></span>
+<span><span class="co">#            "USE_MPP_BULK_LOAD" = TRUE)</span></span>
+<span></span>
+<span><span class="co"># which DQ check levels to run -------------------------------------------------------------------</span></span>
+<span><span class="va">checkLevels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TABLE"</span>, <span class="st">"FIELD"</span>, <span class="st">"CONCEPT"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># which DQ checks to run? ------------------------------------</span></span>
+<span></span>
+<span><span class="va">checkNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descriptions.csv</span></span>
+<span></span>
+<span><span class="co"># run the job --------------------------------------------------------------------------------------</span></span>
+<span><span class="fu">DataQualityDashboard</span><span class="fu">::</span><span class="fu"><a href="../reference/executeDqChecks.html">executeDqChecks</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>, </span>
+<span>                                    cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>, </span>
+<span>                                    resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
+<span>                                    cdmSourceName <span class="op">=</span> <span class="va">cdmSourceName</span>, </span>
+<span>                                    numThreads <span class="op">=</span> <span class="va">numThreads</span>,</span>
+<span>                                    sqlOnly <span class="op">=</span> <span class="va">sqlOnly</span>, </span>
+<span>                                    outputFolder <span class="op">=</span> <span class="va">outputFolder</span>, </span>
+<span>                                    outputFile <span class="op">=</span> <span class="va">outputFile</span>,</span>
+<span>                                    verboseMode <span class="op">=</span> <span class="va">verboseMode</span>,</span>
+<span>                                    writeToTable <span class="op">=</span> <span class="va">writeToTable</span>,</span>
+<span>                                    checkLevels <span class="op">=</span> <span class="va">checkLevels</span>,</span>
+<span>                                    checkNames <span class="op">=</span> <span class="va">checkNames</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># inspect logs ----------------------------------------------------------------------------</span></span>
+<span><span class="fu">ParallelLogger</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/ParallelLogger/reference/launchLogViewer.html" class="external-link">launchLogViewer</a></span><span class="op">(</span>logFileName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">outputFolder</span>, <span class="va">cdmSourceName</span>, </span>
+<span>                                                      <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"log_DqDashboard_%s.txt"</span>, <span class="va">cdmSourceName</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># (OPTIONAL) if you want to write the JSON file to the results table separately -----------------------------</span></span>
+<span><span class="va">jsonFilePath</span> <span class="op">&lt;-</span> <span class="st">""</span></span>
+<span><span class="fu">DataQualityDashboard</span><span class="fu">::</span><span class="fu"><a href="../reference/writeJsonResultsToTable.html">writeJsonResultsToTable</a></span><span class="op">(</span>connectionDetails <span class="op">=</span> <span class="va">connectionDetails</span>, </span>
+<span>                                            resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>, </span>
+<span>                                            jsonFilePath <span class="op">=</span> <span class="va">jsonFilePath</span><span class="op">)</span></span>
+<span>                                            </span></code></pre></div>
 </div>
-<div id="viewing-results" class="section level1">
-<h1 class="hasAnchor">
-<a href="#viewing-results" class="anchor"></a>Viewing Results</h1>
+<div class="section level2">
+<h2 id="viewing-results">Viewing Results<a class="anchor" aria-label="anchor" href="#viewing-results"></a>
+</h2>
 <p><strong>Launching Dashboard as Shiny App</strong></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>DataQualityDashboard<span class="sc">::</span><span class="fu">viewDqDashboard</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">jsonPath =</span> <span class="fu">file.path</span>(<span class="fu">getwd</span>(), outputFolder, cdmSourceName, outputFile, cdmSourceName))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="er">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">DataQualityDashboard</span><span class="fu">::</span><span class="fu"><a href="../reference/viewDqDashboard.html">viewDqDashboard</a></span><span class="op">(</span><span class="va">jsonFilePath</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Launching on a web server</strong></p>
 <p>If you have npm installed:</p>
 <ol style="list-style-type: decimal">
@@ -215,21 +225,17 @@
 </ol>
 <pre><code>npm install -g http-server</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li><p>Name the output file <em>results.json</em> and place it in inst/shinyApps/www</p></li>
+<li><p>Name the output file <em>results.json</em> and place it in
+inst/shinyApps/www</p></li>
 <li><p>Go to inst/shinyApps/www, then run:</p></li>
 </ol>
-<pre><code>http-server</code></pre>
+<pre><code><span><span class="va">http</span><span class="op">-</span><span class="va">server</span></span></code></pre>
 </div>
-<div id="view-checks" class="section level1">
-<h1 class="hasAnchor">
-<a href="#view-checks" class="anchor"></a>View checks</h1>
+<div class="section level2">
+<h2 id="view-checks">View checks<a class="anchor" aria-label="anchor" href="#view-checks"></a>
+</h2>
 <p>To see description of checks using R, execute the command below:</p>
-<pre><code><a href="https://rdrr.io/r/utils/View.html">View(read.csv(
-  system.file("csv","OMOP_CDMv5.3.1_Check_Descriptions.csv",
-    package="DataQualityDashboard"
-  ),
-  as.is=T)
-)</a></code></pre>
+<pre><code><span><span class="va">checks</span> <span class="op">&lt;-</span> <span class="fu">DataQualityDashboard</span><span class="fu">::</span><span class="fu"><a href="../reference/listDqChecks.html">listDqChecks</a></span><span class="op">(</span>cdmVersion <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span> <span class="co"># Put the version of the CDM you are using</span></span></code></pre>
 </div>
   </div>
 
@@ -244,11 +250,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
+  <p></p>
+<p>Developed by Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -256,6 +264,8 @@
 
   
 
+
+  
 
   </body>
 </html>

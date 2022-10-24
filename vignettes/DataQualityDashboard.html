@@ -212,8 +212,8 @@ hr {
 
 <h1>R Installation</h1>
 
-<pre><code class="r">install.packages(&quot;devtools&quot;)
-devtools::install_github(&quot;OHDSI/DataQualityDashboard&quot;)
+<pre><code class="r">install.packages(&quot;remotes&quot;)
+remotes::install_github(&quot;OHDSI/DataQualityDashboard&quot;)
 </code></pre>
 
 <h1>Note</h1>
@@ -243,7 +243,6 @@ sqlOnly &lt;- FALSE # set to TRUE if you just want to get the SQL scripts and no
 
 # where should the logs go? -------------------------------------------------------------------------
 outputFolder &lt;- &quot;output&quot;
-outputFile &lt;- &quot;results.json&quot;
 
 # logging type -------------------------------------------------------------------------------------
 verboseMode &lt;- FALSE # set to TRUE if you want to see activity written to the console
@@ -266,11 +265,7 @@ checkLevels &lt;- c(&quot;TABLE&quot;, &quot;FIELD&quot;, &quot;CONCEPT&quot;)
 
 # which DQ checks to run? ------------------------------------
 
-checkNames &lt;- c() # Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv
-
-# which CDM tables to exclude? ------------------------------------
-
-tablesToExclude &lt;- c() 
+checkNames &lt;- c() # Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descriptions.csv
 
 # run the job --------------------------------------------------------------------------------------
 DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails, 
@@ -284,7 +279,6 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                                       verboseMode = verboseMode,
                                       writeToTable = writeToTable,
                                       checkLevels = checkLevels,
-                                      tablesToExclude = tablesToExclude,
                                       checkNames = checkNames)
 
 # inspect logs ----------------------------------------------------------------------------
@@ -304,9 +298,7 @@ DataQualityDashboard::writeJsonResultsToTable(connectionDetails = connectionDeta
 
 <p><strong>Launching Dashboard as Shiny App</strong></p>
 
-<pre><code class="r">DataQualityDashboard::viewDqDashboard(
-  jsonPath = file.path(getwd(), outputFolder, cdmSourceName, outputFile, cdmSourceName))
-)
+<pre><code class="r">DataQualityDashboard::viewDqDashboard(jsonFilePath)
 </code></pre>
 
 <p><strong>Launching on a web server</strong></p>
@@ -332,12 +324,8 @@ DataQualityDashboard::writeJsonResultsToTable(connectionDetails = connectionDeta
 
 <p>To see description of checks using R, execute the command below:</p>
 
-<pre><code>View(read.csv(
-  system.file(&quot;csv&quot;,&quot;OMOP_CDMv5.3.1_Check_Descriptions.csv&quot;,
-    package=&quot;DataQualityDashboard&quot;
-  ),
-  as.is=T)
-)
+<pre><code>checks &lt;- DataQualityDashboard::listDqChecks(cdmVersion = &quot;5.3&quot;) # Put the version of the CDM you are using
+
 </code></pre>
 
 </body>

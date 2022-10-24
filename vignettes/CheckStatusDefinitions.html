@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>DQD check statuses</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Check Status Descriptions}
+-->
+
+<h1>DQD check statuses</h1>
+
+<h2>Introduction</h2>
+
+<p>In the DataQualityDashboard v2, new check statuses were introduced: <code>Error</code> and <code>Not Applicable</code>. These were introduced to more accurately reflect the quality of data contained in a CDM instance, addressing scenarios where pass/fail is not appropriate. The new set of mutually exclusive status states are listed below in priority order:</p>
+
+<ul>
+<li><p><strong>Is Error:</strong> if a SQL error occurred during execution</p></li>
+<li><p><strong>Not Applicable:</strong> if DQ check is not applicable for reasons explained in the section below</p></li>
+<li><p><strong>Failed:</strong> if percent violating rows is greater than the threshold</p></li>
+<li><p><strong>Passed:</strong> if percent violating rows is smaller than the threshold</p></li>
+</ul>
+
+<h2>Not Applicable</h2>
+
+<p>The results of a DQ check may not be applicable to a given CDM instance depending on the implementation and content of the instance. For example, the DQ check for plausible values of HbA1c lab results would pass with no violations even if there were no results for that lab test in the database. It is not uncommon to have &gt; 1000 DQ checks that do not apply to a given CDM instance. The results from DQ checks that are not applicable skew to overall results. Listed below are the scenarios for which a DQ check result is flagged as Not_applicable:</p>
+
+<ol>
+<li><p>If the cdmTable DQ check determines that a table does not exist in the database, then all DQ checks (except cdm_table) addressing that table are flagged as Not_applicable.</p></li>
+<li><p>If a table exists but is empty, then all field level and concept level checks for that table are flagged as Not_applicable, except for cdmField checks, which evaluates if the field is defined or not. A cdmField check is marked as not_applicable if the CDM table it refers to does not exist (tested by cdmTable). An empty table is detected when the measureValueCompleteness DQ check for any of the fields in the table returns a denominator count = 0 (NUM_DENOMINATOR_ROWS=0).</p></li>
+<li><p>If a field is not populated, then all field level and concept level checks except for measureValueCompleteness and isRequired are flagged as Not_applicable.</p>
+
+<p>a. A field is not populated if the measureValueCompleteness DQ check finds denominator count &gt; 0 and number of violated rows = denominator count (NUM_DENOMINATOR_ROWS &gt; 0 AND NUM_DENOMINATOR_ROWS = NUM_VIOLATED_ROWS).</p>
+
+<p>b. The measureValueCompleteness check is marked as not applicable if:</p>
+
+<pre><code>a. The CDM table it refers to does not exist or is empty.
+
+b. The CDM field it refers to does not exist.
+</code></pre>
+
+<p>c. The isRequired check is marked as not applicable if:</p>
+
+<pre><code>a. The CDM table it refers to does not exist or is empty.
+
+b. The CDM field it refers to does not exist.
+</code></pre></li>
+<li><p>Flagging a Concept_ID level DQ check as Not_applicable depends on whether the DQ check logic includes a UNIT_CONCEPT_ID. There are two scenarios for DQ checks evaluating specific Concept_ids.</p>
+
+<p>a. The DQ check does not include a UNIT_CONCEPT_ID (value is null). A DQ check is flagged as Not_applicable if there are no instances of the Concept_ID in the table/field. E.g. plausibility checks for specific conditions and gender. Both pregnancy and male do not have UNIT_CONCEPT_IDs.</p>
+
+<p>b. The DQ check includes a UNIT_CONCEPT_ID. A DQ check is flagged as Not_applicable if there are no instances of both concept and unit concept IDs in the table/field. E.g. all DQ checks referencing the concept_ID for HbA1c lab results expressed in mg/dl units will be flagged as Not_applicable if there are no instances of that concept_ID in the table/field addressed by the DQ check.</p></li>
+</ol>
+
+</body>
+
+</html>

@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.100</span>
       </span>
     </div>
 
@@ -50,13 +52,19 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/AddNewCheck.html">Add a New Data Quality Check</a>
+    </li>
+    <li>
+      <a href="../articles/CheckStatusDefinitions.html">Check Status Descriptions</a>
+    </li>
+    <li>
       <a href="../articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
     </li>
     <li>
@@ -67,10 +75,13 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/OHDSI/DataQualityDashboard/">
+  <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -85,15 +96,16 @@
 
       
 
-      </header><script src="CheckTypeDescriptions_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Data Quality Check Type Definitions</h1>
-                        <h4 class="author">Clair Blacketer</h4>
+                        <h4 data-toc-skip class="author">Clair
+Blacketer</h4>
             
-            <h4 class="date">2022-03-03</h4>
+            <h4 data-toc-skip class="date">2022-10-12</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/master/vignettes/CheckTypeDescriptions.rmd"><code>vignettes/CheckTypeDescriptions.rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/CheckTypeDescriptions.rmd" class="external-link"><code>vignettes/CheckTypeDescriptions.rmd</code></a></small>
       <div class="hidden name"><code>CheckTypeDescriptions.rmd</code></div>
 
     </div>
@@ -104,156 +116,407 @@
 %\VignetteEngine{knitr::knitr}
 %\VignetteIndexEntry{Data Quality Check Type Definitions}
 -->
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>The DataQualityDashboard functions by applying 20 parameterized check types to a CDM instance, resulting in over 3,351 resolved, executed, and evaluated individual data quality checks. For example, one check type might be written as</p>
-<p><em>The number and percent of records with a value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> table less than <strong>plausibleValueLow</strong></em>.</p>
-<p>This would be considered an atemporal plausibility verification check because we are looking for implausibly low values in some field based on internal knowledge. We can use this check type to substitute in values for <strong>cdmFieldName</strong>, <strong>cdmTableName</strong>, and <strong>plausibleValueLow</strong> to create a unique data quality check. If we apply it to PERSON.YEAR_OF_BIRTH here is how that might look:</p>
-<p><em>The number and percent of records with a value in the <strong>year_of_birth</strong> field of the <strong>PERSON</strong> table less than <strong>1850</strong>.</em></p>
-<p>And, since it is parameterized, we can similarly apply it to DRUG_EXPOSURE.days_supply:</p>
-<p><em>The number and percent of records with a value in the <strong>days_supply</strong> field of the <strong>DRUG_EXPOSURE</strong> table less than <strong>0</strong>.</em></p>
-<p>Version 1 of the tool includes 20 different check types organized into Kahn contexts and categories (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/">link to paper</a>). Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs.</p>
-<p>This article will detail each check type, its name, check level, description, definition, and to which Kahn context, category, and subcategory it belongs.</p>
-<div id="measurepersoncompleteness" class="section level2">
-<h2 class="hasAnchor">
-<a href="#measurepersoncompleteness" class="anchor"></a>measurePersonCompleteness</h2>
-<p><strong>Name</strong>: measurePersonCompleteness <br><strong>Level</strong>: Table check <br><strong>Context</strong>: Validation <br><strong>Category</strong>: Completeness</p>
-<p><strong>Description</strong>: The number and percent of persons in the CDM that do not have at least one record in the <strong>cdmTableName</strong> table.</p>
-<p><strong>Definition</strong>: For each table indicated this check will count the number of persons from the PERSON table that do not have at least one record in the specified clinical event table. It may be that there are 100 persons listed in the PERSON table but only 30 of them have at least one record in the MEASUREMENT table. If the <strong>measurePersonCompleteness</strong> check is indicated for the MEASUREMENT table, the result will be 70%, meaning that 70% of the persons in the CDM instance do not have at least one record in MEASUREMENT.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>The DataQualityDashboard functions by applying 20 parameterized check
+types to a CDM instance, resulting in over 3,351 resolved, executed, and
+evaluated individual data quality checks. For example, one check type
+might be written as</p>
+<p><em>The number and percent of records with a value in the
+<strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong>
+table less than <strong>plausibleValueLow</strong></em>.</p>
+<p>This would be considered an atemporal plausibility verification check
+because we are looking for implausibly low values in some field based on
+internal knowledge. We can use this check type to substitute in values
+for <strong>cdmFieldName</strong>, <strong>cdmTableName</strong>, and
+<strong>plausibleValueLow</strong> to create a unique data quality
+check. If we apply it to PERSON.YEAR_OF_BIRTH here is how that might
+look:</p>
+<p><em>The number and percent of records with a value in the
+<strong>year_of_birth</strong> field of the <strong>PERSON</strong>
+table less than <strong>1850</strong>.</em></p>
+<p>And, since it is parameterized, we can similarly apply it to
+DRUG_EXPOSURE.days_supply:</p>
+<p><em>The number and percent of records with a value in the
+<strong>days_supply</strong> field of the <strong>DRUG_EXPOSURE</strong>
+table less than <strong>0</strong>.</em></p>
+<p>Version 1 of the tool includes 20 different check types organized
+into Kahn contexts and categories (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/" class="external-link">link to
+paper</a>). Additionally, each data quality check type is considered
+either a table check, field check, or concept-level check. Table-level
+checks are those evaluating the table at a high-level without reference
+to individual fields, or those that span multiple event tables. These
+include checks making sure required tables are present or that at least
+some of the people in the PERSON table have records in the event tables.
+Field-level checks are those related to specific fields in a table. The
+majority of the check types in version 1 are field-level checks. These
+include checks evaluating primary key relationship and those
+investigating if the concepts in a field conform to the specified
+domain. Concept-level checks are related to individual concepts. These
+include checks looking for gender-specific concepts in persons of the
+wrong gender and plausible values for measurement-unit pairs.</p>
+<p>This article will detail each check type, its name, check level,
+description, definition, and to which Kahn context, category, and
+subcategory it belongs.</p>
+<div class="section level3">
+<h3 id="measurepersoncompleteness">measurePersonCompleteness<a class="anchor" aria-label="anchor" href="#measurepersoncompleteness"></a>
+</h3>
+<p><strong>Name</strong>: measurePersonCompleteness
+<br><strong>Level</strong>: Table check <br><strong>Context</strong>:
+Validation <br><strong>Category</strong>: Completeness</p>
+<p><strong>Description</strong>: The number and percent of persons in
+the CDM that do not have at least one record in the
+<strong>cdmTableName</strong> table.</p>
+<p><strong>Definition</strong>: For each table indicated this check will
+count the number of persons from the PERSON table that do not have at
+least one record in the specified clinical event table. It may be that
+there are 100 persons listed in the PERSON table but only 30 of them
+have at least one record in the MEASUREMENT table. If the
+<strong>measurePersonCompleteness</strong> check is indicated for the
+MEASUREMENT table, the result will be 70%, meaning that 70% of the
+persons in the CDM instance do not have at least one record in
+MEASUREMENT.</p>
 </div>
-<div id="cdmfield" class="section level2">
-<h2 class="hasAnchor">
-<a href="#cdmfield" class="anchor"></a>cdmField</h2>
-<p><strong>Name</strong>: cdmField <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Conformance <br><strong>Subcategory</strong>: Relational</p>
-<p><strong>Description</strong>: A value indicating if all fields are present in the <strong>cdmTableName</strong> table.</p>
-<p><strong>Definition</strong>: For each table indicated this check will go through and determine if all fields are present as specified based on the CDM version. If the field is present, the resulting value will be 0; if the field is absent the resulting value will be 100.</p>
+<div class="section level3">
+<h3 id="cdmfield">cdmField<a class="anchor" aria-label="anchor" href="#cdmfield"></a>
+</h3>
+<p><strong>Name</strong>: cdmField <br><strong>Level</strong>: Field
+check <br><strong>Context</strong>: Verification
+<br><strong>Category</strong>: Conformance
+<br><strong>Subcategory</strong>: Relational</p>
+<p><strong>Description</strong>: A value indicating if all fields are
+present in the <strong>cdmTableName</strong> table.</p>
+<p><strong>Definition</strong>: For each table indicated this check will
+go through and determine if all fields are present as specified based on
+the CDM version. If the field is present, the resulting value will be 0;
+if the field is absent the resulting value will be 100.</p>
 </div>
-<div id="isRequired" class="section level2">
-<h2 class="hasAnchor">
-<a href="#isRequired" class="anchor"></a>isRequired</h2>
-<p><strong>Name</strong>: isRequired <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Validation <br><strong>Category</strong>: Conformance <br><strong>Subcategory</strong>: Relational</p>
-<p><strong>Description</strong>: The number and percent of records with a NULL value in the <strong>cdmFieldName</strong> of the <strong>cdmTableName</strong> that is considered not nullable</p>
-<p><strong>Definition</strong>: This check is meant to ensure that all NOT NULL constraints specified in the CDM version are followed. It will count up all records with a NULL value in the specified field of the specified table and return the percent of records in the table that violate the constraint.</p>
+<div class="section level3">
+<h3 id="isRequired">isRequired<a class="anchor" aria-label="anchor" href="#isRequired"></a>
+</h3>
+<p><strong>Name</strong>: isRequired <br><strong>Level</strong>: Field
+check <br><strong>Context</strong>: Validation
+<br><strong>Category</strong>: Conformance
+<br><strong>Subcategory</strong>: Relational</p>
+<p><strong>Description</strong>: The number and percent of records with
+a NULL value in the <strong>cdmFieldName</strong> of the
+<strong>cdmTableName</strong> that is considered not nullable</p>
+<p><strong>Definition</strong>: This check is meant to ensure that all
+NOT NULL constraints specified in the CDM version are followed. It will
+count up all records with a NULL value in the specified field of the
+specified table and return the percent of records in the table that
+violate the constraint.</p>
 </div>
-<div id="cdmdatatype" class="section level2">
-<h2 class="hasAnchor">
-<a href="#cdmdatatype" class="anchor"></a>cdmDatatype</h2>
-<p><strong>Name</strong>: cdmDatatype <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Conformance <br><strong>Subcategory</strong>: Value</p>
-<p><strong>Description</strong>: A yes or no value indicating if the <strong>cdmFieldName</strong> in the <strong>cdmTableName</strong> is the expected data type based on the specification.</p>
-<p><strong>Definition</strong>: At present this will check only that fields that are supposed to be integers are the expected datatype. For a given field, it will count the number of records with a non-null, non-integer value.</p>
+<div class="section level3">
+<h3 id="cdmdatatype">cdmDatatype<a class="anchor" aria-label="anchor" href="#cdmdatatype"></a>
+</h3>
+<p><strong>Name</strong>: cdmDatatype <br><strong>Level</strong>: Field
+check <br><strong>Context</strong>: Verification
+<br><strong>Category</strong>: Conformance
+<br><strong>Subcategory</strong>: Value</p>
+<p><strong>Description</strong>: A yes or no value indicating if the
+<strong>cdmFieldName</strong> in the <strong>cdmTableName</strong> is
+the expected data type based on the specification.</p>
+<p><strong>Definition</strong>: At present this will check only that
+fields that are supposed to be integers are the expected datatype. For a
+given field, it will count the number of records with a non-null,
+non-integer value.</p>
 </div>
-<div id="isprimarykey" class="section level2">
-<h2 class="hasAnchor">
-<a href="#isprimarykey" class="anchor"></a>isPrimaryKey</h2>
-<p><strong>Name</strong>: isPrimaryKey <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Conformance <br><strong>Subcategory</strong>: Relational</p>
-<p><strong>Description</strong>: The number and percent of records that have a duplicate value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong>.</p>
-<p><strong>Definition</strong>: This check will make sure that all primary keys as specified in the CDM version are truly unique values in the database. While this should be caught by primary key constraints, some database management systems such as redshift do not enforce these.</p>
+<div class="section level3">
+<h3 id="isprimarykey">isPrimaryKey<a class="anchor" aria-label="anchor" href="#isprimarykey"></a>
+</h3>
+<p><strong>Name</strong>: isPrimaryKey <br><strong>Level</strong>: Field
+check <br><strong>Context</strong>: Verification
+<br><strong>Category</strong>: Conformance
+<br><strong>Subcategory</strong>: Relational</p>
+<p><strong>Description</strong>: The number and percent of records that
+have a duplicate value in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong>.</p>
+<p><strong>Definition</strong>: This check will make sure that all
+primary keys as specified in the CDM version are truly unique values in
+the database. While this should be caught by primary key constraints,
+some database management systems such as redshift do not enforce
+these.</p>
 </div>
-<div id="isforeignkey" class="section level2">
-<h2 class="hasAnchor">
-<a href="#isforeignkey" class="anchor"></a>isForeignKey</h2>
-<p><strong>Name</strong>: isForeignKey <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Conformance <br><strong>Subcategory</strong>: Relational</p>
-<p><strong>Description</strong>: The number and percent of records that have a value in the <strong>cdmFieldName</strong> field in the <strong>cdmTableName</strong> table that does not exist in the <strong>fkTableName</strong> table.</p>
-<p><strong>Definition</strong>: This check will make sure that all foreign keys as specified in the CDM version have a value in the related primary key field. While this should be caught by foreign key constraints, some database management systems such as redshift do not enforce these.</p>
+<div class="section level3">
+<h3 id="isforeignkey">isForeignKey<a class="anchor" aria-label="anchor" href="#isforeignkey"></a>
+</h3>
+<p><strong>Name</strong>: isForeignKey <br><strong>Level</strong>: Field
+check <br><strong>Context</strong>: Verification
+<br><strong>Category</strong>: Conformance
+<br><strong>Subcategory</strong>: Relational</p>
+<p><strong>Description</strong>: The number and percent of records that
+have a value in the <strong>cdmFieldName</strong> field in the
+<strong>cdmTableName</strong> table that does not exist in the
+<strong>fkTableName</strong> table.</p>
+<p><strong>Definition</strong>: This check will make sure that all
+foreign keys as specified in the CDM version have a value in the related
+primary key field. While this should be caught by foreign key
+constraints, some database management systems such as redshift do not
+enforce these.</p>
 </div>
-<div id="fkdomain" class="section level2">
-<h2 class="hasAnchor">
-<a href="#fkdomain" class="anchor"></a>fkDomain</h2>
-<p><strong>Name</strong>: fkDomain <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Conformance <br><strong>Subcategory</strong>: Value</p>
-<p><strong>Description</strong>: The number and percent of records that have a value in the <strong>cdmFieldName</strong> field in the <strong>cdmTableName</strong> table that do not conform to the <strong>fkDomain</strong> domain.</p>
-<p><strong>Definition</strong>: It is often the case that standard concept fields in the OMOP CDM should belong to a certain domain. All possible domains are listed in the vocabulary table DOMAIN and the expected domain for CDM fields are listed as part of the CDM documentation. For example, in the field PERSON.gender_concept_id all concepts in that field should conform to the <a href="http://athena.ohdsi.org/search-terms/terms?standardConcept=Standard&amp;domain=Gender&amp;page=1&amp;pageSize=15&amp;query="><em>gender</em> domain</a>. This check will search all concepts in a field and count the number of records that have concepts in the field that do not belong to the correct domain.</p>
+<div class="section level3">
+<h3 id="fkdomain">fkDomain<a class="anchor" aria-label="anchor" href="#fkdomain"></a>
+</h3>
+<p><strong>Name</strong>: fkDomain <br><strong>Level</strong>: Field
+check <br><strong>Context</strong>: Verification
+<br><strong>Category</strong>: Conformance
+<br><strong>Subcategory</strong>: Value</p>
+<p><strong>Description</strong>: The number and percent of records that
+have a value in the <strong>cdmFieldName</strong> field in the
+<strong>cdmTableName</strong> table that do not conform to the
+<strong>fkDomain</strong> domain.</p>
+<p><strong>Definition</strong>: It is often the case that standard
+concept fields in the OMOP CDM should belong to a certain domain. All
+possible domains are listed in the vocabulary table DOMAIN and the
+expected domain for CDM fields are listed as part of the CDM
+documentation. For example, in the field PERSON.gender_concept_id all
+concepts in that field should conform to the <a href="http://athena.ohdsi.org/search-terms/terms?standardConcept=Standard&amp;domain=Gender&amp;page=1&amp;pageSize=15&amp;query=" class="external-link"><em>gender</em>
+domain</a>. This check will search all concepts in a field and count the
+number of records that have concepts in the field that do not belong to
+the correct domain.</p>
 </div>
-<div id="fkclass" class="section level2">
-<h2 class="hasAnchor">
-<a href="#fkclass" class="anchor"></a>fkClass</h2>
-<p><strong>Name</strong>: fkClass <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Conformance <br><strong>Subcategory</strong>: Computational</p>
-<p><strong>Description</strong>: The number and percent of records that have a value in the <strong>cdmFieldName</strong> field in the <strong>cdmTableName</strong> table that do not conform to the <strong>fkClass</strong> class.</p>
-<p><strong>Definition</strong>: There is the occasional field in the OMOP CDM that expects not only concepts of a certain domain, but of a certain concept class as well. The best example is the drug_concept_id field in the DRUG_ERA table. Drug eras represent the span of time a person was exposed to a particular drug <em>ingredient</em> so all concepts in DRUG_ERA.drug_concept_id are of the drug domain and ingredient class. This check will search all concepts in a field and count the number of records that have a concept in the field that do not belong to the correct concept class.</p>
+<div class="section level3">
+<h3 id="fkclass">fkClass<a class="anchor" aria-label="anchor" href="#fkclass"></a>
+</h3>
+<p><strong>Name</strong>: fkClass <br><strong>Level</strong>: Field
+check <br><strong>Context</strong>: Verification
+<br><strong>Category</strong>: Conformance
+<br><strong>Subcategory</strong>: Computational</p>
+<p><strong>Description</strong>: The number and percent of records that
+have a value in the <strong>cdmFieldName</strong> field in the
+<strong>cdmTableName</strong> table that do not conform to the
+<strong>fkClass</strong> class.</p>
+<p><strong>Definition</strong>: There is the occasional field in the
+OMOP CDM that expects not only concepts of a certain domain, but of a
+certain concept class as well. The best example is the drug_concept_id
+field in the DRUG_ERA table. Drug eras represent the span of time a
+person was exposed to a particular drug <em>ingredient</em> so all
+concepts in DRUG_ERA.drug_concept_id are of the drug domain and
+ingredient class. This check will search all concepts in a field and
+count the number of records that have a concept in the field that do not
+belong to the correct concept class.</p>
 </div>
-<div id="isstandardvalidconcept" class="section level2">
-<h2 class="hasAnchor">
-<a href="#isstandardvalidconcept" class="anchor"></a>isStandardValidConcept</h2>
-<p><strong>Name</strong>: isStandardValidConcept <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Conformance</p>
-<p><strong>Description</strong>: The number and percent of records that do not have a standard, valid concept in the <em>cdmFieldName</em> field in the <em>cdmTableName</em> table.</p>
-<p><strong>Definition</strong>: In order to standardize not only the structure but the vocabulary of the OMOP CDM, certain fields in the model require standard, valid concepts while other fields do not. For example, in the PERSON table, the field gender_concept_id MUST be a standard, valid concept: either 8532 or 8507. In contrast the field gender_source_concept_id can be any concept, standard or no. This check will count the number of records that have a concept in a given field that are not standard and valid.</p>
+<div class="section level3">
+<h3 id="isstandardvalidconcept">isStandardValidConcept<a class="anchor" aria-label="anchor" href="#isstandardvalidconcept"></a>
+</h3>
+<p><strong>Name</strong>: isStandardValidConcept
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Conformance</p>
+<p><strong>Description</strong>: The number and percent of records that
+do not have a standard, valid concept in the <em>cdmFieldName</em> field
+in the <em>cdmTableName</em> table.</p>
+<p><strong>Definition</strong>: In order to standardize not only the
+structure but the vocabulary of the OMOP CDM, certain fields in the
+model require standard, valid concepts while other fields do not. For
+example, in the PERSON table, the field gender_concept_id MUST be a
+standard, valid concept: either 8532 or 8507. In contrast the field
+gender_source_concept_id can be any concept, standard or no. This check
+will count the number of records that have a concept in a given field
+that are not standard and valid.</p>
 </div>
-<div id="measurevaluecompleteness" class="section level2">
-<h2 class="hasAnchor">
-<a href="#measurevaluecompleteness" class="anchor"></a>measureValueCompleteness</h2>
-<p><br><strong>Name</strong>: measureValueCompleteness <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>:Completeness</p>
-<p><strong>Description</strong>: The number and percent of records with a NULL value in the <em>cdmFieldName</em> of the <em>cdmTableName</em>.</p>
-<p><strong>Definition</strong>: This check will count the number of records with a NULL value in a specified field. This is different from the <a href="#isRequired">isRequired</a> check because it will run this calculation for all tables and fields whereas the isRequired check will only run for those fields deemed required by the CDM specification. Often the thresholds for failure are set at different levels between these checks as well.</p>
+<div class="section level3">
+<h3 id="measurevaluecompleteness">measureValueCompleteness<a class="anchor" aria-label="anchor" href="#measurevaluecompleteness"></a>
+</h3>
+<p><br><strong>Name</strong>: measureValueCompleteness
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>:Completeness</p>
+<p><strong>Description</strong>: The number and percent of records with
+a NULL value in the <em>cdmFieldName</em> of the
+<em>cdmTableName</em>.</p>
+<p><strong>Definition</strong>: This check will count the number of
+records with a NULL value in a specified field. This is different from
+the <a href="#isRequired">isRequired</a> check because it will run this
+calculation for all tables and fields whereas the isRequired check will
+only run for those fields deemed required by the CDM specification.
+Often the thresholds for failure are set at different levels between
+these checks as well.</p>
 </div>
-<div id="standardConceptRecordCompleteness" class="section level2">
-<h2 class="hasAnchor">
-<a href="#standardConceptRecordCompleteness" class="anchor"></a>standardConceptRecordCompleteness</h2>
-<p><strong>Name</strong>: standardConceptRecordCompleteness <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Completeness</p>
-<p><strong>Description</strong>: The number and percent of records with a value of 0 in the standard concept field <em>cdmFieldName</em> in the <em>cdmTableName</em> table.</p>
-<p><strong>Definition</strong>: It is important to understand how well source values were mapped to standard concepts. This check will count the number of records in a standard concept field (condition_concept_id, drug_concept_id, etc.) with a value of 0 rather a standard concept. NOTE for the field unit_concept_id in the MEASUREMENT and OBSERVATION tables both the numerator and denominator are limited to records where value_as_number is not null. This prevents over-inflation of the numbers and focuses the check to records that are eligible for a unit value.</p>
+<div class="section level3">
+<h3 id="standardConceptRecordCompleteness">standardConceptRecordCompleteness<a class="anchor" aria-label="anchor" href="#standardConceptRecordCompleteness"></a>
+</h3>
+<p><strong>Name</strong>: standardConceptRecordCompleteness
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Completeness</p>
+<p><strong>Description</strong>: The number and percent of records with
+a value of 0 in the standard concept field <em>cdmFieldName</em> in the
+<em>cdmTableName</em> table.</p>
+<p><strong>Definition</strong>: It is important to understand how well
+source values were mapped to standard concepts. This check will count
+the number of records in a standard concept field (condition_concept_id,
+drug_concept_id, etc.) with a value of 0 rather a standard concept. NOTE
+for the field unit_concept_id in the MEASUREMENT and OBSERVATION tables
+both the numerator and denominator are limited to records where
+value_as_number is not null. This prevents over-inflation of the numbers
+and focuses the check to records that are eligible for a unit value.</p>
 </div>
-<div id="sourceconceptrecordcompleteness" class="section level2">
-<h2 class="hasAnchor">
-<a href="#sourceconceptrecordcompleteness" class="anchor"></a>sourceConceptRecordCompleteness</h2>
-<p><strong>Name</strong>: sourceConceptRecordCompleteness <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Completeness</p>
-<p><strong>Description</strong>: The number and percent of records with a value of 0 in the source concept field <em>cdmFieldName</em> in the <em>cdmTableName</em> table.</p>
-<p><strong>Definition</strong>: This check will count the number of records in a source concept field (condition_source_concept_id, drug_source_concept_id) with a value of 0. This is useful since source values that are represented by concepts in the vocabulary have automatic mappings to standard concepts. Using this check along with the <a href="#standardConceptRecordCompleteness">standardConceptRecordCompletness</a> check can help identify any vocabulary mapping issues during ETL.</p>
+<div class="section level3">
+<h3 id="sourceconceptrecordcompleteness">sourceConceptRecordCompleteness<a class="anchor" aria-label="anchor" href="#sourceconceptrecordcompleteness"></a>
+</h3>
+<p><strong>Name</strong>: sourceConceptRecordCompleteness
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Completeness</p>
+<p><strong>Description</strong>: The number and percent of records with
+a value of 0 in the source concept field <em>cdmFieldName</em> in the
+<em>cdmTableName</em> table.</p>
+<p><strong>Definition</strong>: This check will count the number of
+records in a source concept field (condition_source_concept_id,
+drug_source_concept_id) with a value of 0. This is useful since source
+values that are represented by concepts in the vocabulary have automatic
+mappings to standard concepts. Using this check along with the <a href="#standardConceptRecordCompleteness">standardConceptRecordCompletness</a>
+check can help identify any vocabulary mapping issues during ETL.</p>
 </div>
-<div id="sourcevaluecompleteness" class="section level2">
-<h2 class="hasAnchor">
-<a href="#sourcevaluecompleteness" class="anchor"></a>sourceValueCompleteness</h2>
-<p><strong>Name</strong>: sourceValueCompleteness <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Completeness</p>
-<p><strong>Description</strong>: The number and percent of distinct source values in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> table mapped to 0.</p>
-<p><strong>Definition</strong>: This check will look at all distinct source values in the specified field and calculate how many are mapped to 0. This should be used in conjunction with the <a href="#standardConceptRecordCompleteness">standardConceptRecordCompletness</a> check to identify any mapping issues in the ETL.</p>
+<div class="section level3">
+<h3 id="sourcevaluecompleteness">sourceValueCompleteness<a class="anchor" aria-label="anchor" href="#sourcevaluecompleteness"></a>
+</h3>
+<p><strong>Name</strong>: sourceValueCompleteness
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Completeness</p>
+<p><strong>Description</strong>: The number and percent of distinct
+source values in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong> table mapped to 0.</p>
+<p><strong>Definition</strong>: This check will look at all distinct
+source values in the specified field and calculate how many are mapped
+to 0. This should be used in conjunction with the <a href="#standardConceptRecordCompleteness">standardConceptRecordCompletness</a>
+check to identify any mapping issues in the ETL.</p>
 </div>
-<div id="plausiblevaluelow" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plausiblevaluelow" class="anchor"></a>plausibleValueLow</h2>
-<p><strong>Name</strong>: plausibleValueLow <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Plausibility <br><strong>Subcategory</strong>: Atemporal</p>
-<p><strong>Description</strong>: The number and percent of records with a value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> table less than <strong>plausibleValueLow</strong>.</p>
-<p><strong>Definition</strong>: This check will count the number of records that have a value in the specified field that is lower than some value. This is the field-level version of this check so it is not concept specific. For example, it will count the number of records that have an implausibly low value in the year_of_birth field of the PERSON table.</p>
+<div class="section level3">
+<h3 id="plausiblevaluelow">plausibleValueLow<a class="anchor" aria-label="anchor" href="#plausiblevaluelow"></a>
+</h3>
+<p><strong>Name</strong>: plausibleValueLow <br><strong>Level</strong>:
+Field check <br><strong>Context</strong>: Verification
+<br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Atemporal</p>
+<p><strong>Description</strong>: The number and percent of records with
+a value in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong> table less than
+<strong>plausibleValueLow</strong>.</p>
+<p><strong>Definition</strong>: This check will count the number of
+records that have a value in the specified field that is lower than some
+value. This is the field-level version of this check so it is not
+concept specific. For example, it will count the number of records that
+have an implausibly low value in the year_of_birth field of the PERSON
+table.</p>
 </div>
-<div id="plausiblevaluehigh" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plausiblevaluehigh" class="anchor"></a>plausibleValueHigh</h2>
-<p><strong>Name</strong>: plausibleValueHigh <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Plausibility <br><strong>Subcategory</strong>: Atemporal</p>
-<p><strong>Description</strong>: The number and percent of records with a value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> table greater than <strong>plausibleValueHigh</strong>.</p>
-<p><strong>Definition</strong>: This check will count the number of records that have a value in the specified field that is higher than some value. This is the field-level version of this check so it is not concept specific. For example, it will count the number of records that have an implausibly high value in the year_of_birth field of the PERSON table.</p>
+<div class="section level3">
+<h3 id="plausiblevaluehigh">plausibleValueHigh<a class="anchor" aria-label="anchor" href="#plausiblevaluehigh"></a>
+</h3>
+<p><strong>Name</strong>: plausibleValueHigh <br><strong>Level</strong>:
+Field check <br><strong>Context</strong>: Verification
+<br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Atemporal</p>
+<p><strong>Description</strong>: The number and percent of records with
+a value in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong> table greater than
+<strong>plausibleValueHigh</strong>.</p>
+<p><strong>Definition</strong>: This check will count the number of
+records that have a value in the specified field that is higher than
+some value. This is the field-level version of this check so it is not
+concept specific. For example, it will count the number of records that
+have an implausibly high value in the year_of_birth field of the PERSON
+table.</p>
 </div>
-<div id="plausibletemporalafter" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plausibletemporalafter" class="anchor"></a>plausibleTemporalAfter</h2>
-<p><strong>Name</strong>: plausibleTemporalAfter <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Plausibility <br><strong>Subcategory</strong>: Temporal</p>
-<p><strong>Description</strong>: The number and percent of records with a value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> that occurs prior to the date in the <strong>plausibleTemporalAfterFieldName</strong> field of the <strong>plausibleTemporalAfterTableName</strong> table.</p>
-<p><strong>Definition</strong>: This check is attempting to apply temporal rules to a CDM instance. For example, it will check to make sure that all visit records for a person in the VISIT_OCCURRENCE table occur after the person’s birth.</p>
+<div class="section level3">
+<h3 id="plausibletemporalafter">plausibleTemporalAfter<a class="anchor" aria-label="anchor" href="#plausibletemporalafter"></a>
+</h3>
+<p><strong>Name</strong>: plausibleTemporalAfter
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Temporal</p>
+<p><strong>Description</strong>: The number and percent of records with
+a value in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong> that occurs prior to the date in the
+<strong>plausibleTemporalAfterFieldName</strong> field of the
+<strong>plausibleTemporalAfterTableName</strong> table.</p>
+<p><strong>Definition</strong>: This check is attempting to apply
+temporal rules to a CDM instance. For example, it will check to make
+sure that all visit records for a person in the VISIT_OCCURRENCE table
+occur after the person’s birth.</p>
 </div>
-<div id="plausibleduringlife" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plausibleduringlife" class="anchor"></a>plausibleDuringLife</h2>
-<p><strong>Name</strong>: plausibleDuringLife <br><strong>Level</strong>: Field check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Plausibility <br><strong>Subcategory</strong>: Temporal</p>
-<p><strong>Description</strong>: If yes, the number and percent of records with a date value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> table that occurs after death.</p>
-<p><strong>Definition</strong>: This check will calculate the number of records that occur after a person’s death. This is called <em>plausibleDuringLife</em> because turning it on indicates that the specified dates should occur during a person’s lifetime, like drug exposures, etc.</p>
+<div class="section level3">
+<h3 id="plausibleduringlife">plausibleDuringLife<a class="anchor" aria-label="anchor" href="#plausibleduringlife"></a>
+</h3>
+<p><strong>Name</strong>: plausibleDuringLife
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Temporal</p>
+<p><strong>Description</strong>: If yes, the number and percent of
+records with a date value in the <strong>cdmFieldName</strong> field of
+the <strong>cdmTableName</strong> table that occurs after death.</p>
+<p><strong>Definition</strong>: This check will calculate the number of
+records that occur after a person’s death. This is called
+<em>plausibleDuringLife</em> because turning it on indicates that the
+specified dates should occur during a person’s lifetime, like drug
+exposures, etc.</p>
 </div>
-<div id="plausiblevaluelow-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plausiblevaluelow-1" class="anchor"></a>plausibleValueLow</h2>
-<p><strong>Name</strong>: plausibleValueLow <br><strong>Level</strong>: Concept check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Plausibility <br><strong>Subcategory</strong>: Atemporal</p>
-<p><strong>Description</strong>: For the combination of CONCEPT_ID <strong>conceptId</strong> (<strong>conceptName</strong>) and UNIT_CONCEPT_ID <strong>unitConceptId</strong> (<strong>unitConceptName</strong>), the number and percent of records that have a value less than <strong>plausibleValueLow</strong>.</p>
-<p><strong>Definition</strong>: This check will count the number of records that have a value in the specified field with the specified concept_id and unit_concept_id that is lower than some value. This is the concept-level version of this check so it is concept specific and therefore the denominator will only be the records with the specified concept and unit. For example, it will count the number of records that have an implausibly low value in the value_as_number field of the MEASUREMENT table where MEASUREMENT_CONCEPT_ID = 2212241 (Calcium; total) and UNIT_CONCEPT_ID = 8840 (milligram per deciliter). These implausible values were determined by a team of physicans and are meant to be <em>biologically implausible</em>, not just lower than the normal value.</p>
+<div class="section level3">
+<h3 id="plausiblevaluelow-1">plausibleValueLow<a class="anchor" aria-label="anchor" href="#plausiblevaluelow-1"></a>
+</h3>
+<p><strong>Name</strong>: plausibleValueLow <br><strong>Level</strong>:
+Concept check <br><strong>Context</strong>: Verification
+<br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Atemporal</p>
+<p><strong>Description</strong>: For the combination of CONCEPT_ID
+<strong>conceptId</strong> (<strong>conceptName</strong>) and
+UNIT_CONCEPT_ID <strong>unitConceptId</strong>
+(<strong>unitConceptName</strong>), the number and percent of records
+that have a value less than <strong>plausibleValueLow</strong>.</p>
+<p><strong>Definition</strong>: This check will count the number of
+records that have a value in the specified field with the specified
+concept_id and unit_concept_id that is lower than some value. This is
+the concept-level version of this check so it is concept specific and
+therefore the denominator will only be the records with the specified
+concept and unit. For example, it will count the number of records that
+have an implausibly low value in the value_as_number field of the
+MEASUREMENT table where MEASUREMENT_CONCEPT_ID = 2212241 (Calcium;
+total) and UNIT_CONCEPT_ID = 8840 (milligram per deciliter). These
+implausible values were determined by a team of physicans and are meant
+to be <em>biologically implausible</em>, not just lower than the normal
+value.</p>
 </div>
-<div id="plausiblevaluehigh-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plausiblevaluehigh-1" class="anchor"></a>plausibleValueHigh</h2>
-<p><strong>Name</strong>: plausibleValueHigh <br><strong>Level</strong>: Concept check <br><strong>Context</strong>: Verification <br><strong>Category</strong>: Plausibility <br><strong>Subcategory</strong>: Atemporal</p>
-<p><strong>Description</strong>: For the combination of CONCEPT_ID <strong>conceptId</strong> (<strong>conceptName</strong>) and UNIT_CONCEPT_ID <strong>unitConceptId</strong> (<strong>unitConceptName</strong>), the number and percent of records that have a value higher than <strong>plausibleValueHigh</strong>.</p>
-<p><strong>Definition</strong>: This check will count the number of records that have a value in the specified field with the specified concept_id and unit_concept_id that is higher than some value. This is the concept-level version of this check so it is concept specific and therefore the denominator will only be the records with the specified concept and unit. For example, it will count the number of records that have an implausibly high value in the value_as_number field of the MEASUREMENT table where MEASUREMENT_CONCEPT_ID = 2212241 (Calcium; total) and UNIT_CONCEPT_ID = 8840 (milligram per deciliter). These implausible values were determined by a team of physicans and are meant to be <em>biologically implausible</em>, not just higher than the normal value.</p>
+<div class="section level3">
+<h3 id="plausiblevaluehigh-1">plausibleValueHigh<a class="anchor" aria-label="anchor" href="#plausiblevaluehigh-1"></a>
+</h3>
+<p><strong>Name</strong>: plausibleValueHigh <br><strong>Level</strong>:
+Concept check <br><strong>Context</strong>: Verification
+<br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Atemporal</p>
+<p><strong>Description</strong>: For the combination of CONCEPT_ID
+<strong>conceptId</strong> (<strong>conceptName</strong>) and
+UNIT_CONCEPT_ID <strong>unitConceptId</strong>
+(<strong>unitConceptName</strong>), the number and percent of records
+that have a value higher than <strong>plausibleValueHigh</strong>.</p>
+<p><strong>Definition</strong>: This check will count the number of
+records that have a value in the specified field with the specified
+concept_id and unit_concept_id that is higher than some value. This is
+the concept-level version of this check so it is concept specific and
+therefore the denominator will only be the records with the specified
+concept and unit. For example, it will count the number of records that
+have an implausibly high value in the value_as_number field of the
+MEASUREMENT table where MEASUREMENT_CONCEPT_ID = 2212241 (Calcium;
+total) and UNIT_CONCEPT_ID = 8840 (milligram per deciliter). These
+implausible values were determined by a team of physicans and are meant
+to be <em>biologically implausible</em>, not just higher than the normal
+value.</p>
 </div>
-<div id="plausiblegender" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plausiblegender" class="anchor"></a>plausibleGender</h2>
-<p><strong>Name</strong>: plausibleGender <br><strong>Level</strong>: Concept check <br><strong>Context</strong>: Validation <br><strong>Category</strong>: Plausibility <br><strong>Subcategory</strong>: Atemporal</p>
-<p><strong>Description</strong>: For a CONCEPT_ID <strong>conceptId</strong> (<strong>conceptName</strong>), the number and percent of records associated with patients with an implausible gender (correct gender = <strong>plausibleGender</strong>).</p>
-<p><strong>Definition</strong>: This check will count the number of records that have an incorrect gender associated with a gender-specific concept_id. This check is concept specific and therefore the denominator will only be the records with the specified concept. For example it will count the number of records of prostate cancer that are associated with female persons.</p>
+<div class="section level3">
+<h3 id="plausiblegender">plausibleGender<a class="anchor" aria-label="anchor" href="#plausiblegender"></a>
+</h3>
+<p><strong>Name</strong>: plausibleGender <br><strong>Level</strong>:
+Concept check <br><strong>Context</strong>: Validation
+<br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Atemporal</p>
+<p><strong>Description</strong>: For a CONCEPT_ID
+<strong>conceptId</strong> (<strong>conceptName</strong>), the number
+and percent of records associated with patients with an implausible
+gender (correct gender = <strong>plausibleGender</strong>).</p>
+<p><strong>Definition</strong>: This check will count the number of
+records that have an incorrect gender associated with a gender-specific
+concept_id. This check is concept specific and therefore the denominator
+will only be the records with the specified concept. For example it will
+count the number of records of prostate cancer that are associated with
+female persons.</p>
 </div>
 </div>
   </div>
@@ -269,11 +532,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
+  <p></p>
+<p>Developed by Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -281,6 +546,8 @@
 
   
 
+
+  
 
   </body>
 </html>

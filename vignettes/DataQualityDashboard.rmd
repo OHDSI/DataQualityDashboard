@@ -29,8 +29,8 @@ R Installation
 ===============
 
 ```r
-install.packages("devtools")
-devtools::install_github("OHDSI/DataQualityDashboard")
+install.packages("remotes")
+remotes::install_github("OHDSI/DataQualityDashboard")
 ```
 
 Note
@@ -62,7 +62,6 @@ sqlOnly <- FALSE # set to TRUE if you just want to get the SQL scripts and not a
 
 # where should the logs go? -------------------------------------------------------------------------
 outputFolder <- "output"
-outputFile <- "results.json"
 
 # logging type -------------------------------------------------------------------------------------
 verboseMode <- FALSE # set to TRUE if you want to see activity written to the console
@@ -85,11 +84,7 @@ checkLevels <- c("TABLE", "FIELD", "CONCEPT")
 
 # which DQ checks to run? ------------------------------------
 
-checkNames <- c() # Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv
-
-# which CDM tables to exclude? ------------------------------------
-
-tablesToExclude <- c() 
+checkNames <- c() # Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descriptions.csv
 
 # run the job --------------------------------------------------------------------------------------
 DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails, 
@@ -103,7 +98,6 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                                       verboseMode = verboseMode,
                                       writeToTable = writeToTable,
                                       checkLevels = checkLevels,
-                                      tablesToExclude = tablesToExclude,
                                       checkNames = checkNames)
 
 # inspect logs ----------------------------------------------------------------------------
@@ -124,9 +118,7 @@ Viewing Results
 
 **Launching Dashboard as Shiny App**
 ```r
-DataQualityDashboard::viewDqDashboard(
-  jsonPath = file.path(getwd(), outputFolder, cdmSourceName, outputFile, cdmSourceName))
-)
+DataQualityDashboard::viewDqDashboard(jsonFilePath)
 ```
 
 **Launching on a web server**
@@ -151,10 +143,6 @@ View checks
 ===========
 To see description of checks using R, execute the command below:
 ```
-View(read.csv(
-  system.file("csv","OMOP_CDMv5.3.1_Check_Descriptions.csv",
-    package="DataQualityDashboard"
-  ),
-  as.is=T)
-)
+checks <- DataQualityDashboard::listDqChecks(cdmVersion = "5.3") # Put the version of the CDM you are using
+
 ```
