@@ -84,7 +84,7 @@ public class DataQualityServiceTest {
         DataQualityScan result = DataQualityScan.builder()
                 .id(1L)
                 .username("Perseus")
-                .project("Data Quality")
+                .project("Test")
                 .statusCode(IN_PROGRESS.getCode())
                 .statusName(IN_PROGRESS.getName())
                 .dbSettings(dbSettings)
@@ -97,12 +97,12 @@ public class DataQualityServiceTest {
     public static DbSettings createTestDbSettings() {
         return DbSettings.builder()
                 .dbType("sql server")
-                .server("822JNJ16S03V")
+                .server("")
                 .port(1433)
-                .database("CDM_CPRD")
+                .database("cdm_test_53")
                 .schema("dbo")
-                .user("cdm_builder")
-                .password("builder1!")
+                .user("")
+                .password("")
                 .build();
     }
 }

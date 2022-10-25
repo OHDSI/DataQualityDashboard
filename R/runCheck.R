@@ -28,9 +28,15 @@
                       cohortDatabaseSchema,
                       cohortDefinitionId,
                       outputFolder, 
-                      sqlOnly) {
+                      sqlOnly,
+                      interruptor) {
+  if (interruptor$isAborted()) {
+    ABORT_MESSAGE <- "Process was aborted by User"
+    print(ABORT_MESSAGE)
+    stop(ABORT_MESSAGE)
+  }
  
-  ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
+  ParallelLogger::logInfo(sprintf("#DQD Processing check description: %s", checkDescription$checkName))
   
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",
                               tolower(checkDescription$checkLevel),
@@ -78,7 +84,7 @@
     })
     do.call(rbind, dfs)
   } else {
-    ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
+    ParallelLogger::logWarn(paste0("#DQD Warning: Evaluation resulted in no checks: ", filterExpression))
     data.frame()
   }
 }

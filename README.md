@@ -79,7 +79,7 @@ Getting Started
 ### R server
 
     cd R
-    docker build -t r-serve --build-arg prop='docker' .
+    docker build -t r-serve .
     docker run --name r-serve -d -p 6311:6311 --network=perseus-net r-serve
 
 ### Data-quality-check service
