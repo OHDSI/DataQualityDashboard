@@ -1,11 +1,11 @@
 FROM r-base:4.1.3
 
-RUN apt-get update
-RUN apt-get install -y apt-utils
-RUN apt-get install -y libcurl4-openssl-dev
-RUN apt-get install -y libssl-dev
-RUN apt-get install -y default-jdk
-RUN apt-get install -y libxml2-dev
+RUN apt-get update \
+    && apt-get install -y apt-utils
+RUN apt-get update \
+    && apt-get install -y default-jdk
+RUN apt-get update \
+    && apt-get install -y libxml2-dev
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends openssh-server \
