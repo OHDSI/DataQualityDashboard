@@ -20,7 +20,6 @@ RUN R -e "install.packages('devtools')"
 RUN R -e "remotes::install_github('OHDSI/DataQualityDashboard')"
 RUN R -e "install.packages('Rserve',, 'http://rforge.net/', type='source')"
 RUN R -e "install.packages('magrittr')"
-RUN R -e "install.packages('dplyr')"
 
 VOLUME /rserve
 

@@ -1,7 +1,6 @@
 library(DatabaseConnector)
 library(SqlRender)
 library(magrittr)
-library(dplyr)
 
 
 dataQualityCheck <- function(cdm_dataType,
