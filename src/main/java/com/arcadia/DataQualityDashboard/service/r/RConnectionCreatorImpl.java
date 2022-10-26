@@ -11,13 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class RConnectionCreatorImpl implements RConnectionCreator {
     private final String exeFilePath; /* For Windows */
     private final String host;
     private final int port;
-    private volatile int currentPort; /* For Windows */
+    private final AtomicInteger currentPort; /* For Windows */
 
     @Getter
     private final boolean isUnix;
@@ -52,7 +53,7 @@ public class RConnectionCreatorImpl implements RConnectionCreator {
         host = properties.getHost();
         port = properties.getPort();
         isUnix = properties.isUnix();
-        currentPort = port;
+        currentPort = new AtomicInteger(port);
         this.dqdDatabaseProperties = dqdDatabaseProperties;
     }
 
@@ -68,9 +69,9 @@ public class RConnectionCreatorImpl implements RConnectionCreator {
             if (isUnix) {
                 connection = new RConnection(host, port);
             } else {
-                int currentPort = getAndIncrementCurrentPort();
-                createRServeProcess(currentPort);
-                connection = new RConnection(host, currentPort);
+                int port = currentPort.getAndIncrement();
+                createRServeProcess(port);
+                connection = new RConnection(host, port);
             }
             try {
                 RConnectionWrapper connectionWrapper = new RConnectionWrapperImpl(connection, isUnix, dqdDatabaseProperties);
@@ -93,12 +94,5 @@ public class RConnectionCreatorImpl implements RConnectionCreator {
     private void createRServeProcess(int port) {
         String cmd = String.format("%s -e \"library(Rserve);Rserve(port=%d)\"", exeFilePath, port);
         Runtime.getRuntime().exec(cmd);
-    }
-
-    /* For Windows */
-    private synchronized int getAndIncrementCurrentPort() {
-        int result = currentPort;
-        currentPort++;
-        return result;
     }
 }
