@@ -15,7 +15,7 @@ createDqdDatabaseManager <- function(scanId,
                                      schema,
                                      dbUsername,
                                      password,
-                                     steps_count = 22) {
+                                     steps_count = 24) {
   connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = dataType,
                                                                   user = dbUsername,
                                                                   password = password,

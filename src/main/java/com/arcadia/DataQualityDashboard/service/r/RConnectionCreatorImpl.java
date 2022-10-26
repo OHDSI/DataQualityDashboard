@@ -26,9 +26,18 @@ public class RConnectionCreatorImpl implements RConnectionCreator {
     private final List<String> loadScripts = List.of(
             "~/R/data-quality-check.R",
             "~/R/dqd-database-manager.R",
-            "~/R/execution.R",
             "~/R/log-appender.R",
-            "~/R/test-connection.R"
+            "~/R/test-connection.R",
+            "~/R/getCheckId.R",
+            "~/R/recordResult.R",
+            "~/R/processCheck.R",
+            "~/R/executeDqChecks.R",
+            "~/R/runCheck.R",
+            "~/R/evaluateThresholds.R",
+            "~/R/summarizeResults.R",
+            "~/R/writeJsonResultsTo.R",
+            "~/R/writeResultsTo.R",
+            "~/R/readThresholdFile.R"
     );
 
     @Getter

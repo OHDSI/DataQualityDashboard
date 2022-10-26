@@ -25,8 +25,7 @@ public class DataQualityDashboardApplication {
 					rConnection.loadScript(rConnectionCreator.getDownloadJdbcDriversScript());
 					log.info("JDBC drivers successfully loaded to Rserve");
 				} catch (Exception e) {
-					log.error("Can not load JDBC drivers to Rserve: {}", e.getMessage());
-					e.printStackTrace();
+					log.error("Can not load JDBC drivers to Rserve: {}, stack trace: {}", e.getMessage(), e.getStackTrace());
 				}
 			}
 		};

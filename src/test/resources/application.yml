@@ -1,8 +1,8 @@
 rserve:
   path:
-  host:
+  host: localhost
   port: 6311
-  unix: false
+  unix: true
 
 files-manager:
   url:

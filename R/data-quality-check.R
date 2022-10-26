@@ -1,5 +1,7 @@
 library(DatabaseConnector)
 library(SqlRender)
+library(magrittr)
+library(dplyr)
 
 
 dataQualityCheck <- function(cdm_dataType,
@@ -18,7 +20,9 @@ dataQualityCheck <- function(cdm_dataType,
                              dqd_user,
                              dqd_password) {
   print("Starting Data Quality Check process..")
+
   Sys.setenv('DATABASECONNECTOR_JAR_FOLDER' = '~/jdbcDrivers')
+
   connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = cdm_dataType,
                                                                   user = cdm_user,
                                                                   password = cdm_password,
@@ -48,9 +52,6 @@ dataQualityCheck <- function(cdm_dataType,
   # which DQ checks to run? ------------------------------------
   checkNames <- c() # Names can be found in inst/csv/OMOP_CDM_v5.3.1_Check_Desciptions.csv
 
-  # which CDM tables to exclude? ------------------------------------
-  tablesToExclude <- c()
-
   print("Creating databae manager...")
   dqdDataBaseManager <- createDqdDatabaseManager(scanId = scanId,
                                                  dataType = dqd_dataType,
@@ -70,11 +71,10 @@ dataQualityCheck <- function(cdm_dataType,
                             verboseMode = verboseMode,
                             writeToTable = writeToTable,
                             checkLevels = checkLevels,
-                            tablesToExclude = tablesToExclude,
                             checkNames = checkNames,
-                            dbLogger = dqdDataBaseManager$logger,
+                            logger = dqdDataBaseManager$logger,
                             interruptor = dqdDataBaseManager$interruptor)
-  jsonResult <- resultToJson(result)
+  jsonResult <- jsonlite::toJSON(result)
   print("Data Quality Check process finished!")
 
   return(jsonResult)
