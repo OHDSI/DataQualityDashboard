@@ -164,7 +164,7 @@ executeDqChecks <- function(connectionDetails,
                                                  threshold = "INFO",
                                                  appenders = appenders)
   ParallelLogger::registerLogger(parallelLogger)
-  ParallelLogger::logInfo("#DQD execution started")
+  ParallelLogger::logInfo("#DQD Execution started")
   
   # load Threshold CSVs ----------------------------------------------------------------------------------------
   
