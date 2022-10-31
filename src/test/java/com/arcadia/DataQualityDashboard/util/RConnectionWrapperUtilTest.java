@@ -22,7 +22,7 @@ class RConnectionWrapperUtilTest {
                 .build();
         DataQualityScan dataQualityScan = DataQualityScan.builder()
                 .id(1L)
-                .username("Perseus")
+                .username("perseus")
                 .project("Test")
                 .statusCode(IN_PROGRESS.getCode())
                 .statusName(IN_PROGRESS.getName())
@@ -58,7 +58,8 @@ class RConnectionWrapperUtilTest {
                                 "dqd_port = 5432, " +
                                 "dqd_dataBaseSchema = \"dqd\", " +
                                 "dqd_user = \"dqd\", " +
-                                "dqd_password = \"password\"" +
+                                "dqd_password = \"password\", " +
+                                "username = \"perseus\"" +
                          ")";
         assertEquals(expected, command);
     }
