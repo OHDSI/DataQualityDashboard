@@ -17,7 +17,8 @@ dataQualityCheck <- function(cdm_dataType,
                              dqd_port,
                              dqd_dataBaseSchema,
                              dqd_user,
-                             dqd_password) {
+                             dqd_password,
+                             username) {
   print("Starting Data Quality Check process..")
 
   Sys.setenv('DATABASECONNECTOR_JAR_FOLDER' = '~/jdbcDrivers')
@@ -37,7 +38,7 @@ dataQualityCheck <- function(cdm_dataType,
   sqlOnly <- FALSE # set to TRUE if you just want to get the SQL scripts and not actually run the queries
 
   # where should the logs go? -------------------------------------------------------------------------
-  outputFolder <- "output"
+  outputFolder <- file.path("output", username)
 
   # logging type -------------------------------------------------------------------------------------
   verboseMode <- FALSE # set to TRUE if you want to see activity written to the console
