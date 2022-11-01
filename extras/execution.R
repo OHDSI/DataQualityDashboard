@@ -16,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ABORT_MESSAGE <- "Process was aborted by User"
+
 #' @importFrom stats na.omit
 .getCheckId <- function(checkLevel, checkName, cdmTableName,
                         cdmFieldName = NA, conceptId = NA,
@@ -23,20 +25,20 @@
   tolower(
     paste(
       na.omit(c(
-        dplyr::na_if(gsub(" ", "", checkLevel), ""), 
-        dplyr::na_if(gsub(" ", "", checkName), ""), 
-        dplyr::na_if(gsub(" ", "", cdmTableName), ""), 
-        dplyr::na_if(gsub(" ", "", cdmFieldName), ""), 
-        dplyr::na_if(gsub(" ", "", conceptId), ""), 
+        dplyr::na_if(gsub(" ", "", checkLevel), ""),
+        dplyr::na_if(gsub(" ", "", checkName), ""),
+        dplyr::na_if(gsub(" ", "", cdmTableName), ""),
+        dplyr::na_if(gsub(" ", "", cdmFieldName), ""),
+        dplyr::na_if(gsub(" ", "", conceptId), ""),
         dplyr::na_if(gsub(" ", "", unitConceptId), "")
-      )), 
+      )),
       collapse = "_"
     )
   )
 }
 
 #' @importFrom stats setNames
-.recordResult <- function(result = NULL, check, 
+.recordResult <- function(result = NULL, check,
                           checkDescription, sql, 
                           executionTime = NA,
                           warning = NA, error = NA) {
@@ -118,7 +120,7 @@
                     executionTime = sprintf("%f %s", delta, attr(delta, "units")))
     },
     warning = function(w) {
-      ParallelLogger::logWarn(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
+      ParallelLogger::logWarn(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s",
                                       checkDescription$checkLevel,
                                       checkDescription$checkName, 
                                       check["cdmTableName"], 
@@ -126,7 +128,7 @@
       .recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
     },
     error = function(e) {
-      ParallelLogger::logError(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
+      ParallelLogger::logError(sprintf("#DQD [Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s",
                                        checkDescription$checkLevel,
                                        checkDescription$checkName, 
                                        check["cdmTableName"], 
@@ -146,7 +148,7 @@
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #' @param outputFolder              The folder to output logs and SQL files to
-#' @param outputFile                (OPTIONAL) File to write results JSON object 
+#' @param outputFile                (OPTIONAL) File to write results JSON object
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
 #' @param writeToCsv                Boolean to indicate if the check results will be written to a csv file
@@ -192,7 +194,15 @@ executeDqChecks <- function(connectionDetails,
                             cdmVersion = "5.3.1",
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
-                            conceptCheckThresholdLoc = "default") {
+                            conceptCheckThresholdLoc = "default",
+                            dbLogger,
+                            interruptor) {
+  # Check is aborted -----------
+  if (interruptor$isAborted()) {
+    print(ABORT_MESSAGE)
+    stop(ABORT_MESSAGE)
+  }
+
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
     stop("connectionDetails must be an object of class 'connectionDetails'.")
@@ -201,12 +211,12 @@ executeDqChecks <- function(connectionDetails,
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
-  
+
   if (!all(checkLevels %in% c("TABLE", "FIELD", "CONCEPT"))) {
-    stop('checkLevels argument must be a subset of c("TABLE", "FIELD", "CONCEPT"). 
+    stop('checkLevels argument must be a subset of c("TABLE", "FIELD", "CONCEPT").
          You passed in ', paste(checkLevels, collapse = ", "))
   }
-  
+
   stopifnot(is.null(checkNames) | is.character(checkNames), is.null(tablesToExclude) | is.character(tablesToExclude))
   stopifnot(is.character(cdmVersion))
   
@@ -218,17 +228,19 @@ executeDqChecks <- function(connectionDetails,
       }
     }
   }
-  
+
   # Use UTF-8 encoding to address issue: "special characters in metadata #33"
   saveEncoding <- getOption("encoding")
   options("encoding" = "UTF-8")
 
   # Setup output folder ------------------------------------------------------------------------------------------------------------
   options(scipen = 999)
-  
+
   # capture metadata -----------------------------------------------------------------------
   if (!sqlOnly) {
-    connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
+    print("Connecting to CDM database...")
+    connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+    print("Successfully connected to CDM database!")
     sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
                            cdmDatabaseSchema = cdmDatabaseSchema)
     sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
@@ -236,11 +248,13 @@ executeDqChecks <- function(connectionDetails,
     if (nrow(metadata)<1) {
       stop("Please populate the cdm_source table before executing data quality checks.")
     }
-    metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
+    metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
     DatabaseConnector::disconnect(connection)
   } else {
     metadata <- NA
   }
+
+  outputFolder <- file.path(outputFolder, tolower(metadata$CDM_SOURCE_ABBREVIATION))
   
   if (!dir.exists(outputFolder)) {
     dir.create(path = outputFolder, recursive = TRUE)
@@ -254,56 +268,45 @@ executeDqChecks <- function(connectionDetails,
   
   # Log execution -----------------------------------------------------------------------------------------------------------------
   ParallelLogger::clearLoggers()
-  logFileName <- sprintf("log_DqDashboard_%s.txt", cdmSourceName)
-  unlink(file.path(outputFolder, logFileName))
-  
-  if (verboseMode) {
-    appenders <- list(ParallelLogger::createConsoleAppender(layout=ParallelLogger::layoutTimestamp),
-                      ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
-                                                         fileName = file.path(outputFolder, logFileName)))    
-  } else {
-    appenders <- list(ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
-                                                         fileName = file.path(outputFolder, logFileName)))    
-  }
-  
-  
-  logger <- ParallelLogger::createLogger(name = "DqDashboard",
-                                         threshold = "INFO",
-                                         appenders = appenders)
-  ParallelLogger::registerLogger(logger)   
-  
+
+  appenders <- list(createDqdLogAppender(dbLogger))
+  parallelLogger <- ParallelLogger::createLogger(name = "DqdDashboard", threshold = "INFO", appenders = appenders)
+  ParallelLogger::registerLogger(parallelLogger)
+
+  ParallelLogger::logInfo("#DQD Execution started")
+
   # load CSVs ----------------------------------------------------------------------------------------
   
   startTime <- Sys.time()
   
   checkDescriptionsDf <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion), 
-                                              package = "DataQualityDashboard"), 
+                                              package = "DataQualityDashboard"),
                                   stringsAsFactors = FALSE)
-  
-  
+
+
   if (tableCheckThresholdLoc == "default"){
     tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
-                                        package = "DataQualityDashboard"), 
-                            stringsAsFactors = FALSE, na.strings = c(" ",""))} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
+                                        package = "DataQualityDashboard"),
+                            stringsAsFactors = FALSE, na.strings = c(" ",""))} else {tableChecks <- read.csv(tableCheckThresholdLoc,
                                                                                                              stringsAsFactors = FALSE, na.strings = c(" ",""))}
-  
-  if (fieldCheckThresholdLoc == "default"){ 
+
+  if (fieldCheckThresholdLoc == "default"){
     fieldChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
-                                        package = "DataQualityDashboard"), 
-                            stringsAsFactors = FALSE, na.strings = c(" ",""))} else {fieldChecks <- read.csv(fieldCheckThresholdLoc, 
+                                        package = "DataQualityDashboard"),
+                            stringsAsFactors = FALSE, na.strings = c(" ",""))} else {fieldChecks <- read.csv(fieldCheckThresholdLoc,
                                                                                                              stringsAsFactors = FALSE, na.strings = c(" ",""))}
-  
-  if (conceptCheckThresholdLoc == "default"){ 
+
+  if (conceptCheckThresholdLoc == "default"){
     conceptChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion),
-                                          package = "DataQualityDashboard"), 
-                              stringsAsFactors = FALSE, na.strings = c(" ",""))} else {conceptChecks <- read.csv(conceptCheckThresholdLoc, 
+                                          package = "DataQualityDashboard"),
+                              stringsAsFactors = FALSE, na.strings = c(" ",""))} else {conceptChecks <- read.csv(conceptCheckThresholdLoc,
                                                                                                                  stringsAsFactors = FALSE, na.strings = c(" ",""))}
   
   # ensure we use only checks that are intended to be run -----------------------------------------
   
   if (length(tablesToExclude) > 0) {
     tablesToExclude <- toupper(tablesToExclude)
-    ParallelLogger::logInfo(sprintf("CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
+    ParallelLogger::logInfo(sprintf("#DQD CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
     tableChecks <- tableChecks[!tableChecks$cdmTableName %in% tablesToExclude,]
     fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude &
                                  !fieldChecks$fkTableName %in% tablesToExclude &
@@ -313,11 +316,11 @@ executeDqChecks <- function(connectionDetails,
   
   ## remove offset from being checked
   fieldChecks <- subset(fieldChecks, cdmFieldName != '"offset"')
-  
+
   # tableChecks <- tableChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   # fieldChecks <- fieldChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
   # conceptChecks <- conceptChecks %>% dplyr::select_if(function(x) !(all(is.na(x)) | all(x=="")))
-  
+
   
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |
@@ -347,23 +350,26 @@ executeDqChecks <- function(connectionDetails,
   
   fieldChecks$cdmFieldName <- toupper(fieldChecks$cdmFieldName)
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
-  
+
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
   resultsList <- ParallelLogger::clusterApply(
-    cluster = cluster, x = checkDescriptions,
-    fun = .runCheck, 
+    cluster = cluster,
+    x = checkDescriptions,
+    fun = .runCheck,
     tableChecks,
     fieldChecks,
     conceptChecks,
-    connectionDetails, 
+    connectionDetails,
     connection,
-    cdmDatabaseSchema, 
+    cdmDatabaseSchema,
     vocabDatabaseSchema,
     cohortDatabaseSchema,
     cohortDefinitionId,
-    outputFolder, 
+    outputFolder,
     sqlOnly,
-    progressBar = TRUE
+    progressBar = TRUE,
+    dbLogger,
+    interruptor
   )
   ParallelLogger::stopCluster(cluster = cluster)
   
@@ -374,7 +380,8 @@ executeDqChecks <- function(connectionDetails,
   allResults <- NULL
   if (!sqlOnly) {
     checkResults <- do.call(rbind, resultsList)
-    
+    checkResults$checkId <- seq.int(nrow(checkResults))
+
     allResults <- .summarizeResults(connectionDetails = connectionDetails, 
                                     cdmDatabaseSchema = cdmDatabaseSchema, 
                                     checkResults = checkResults,
@@ -386,10 +393,10 @@ executeDqChecks <- function(connectionDetails,
                                     fieldChecks = fieldChecks,
                                     conceptChecks = conceptChecks,
                                     metadata = metadata)
-    
-    ParallelLogger::logInfo("Execution Complete")  
+
+    ParallelLogger::logInfo("#DQD Execution Completed")
   }
-  
+
   
   # write to table ----------------------------------------------------------------------
   
@@ -402,24 +409,24 @@ executeDqChecks <- function(connectionDetails,
   }
   
   # write to CSV ----------------------------------------------------------------------
-  
+
   if (!sqlOnly & writeToCsv) {
     if (nchar(csvFile)==0)  {
       csvFile <- sprintf("%s.csv", sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(allResults$outputFile)))
     }
-    .writeResultsToCsv(checkResults = allResults$CheckResults, 
+    .writeResultsToCsv(checkResults = allResults$CheckResults,
                        csvPath = file.path(outputFolder, csvFile))
   }
-  
+
   if (sqlOnly) {
     invisible(allResults)
   } else {
     allResults  
   }
-    
+
   ParallelLogger::unregisterLogger("DqDashboard")
   
-  # Reset encoding to previous value 
+  # Reset encoding to previous value
   options("encoding" = saveEncoding)
 
   return(allResults)
@@ -436,9 +443,15 @@ executeDqChecks <- function(connectionDetails,
                       cohortDatabaseSchema,
                       cohortDefinitionId,
                       outputFolder, 
-                      sqlOnly) {
-  
-  ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
+                      sqlOnly,
+                      dbLogger,
+                      interruptor) {
+  if (interruptor$isAborted()) {
+    print(ABORT_MESSAGE)
+    stop(ABORT_MESSAGE)
+  }
+
+  ParallelLogger::logInfo(sprintf("#DQD Processing check description: %s", checkDescription$checkName))
   
   filterExpression <- sprintf("%sChecks %%>%% dplyr::filter(%s)",
                               tolower(checkDescription$checkLevel),
@@ -482,7 +495,7 @@ executeDqChecks <- function(connectionDetails,
     })
     do.call(rbind, dfs)
   } else {
-    ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
+    ParallelLogger::logWarn(paste0("#DQD Warning: Evaluation resulted in no checks: ", filterExpression))
     data.frame()
   }
 }
@@ -531,7 +544,7 @@ executeDqChecks <- function(connectionDetails,
                                    checkResults[i,]$CDM_FIELD_NAME)
         notesFilter <- sprintf("fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
                                 fieldChecks$cdmFieldName == '%s']",
-                               notesField, 
+                               notesField,
                                checkResults[i,]$CDM_TABLE_NAME,
                                checkResults[i,]$CDM_FIELD_NAME)
         
@@ -550,7 +563,7 @@ executeDqChecks <- function(connectionDetails,
           notesFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
                                   conceptChecks$conceptId == %s]",
-                                 notesField, 
+                                 notesField,
                                  checkResults[i,]$CDM_TABLE_NAME,
                                  checkResults[i,]$CDM_FIELD_NAME,
                                  checkResults[i,]$CONCEPT_ID)
@@ -569,7 +582,7 @@ executeDqChecks <- function(connectionDetails,
                                   conceptChecks$cdmFieldName == '%s' &
                                   conceptChecks$conceptId == %s &
                                   conceptChecks$unitConceptId == '%s']",
-                                 notesField, 
+                                 notesField,
                                  checkResults[i,]$CDM_TABLE_NAME,
                                  checkResults[i,]$CDM_FIELD_NAME,
                                  checkResults[i,]$CONCEPT_ID,
@@ -597,70 +610,70 @@ executeDqChecks <- function(connectionDetails,
   }
   
   missingTables <- dplyr::select(
-    dplyr::filter(checkResults, CHECK_NAME == "cdmTable" & FAILED == 1), 
+    dplyr::filter(checkResults, CHECK_NAME == "cdmTable" & FAILED == 1),
     CDM_TABLE_NAME)
   if (nrow(missingTables) > 0) {
     missingTables$TABLE_IS_MISSING <- 1
     checkResults <- dplyr::mutate(
-      dplyr::left_join(checkResults, missingTables, by = "CDM_TABLE_NAME"), 
+      dplyr::left_join(checkResults, missingTables, by = "CDM_TABLE_NAME"),
       TABLE_IS_MISSING = ifelse(CHECK_NAME != "cdmTable" & IS_ERROR == 0, TABLE_IS_MISSING, NA))
   } else {
     checkResults$TABLE_IS_MISSING <- NA
   }
-  
+
   missingFields <- dplyr::select(
-    dplyr::filter(checkResults, CHECK_NAME == "cdmField" & FAILED == 1 & is.na(TABLE_IS_MISSING)), 
+    dplyr::filter(checkResults, CHECK_NAME == "cdmField" & FAILED == 1 & is.na(TABLE_IS_MISSING)),
     CDM_TABLE_NAME, CDM_FIELD_NAME)
   if (nrow(missingFields) > 0) {
     missingFields$FIELD_IS_MISSING <- 1
     checkResults <- dplyr::mutate(
-      dplyr::left_join(checkResults, missingFields, by = c("CDM_TABLE_NAME", "CDM_FIELD_NAME")), 
+      dplyr::left_join(checkResults, missingFields, by = c("CDM_TABLE_NAME", "CDM_FIELD_NAME")),
       FIELD_IS_MISSING = ifelse(CHECK_NAME != "cdmField" & IS_ERROR == 0, FIELD_IS_MISSING, NA))
   } else {
     checkResults$FIELD_IS_MISSING <- NA
   }
-  
+
   emptyTables <- dplyr::distinct(
     dplyr::select(
-      dplyr::filter(checkResults, CHECK_NAME == "measureValueCompleteness" & 
-                      NUM_DENOMINATOR_ROWS == 0 & 
+      dplyr::filter(checkResults, CHECK_NAME == "measureValueCompleteness" &
+                      NUM_DENOMINATOR_ROWS == 0 &
                       IS_ERROR == 0 &
-                      is.na(TABLE_IS_MISSING) & 
-                      is.na(FIELD_IS_MISSING)), 
+                      is.na(TABLE_IS_MISSING) &
+                      is.na(FIELD_IS_MISSING)),
       CDM_TABLE_NAME))
   if (nrow(emptyTables) > 0) {
     emptyTables$TABLE_IS_EMPTY <- 1
     checkResults <- dplyr::mutate(
-      dplyr::left_join(checkResults, emptyTables, by = c("CDM_TABLE_NAME")), 
+      dplyr::left_join(checkResults, emptyTables, by = c("CDM_TABLE_NAME")),
       TABLE_IS_EMPTY = ifelse(CHECK_NAME != "cdmField" & CHECK_NAME != "cdmTable" & IS_ERROR == 0, TABLE_IS_EMPTY, NA))
   } else {
     checkResults$TABLE_IS_EMPTY <- NA
 
   }
-  
-  emptyFields <- 
+
+  emptyFields <-
     dplyr::select(
-      dplyr::filter(checkResults, CHECK_NAME == "measureValueCompleteness" & 
-                      NUM_DENOMINATOR_ROWS == NUM_VIOLATED_ROWS & 
-                      is.na(TABLE_IS_MISSING) & is.na(FIELD_IS_MISSING) & is.na(TABLE_IS_EMPTY)), 
+      dplyr::filter(checkResults, CHECK_NAME == "measureValueCompleteness" &
+                      NUM_DENOMINATOR_ROWS == NUM_VIOLATED_ROWS &
+                      is.na(TABLE_IS_MISSING) & is.na(FIELD_IS_MISSING) & is.na(TABLE_IS_EMPTY)),
       CDM_TABLE_NAME, CDM_FIELD_NAME)
   if (nrow(emptyFields) > 0) {
     emptyFields$FIELD_IS_EMPTY <- 1
     checkResults <- dplyr::mutate(
-      dplyr::left_join(checkResults, emptyFields, by = c("CDM_TABLE_NAME", "CDM_FIELD_NAME")), 
+      dplyr::left_join(checkResults, emptyFields, by = c("CDM_TABLE_NAME", "CDM_FIELD_NAME")),
       FIELD_IS_EMPTY = ifelse(CHECK_NAME != "measureValueCompleteness" & CHECK_NAME != "cdmField" & CHECK_NAME != "isRequired" & IS_ERROR == 0, FIELD_IS_EMPTY, NA))
   } else {
     checkResults$FIELD_IS_EMPTY <- NA
   }
-  
+
   checkResults <- dplyr::mutate(
     checkResults,
     CONCEPT_IS_MISSING = ifelse(
         IS_ERROR == 0 &
-        is.na(TABLE_IS_MISSING) & 
-        is.na(FIELD_IS_MISSING) & 
-        is.na(TABLE_IS_EMPTY) & 
-        is.na(FIELD_IS_EMPTY) & 
+        is.na(TABLE_IS_MISSING) &
+        is.na(FIELD_IS_MISSING) &
+        is.na(TABLE_IS_EMPTY) &
+        is.na(FIELD_IS_EMPTY) &
         CHECK_LEVEL == "CONCEPT" &
         is.na(UNIT_CONCEPT_ID) &
         NUM_DENOMINATOR_ROWS == 0,
@@ -668,15 +681,15 @@ executeDqChecks <- function(connectionDetails,
       NA
     )
   )
-  
+
   checkResults <- dplyr::mutate(
     checkResults,
     CONCEPT_AND_UNIT_ARE_MISSING = ifelse(
         IS_ERROR == 0 &
-        is.na(TABLE_IS_MISSING) & 
-        is.na(FIELD_IS_MISSING) & 
-        is.na(TABLE_IS_EMPTY) & 
-        is.na(FIELD_IS_EMPTY) & 
+        is.na(TABLE_IS_MISSING) &
+        is.na(FIELD_IS_MISSING) &
+        is.na(TABLE_IS_EMPTY) &
+        is.na(FIELD_IS_EMPTY) &
         CHECK_LEVEL == "CONCEPT" &
         !is.na(UNIT_CONCEPT_ID) &
         NUM_DENOMINATOR_ROWS == 0,
@@ -684,24 +697,24 @@ executeDqChecks <- function(connectionDetails,
       NA
     )
   )
-  
+
   checkResults <- dplyr::mutate(
-    checkResults, 
-    NOT_APPLICABLE = dplyr::coalesce(TABLE_IS_MISSING, FIELD_IS_MISSING, TABLE_IS_EMPTY, FIELD_IS_EMPTY, CONCEPT_IS_MISSING, CONCEPT_AND_UNIT_ARE_MISSING, 0), 
+    checkResults,
+    NOT_APPLICABLE = dplyr::coalesce(TABLE_IS_MISSING, FIELD_IS_MISSING, TABLE_IS_EMPTY, FIELD_IS_EMPTY, CONCEPT_IS_MISSING, CONCEPT_AND_UNIT_ARE_MISSING, 0),
     NOT_APPLICABLE_REASON = dplyr::case_when(
-        !is.na(TABLE_IS_MISSING) ~ sprintf("Table %s does not exist.", CDM_TABLE_NAME), 
-        !is.na(FIELD_IS_MISSING) ~ sprintf("Field %s.%s does not exist.", CDM_TABLE_NAME, CDM_FIELD_NAME), 
+        !is.na(TABLE_IS_MISSING) ~ sprintf("Table %s does not exist.", CDM_TABLE_NAME),
+        !is.na(FIELD_IS_MISSING) ~ sprintf("Field %s.%s does not exist.", CDM_TABLE_NAME, CDM_FIELD_NAME),
         !is.na(TABLE_IS_EMPTY) ~ sprintf("Table %s is empty.", CDM_TABLE_NAME),
-        !is.na(FIELD_IS_EMPTY) ~ sprintf("Field %s.%s is not populated.", CDM_TABLE_NAME, CDM_FIELD_NAME), 
+        !is.na(FIELD_IS_EMPTY) ~ sprintf("Field %s.%s is not populated.", CDM_TABLE_NAME, CDM_FIELD_NAME),
         !is.na(CONCEPT_IS_MISSING) ~ sprintf("%s=%s is missing from the %s table.", CDM_FIELD_NAME, CONCEPT_ID, CDM_TABLE_NAME),
         !is.na(CONCEPT_AND_UNIT_ARE_MISSING) ~ sprintf("Combination of %s=%s, UNIT_CONCEPT_ID=%s and VALUE_AS_NUMBER IS NOT NULL is missing from the %s table.", CDM_FIELD_NAME, CONCEPT_ID, UNIT_CONCEPT_ID, CDM_TABLE_NAME)
       )
   )
-  
+
   checkResults <- dplyr::select(checkResults, -c(TABLE_IS_MISSING, FIELD_IS_MISSING, TABLE_IS_EMPTY, FIELD_IS_EMPTY, CONCEPT_IS_MISSING, CONCEPT_AND_UNIT_ARE_MISSING))
   checkResults <- dplyr::mutate(checkResults, FAILED = ifelse(NOT_APPLICABLE == 1, 0, FAILED))
   checkResults <- dplyr::mutate(checkResults, PASSED = ifelse(FAILED == 0 & IS_ERROR == 0 & NOT_APPLICABLE == 0, 1, 0))
-  
+
   checkResults
 }
 
@@ -748,10 +761,10 @@ executeDqChecks <- function(connectionDetails,
                                                  checkResults$FAILED == 1,])
   
   countPassedPlausibility <- nrow(checkResults[checkResults$CATEGORY=='Plausibility' &
-                                                 checkResults$PASSED == 1,]) 
+                                                 checkResults$PASSED == 1,])
 
   countPassedConformance <- nrow(checkResults[checkResults$CATEGORY=='Conformance' &
-                                                checkResults$PASSED == 1,]) 
+                                                checkResults$PASSED == 1,])
 
   countPassedCompleteness <- nrow(checkResults[checkResults$CATEGORY=='Completeness' &
                                                  checkResults$PASSED == 1,])
@@ -785,19 +798,25 @@ executeDqChecks <- function(connectionDetails,
                  Metadata = metadata, 
                  Overview = overview)
   
-  resultJson <- jsonlite::toJSON(result)
-  
+  return(result)
+}
+
+resultToJson <- function(result) {
+  return(jsonlite::toJSON(result))
+}
+
+writeJsonResultToFile <- function(resultJson, outputFolder, outputFile) {
   if (nchar(outputFile)==0)  {
     endTimestamp <- format(endTime, "%Y%m%d%H%M%S")
     outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp)
   }
-  
+
   resultFilename <- file.path(outputFolder,outputFile)
   result$outputFile <- outputFile
-  
+
   ParallelLogger::logInfo(sprintf("Writing results to file: %s", resultFilename))
   write(resultJson, resultFilename)
-   
+
   result
 }
 
@@ -808,7 +827,7 @@ executeDqChecks <- function(connectionDetails,
 #' @param jsonFilePath              Path to the JSON results file generated using the execute function
 #' @param writeTableName            Name of table in the database to write results to
 #' @param cohortDefinitionId        If writing results for a single cohort this is the ID that will be appended to the table name
-#' 
+#'
 #' @export
 writeJsonResultsToTable <- function(connectionDetails,
                                     resultsDatabaseSchema,
@@ -831,7 +850,7 @@ writeJsonResultsToTable <- function(connectionDetails,
     tableName <- sprintf("%s.%s_%s", resultsDatabaseSchema,writeTableName, cohortDefinitionId)
   } else {tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)}
   
-  ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
+  ParallelLogger::logInfo(sprintf("#DQD Writing results to table %s", tableName))
   
   if ("UNIT_CONCEPT_ID" %in% colnames(df)){
     ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_table_ddl_concept.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
@@ -848,10 +867,10 @@ writeJsonResultsToTable <- function(connectionDetails,
       DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = df, 
                                      dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE,
                                      progressBar = TRUE)
-      ParallelLogger::logInfo("Finished writing table")
+      ParallelLogger::logInfo("#DQD Finished writing table")
     },
     error = function(e) {
-      ParallelLogger::logError(sprintf("Writing table failed: %s", e$message))
+      ParallelLogger::logError(sprintf("#DQD Writing table failed: %s", e$message))
     }
   )
   
@@ -873,27 +892,27 @@ writeJsonResultsToTable <- function(connectionDetails,
     tableName <- sprintf("%s.%s_%s", resultsDatabaseSchema,writeTableName, cohortDefinitionId)
   } else {tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)}
   
-  ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
+  ParallelLogger::logInfo(sprintf("#DQD Writing results to table %s", tableName))
   
   ddl <- SqlRender::loadRenderTranslateSql(sqlFilename = "result_dataframe_ddl.sql", packageName = "DataQualityDashboard", tableName = tableName, dbms = connectionDetails$dbms)
-  
+
   DatabaseConnector::executeSql(connection = connection, sql = ddl, progressBar = TRUE)
   
   tryCatch(
     expr = {
       DatabaseConnector::insertTable(connection = connection, tableName = tableName, data = checkResults, 
                                      dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE)
-      ParallelLogger::logInfo("Finished writing table")
+      ParallelLogger::logInfo("#DQD Finished writing table")
     },
     error = function(e) {
-      ParallelLogger::logError(sprintf("Writing table failed: %s", e$message))
+      ParallelLogger::logError(sprintf("#DQD Writing table failed: %s", e$message))
     }
   )
 }
 
 .writeResultsToCsv <- function(checkResults,
                            csvPath,
-                           columns = c("checkId", "FAILED", "PASSED", 
+                           columns = c("checkId", "FAILED", "PASSED",
                                        "IS_ERROR", "NOT_APPLICABLE",
                                        "CHECK_NAME", "CHECK_DESCRIPTION",
                                        "THRESHOLD_VALUE", "NOTES_VALUE",
@@ -907,7 +926,7 @@ writeJsonResultsToTable <- function(connectionDetails,
                                        "ERROR", "QUERY_TEXT"),
                            delimiter = ",") {
   tryCatch(
-    expr = { 
+    expr = {
       ParallelLogger::logInfo(sprintf("Writing results to CSV file %s", csvPath))
       columns <- intersect(union(c("checkId", "FAILED", "PASSED", "IS_ERROR", "NOT_APPLICABLE"), columns), colnames(checkResults))
       if (is.element("QUERY_TEXT", columns)) {
@@ -930,16 +949,16 @@ writeJsonResultsToTable <- function(connectionDetails,
 }
 
 #' Write JSON Results to CSV file
-#' 
+#'
 #' @param jsonPath    Path to the JSON results file generated using the execute function
 #' @param csvPath     Path to the CSV output file
 #' @param columns     (OPTIONAL) List of desired columns
 #' @param delimiter   (OPTIONAL) CSV delimiter
-#' 
+#'
 #' @export
 writeJsonResultsToCsv <- function(jsonPath,
                                   csvPath,
-                                  columns = c("checkId", "FAILED", "PASSED", 
+                                  columns = c("checkId", "FAILED", "PASSED",
                                               "IS_ERROR", "NOT_APPLICABLE",
                                               "CHECK_NAME", "CHECK_DESCRIPTION",
                                               "THRESHOLD_VALUE", "NOTES_VALUE",

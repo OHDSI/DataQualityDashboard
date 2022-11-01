@@ -54,7 +54,7 @@
       .recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
     },
     error = function(e) {
-      ParallelLogger::logError(sprintf("[Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s", 
+      ParallelLogger::logError(sprintf("#DQD [Level: %s] [Check: %s] [CDM Table: %s] [CDM Field: %s] %s",
                                        checkDescription$checkLevel,
                                        checkDescription$checkName, 
                                        check["cdmTableName"], 

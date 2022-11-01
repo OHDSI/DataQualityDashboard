@@ -11,7 +11,11 @@ The goal of the Data Quality Dashboard (DQD) project is to design and develop an
 Introduction
 ============
 
+This repository forked from https://github.com/OHDSI/DataQualityDashboard.
+
 This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.4, v5.3 and v5.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way. 
+
+This service wraps **DataQualityDashboard** functional in Web-service that used by Perseus https://github.com/SoftwareCountry/Perseus. 
 
 Overview
 ========
@@ -65,18 +69,33 @@ vocabulary_version | The vocabulary version used in   the ETL | Obtained by SELE
 
 Technology
 ==========
-DataQualityDashboard is an R package 
 
-System Requirements
-===================
-Requires R (version 3.2.2 or higher). Requires [DatabaseConnector](https://github.com/OHDSI/DatabaseConnector) and [SqlRender](https://github.com/OHDSI/SqlRender).
+- Java 17
+- R 4.1.3
 
-Support
-=======
+Getting Started
+==========
 
-* Developer questions/comments/feedback: <a href="http://forums.ohdsi.org/c/developers">OHDSI Forum</a>
-* We use the <a href="https://github.com/OHDSI/DataQualityDashboard/issues">GitHub issue tracker</a> for all bugs/issues/enhancements 
- 
+### R server
+
+    cd R
+    docker build -t r-serve .
+    docker run --name r-serve -d -p 6311:6311 --network=perseus-net r-serve
+
+### Data-quality-check service
+
+    docker build -t data-quality-dashboard .
+    docker run --name data-quality-dashboard -d -p 8001:8001 -e SPRING_PROFILES_ACTIVE='docker' --network=perseus-net data-quality-dashboard
+
+Development
+==========
+
+### R server
+
+    cd R
+    docker build -t r-serve --build-arg prop='docker' .
+    docker run --name r-serve -d -p 6311:6311 r-serve
+
 License
 =======
 DataQualityDashboard is licensed under Apache License 2.0

@@ -141,17 +141,25 @@
   <script type="text/javascript" src="vendor/datatables/buttons/1.5.6/js/buttons.html5.min.js"></script>
 
   <script type="text/javascript">
-    // if not running in shiny, try to accomodate web server
-    if (location.port == 80 || location.port == 8080 || location.port == "") {
+    const queryString = window.location.search
+    const urlParams = new URLSearchParams(queryString)
+    const scanId = urlParams.get('scanId')
+    const username = urlParams.get('username')
+    if (!scanId || !username) {
+      alert('Error: url parameters not specified')
+    } else {
       $.ajax({
-        dataType: "json",
-        url: "results.json",
+        dataType: 'json',
+        url: `json/${scanId}`,
+        headers: { 'Username': username },
         success: function (results) {
           loadResults(results);
+        },
+        error: function (error) {
+          alert(error.responseJSON?.message ? `Error: ${error.responseJSON?.message}` : 'Error: Can not load result json file')
         }
-      });
+      })
     }
-
   </script>
 
 </body>

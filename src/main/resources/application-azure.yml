@@ -1,0 +1,49 @@
+server:
+  port: 8001
+  error:
+    include-message: always
+  servlet:
+    context-path: /data-quality-dashboard
+
+rserve:
+  path:
+  host: ${RservHost}
+  port: ${RservPort}
+  unix: true
+
+files-manager:
+  url: ${FilesManagerUrl}
+
+dqd-database:
+  dbms: ${SharedDbType}
+  server: ${SharedDbHost}
+  port: ${SharedDbPort}
+  database: ${SharedDbName}
+  schema: ${SharedDbDqdSchema}
+  user: ${SharedDbDqdUser}
+  password: ${SharedDbDqdPass}
+
+spring:
+  application:
+    name: Data Quality Dashboard
+  datasource:
+    url: ${SharedDbUrl}
+    username: ${SharedDbDqdUser}
+    password: ${SharedDbDqdPass}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          property-source-enabled: true
+          property-sources:
+            -
+              credential:
+                client-id: ${AZURE_CLIENT_ID}
+              endpoint: ${AZURE_KEY_VAULT_ENDPOINT}
+              profile:
+                tenant-id: ${AZURE_TENANT_ID}
+              refresh-interval: 1m

@@ -63,8 +63,8 @@ executeDqChecks <- function(connectionDetails,
                             numThreads = 1,
                             sqlOnly = FALSE,
                             outputFolder = "output",
-                            outputFile = "",
                             verboseMode = FALSE,
+                            writeToJsonFile = FALSE,
                             writeToTable = TRUE,
                             writeTableName = "dqdashboard_results",
                             writeToCsv = FALSE,
@@ -77,7 +77,9 @@ executeDqChecks <- function(connectionDetails,
                             cdmVersion = "5.3",
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
-                            conceptCheckThresholdLoc = "default") {
+                            conceptCheckThresholdLoc = "default",
+                            logger,
+                            interruptor) {
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
     stop("connectionDetails must be an object of class 'connectionDetails'.")
@@ -113,7 +115,9 @@ executeDqChecks <- function(connectionDetails,
   
   # capture metadata -----------------------------------------------------------------------
   if (!sqlOnly) {
-    connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)  
+    print("Connecting to CDM database...")
+    connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+    print("Successfully connected to CDM database!")
     sql <- SqlRender::render(sql = "select * from @cdmDatabaseSchema.cdm_source;",
                            cdmDatabaseSchema = cdmDatabaseSchema)
     sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
@@ -121,13 +125,13 @@ executeDqChecks <- function(connectionDetails,
     if (nrow(metadata)<1) {
       stop("Please populate the cdm_source table before executing data quality checks.")
     }
-    metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))  
+    metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
     DatabaseConnector::disconnect(connection)
   } else {
     metadata <- NA
   }
-  
-  if (!dir.exists(outputFolder)) {
+
+  if (!dir.exists(file.path(outputFolder))) {
     dir.create(path = outputFolder, recursive = TRUE)
   }
   
@@ -136,26 +140,29 @@ executeDqChecks <- function(connectionDetails,
   }
   
   dir.create(file.path(outputFolder, "errors"), recursive = TRUE)
+
+  # Check is aborted
+  if (interruptor$isAborted()) {
+    ABORT_MESSAGE <- "Process was aborted by User"
+    print(ABORT_MESSAGE)
+    stop(ABORT_MESSAGE)
+  }
   
   # Log execution -----------------------------------------------------------------------------------------------------------------
   ParallelLogger::clearLoggers()
-  logFileName <- sprintf("log_DqDashboard_%s.txt", cdmSourceName)
-  unlink(file.path(outputFolder, logFileName))
   
   if (verboseMode) {
-    appenders <- list(ParallelLogger::createConsoleAppender(layout=ParallelLogger::layoutTimestamp),
-                      ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
-                                                         fileName = file.path(outputFolder, logFileName)))    
+    appenders <- list(createDqdLogAppender(logger),
+                      ParallelLogger::createConsoleAppender(layout=ParallelLogger::layoutTimestamp))
   } else {
-    appenders <- list(ParallelLogger::createFileAppender(layout = ParallelLogger::layoutParallel, 
-                                                         fileName = file.path(outputFolder, logFileName)))    
+    appenders <- list(createDqdLogAppender(logger))
   }
-  
-  
-  logger <- ParallelLogger::createLogger(name = "DqDashboard",
-                                         threshold = "INFO",
-                                         appenders = appenders)
-  ParallelLogger::registerLogger(logger)   
+
+  parallelLogger <- ParallelLogger::createLogger(name = "DqDashboard",
+                                                 threshold = "INFO",
+                                                 appenders = appenders)
+  ParallelLogger::registerLogger(parallelLogger)
+  ParallelLogger::logInfo("#DQD Execution started")
   
   # load Threshold CSVs ----------------------------------------------------------------------------------------
   
@@ -189,7 +196,7 @@ executeDqChecks <- function(connectionDetails,
   
   if (length(tablesToExclude) > 0) {
     tablesToExclude <- toupper(tablesToExclude)
-    ParallelLogger::logInfo(sprintf("CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
+    ParallelLogger::logInfo(sprintf("#DQD CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
     tableChecks <- tableChecks[!tableChecks$cdmTableName %in% tablesToExclude,]
     fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude, 
                                # &
@@ -239,7 +246,8 @@ executeDqChecks <- function(connectionDetails,
   
   cluster <- ParallelLogger::makeCluster(numberOfThreads = numThreads, singleThreadToMain = TRUE)
   resultsList <- ParallelLogger::clusterApply(
-    cluster = cluster, x = checkDescriptions,
+    cluster = cluster,
+    x = checkDescriptions,
     fun = .runCheck, 
     tableChecks,
     fieldChecks,
@@ -252,7 +260,8 @@ executeDqChecks <- function(connectionDetails,
     cohortDefinitionId,
     outputFolder, 
     sqlOnly,
-    progressBar = TRUE
+    progressBar = TRUE,
+    interruptor
   )
   ParallelLogger::stopCluster(cluster = cluster)
   
@@ -263,6 +272,7 @@ executeDqChecks <- function(connectionDetails,
   allResults <- NULL
   if (!sqlOnly) {
     checkResults <- do.call(rbind, resultsList)
+    checkResults$checkId <- seq.int(nrow(checkResults))
     
     # evaluate thresholds-------------------------------------------------------------------
     checkResults <- .evaluateThresholds(
@@ -289,16 +299,18 @@ executeDqChecks <- function(connectionDetails,
     )
     
     # Write result
-    if (nchar(outputFile)==0)  {
-      endTimestamp <- format(endTime, "%Y%m%d%H%M%S")
-      outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp)
+    if (writeToJsonFile) {
+      if (nchar(outputFile)==0)  {
+        endTimestamp <- format(endTime, "%Y%m%d%H%M%S")
+        outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION),endTimestamp)
+      }
+
+      .writeResultsToJson(allResults, outputFolder, outputFile)
     }
     
-    .writeResultsToJson(allResults, outputFolder, outputFile)
-    
-    ParallelLogger::logInfo("Execution Complete")  
+    ParallelLogger::logInfo("#DQD Execution Complete")
   }
-  
+
   
   # write to table ----------------------------------------------------------------------
   

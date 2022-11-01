@@ -33,7 +33,7 @@ Running the Data Quality Dashboard for a cohort is fairly straightforward. There
                                       resultsDatabaseSchema = resultsDatabaseSchema,
                                       cdmSourceName = "IBM_CCAE_cohort_123",
                                       cohortDefinitionId = 123,
-                                      cohortDatabaseSchema = "IBM_CCAE.results"
+                                      cohortDatabaseSchema = "IBM_CCAE.results",
                                       numThreads = numThreads,
                                       sqlOnly = sqlOnly, 
                                       outputFolder = outputFolder, 
