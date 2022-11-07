@@ -163,7 +163,8 @@
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
-#' 
+#' @param systemFileNamespace       The name of the package where the check are stored. If not specified the default `DataQualityDashboard` namespace will be applied.
+#'
 #' @return If sqlOnly = FALSE, a list object of results
 #' 
 #' @importFrom magrittr %>%
@@ -192,7 +193,8 @@ executeDqChecks <- function(connectionDetails,
                             cdmVersion = "5.3.1",
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
-                            conceptCheckThresholdLoc = "default") {
+                            conceptCheckThresholdLoc = "default",
+                            systemFileNamespace = "DataQualityDashboard") {
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!("connectionDetails" %in% class(connectionDetails))){
     stop("connectionDetails must be an object of class 'connectionDetails'.")
@@ -277,25 +279,25 @@ executeDqChecks <- function(connectionDetails,
   startTime <- Sys.time()
   
   checkDescriptionsDf <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion), 
-                                              package = "DataQualityDashboard"), 
+                                              package = systemFileNamespace), 
                                   stringsAsFactors = FALSE)
   
   
   if (tableCheckThresholdLoc == "default"){
     tableChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
-                                        package = "DataQualityDashboard"), 
+                                        package = systemFileNamespace), 
                             stringsAsFactors = FALSE, na.strings = c(" ",""))} else {tableChecks <- read.csv(tableCheckThresholdLoc, 
                                                                                                              stringsAsFactors = FALSE, na.strings = c(" ",""))}
   
   if (fieldCheckThresholdLoc == "default"){ 
     fieldChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
-                                        package = "DataQualityDashboard"), 
+                                        package = systemFileNamespace), 
                             stringsAsFactors = FALSE, na.strings = c(" ",""))} else {fieldChecks <- read.csv(fieldCheckThresholdLoc, 
                                                                                                              stringsAsFactors = FALSE, na.strings = c(" ",""))}
   
   if (conceptCheckThresholdLoc == "default"){ 
     conceptChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion),
-                                          package = "DataQualityDashboard"), 
+                                          package = systemFileNamespace), 
                               stringsAsFactors = FALSE, na.strings = c(" ",""))} else {conceptChecks <- read.csv(conceptCheckThresholdLoc, 
                                                                                                                  stringsAsFactors = FALSE, na.strings = c(" ",""))}
   

@@ -28,7 +28,8 @@ executeDqChecks(
   cdmVersion = "5.3",
   tableCheckThresholdLoc = "default",
   fieldCheckThresholdLoc = "default",
-  conceptCheckThresholdLoc = "default"
+  conceptCheckThresholdLoc = "default",
+  systemFileNamespace = "DataQualityDashboard"
 )
 }
 \arguments{
@@ -79,6 +80,8 @@ with the fields cohort_definition_id and subject_id.}
 \item{fieldCheckThresholdLoc}{The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.}
 
 \item{conceptCheckThresholdLoc}{The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.}
+
+\item{systemFileNamespace}{The name of the package where the check are stored. If not specified the default `DataQualityDashboard` namespace will be applied.}
 }
 \value{
 If sqlOnly = FALSE, a list object of results

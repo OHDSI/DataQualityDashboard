@@ -27,7 +27,8 @@
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
 #' @param cdmVersion                The CDM version to target for the data source. By default, 5.3 is used.
-#' 
+#' @param systemFileNamespace       The name of the package where the check are stored. If not specified the default `DataQualityDashboard` namespace will be applied.
+#'  
 #' @export
  
 reEvaluateThresholds <- function(jsonFilePath,
@@ -36,7 +37,8 @@ reEvaluateThresholds <- function(jsonFilePath,
                                  tableCheckThresholdLoc = "default",
                                  fieldCheckThresholdLoc = "default",
                                  conceptCheckThresholdLoc = "default",
-                                 cdmVersion = '5.3') {
+                                 cdmVersion = '5.3',
+                                 systemFileNamespace = "DataQualityDashboard") {
   # Read in results to data frame --------------------------------------
   dqdResults <- jsonlite::read_json(path = jsonFilePath)
   
@@ -47,10 +49,10 @@ reEvaluateThresholds <- function(jsonFilePath,
   df <- do.call(plyr::rbind.fill, df)
 
   # Read in  new thresholds ----------------------------------------------
-  tableChecks <- .readThresholdFile(tableCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion))
-  fieldChecks <- .readThresholdFile(fieldCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion))
+  tableChecks <- .readThresholdFile(tableCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion), systemFileNamespace)
+  fieldChecks <- .readThresholdFile(fieldCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion), systemFileNamespace)
   fieldChecks$cdmFieldName <- toupper(fieldChecks$cdmFieldName) # Uppercase in results, lowercase in threshold files
-  conceptChecks <-  .readThresholdFile(conceptCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion))
+  conceptChecks <-  .readThresholdFile(conceptCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion), systemFileNamespace)
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
   
   newCheckResults <- .evaluateThresholds(df, tableChecks, fieldChecks, conceptChecks)
