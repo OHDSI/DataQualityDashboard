@@ -1,10 +1,10 @@
-.readThresholdFile <- function(checkThresholdLoc, defaultLoc) {
+.readThresholdFile <- function(checkThresholdLoc, defaultLoc, systemFileNamespace = "DataQualityDashboard") {
   if (checkThresholdLoc == "default") {
     result <- read.csv(
       file = system.file(
         "csv",
         defaultLoc,
-        package = "DataQualityDashboard"
+        package = systemFileNamespace
       ), 
       stringsAsFactors = FALSE, 
       na.strings = c(" ","")

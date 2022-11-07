@@ -50,9 +50,11 @@
         setNames(check[c], c)
       })
       
+      packageName <- if(!is.null(checkDescription$packageName)) checkDescription$packageName else "DataQualityDashboard"
+      
       params <- c(list(dbms = connectionDetails$dbms),
                   list(sqlFilename = checkDescription$sqlFile),
-                  list(packageName = "DataQualityDashboard"),
+                  list(packageName = packageName),
                   list(warnOnMissingParameters = FALSE),
                   list(cdmDatabaseSchema = cdmDatabaseSchema),
                   list(cohortDatabaseSchema = cohortDatabaseSchema),

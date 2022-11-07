@@ -11,7 +11,8 @@ reEvaluateThresholds(
   tableCheckThresholdLoc = "default",
   fieldCheckThresholdLoc = "default",
   conceptCheckThresholdLoc = "default",
-  cdmVersion = "5.3"
+  cdmVersion = "5.3",
+  systemFileNamespace = "DataQualityDashboard"
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ reEvaluateThresholds(
 \item{conceptCheckThresholdLoc}{The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.}
 
 \item{cdmVersion}{The CDM version to target for the data source. By default, 5.3 is used.}
+
+\item{systemFileNamespace}{The name of the package where the check are stored. If not specified the default `DataQualityDashboard` namespace will be applied.}
 }
 \description{
 Re-evaluate an existing DQD result against an updated thresholds file.

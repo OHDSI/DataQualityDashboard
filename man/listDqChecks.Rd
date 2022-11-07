@@ -8,7 +8,8 @@ listDqChecks(
   cdmVersion = "5.3",
   tableCheckThresholdLoc = "default",
   fieldCheckThresholdLoc = "default",
-  conceptCheckThresholdLoc = "default"
+  conceptCheckThresholdLoc = "default",
+  systemFileNamespace = "DataQualityDashboard"
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ listDqChecks(
 \item{fieldCheckThresholdLoc}{The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.}
 
 \item{conceptCheckThresholdLoc}{The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.}
+
+\item{systemFileNamespace}{The name of the package where the check are stored. If not specified the default `DataQualityDashboard` namespace will be applied.}
 }
 \description{
 Details on all checks defined by the DataQualityDashboard Package.
