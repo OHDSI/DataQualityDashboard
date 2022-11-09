@@ -65,7 +65,10 @@ public class DataQualityProcessServiceImpl implements DataQualityProcessService 
             }
         } catch (Exception e) {
             if (e.getMessage().contains("Process was aborted by User")) {
-                log.info("Scan with id {} was aborted by user {}", scan.getId(), scan.getUsername());
+                log.info("Scan process with id {} was aborted by user {}",
+                        scan.getId(),
+                        scan.getUsername()
+                );
             } else {
                 log.error("Data quality check process failed: {}. Scan id: {}, username: {}. Stack trace: {}",
                         e.getMessage(),
