@@ -70,10 +70,10 @@ public class DataQualityProcessServiceImpl implements DataQualityProcessService 
                         scan.getUsername()
                 );
             } else {
-                log.error("Data quality check process failed: {}. Scan id: {}, username: {}. Stack trace: {}",
-                        e.getMessage(),
+                log.error("Data quality check process failed, id: {}, username: {}, error message: {}. Stack trace: {}",
                         scan.getId(),
                         scan.getUsername(),
+                        e.getMessage(),
                         e.getStackTrace()
                 );
                 resultService.saveFailedResult(scan.getId(), e.getMessage());
