@@ -26,6 +26,7 @@ public class DownloadDriversController {
             rConnection.loadScript(rConnectionCreator.getDownloadJdbcDriversScript());
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            log.error("Can not load JDBC drivers to Rserve: {}, stack trace: {}", e.getMessage(), e.getStackTrace());
             throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Can not load JDBC drivers to Rserve: " + e.getMessage(), e);
         }
     }

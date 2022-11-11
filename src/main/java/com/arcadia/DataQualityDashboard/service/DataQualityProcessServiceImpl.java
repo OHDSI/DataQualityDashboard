@@ -42,7 +42,10 @@ public class DataQualityProcessServiceImpl implements DataQualityProcessService 
             String jsonResult;
             try(RConnectionWrapper rConnection = rConnectionCreator.createRConnection()) {
                 jsonResult = rConnection.checkDataQuality(scan);
-                log.info("Data quality check process successfully finished");
+                log.info("Data quality check process successfully finished. Scan id: {}, username: {}.",
+                        scan.getId(),
+                        scan.getUsername()
+                );
             }
             Path resultJsonPath = Path.of(RESULTS_JSON_LOCATION, generateRandomFileName());
             Files.createFile(resultJsonPath);
@@ -52,18 +55,27 @@ public class DataQualityProcessServiceImpl implements DataQualityProcessService 
                 }
                 FileSaveRequest fileSaveRequest = createFileSaveRequest(resultJsonPath, scan);
                 FileSaveResponse fileSaveResponse = filesManagerService.saveFile(fileSaveRequest);
+                log.info("Result json file successfully saved. Scan id: {}, username: {}.",
+                        scan.getId(),
+                        scan.getUsername()
+                );
                 resultService.saveCompletedResult(fileSaveResponse, scan.getId());
-                log.info("Result json file successfully saved");
             } finally {
                 Files.delete(resultJsonPath);
             }
         } catch (Exception e) {
-            String ABORT_MESSAGE = "Process was aborted by User";
-            if (e.getMessage().contains(ABORT_MESSAGE)) {
-                log.warn(ABORT_MESSAGE);
+            if (e.getMessage().contains("Process was aborted by User")) {
+                log.info("Scan process with id {} was aborted by user {}",
+                        scan.getId(),
+                        scan.getUsername()
+                );
             } else {
-                log.error("Failed to execute data quality check process: " + e.getMessage());
-                e.printStackTrace();
+                log.error("Data quality check process failed, id: {}, username: {}, error message: {}. Stack trace: {}",
+                        scan.getId(),
+                        scan.getUsername(),
+                        e.getMessage(),
+                        e.getStackTrace()
+                );
                 resultService.saveFailedResult(scan.getId(), e.getMessage());
             }
         }
