@@ -2,5 +2,7 @@ search="jdk.tls.disabledAlgorithms=SSLv3, TLSv1, TLSv1.1, RC4, DES, MD5withRSA,"
 
 replace="jdk.tls.disabledAlgorithms=SSLv3, RC4, DES, MD5withRSA,"
 
-cd etc/java-11-openjdk/security
+OPENJDK=`ls etc/ | grep openjdk`
+echo "OPENJDK: ${OPENJDK}"
+cd etc/${OPENJDK}/security
 sed -i "s/$search/$replace/" java.security
