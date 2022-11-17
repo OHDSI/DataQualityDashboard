@@ -13,8 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
+library(stringr)
 #' @title Execute DQ checks
 #'
 #' @description This function will connect to the database, generate the sql scripts, and run the data quality checks against the database.
@@ -49,6 +48,7 @@
 #'
 #' @importFrom magrittr %>%
 #' @import DatabaseConnector
+#' @import stringr
 #' @importFrom utils packageVersion read.csv
 #'
 #' @export
@@ -81,6 +81,10 @@ executeDqChecks <- function(connectionDetails,
     stop("connectionDetails must be an object of class 'connectionDetails'.")
   }
 
+  if (! str_detect(cdmVersion, regex("^5.[2-4]$"))) {
+    stop("cdmVersion must contain a version of the form '5.X' where X is an integer between 2 and 4 inclusive.")
+  }
+
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
@@ -98,7 +102,7 @@ executeDqChecks <- function(connectionDetails,
     naCheckNames <- c("cdmTable", "cdmField", "measureValueCompleteness")
     missingNAChecks <- !(naCheckNames %in% checkNames)
     if (any(missingNAChecks)) {
-      missingNACheckNames <- paste(naCheckNames[missingNAChecks], collapse = ', ')
+      missingNACheckNames <- paste(naCheckNames[missingNAChecks], collapse = ", ")
       warning(sprintf("Missing check names to calculate the 'Not Applicable' status: %s", missingNACheckNames))
     }
   }
@@ -193,9 +197,9 @@ executeDqChecks <- function(connectionDetails,
   if (length(tablesToExclude) > 0) {
     tablesToExclude <- toupper(tablesToExclude)
     ParallelLogger::logInfo(sprintf("CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
-    tableChecks <- tableChecks[!tableChecks$cdmTableName %in% tablesToExclude,]
-    fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude,]
-    conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude,]
+    tableChecks <- tableChecks[!tableChecks$cdmTableName %in% tablesToExclude, ]
+    fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude, ]
+    conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude, ]
   }
 
   ## remove offset from being checked
@@ -220,10 +224,10 @@ executeDqChecks <- function(connectionDetails,
     stop("No checks are available based on excluded tables. Please review tablesToExclude.")
   }
 
-  checkDescriptions <- split(checkDescriptionsDf, seq(nrow(checkDescriptionsDf)))
+  checkDescriptions <- split(checkDescriptionsDf, seq_len(nrow(checkDescriptionsDf)))
 
   connection <- NULL
-  if (numThreads == 1 & !sqlOnly) {
+  if (numThreads == 1 && !sqlOnly) {
     connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
   }
 
@@ -249,7 +253,7 @@ executeDqChecks <- function(connectionDetails,
   )
   ParallelLogger::stopCluster(cluster = cluster)
 
-  if (numThreads == 1 & !sqlOnly) {
+  if (numThreads == 1 && !sqlOnly) {
     DatabaseConnector::disconnect(connection = connection)
   }
 
@@ -295,7 +299,7 @@ executeDqChecks <- function(connectionDetails,
 
   # write to table ----------------------------------------------------------------------
 
-  if (!sqlOnly & writeToTable) {
+  if (!sqlOnly && writeToTable) {
     .writeResultsToTable(
       connectionDetails = connectionDetails,
       resultsDatabaseSchema = resultsDatabaseSchema,
@@ -307,7 +311,7 @@ executeDqChecks <- function(connectionDetails,
 
   # write to CSV ----------------------------------------------------------------------
 
-  if (!sqlOnly & writeToCsv) {
+  if (!sqlOnly && writeToCsv) {
     if (nchar(csvFile) == 0) {
       csvFile <- sprintf("%s.csv", sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(allResults$outputFile)))
     }
