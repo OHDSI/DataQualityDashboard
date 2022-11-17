@@ -11,7 +11,7 @@ Authors@R: c(
   person("Frank", "DeFalco", role = c("aut")),
   person("Pavel", "Grafkin", role = c("aut"))
   )
-Maintainer: Clair Blacketer <mblacke@its.jnj.com>
+Maintainer: Katy Sadowski <katy.sadowski@gmail.com>
 Description: An R package for assessing data quality in standardized OMOP Common Data Model data sources.
 License: Apache License (>= 2)
 VignetteBuilder: knitr

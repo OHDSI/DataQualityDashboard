@@ -60,6 +60,9 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
+</li>
+<li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
@@ -78,6 +81,29 @@
       <small>Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.0" id="dataqualitydashboard-20">DataQualityDashboard 2.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-20"></a></h2>
+<p>This release includes:</p>
+<div class="section level4">
+<h4 id="new-check-statuses-2-0">New check statuses<a class="anchor" aria-label="anchor" href="#new-check-statuses-2-0"></a></h4>
+<ul><li>
+<strong>Not Applicable</strong> identifies checks with no data to support them</li>
+<li>
+<strong>Error</strong> identifies checks that failed due to a SQL error</li>
+</ul></div>
+<div class="section level4">
+<h4 id="new-checks-2-0">New Checks<a class="anchor" aria-label="anchor" href="#new-checks-2-0"></a></h4>
+<ul><li>
+<strong>measureConditionEraCompleteness</strong> checks to make sure that every person with a Condition_Era record have a record in Condition_Occurrence as well</li>
+<li>
+<strong>withinVisitDates</strong> looks at clinical facts and the visits they are associated with to make sure that the visit dates occur within one week on either side of the visit</li>
+<li>
+<strong>plausibleUnitConceptIds</strong> identifies records with invalid Unit_Concept_Ids by Measurement_Concept_Id</li>
+</ul></div>
+<div class="section level4">
+<h4 id="integrated-testing-was-also-added-and-the-package-was-refactored-on-the-backend-2-0">Integrated testing was also added and the package was refactored on the backend<a class="anchor" aria-label="anchor" href="#integrated-testing-was-also-added-and-the-package-was-refactored-on-the-backend-2-0"></a></h4>
+</div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.4.1" id="dataqualitydashboard-141">DataQualityDashboard 1.4.1<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-141"></a></h2>
 <p>No material changes from v1.4, this adds a correct <code>DESCRIPTION</code> file with the correct DQD version</p>
