@@ -123,8 +123,8 @@ test_that("Execute a single DQ check on remote databases", {
 test_that("Check invalid cdm version", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  
-  expect_exit(
+
+  expect_error(
     executeDqChecks(
       connectionDetails = connectionDetails,
       resultsDatabaseSchema = resultsDatabaseSchema,
