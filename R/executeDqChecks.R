@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-library(stringr)
+
 #' @title Execute DQ checks
 #'
 #' @description This function will connect to the database, generate the sql scripts, and run the data quality checks against the database.
@@ -48,7 +48,7 @@ library(stringr)
 #'
 #' @importFrom magrittr %>%
 #' @import DatabaseConnector
-#' @import stringr
+#' @importFrom stringr str_detect regex
 #' @importFrom utils packageVersion read.csv
 #'
 #' @export
@@ -81,7 +81,7 @@ executeDqChecks <- function(connectionDetails,
     stop("connectionDetails must be an object of class 'connectionDetails'.")
   }
 
-  if (! str_detect(cdmVersion, regex("^5.[2-4]$"))) {
+  if (! str_detect(cdmVersion, regex(ACCEPTED_CDM_REGEX))) {
     stop("cdmVersion must contain a version of the form '5.X' where X is an integer between 2 and 4 inclusive.")
   }
 
