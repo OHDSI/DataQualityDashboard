@@ -1,4 +1,4 @@
-DataQualityDashboard 2.0
+DataQualityDashboard 2.0.0
 ===========================
 This release includes:
 
