@@ -12,7 +12,7 @@ executeDqChecks(
   cdmSourceName,
   numThreads = 1,
   sqlOnly = FALSE,
-  outputFolder = "output",
+  outputFolder,
   outputFile = "",
   verboseMode = FALSE,
   writeToTable = TRUE,
@@ -46,7 +46,7 @@ executeDqChecks(
 
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
 
-\item{outputFolder}{The folder to output logs and SQL files to}
+\item{outputFolder}{The folder to output logs, SQL files, and JSON results file to}
 
 \item{outputFile}{(OPTIONAL) File to write results JSON object}
 
