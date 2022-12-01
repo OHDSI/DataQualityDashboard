@@ -28,8 +28,7 @@ Imports:
     rJava,
     SqlRender (>= 1.6.0),
     plyr,
-    stringr, 
-    R.utils
+    stringr
 Suggests:
     testthat,
     knitr,
@@ -37,7 +36,8 @@ Suggests:
     markdown,
     shiny,
     ggplot2,
-    Eunomia
+    Eunomia,
+    R.utils
 Remotes:
     ohdsi/Eunomia
 RoxygenNote: 7.2.1
