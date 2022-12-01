@@ -133,7 +133,6 @@ executeDqChecks <- function(connectionDetails,
   dir.create(file.path(outputFolder, "errors"), recursive = TRUE)
 
   # Log execution -----------------------------------------------------------------------------------------------------------------
-  ParallelLogger::clearLoggers()
   logFileName <- sprintf("log_DqDashboard_%s.txt", cdmSourceName)
   unlink(file.path(outputFolder, logFileName))
 
@@ -159,6 +158,7 @@ executeDqChecks <- function(connectionDetails,
     appenders = appenders
   )
   ParallelLogger::registerLogger(logger = logger)
+  on.exit(ParallelLogger::unregisterLogger("DqDashboard", silent = TRUE))
 
   # load Threshold CSVs ----------------------------------------------------------------------------------------
 
@@ -316,8 +316,6 @@ executeDqChecks <- function(connectionDetails,
       csvPath = file.path(outputFolder, csvFile)
     )
   }
-
-  ParallelLogger::unregisterLogger(x = "DqDashboard")
 
   if (sqlOnly) {
     invisible(allResults)
