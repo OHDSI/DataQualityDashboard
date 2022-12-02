@@ -120,6 +120,24 @@ test_that("Execute a single DQ check on remote databases", {
   }
 })
 
+test_that("Check invalid cdm version", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+
+  expect_error(
+    executeDqChecks(
+      connectionDetails = connectionDetails,
+      resultsDatabaseSchema = resultsDatabaseSchema,
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = FALSE,
+      cdmVersion = "5.2.3.1"
+    ),
+    regexp = "^cdmVersion must contain a version of the form '5.X'"
+  )
+})
+
 test_that("Write JSON results", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
