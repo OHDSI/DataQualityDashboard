@@ -43,14 +43,14 @@ reEvaluateThresholds <- function(jsonFilePath,
     as.data.frame(cr)
   })
   df <- do.call(plyr::rbind.fill, df)
-  
+
   # Add required fields that might be missing due to writing to json
   if (!("CDM_FIELD_NAME" %in% colnames(df))) {
     df$CDM_FIELD_NAME <- NA
   }
   if (!("ERROR" %in% colnames(df))) {
     df$ERROR <- NA
-  }  
+  }
   if (!("CONCEPT_ID" %in% colnames(df))) {
     df$CONCEPT_ID <- NA
   }
@@ -65,10 +65,12 @@ reEvaluateThresholds <- function(jsonFilePath,
   conceptChecks <- .readThresholdFile(conceptCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion))
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
 
-  newCheckResults <- .evaluateThresholds(checkResults = df,
-                                         tableChecks = tableChecks,
-                                         fieldChecks = fieldChecks,
-                                         conceptChecks = conceptChecks)
+  newCheckResults <- .evaluateThresholds(
+    checkResults = df,
+    tableChecks = tableChecks,
+    fieldChecks = fieldChecks,
+    conceptChecks = conceptChecks
+  )
 
   newOverview <- .summarizeResults(checkResults = newCheckResults)
 
@@ -76,9 +78,11 @@ reEvaluateThresholds <- function(jsonFilePath,
   newDqdResults$CheckResults <- newCheckResults
   newDqdResults$Overview <- newOverview
 
-  .writeResultsToJson(result = newDqdResults, 
-                      outputFolder = outputFolder, 
-                      outputFile = outputFile)
+  .writeResultsToJson(
+    result = newDqdResults,
+    outputFolder = outputFolder,
+    outputFile = outputFile
+  )
 
   return(newDqdResults)
 }

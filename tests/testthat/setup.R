@@ -22,7 +22,7 @@ cdmVersion <- 5
 #                                                password = URLdecode(Sys.getenv("CDM5_POSTGRESQL_PASSWORD")),
 #                                                server = Sys.getenv("CDM5_POSTGRESQL_SERVER"),
 #                                                pathToDriver = jdbcDriverFolder)
-#   
+#
 #   cdmDatabaseSchema <- Sys.getenv("CDM5_POSTGRESQL_CDM_SCHEMA")
 #   cdmVersion <- 5
 # }
@@ -44,7 +44,7 @@ cdmVersion <- 5
 #                                                server = Sys.getenv("CDM5_ORACLE_SERVER"),
 #                                                pathToDriver = jdbcDriverFolder)
 #   cdmDatabaseSchema <- Sys.getenv("CDM5_ORACLE_CDM_SCHEMA")
-#   
+#
 #   # Restore temp schema setting after tests complete
 #   oldTempSchema <- getOption("sqlRenderTempEmulationSchema")
 #   options("sqlRenderTempEmulationSchema" = Sys.getenv("CDM5_ORACLE_OHDSI_SCHEMA"))

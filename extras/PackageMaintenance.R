@@ -20,6 +20,9 @@ OhdsiRTools::updateCopyrightYearFolder()
 OhdsiRTools::findNonAsciiStringsInFolder()
 devtools::spell_check()
 
+# Regenerate roxygen docs:
+devtools::document()
+
 # Create manual and vignettes:
 unlink("extras/DataQualityDashboard.pdf")
 shell("R CMD Rd2pdf ./ --output=extras/DataQualityDashboard.pdf")

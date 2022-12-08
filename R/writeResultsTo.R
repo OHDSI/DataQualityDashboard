@@ -22,8 +22,8 @@
 
 #' @keywords internal
 
-.writeResultsToJson <- function(result, 
-                                outputFolder, 
+.writeResultsToJson <- function(result,
+                                outputFolder,
                                 outputFile) {
   resultJson <- jsonlite::toJSON(result)
 
@@ -61,15 +61,15 @@
   ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
 
   ddl <- SqlRender::loadRenderTranslateSql(
-    sqlFilename = "result_dataframe_ddl.sql", 
-    packageName = "DataQualityDashboard", 
-    tableName = tableName, 
+    sqlFilename = "result_dataframe_ddl.sql",
+    packageName = "DataQualityDashboard",
+    tableName = tableName,
     dbms = connectionDetails$dbms
   )
 
   DatabaseConnector::executeSql(
-    connection = connection, 
-    sql = ddl, 
+    connection = connection,
+    sql = ddl,
     progressBar = TRUE
   )
 
