@@ -7,36 +7,39 @@ test_that("listDqChecks works", {
 })
 
 test_that("Execute a single DQ check on Synthea/Eunomia", {
-
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  
+
   expect_warning(
-    results <- executeDqChecks(connectionDetails = connectionDetails,
-                             cdmDatabaseSchema = "main",
-                             resultsDatabaseSchema = "temp",
-                             cdmSourceName = "Eunomia",
-                             checkNames = "measurePersonCompleteness",
-                             outputFolder = outputFolder,
-                             writeToTable = F),
+    results <- executeDqChecks(
+      connectionDetails = connectionDetails,
+      cdmDatabaseSchema = "main",
+      resultsDatabaseSchema = "temp",
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = F
+    ),
     regexp = "^Missing check names.*"
   )
-  
+
   expect_true(nrow(results$CheckResults) > 1)
 })
 
 test_that("Execute all TABLE checks on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  
-  results <- executeDqChecks(connectionDetails = connectionDetails,
-                             cdmDatabaseSchema = "main",
-                             resultsDatabaseSchema = "temp",
-                             cdmSourceName = "Eunomia",
-                             checkLevels = "TABLE",
-                             outputFolder = outputFolder,
-                             writeToTable = F)
-  
+
+  results <- executeDqChecks(
+    connectionDetails = connectionDetails,
+    cdmDatabaseSchema = "main",
+    resultsDatabaseSchema = "temp",
+    cdmSourceName = "Eunomia",
+    checkLevels = "TABLE",
+    outputFolder = outputFolder,
+    writeToTable = F
+  )
+
   expect_true(nrow(results$CheckResults) > 0)
 })
 
@@ -44,44 +47,50 @@ test_that("Execute all TABLE checks on Synthea/Eunomia", {
 test_that("Execute FIELD checks on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  
-  results <- executeDqChecks(connectionDetails = connectionDetails,
-                             cdmDatabaseSchema = "main",
-                             resultsDatabaseSchema = "temp",
-                             cdmSourceName = "Eunomia",
-                             checkLevels = "FIELD",
-                             outputFolder = outputFolder,
-                             writeToTable = F)
+
+  results <- executeDqChecks(
+    connectionDetails = connectionDetails,
+    cdmDatabaseSchema = "main",
+    resultsDatabaseSchema = "temp",
+    cdmSourceName = "Eunomia",
+    checkLevels = "FIELD",
+    outputFolder = outputFolder,
+    writeToTable = F
+  )
   expect_true(nrow(results$CheckResults) > 0)
 })
 
 test_that("Execute CONCEPT checks on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  results <- executeDqChecks(connectionDetails = connectionDetails,
-                             cdmDatabaseSchema = "main",
-                             resultsDatabaseSchema = "temp",
-                             cdmSourceName = "Eunomia",
-                             checkLevels = "CONCEPT",
-                             conceptCheckThresholdLoc = system.file(
-                               "csv",
-                               "unittest_OMOP_CDMv5.3_Concept_Level.csv",
-                               package = "DataQualityDashboard"
-                             ),
-                             outputFolder = outputFolder,
-                             writeToTable = F)
+  results <- executeDqChecks(
+    connectionDetails = connectionDetails,
+    cdmDatabaseSchema = "main",
+    resultsDatabaseSchema = "temp",
+    cdmSourceName = "Eunomia",
+    checkLevels = "CONCEPT",
+    conceptCheckThresholdLoc = system.file(
+      "csv",
+      "unittest_OMOP_CDMv5.3_Concept_Level.csv",
+      package = "DataQualityDashboard"
+    ),
+    outputFolder = outputFolder,
+    writeToTable = F
+  )
   expect_true(nrow(results$CheckResults) > 0)
 })
-                             
+
 
 test_that("Execute a single DQ check on remote databases", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  
-  dbTypes = c("oracle",
-              "postgresql",
-              "sql server")
-  
+
+  dbTypes <- c(
+    "oracle",
+    "postgresql",
+    "sql server"
+  )
+
   for (dbType in dbTypes) {
     sysUser <- Sys.getenv(sprintf("CDM5_%s_USER", toupper(dbType)))
     sysPassword <- URLdecode(Sys.getenv(sprintf("CDM5_%s_PASSWORD", toupper(dbType))))
@@ -93,28 +102,31 @@ test_that("Execute a single DQ check on remote databases", {
       cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM_SCHEMA", toupper(dbType)))
       resultsDatabaseSchema <- Sys.getenv("CDM5_%s_OHDSI_SCHEMA", toupper(dbType))
 
-      connectionDetails <- createConnectionDetails(dbms = dbType,
-                                                   user = sysUser,
-                                                   password = sysPassword,
-                                                   server = sysServer,
-                                                   extraSettings = sysExtraSettings,
-                                                   pathToDriver = jdbcDriverFolder)
-      
+      connectionDetails <- createConnectionDetails(
+        dbms = dbType,
+        user = sysUser,
+        password = sysPassword,
+        server = sysServer,
+        extraSettings = sysExtraSettings,
+        pathToDriver = jdbcDriverFolder
+      )
+
       expect_warning(
-        results <- executeDqChecks(connectionDetails = connectionDetails,
-                                   cdmDatabaseSchema = cdmDatabaseSchema,
-                                   resultsDatabaseSchema = resultsDatabaseSchema,
-                                   cdmSourceName = "test",
-                                   numThreads = 1,
-                                   sqlOnly = FALSE,
-                                   outputFolder = outputFolder,
-                                   verboseMode = FALSE,
-                                   writeToTable = FALSE,
-                                   checkNames = "measurePersonCompleteness"
+        results <- executeDqChecks(
+          connectionDetails = connectionDetails,
+          cdmDatabaseSchema = cdmDatabaseSchema,
+          resultsDatabaseSchema = resultsDatabaseSchema,
+          cdmSourceName = "test",
+          numThreads = 1,
+          sqlOnly = FALSE,
+          outputFolder = outputFolder,
+          verboseMode = FALSE,
+          writeToTable = FALSE,
+          checkNames = "measurePersonCompleteness"
         ),
         regexp = "^Missing check names.*"
       )
-      
+
       expect_true(nrow(results$CheckResults) > 0)
     }
   }
@@ -141,7 +153,7 @@ test_that("Check invalid cdm version", {
 test_that("Write JSON results", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  
+
   expect_warning(
     results <- executeDqChecks(
       connectionDetails = connectionDetails,
@@ -154,7 +166,7 @@ test_that("Write JSON results", {
     ),
     regexp = "^Missing check names.*"
   )
-  
+
   jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)
   csvPath <- file.path(outputFolder, "results.csv")
   writeJsonResultsToCsv(
@@ -162,7 +174,7 @@ test_that("Write JSON results", {
     csvPath = csvPath
   )
   expect_true(file.exists(csvPath))
-  
+
   DataQualityDashboard::writeJsonResultsToTable(
     connectionDetails = connectionDetails,
     resultsDatabaseSchema = resultsDatabaseSchema,
@@ -179,24 +191,26 @@ test_that("Write JSON results", {
 test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  
+
   expect_warning(
-    results <- executeDqChecks(connectionDetails = connectionDetails,
-                               cdmDatabaseSchema = "main",
-                               resultsDatabaseSchema = "temp",
-                               cdmSourceName = "Eunomia",
-                               checkNames = "measurePersonCompleteness",
-                               outputFolder = outputFolder,
-                               writeToTable = F),
+    results <- executeDqChecks(
+      connectionDetails = connectionDetails,
+      cdmDatabaseSchema = "main",
+      resultsDatabaseSchema = "temp",
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = F
+    ),
     regexp = "^Missing check names.*"
   )
-  
+
   jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)
-  
+
   results2 <- reEvaluateThresholds(
     jsonFilePath = jsonPath,
     outputFolder = outputFolder,
     outputFile = "reEvaluated.txt"
   )
-  expect_is(results2, "list")  
+  expect_is(results2, "list")
 })

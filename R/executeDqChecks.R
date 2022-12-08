@@ -81,7 +81,7 @@ executeDqChecks <- function(connectionDetails,
     stop("connectionDetails must be an object of class 'connectionDetails'.")
   }
 
-  if (! str_detect(cdmVersion, regex(ACCEPTED_CDM_REGEX))) {
+  if (!str_detect(cdmVersion, regex(ACCEPTED_CDM_REGEX))) {
     stop("cdmVersion must contain a version of the form '5.X' where X is an integer between 2 and 4 inclusive.")
   }
 
