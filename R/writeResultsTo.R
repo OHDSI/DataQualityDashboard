@@ -127,7 +127,7 @@
         checkResults$ERROR <- stringr::str_replace_all(checkResults$ERROR, "\r", " ")
         checkResults$ERROR <- stringr::str_replace_all(checkResults$ERROR, "\t", " ")
       }
-      write.table(dplyr::select(checkResults, columns), file = csvPath, sep = delimiter, row.names = FALSE, na = "")
+      write.table(dplyr::select(checkResults, all_of(columns)), file = csvPath, sep = delimiter, row.names = FALSE, na = "")
       ParallelLogger::logInfo("Finished writing to CSV file")
     },
     error = function(e) {

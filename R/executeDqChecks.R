@@ -25,7 +25,7 @@
 #' @param numThreads                The number of concurrent threads to use to execute the queries
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
-#' @param outputFolder              The folder to output logs and SQL files to
+#' @param outputFolder              The folder to output logs, SQL files, and JSON results file to
 #' @param outputFile                (OPTIONAL) File to write results JSON object
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
@@ -60,7 +60,7 @@ executeDqChecks <- function(connectionDetails,
                             cdmSourceName,
                             numThreads = 1,
                             sqlOnly = FALSE,
-                            outputFolder = "output",
+                            outputFolder,
                             outputFile = "",
                             verboseMode = FALSE,
                             writeToTable = TRUE,
@@ -137,7 +137,6 @@ executeDqChecks <- function(connectionDetails,
   dir.create(file.path(outputFolder, "errors"), recursive = TRUE)
 
   # Log execution -----------------------------------------------------------------------------------------------------------------
-  ParallelLogger::clearLoggers()
   logFileName <- sprintf("log_DqDashboard_%s.txt", cdmSourceName)
   unlink(file.path(outputFolder, logFileName))
 
@@ -163,6 +162,7 @@ executeDqChecks <- function(connectionDetails,
     appenders = appenders
   )
   ParallelLogger::registerLogger(logger = logger)
+  on.exit(ParallelLogger::unregisterLogger("DqDashboard", silent = TRUE))
 
   # load Threshold CSVs ----------------------------------------------------------------------------------------
 
@@ -320,8 +320,6 @@ executeDqChecks <- function(connectionDetails,
       csvPath = file.path(outputFolder, csvFile)
     )
   }
-
-  ParallelLogger::unregisterLogger(x = "DqDashboard")
 
   if (sqlOnly) {
     invisible(allResults)
