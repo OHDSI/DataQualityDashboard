@@ -140,33 +140,33 @@ jobs:
           draft: false
           prerelease: false
 
-      - uses: r-lib/actions/setup-r@v2
-        if: ${{ env.new_version != '' }}
-
-      - name: Install drat
-        if: ${{ env.new_version != '' }}
-        run: |
-          install.packages('drat')
-        shell: Rscript {0}
-
-      - name: Remove any tarballs that already exists
-        if: ${{ env.new_version != '' }}
-        run: |
-          rm -f *.tar.gz
-
-      - name: Download package tarball
-        if: ${{ env.new_version != '' }}
-        uses: actions/download-artifact@v2
-        with:
-          name: package_tarball
-
-      - name: Push to drat
-        if: ${{ env.new_version != '' }}
-        run: |
-          bash deploy.sh
-
-      - name: Push to BroadSea
-        if: ${{ env.new_version != '' }}
-        run: |
-          curl --data "build=true" -X POST https://registry.hub.docker.com/u/ohdsi/broadsea-methodslibrary/trigger/f0b51cec-4027-4781-9383-4b38b42dd4f5/
+      # - uses: r-lib/actions/setup-r@v2
+      #   if: ${{ env.new_version != '' }}
+      # 
+      # - name: Install drat
+      #   if: ${{ env.new_version != '' }}
+      #   run: |
+      #     install.packages('drat')
+      #   shell: Rscript {0}
+      # 
+      # - name: Remove any tarballs that already exists
+      #   if: ${{ env.new_version != '' }}
+      #   run: |
+      #     rm -f *.tar.gz
+      # 
+      # - name: Download package tarball
+      #   if: ${{ env.new_version != '' }}
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: package_tarball
+      # 
+      # - name: Push to drat
+      #   if: ${{ env.new_version != '' }}
+      #   run: |
+      #     bash deploy.sh
+      # 
+      # - name: Push to BroadSea
+      #   if: ${{ env.new_version != '' }}
+      #   run: |
+      #     curl --data "build=true" -X POST https://registry.hub.docker.com/u/ohdsi/broadsea-methodslibrary/trigger/f0b51cec-4027-4781-9383-4b38b42dd4f5/
 
