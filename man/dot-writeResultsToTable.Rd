@@ -21,7 +21,7 @@
 
 \item{writeTableName}{The name of the table to be written to the database. Default is "dqdashboard_results".}
 
-\item{cohortDefinitionId}{(OPTIONAL) The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort' 
+\item{cohortDefinitionId}{(OPTIONAL) The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
 with the fields cohort_definition_id and subject_id.}
 }
 \description{

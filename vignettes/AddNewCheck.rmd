@@ -78,11 +78,11 @@ The initial query should then be set up to use the input parameters.  This test 
 
 Paste the check for violating rows into the template from a similar query and test the complete query on a OMOP CDM. A good way to confirm that the input parameters are correct is to use launchSqlRenderDeveloper from the SQLRender package. The package is included in the Data Quality R project.
 
-![Figure 1: launchSqlRenderDeveloper](images/library_SQLRender.png)
+![Figure 1: launchSqlRenderDeveloper](./images/library_SQLRender.PNG)
 
 This will bring up a SqlRender window in your browser. Paste in your complete DQ query. The program will see the input parameters and allow you to define them. The rendered translation, dialect specific, is output. You can run the "Rendered Translation" on your OMOP CDM.
 
-![Figure 2: launchSqlRenderDeveloper](images/SQLRenderDeveloper.png)
+![Figure 2: launchSqlRenderDeveloper](./images/SQLRenderDeveloper.PNG)
 
 SQL Server SQL is the lingua franca for Data Quality Dashboard queries. SQLRender will modify the query to other SQL dialects. See [SQLRender on CRAN](https://cran.r-project.org/web/packages/SqlRender/index.html) for additional information. When satisfied with the results of the query save the SQL in a file named ERVisitLength.sql in the directory DataQualityDashboard/inst/sql/sql_server.
 
@@ -100,7 +100,7 @@ The Check Description file is found in the DataQualityDashboard/inst/csv directo
 ## Add Hooks to Field/Table/Concept Check CSV File
 The field level check file, OMOP_CDMv5.4_Field_Level.csv, is in the same directory as the Check Descriptions file.  The first two columns are 'cdmTableName' and 'cdmFieldName'. There is a row for each table/column in the OMOP CDM. After the first two columns are triplets of columns with the naming scheme **testName**, **testNameThreshold**, **testNameNotes**. We need to add these columns for our ER visit length test. The testName is the name used in defining the evaluationFilter column in the above step, **ERVisitLength**. The other two column names are ERVisitLengthThreshold and ERVisitLengthNotes. The evaluation filter we added, ERVisitLengh=='Yes' means that for every table/column in this file where the row value in the column ERVisitLength is 'Yes', run the SQL in the file we created, ERVisitLength.sql, passing in the schema, table and column names. (The schema name is defined when running the DQD code.) For this example the only row with a Yes will be for the visit_date_date in the visit_occurrence table.
 
-The testNameThreshold column should have a value between 0 and 100 for all rows where there is a Yes in the testName column. Remember the SQL in ERVisitLength.sql returns the pct_violated_rows. If pct_voilated_row is greater than the threshold the test is recorded as failed.  If our threshold is 0 then any ER visit with a length greater than two days will return a pct_violated_row greater than zero and the test will fail. If you want to allow for a few 'bad' visit lengths you can set the threshold to a low number. Or if you want the test to be run, but never flag an error, set the threshold to 100.
+The testNameThreshold column should have a value between 0 and 100 for all rows where there is a Yes in the testName column. Remember the SQL in ERVisitLength.sql returns the pct_violated_rows. If pct_violated_row is greater than the threshold the test is recorded as failed.  If our threshold is 0 then any ER visit with a length greater than two days will return a pct_violated_row greater than zero and the test will fail. If you want to allow for a few 'bad' visit lengths you can set the threshold to a low number. Or if you want the test to be run, but never flag an error, set the threshold to 100.
 
 The testNameNotes column is usually left blank. The convention is that this column will be used by the person running the tests to document circumstances in the source data that might cause the test to fail.
 

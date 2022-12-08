@@ -1,0 +1,21 @@
+cdmTableName,cdmFieldName,conceptId,conceptName,unitConceptId,unitConceptName,plausibleValueLow,plausibleValueLowThreshold,plausibleValueLowNotes,plausibleValueHigh,plausibleValueHighThreshold,plausibleValueHighNotes,plausibleGender,plausibleGenderThreshold,plausibleGenderNotes,isTemporallyConstant,isTemporallyConstantThreshold,isTemporallyConstantNotes,validPrevalenceLow,validPrevalenceLowThreshold,validPrevalenceLowNotes,validPrevalenceHigh,validPrevalenceHighThreshold,validPrevalenceHighNotes,plausibleUnitConceptIds,plausibleUnitConceptIdsThreshold,plausibleUnitConceptIdsNotes
+CONDITION_OCCURRENCE,CONDITION_CONCEPT_ID,26662,Testicular hypofunction,,,,,,,,,Male,5,,,,,,,,,,,,,
+CONDITION_OCCURRENCE,CONDITION_CONCEPT_ID,26935,Disorder of endocrine testis,,,,,,,,,Male,5,,,,,,,,,,,,,
+CONDITION_OCCURRENCE,CONDITION_CONCEPT_ID,192676,Cervical intraepithelial neoplasia grade 1,,,,,,,,,Female,5,,,,,,,,,,,,,
+CONDITION_OCCURRENCE,CONDITION_CONCEPT_ID,192683,Uterovaginal prolapse,,,,,,,,,Female,5,,,,,,,,,,,,,
+CONDITION_OCCURRENCE,CONDITION_CONCEPT_ID,192854,Intramural leiomyoma of uterus,,,,,,,,,Female,5,,,,,,,,,,,,,
+PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2003947,Closed [percutaneous] [needle] biopsy of prostate,,,,,,,,,Male,5,,,,,,,,,,,,,
+PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2003966,Other transurethral prostatectomy,,,,,,,,,Male,5,,,,,,,,,,,,,
+PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2003983,Other prostatectomy,,,,,,,,,Male,5,,,,,,,,,,,,,
+PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110078,Colposcopy of the vulva,,,,,,,,,Female,5,,,,,,,,,,,,,
+PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110116,"Colpopexy, vaginal; extra-peritoneal approach (sacrospinous, iliococcygeus)",,,,,,,,,Female,5,,,,,,,,,,,,,
+OBSERVATION,OBSERVATION_CONCEPT_ID,37393449,Plasma total cholesterol level,8840,milligram per deciliter,50,5,,500,5,,,,,,,,,,,,,,,,
+OBSERVATION,OBSERVATION_CONCEPT_ID,37393449,Plasma total cholesterol level,8753,millimole per liter,1,5,,15,5,,,,,,,,,,,,,,,,
+OBSERVATION,OBSERVATION_CONCEPT_ID,37397989,Serum total cholesterol level,8840,milligram per deciliter,50,5,,500,5,,,,,,,,,,,,,,,,
+OBSERVATION,OBSERVATION_CONCEPT_ID,37397989,Serum total cholesterol level,8753,millimole per liter,1,5,,15,5,,,,,,,,,,,,,,,,
+OBSERVATION,OBSERVATION_CONCEPT_ID,44809580,Total cholesterol level,8840,milligram per deciliter,50,5,,500,5,,,,,,,,,,,,,,,,
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3000600,Renal tubular casts [#/area] in Urine by Light microscopy,,,,,,,,,,,,,,,,,,,,,8765,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3001019,Free T4 and TSH panel - Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3002527,Cottonwood IgE Ab [Units/volume] in Serum,,,,,,,,,,,,,,,,,,,,,"8645,8719,8750,8763,8810,8860,8923,8924,8985,9040,9058,9093,9332,9525,9550,44777568,44777578,44777583",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3002864,Erythrocytes [#/volume] in Urine by Automated count,,,,,,,,,,,,,,,,,,,,,"8647,8695,8712,8734,8784,8785,8799,8815,8816,8829,8848,8888,8931,8938,8961,8980,9156,9157,9158,9245,9254,9257,9423,9426,9435,9436,9442,9444,9445,9446,32706,44777520,44777558,44777561,44777562,44777569,44777575,44777580,44777588,45891003",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3004119,Hemoglobin [Mass/volume] in Venous blood,,,,,,,,,,,,,,,,,,,,,"8636,8713,8725,8748,8751,8817,8820,8837,8840,8842,8845,8859,8861,8950,9028,9503,9514,9530,9532,9560,9564,9625,32964,32965,44777535,44777592,44777638,45956701",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID

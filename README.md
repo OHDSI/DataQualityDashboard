@@ -3,7 +3,7 @@ DataQualityDashboard
 
 <!-- badges: start -->
 [![codecov.io](https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=main)](https://codecov.io/github/OHDSI/DataQualityDashboard?branch=main)
-[![R-CMD-check](https://github.com/OHDSI/DataQualityDashboard/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/OHDSI/DataQualityDashboard/actions/workflows/R-CMD-check.yaml)
+[![Build Status](https://github.com/OHDSI/DataQualityDashboard/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/DataQualityDashboard/actions?query=workflow%3AR-CMD-check)
 <!-- badges: end -->
 
 The goal of the Data Quality Dashboard (DQD) project is to design and develop an open-source tool to expose and evaluate observational data quality. 
@@ -54,7 +54,7 @@ cdmFieldName | userGuidance | etlConventions
 cdm_source_name | The name of the CDM instance. | Descriptive name for the source   data.
 cdm_source_abbreviation | The abbreviation of the CDM   instance. | The abbreviation should   consistent for different release from the same source.
 cdm_holder | The holder of the CDM instance. | The institution that controls   access to the data.  If possible   include contact information for who to contact to request access to the data.
-source_description | The description of the CDM   instance. | Add notes, caveats, special   characteristics about the source data that would not be assumed from the   general descriptive name.  This   description intended to help analysists determine if the data is suitable for   the problem they are studying.
+source_description | The description of the CDM   instance. | Add notes, caveats, special   characteristics about the source data that would not be assumed from the   general descriptive name.  This   description intended to help analysts determine if the data is suitable for   the problem they are studying.
 source_documentation_reference | Reference to where one can find   documentation about the source data. | Can include URL's, file name,   source data experts contact information (if they agree to it)
 cdm_etl_reference | Reference to where one can find   documentation about the source to ETL into OMOP CDM. | Assuming there is a document or   files (such as Rabbit in the Hat) describing the ETL.  May be the location of the ETL source and   documentation repository.
 source_release_date | The release date of the source   data. | When the source data was made   available for ETL'ing.  For sites doing   incremental updates, the date the last increment made available.  This implies that for sites doing incremental   updates the CDM Source table should be updated to reflect that changes were   made to the CDM.
@@ -69,7 +69,22 @@ DataQualityDashboard is an R package
 
 System Requirements
 ===================
-Requires R (version 3.2.2 or higher). Requires [DatabaseConnector](https://github.com/OHDSI/DatabaseConnector) and [SqlRender](https://github.com/OHDSI/SqlRender).
+Requires R (version 3.2.2 or higher). Requires [DatabaseConnector](https://github.com/OHDSI/DatabaseConnector) (version 2.0.2 or higher).
+
+Installation
+=============
+1. See the instructions [here](https://ohdsi.github.io/Hades/rSetup.html) for configuring your R environment, including RTools and Java.
+
+2. In R, use the following commands to download and install DataQualityDashboard:
+
+  ```r
+  install.packages("remotes")
+  remotes::install_github("OHDSI/DataQualityDashboard")
+  ```
+
+User Documentation
+==================
+Documentation can be found on the [package website](https://ohdsi.github.io/DataQualityDashboard/index.html).
 
 Support
 =======
@@ -81,13 +96,16 @@ License
 =======
 DataQualityDashboard is licensed under Apache License 2.0
 
+Development
+===========
+DataQualityDashboard is being developed in R Studio.
+
 ### Development status
 
 V2.0 ready for use. 
 
 # Acknowledgements
-
-This project is supported in part through the National Science Foundation grant IIS 1251151.
+- This project is supported in part through the National Science Foundation grant IIS 1251151.
 
 <b id="f1">1</b> Kahn, M.G., et al., A Harmonized Data Quality Assessment Terminology and Framework for the Secondary Use of Electronic Health Record Data. EGEMS (Wash DC), 2016. 4(1): p. 1244. [↩](#kahn)
 

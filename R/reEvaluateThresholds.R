@@ -1,6 +1,4 @@
-# @file reEvaluateThresholds.R
-#
-# Copyright 2020 Observational Health Data Sciences and Informatics
+# Copyright 2022 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -17,9 +15,9 @@
 # limitations under the License.
 
 #' @title Re-evaluate Thresholds
-#' 
+#'
 #' @description Re-evaluate an existing DQD result against an updated thresholds file.
-#' 
+#'
 #' @param jsonFilePath              Path to the JSON results file generated using the execute function
 #' @param outputFolder              The folder to output new JSON result file to
 #' @param outputFile                File to write results JSON object to
@@ -27,41 +25,64 @@
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
 #' @param cdmVersion                The CDM version to target for the data source. By default, 5.3 is used.
-#' 
+#'
 #' @export
- 
+
 reEvaluateThresholds <- function(jsonFilePath,
                                  outputFolder,
                                  outputFile,
                                  tableCheckThresholdLoc = "default",
                                  fieldCheckThresholdLoc = "default",
                                  conceptCheckThresholdLoc = "default",
-                                 cdmVersion = '5.3') {
+                                 cdmVersion = "5.3") {
   # Read in results to data frame --------------------------------------
   dqdResults <- jsonlite::read_json(path = jsonFilePath)
-  
+
   df <- lapply(dqdResults$CheckResults, function(cr) {
     cr[sapply(cr, is.null)] <- NA
     as.data.frame(cr)
   })
   df <- do.call(plyr::rbind.fill, df)
 
+  # Add required fields that might be missing due to writing to json
+  if (!("CDM_FIELD_NAME" %in% colnames(df))) {
+    df$CDM_FIELD_NAME <- NA
+  }
+  if (!("ERROR" %in% colnames(df))) {
+    df$ERROR <- NA
+  }
+  if (!("CONCEPT_ID" %in% colnames(df))) {
+    df$CONCEPT_ID <- NA
+  }
+  if (!("UNIT_CONCEPT_ID" %in% colnames(df))) {
+    df$UNIT_CONCEPT_ID <- NA
+  }
+
   # Read in  new thresholds ----------------------------------------------
   tableChecks <- .readThresholdFile(tableCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion))
   fieldChecks <- .readThresholdFile(fieldCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion))
   fieldChecks$cdmFieldName <- toupper(fieldChecks$cdmFieldName) # Uppercase in results, lowercase in threshold files
-  conceptChecks <-  .readThresholdFile(conceptCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion))
+  conceptChecks <- .readThresholdFile(conceptCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion))
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
-  
-  newCheckResults <- .evaluateThresholds(df, tableChecks, fieldChecks, conceptChecks)
-  
-  newOverview <- .summarizeResults(newCheckResults)
-  
+
+  newCheckResults <- .evaluateThresholds(
+    checkResults = df,
+    tableChecks = tableChecks,
+    fieldChecks = fieldChecks,
+    conceptChecks = conceptChecks
+  )
+
+  newOverview <- .summarizeResults(checkResults = newCheckResults)
+
   newDqdResults <- dqdResults
   newDqdResults$CheckResults <- newCheckResults
   newDqdResults$Overview <- newOverview
-  
-  .writeResultsToJson(newDqdResults, outputFolder, outputFile)
-  
+
+  .writeResultsToJson(
+    result = newDqdResults,
+    outputFolder = outputFolder,
+    outputFile = outputFile
+  )
+
   return(newDqdResults)
 }

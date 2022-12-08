@@ -1,3 +1,24 @@
+DataQualityDashboard 2.0.0
+===========================
+This release includes:
+
+### New check statuses
+
+  - **Not Applicable** identifies checks with no data to support them
+  - **Error** identifies checks that failed due to a SQL error
+
+### New Checks
+
+  - **measureConditionEraCompleteness** checks to make sure that every person with a Condition_Era record have a record in Condition_Occurrence as well
+  - **withinVisitDates** looks at clinical facts and the visits they are associated with to make sure that the visit dates occur within one week on either side of the visit
+  - **plausibleUnitConceptIds** identifies records with invalid Unit_Concept_Ids by Measurement_Concept_Id
+
+### outputFolder input paramater
+
+  - The `outputFolder` parameter for the `executeDqChecks` function is now REQUIRED and no longer has a default value.  **This may be a breaking change for users who have not specified this parameter in their script to run DQD.**
+
+### Integrated testing was also added and the package was refactored on the backend
+
 DataQualityDashboard 1.4.1
 ===========================
 No material changes from v1.4, this adds a correct `DESCRIPTION` file 

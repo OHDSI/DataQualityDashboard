@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -60,6 +60,9 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+</li>
+<li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
@@ -92,7 +95,7 @@
 <span>  <span class="va">cdmSourceName</span>,</span>
 <span>  numThreads <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  sqlOnly <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  outputFolder <span class="op">=</span> <span class="st">"output"</span>,</span>
+<span>  <span class="va">outputFolder</span>,</span>
 <span>  outputFile <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  verboseMode <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  writeToTable <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -143,7 +146,7 @@
 
 
 <dt>outputFolder</dt>
-<dd><p>The folder to output logs and SQL files to</p></dd>
+<dd><p>The folder to output logs, SQL files, and JSON results file to</p></dd>
 
 
 <dt>outputFile</dt>
@@ -176,11 +179,11 @@ in the resultsDatabaseSchema. Default is TRUE.</p></dd>
 
 
 <dt>checkNames</dt>
-<dd><p>(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.</p></dd>
+<dd><p>(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Descriptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.</p></dd>
 
 
 <dt>cohortDefinitionId</dt>
-<dd><p>The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort' 
+<dd><p>The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
 with the fields cohort_definition_id and subject_id.</p></dd>
 
 

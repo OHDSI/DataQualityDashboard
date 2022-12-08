@@ -12,7 +12,7 @@ executeDqChecks(
   cdmSourceName,
   numThreads = 1,
   sqlOnly = FALSE,
-  outputFolder = "output",
+  outputFolder,
   outputFile = "",
   verboseMode = FALSE,
   writeToTable = TRUE,
@@ -46,7 +46,7 @@ executeDqChecks(
 
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
 
-\item{outputFolder}{The folder to output logs and SQL files to}
+\item{outputFolder}{The folder to output logs, SQL files, and JSON results file to}
 
 \item{outputFile}{(OPTIONAL) File to write results JSON object}
 
@@ -63,9 +63,9 @@ in the resultsDatabaseSchema. Default is TRUE.}
 
 \item{checkLevels}{Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)}
 
-\item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.}
+\item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Descriptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.}
 
-\item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort' 
+\item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
 with the fields cohort_definition_id and subject_id.}
 
 \item{cohortDatabaseSchema}{The schema where the cohort table is located.}

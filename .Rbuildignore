@@ -4,5 +4,6 @@
 ^LICENSE$
 _pkgdown.yml/*
 compare_versions
+deploy.sh
 docs/*
 extras/*

@@ -17,7 +17,7 @@ navbar:
     - reference
     - articles
     - news
-    right: github
+    right: [hades, github]
   components:
     home:
       icon: fa-home fa-lg
@@ -31,6 +31,9 @@ navbar:
     news:
       text: Changelog
       href: news/index.html
+    hades:
+      text: hadesLogo
+      href: https://ohdsi.github.io/Hades
   
 reference:
   - title: "Execution"
@@ -56,4 +59,3 @@ reference:
     desc: > 
       Function to write the JSON results to a csv file
     contents: writeJsonResultsToCsv
-    
