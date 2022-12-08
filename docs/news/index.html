@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -60,7 +60,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -82,17 +82,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.0" id="dataqualitydashboard-20">DataQualityDashboard 2.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-20"></a></h2>
+<h2 class="page-header" data-toc-text="2.0.0" id="dataqualitydashboard-200">DataQualityDashboard 2.0.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-200"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
-<h4 id="new-check-statuses-2-0">New check statuses<a class="anchor" aria-label="anchor" href="#new-check-statuses-2-0"></a></h4>
+<h4 id="new-check-statuses-2-0-0">New check statuses<a class="anchor" aria-label="anchor" href="#new-check-statuses-2-0-0"></a></h4>
 <ul><li>
 <strong>Not Applicable</strong> identifies checks with no data to support them</li>
 <li>
 <strong>Error</strong> identifies checks that failed due to a SQL error</li>
 </ul></div>
 <div class="section level4">
-<h4 id="new-checks-2-0">New Checks<a class="anchor" aria-label="anchor" href="#new-checks-2-0"></a></h4>
+<h4 id="new-checks-2-0-0">New Checks<a class="anchor" aria-label="anchor" href="#new-checks-2-0-0"></a></h4>
 <ul><li>
 <strong>measureConditionEraCompleteness</strong> checks to make sure that every person with a Condition_Era record have a record in Condition_Occurrence as well</li>
 <li>
@@ -101,7 +101,12 @@
 <strong>plausibleUnitConceptIds</strong> identifies records with invalid Unit_Concept_Ids by Measurement_Concept_Id</li>
 </ul></div>
 <div class="section level4">
-<h4 id="integrated-testing-was-also-added-and-the-package-was-refactored-on-the-backend-2-0">Integrated testing was also added and the package was refactored on the backend<a class="anchor" aria-label="anchor" href="#integrated-testing-was-also-added-and-the-package-was-refactored-on-the-backend-2-0"></a></h4>
+<h4 id="outputfolder-input-paramater-2-0-0">outputFolder input paramater<a class="anchor" aria-label="anchor" href="#outputfolder-input-paramater-2-0-0"></a></h4>
+<ul><li>The <code>outputFolder</code> parameter for the <code>executeDqChecks</code> function is now REQUIRED and no longer has a default value. <strong>This may be a breaking change for users who have not specified this parameter in their script to run DQD.</strong>
+</li>
+</ul></div>
+<div class="section level4">
+<h4 id="integrated-testing-was-also-added-and-the-package-was-refactored-on-the-backend-2-0-0">Integrated testing was also added and the package was refactored on the backend<a class="anchor" aria-label="anchor" href="#integrated-testing-was-also-added-and-the-package-was-refactored-on-the-backend-2-0-0"></a></h4>
 </div>
 </div>
     <div class="section level2">
