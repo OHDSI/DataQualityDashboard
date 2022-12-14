@@ -33,7 +33,7 @@ FROM
 		  ISNUMERIC(cdmTable.@cdmFieldName) = 0 
 		  OR (
 		    ISNUMERIC(cdmTable.@cdmFieldName) = 1 
-		    AND CHARINDEX('.', CAST(ABS(cdmTable.@cdmFieldName) AS varchar)) = 1
+		    AND CHARINDEX('.', CAST(ABS(cdmTable.@cdmFieldName) AS varchar)) != 0
 		  )
       AND cdmTable.@cdmFieldName IS NOT NULL
 		/*violatedRowsEnd*/
