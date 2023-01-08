@@ -9,56 +9,56 @@ function loadResults(results) {
     function format(d) {
         errorMessage = '';
         thresholdMessage = ''
-        if (d.THRESHOLD_VALUE != undefined) {
-            thresholdMessage = ' (Threshold=' + d.THRESHOLD_VALUE + '%)';
+        if (d.thresholdValue != undefined) {
+            thresholdMessage = ' (Threshold=' + d.thresholdValue + '%)';
         }
-        if (d.NOTES_VALUE == undefined) {
-            d.NOTES_VALUE = '';
+        if (d.notesValue == undefined) {
+            d.notesValue = '';
         }
-        if (d.CONCEPT_ID == undefined) {
-            d.CONCEPT_ID = '';
+        if (d.conceptId == undefined) {
+            d.conceptId = '';
         }
-        if (d.UNIT_CONCEPT_ID == undefined) {
-            d.UNIT_CONCEPT_ID = '';
+        if (d.unitConceptId == undefined) {
+            d.unitConceptId = '';
         }
-        if (d.CDM_FIELD_NAME == undefined) {
-            d.CDM_FIELD_NAME = '';
+        if (d.cdmFieldName == undefined) {
+            d.cdmFieldName = '';
         }
-        if (d.ERROR) {
-            errorMessage = d.ERROR;
+        if (d.error) {
+            errorMessage = d.error;
         }
         return '<table class="dtDetails" style="padding-left:25px;">' +
             '<tr>' +
             '<td>Name:</td>' +
-            '<td>' + d.CHECK_NAME + '</td>' +
+            '<td>' + d.checkName + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Description:</td>' +
-            '<td>' + d.CHECK_DESCRIPTION + thresholdMessage + '.</td>' +
+            '<td>' + d.checkDescription + thresholdMessage + '.</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Notes:</td>' +
-            '<td>' + d.NOTES_VALUE + '</td>' +
+            '<td>' + d.notesValue + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Level:</td>' +
-            '<td>' + d.CHECK_LEVEL + '</td>' +
+            '<td>' + d.checkLevel + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Table:</td>' +
-            '<td>' + d.CDM_TABLE_NAME + '</td>' +
+            '<td>' + d.cdmTableName + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Field:</td>' +
-            '<td>' + d.CDM_FIELD_NAME + '</td>' +
+            '<td>' + d.cdmFieldName + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Concept Id:</td>' +
-            '<td>' + d.CONCEPT_ID + '</td>' +
+            '<td>' + d.conceptId + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Unit Concept Id:</td>' +
-            '<td>' + d.UNIT_CONCEPT_ID + '</td>' +
+            '<td>' + d.unitConceptId + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Check Id:</td>' +
@@ -66,27 +66,27 @@ function loadResults(results) {
             '</tr>' +
             '<tr>' +
             '<td># Rows Violated:</td>' +
-            '<td>' + d.NUM_VIOLATED_ROWS + '</td>' +
+            '<td>' + d.numViolatedRows + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>% Rows Violated:</td>' +
-            '<td>' + (d.PCT_VIOLATED_ROWS * 100).toFixed(2) + '%' + '</td>' +
+            '<td>' + (d.pctViolatedRows * 100).toFixed(2) + '%' + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td># Denominator Rows:</td>' +
-            '<td>' + d.NUM_DENOMINATOR_ROWS + '</td>' +
+            '<td>' + d.numDenominatorRows + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Execution Time:</td>' +
-            '<td>' + d.EXECUTION_TIME + '</td>' +
+            '<td>' + d.executionTime + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Not applicable reason:</td>' +
-            '<td>' + d.NOT_APPLICABLE_REASON + '</td>' +
+            '<td>' + d.notApplicableReason + '</td>' +
             '</tr>' +
             '<tr>' +
             '<td>SQL Query:</td>' +
-            '<td><pre>' + d.QUERY_TEXT + '</pre></td>' +
+            '<td><pre>' + d.queryText + '</pre></td>' +
             '</tr>' +
             '<tr>' +
             '<td>Error Log:</td>' +
@@ -149,26 +149,26 @@ function loadResults(results) {
                 "data": null,
                 "defaultContent": ''
             },
-            { data: function (d) { if (d.IS_ERROR == 1) { return "ERROR" } else if (d.NOT_APPLICABLE == 1) { return "NOT APPLICABLE" } else if (d.FAILED == 1) { return "FAIL" } else {return "PASS"} }, title: "STATUS", className: 'dt-body-right' },
-            /*{ data: function (d) { return d.CONTEXT ? d.CONTEXT : "None"; }, title: "CONTEXT" },*/
-            { data: "CDM_TABLE_NAME", title: "TABLE"},
-            { data: function (d) { return d.CDM_FIELD_NAME ? d.CDM_FIELD_NAME : "None"; }, title: "FIELD", visible: false },
-            { data: "CHECK_NAME", title: "CHECK", visible: false},
-            { data: "CATEGORY", title: "CATEGORY" },
-            { data: function (d) { return d.SUBCATEGORY ? d.SUBCATEGORY : "None" }, title: "SUBCATEGORY" },
-            { data: "CHECK_LEVEL", title: "LEVEL" },
-            { data: function (d) { if (d.NOTES_VALUE == null) { return "None"; } else { return "Exists"; } }, title: "NOTES" },
+            { data: function (d) { if (d.isError == 1) { return "ERROR" } else if (d.notApplicable == 1) { return "NOT APPLICABLE" } else if (d.failed == 1) { return "FAIL" } else {return "PASS"} }, title: "STATUS", className: 'dt-body-right' },
+            /*{ data: function (d) { return d.context ? d.context : "None"; }, title: "CONTEXT" },*/
+            { data: "cdmTableName", title: "TABLE"},
+            { data: function (d) { return d.cdmFieldName ? d.cdmFieldName : "None"; }, title: "FIELD", visible: false },
+            { data: "checkName", title: "CHECK", visible: false},
+            { data: "category", title: "CATEGORY" },
+            { data: function (d) { return d.subcategory ? d.subcategory : "None" }, title: "SUBCATEGORY" },
+            { data: "checkLevel", title: "LEVEL" },
+            { data: function (d) { if (d.notesValue == null) { return "None"; } else { return "Exists"; } }, title: "NOTES" },
             
             {
                 data: function (d) {
                     thresholdMessage = '';
-                    if (d.THRESHOLD_VALUE != undefined) {
-                        thresholdMessage = ' (Threshold=' + d.THRESHOLD_VALUE + '%).';
+                    if (d.thresholdValue != undefined) {
+                        thresholdMessage = ' (Threshold=' + d.thresholdValue + '%).';
                     }
-                    return d.CHECK_DESCRIPTION + thresholdMessage;
+                    return d.checkDescription + thresholdMessage;
                 }, title: "DESCRIPTION", className: "description", width: "40%"
             },
-            { data: function (d) { return d.PCT_VIOLATED_ROWS ? (d.PCT_VIOLATED_ROWS * 100).toFixed(2) + '%' : '0%' }, title: "%&nbsp;RECORDS", type: "num-fmt", className: 'dt-body-right', orderable: true }
+            { data: function (d) { return d.pctViolatedRows ? (d.pctViolatedRows * 100).toFixed(2) + '%' : '0%' }, title: "%&nbsp;RECORDS", type: "num-fmt", className: 'dt-body-right', orderable: true }
         ],
         columnDefs: [{
             targets: [0, 1, 2, 3, 4, 5, 6],

@@ -77,7 +77,8 @@
     expr = {
       DatabaseConnector::insertTable(
         connection = connection, tableName = tableName, data = checkResults,
-        dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE
+        dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE, 
+        camelCaseToSnakeCase = TRUE
       )
       ParallelLogger::logInfo("Finished writing table")
     },
@@ -99,33 +100,33 @@
 .writeResultsToCsv <- function(checkResults,
                                csvPath,
                                columns = c(
-                                 "checkId", "FAILED", "PASSED",
-                                 "IS_ERROR", "NOT_APPLICABLE",
-                                 "CHECK_NAME", "CHECK_DESCRIPTION",
-                                 "THRESHOLD_VALUE", "NOTES_VALUE",
-                                 "CHECK_LEVEL", "CATEGORY",
-                                 "SUBCATEGORY", "CONTEXT",
-                                 "CHECK_LEVEL", "CDM_TABLE_NAME",
-                                 "CDM_FIELD_NAME", "CONCEPT_ID",
-                                 "UNIT_CONCEPT_ID", "NUM_VIOLATED_ROWS",
-                                 "PCT_VIOLATED_ROWS", "NUM_DENOMINATOR_ROWS",
-                                 "EXECUTION_TIME", "NOT_APPLICABLE_REASON",
-                                 "ERROR", "QUERY_TEXT"
+                                 "checkId", "failed", "passed",
+                                 "isError", "notApplicable",
+                                 "checkName", "checkDescription",
+                                 "thresholdValue", "notesValue",
+                                 "checkLevel", "category",
+                                 "subcategory", "context",
+                                 "checkLevel", "cdmTableName",
+                                 "cdmFieldName", "conceptId",
+                                 "unitConceptId", "numViolatedRows",
+                                 "pctViolatedRows", "numDenominatorRows",
+                                 "executionTime", "notApplicableReason",
+                                 "error", "queryText"
                                ),
                                delimiter = ",") {
   tryCatch(
     expr = {
       ParallelLogger::logInfo(sprintf("Writing results to CSV file %s", csvPath))
-      columns <- intersect(union(c("checkId", "FAILED", "PASSED", "IS_ERROR", "NOT_APPLICABLE"), columns), colnames(checkResults))
-      if (is.element("QUERY_TEXT", columns)) {
-        checkResults$QUERY_TEXT <- stringr::str_replace_all(checkResults$QUERY_TEXT, "\n", " ")
-        checkResults$QUERY_TEXT <- stringr::str_replace_all(checkResults$QUERY_TEXT, "\r", " ")
-        checkResults$QUERY_TEXT <- stringr::str_replace_all(checkResults$QUERY_TEXT, "\t", " ")
+      columns <- intersect(union(c("checkId", "failed", "passed", "isError", "notApplicable"), columns), colnames(checkResults))
+      if (is.element("queryText", columns)) {
+        checkResults$queryText <- stringr::str_replace_all(checkResults$queryText, "\n", " ")
+        checkResults$queryText <- stringr::str_replace_all(checkResults$queryText, "\r", " ")
+        checkResults$queryText <- stringr::str_replace_all(checkResults$queryText, "\t", " ")
       }
-      if (is.element("ERROR", columns)) {
-        checkResults$ERROR <- stringr::str_replace_all(checkResults$ERROR, "\n", " ")
-        checkResults$ERROR <- stringr::str_replace_all(checkResults$ERROR, "\r", " ")
-        checkResults$ERROR <- stringr::str_replace_all(checkResults$ERROR, "\t", " ")
+      if (is.element("error", columns)) {
+        checkResults$error <- stringr::str_replace_all(checkResults$error, "\n", " ")
+        checkResults$error <- stringr::str_replace_all(checkResults$error, "\r", " ")
+        checkResults$error <- stringr::str_replace_all(checkResults$error, "\t", " ")
       }
       write.table(dplyr::select(checkResults, all_of(columns)), file = csvPath, sep = delimiter, row.names = FALSE, na = "")
       ParallelLogger::logInfo("Finished writing to CSV file")

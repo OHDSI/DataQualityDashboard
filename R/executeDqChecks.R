@@ -81,7 +81,7 @@ executeDqChecks <- function(connectionDetails,
     stop("connectionDetails must be an object of class 'connectionDetails'.")
   }
 
-  if (!str_detect(cdmVersion, regex(ACCEPTED_CDM_REGEX))) {
+  if (!str_detect(cdmVersion, regex(acceptedCdmRegex))) {
     stop("cdmVersion must contain a version of the form '5.X' where X is an integer between 2 and 4 inclusive.")
   }
 
@@ -115,11 +115,11 @@ executeDqChecks <- function(connectionDetails,
       cdmDatabaseSchema = cdmDatabaseSchema
     )
     sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
-    metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
+    metadata <- DatabaseConnector::querySql(connection = connection, sql = sql, snakeCaseToCamelCase = TRUE)
     if (nrow(metadata) < 1) {
       stop("Please populate the cdm_source table before executing data quality checks.")
     }
-    metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
+    metadata$dqdVersion <- as.character(packageVersion("DataQualityDashboard"))
     DatabaseConnector::disconnect(connection)
   } else {
     metadata <- NA
@@ -191,7 +191,6 @@ executeDqChecks <- function(connectionDetails,
     checkThresholdLoc = conceptCheckThresholdLoc,
     defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion)
   )
-
   # ensure we use only checks that are intended to be run -----------------------------------------
 
   if (length(tablesToExclude) > 0) {
@@ -258,6 +257,7 @@ executeDqChecks <- function(connectionDetails,
   }
 
   allResults <- NULL
+  
   if (!sqlOnly) {
     checkResults <- do.call(rbind, resultsList)
 
@@ -288,7 +288,7 @@ executeDqChecks <- function(connectionDetails,
     # Write result
     if (nchar(outputFile) == 0) {
       endTimestamp <- format(endTime, "%Y%m%d%H%M%S")
-      outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION), endTimestamp)
+      outputFile <- sprintf("%s-%s.json", tolower(metadata$cdmSourceAbbreviation), endTimestamp)
     }
 
     .writeResultsToJson(allResults, outputFolder, outputFile)

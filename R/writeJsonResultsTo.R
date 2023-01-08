@@ -48,14 +48,14 @@ writeJsonResultsToTable <- function(connectionDetails,
 
   ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
 
-  if ("UNIT_CONCEPT_ID" %in% colnames(df)) {
+  if ("unitConceptId" %in% colnames(df)) {
     ddl <- SqlRender::loadRenderTranslateSql(
       sqlFilename = "result_table_ddl_concept.sql",
       packageName = "DataQualityDashboard",
       tableName = tableName,
       dbms = connectionDetails$dbms
     )
-  } else if ("CDM_FIELD_NAME" %in% colnames(df)) {
+  } else if ("cdmFieldName" %in% colnames(df)) {
     ddl <- SqlRender::loadRenderTranslateSql(
       sqlFilename = "result_table_ddl_field.sql",
       packageName = "DataQualityDashboard",
@@ -105,18 +105,18 @@ writeJsonResultsToTable <- function(connectionDetails,
 writeJsonResultsToCsv <- function(jsonPath,
                                   csvPath,
                                   columns = c(
-                                    "checkId", "FAILED", "PASSED",
-                                    "IS_ERROR", "NOT_APPLICABLE",
-                                    "CHECK_NAME", "CHECK_DESCRIPTION",
-                                    "THRESHOLD_VALUE", "NOTES_VALUE",
-                                    "CHECK_LEVEL", "CATEGORY",
-                                    "SUBCATEGORY", "CONTEXT",
-                                    "CHECK_LEVEL", "CDM_TABLE_NAME",
-                                    "CDM_FIELD_NAME", "CONCEPT_ID",
-                                    "UNIT_CONCEPT_ID", "NUM_VIOLATED_ROWS",
-                                    "PCT_VIOLATED_ROWS", "NUM_DENOMINATOR_ROWS",
-                                    "EXECUTION_TIME", "NOT_APPLICABLE_REASON",
-                                    "ERROR", "QUERY_TEXT"
+                                    "checkId", "failed", "passed",
+                                    "isError", "notApplicable",
+                                    "checkName", "checkDescription",
+                                    "thresholdValue", "notesValue",
+                                    "checkLevel", "category",
+                                    "subcategory", "context",
+                                    "checkLevel", "cdmTableName",
+                                    "cdmFieldName", "conceptId",
+                                    "unitConceptId", "numViolatedRows",
+                                    "pctViolatedRows", "numDenominatorRows",
+                                    "executionTime", "notApplicableReason",
+                                    "error", "queryText"
                                   ),
                                   delimiter = ",") {
   tryCatch(

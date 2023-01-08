@@ -52,34 +52,34 @@ subsetDataQualityChecks <- function(inputFolder, outputFolder) {
     checkResultsDf <- do.call(plyr::rbind.fill, checkResultsDf)    
     
     # subset results to specified checkNames and tables
-    checkResultsSubset <- checkResultsDf %>% filter(CDM_TABLE_NAME %in% tables & CHECK_NAME %in% checkNames & !(CDM_FIELD_NAME %in% excludedFieldNames))
+    checkResultsSubset <- checkResultsDf %>% filter(cdmTableName %in% tables & checkName %in% checkNames & !(cdmFieldName %in% excludedFieldNames))
     checkResultsSubsetJson <- rjson::toJSON(unname(split(checkResultsSubset, 1:nrow(checkResultsSubset))))
     resultJson$CheckResults <- unname(split(checkResultsSubset, 1:nrow(checkResultsSubset)))
     
-    checkResultsSubsetFailed <- checkResultsSubset %>% filter(FAILED == 1)
+    checkResultsSubsetFailed <- checkResultsSubset %>% filter(failed == 1)
     checkResultsSubsetFailedJson <- rjson::toJSON(unname(split(checkResultsSubsetFailed, 1:nrow(checkResultsSubsetFailed))))
     write(checkResultsSubsetFailedJson,file.path(outputFolder,paste0(basename(f),".failed.json")))
     
     countTotal <- nrow(checkResultsSubset)
-    countThresholdFailed <- nrow(checkResultsSubset[checkResultsSubset$FAILED == 1 & 
-                                                      is.na(checkResultsSubset$ERROR),])
-    countErrorFailed <- nrow(checkResultsSubset[!is.na(checkResultsSubset$ERROR),])
-    countOverallFailed <- nrow(checkResultsSubset[checkResultsSubset$FAILED == 1,])
+    countThresholdFailed <- nrow(checkResultsSubset[checkResultsSubset$failed == 1 & 
+                                                      is.na(checkResultsSubset$error),])
+    countErrorFailed <- nrow(checkResultsSubset[!is.na(checkResultsSubset$error),])
+    countOverallFailed <- nrow(checkResultsSubset[checkResultsSubset$failed == 1,])
     
     countPassed <- countTotal - countOverallFailed
     
-    countTotalPlausibility <- nrow(checkResultsSubset[checkResultsSubset$CATEGORY=='Plausibility',])
-    countTotalConformance <- nrow(checkResultsSubset[checkResultsSubset$CATEGORY=='Conformance',])
-    countTotalCompleteness <- nrow(checkResultsSubset[checkResultsSubset$CATEGORY=='Completeness',])
+    countTotalPlausibility <- nrow(checkResultsSubset[checkResultsSubset$category=='Plausibility',])
+    countTotalConformance <- nrow(checkResultsSubset[checkResultsSubset$category=='Conformance',])
+    countTotalCompleteness <- nrow(checkResultsSubset[checkResultsSubset$category=='Completeness',])
     
-    countFailedPlausibility <- nrow(checkResultsSubset[checkResultsSubset$CATEGORY=='Plausibility' & 
-                                                         checkResultsSubset$FAILED == 1,])
+    countFailedPlausibility <- nrow(checkResultsSubset[checkResultsSubset$category=='Plausibility' & 
+                                                         checkResultsSubset$failed == 1,])
     
-    countFailedConformance <- nrow(checkResultsSubset[checkResultsSubset$CATEGORY=='Conformance' &
-                                                        checkResultsSubset$FAILED == 1,])
+    countFailedConformance <- nrow(checkResultsSubset[checkResultsSubset$category=='Conformance' &
+                                                        checkResultsSubset$failed == 1,])
     
-    countFailedCompleteness <- nrow(checkResultsSubset[checkResultsSubset$CATEGORY=='Completeness' &
-                                                         checkResultsSubset$FAILED == 1,])
+    countFailedCompleteness <- nrow(checkResultsSubset[checkResultsSubset$category=='Completeness' &
+                                                         checkResultsSubset$failed == 1,])
     
     countPassedPlausibility <- countTotalPlausibility - countFailedPlausibility
     countPassedConformance <- countTotalConformance - countFailedConformance
@@ -126,5 +126,5 @@ View(networkResults)
 #View(test$networkResults)
 
 # applying a > 5% percentage of violating rows 
-networkSummary <-networkResults$networkChecks %>% filter(PCT_VIOLATED_ROWS > 0.05) %>% group_by(CHECK_DESCRIPTION) %>% summarise(failed=sum(FAILED))
+networkSummary <-networkResults$networkChecks %>% filter(pctViolatedRows > 0.05) %>% group_by(checkDescription) %>% summarise(failed=sum(failed))
 View(networkSummary)
