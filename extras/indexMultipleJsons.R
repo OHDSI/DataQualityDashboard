@@ -86,11 +86,11 @@ subsetDataQualityChecks <- function(inputFolder, outputFolder) {
     countPassedCompleteness <- countTotalCompleteness - countFailedCompleteness
     
     cdmSourceChecks <- checkResultsSubset
-    cdmSourceChecks$CDM_SOURCE_NAME <- resultJson$Metadata[[1]]$CDM_SOURCE_NAME
+    cdmSourceChecks$cdmSourceName <- resultJson$Metadata[[1]]$cdmSourceName
     overallChecks <- dplyr::bind_rows(overallChecks, cdmSourceChecks)
     
     overview <- list(
-      cdmSourceName = resultJson$Metadata[[1]]$CDM_SOURCE_NAME,
+      cdmSourceName = resultJson$Metadata[[1]]$cdmSourceName,
       countTotal = countTotal, 
       countPassed = countPassed, 
       countErrorFailed = countErrorFailed,

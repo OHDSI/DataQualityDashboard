@@ -27,12 +27,11 @@
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #' @param outputFolder              The folder to output logs, SQL files, and JSON results file to
 #' @param outputFile                (OPTIONAL) File to write results JSON object
-#' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
-#' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
+#' @param verboseMode               Boolean to determine if the console will show all execution steps. Default is FALSE
+#' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table in the resultsDatabaseSchema. Default is TRUE
 #' @param writeTableName            The name of the results table. Defaults to `dqdashboard_results`.
-#' @param writeToCsv                Boolean to indicate if the check results will be written to a csv file
+#' @param writeToCsv                Boolean to indicate if the check results will be written to a csv file. Default is FALSE
 #' @param csvFile                   (OPTIONAL) CSV file to write results
-#'                                  in the resultsDatabaseSchema. Default is TRUE.
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
 #' @param checkNames                (OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Descriptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.
 #' @param cohortDefinitionId        The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'

@@ -3,7 +3,7 @@ function loadResults(results) {
     $('dq-dashboard').attr('data-results', JSON.stringify(results.CheckResults));
 
     var metadata = results.Metadata[0];
-    $('cdm-source-name').text(metadata.CDM_SOURCE_NAME);
+    $('cdm-source-name').text(metadata.cdmSourceName);
     $('dq-metadata').attr('data-results', JSON.stringify(metadata));
 
     function format(d) {
