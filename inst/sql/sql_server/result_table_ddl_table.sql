@@ -17,7 +17,7 @@ CREATE TABLE @tableName
   category              VARCHAR(255),
   subcategory           VARCHAR(255),
   context               VARCHAR(255),
-  checkid               VARCHAR(1024),
+  check_id               VARCHAR(1024),
   is_error              INTEGER,
   not_applicable        INTEGER,
   failed                INTEGER,
