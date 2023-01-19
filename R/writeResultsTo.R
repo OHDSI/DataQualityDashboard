@@ -72,13 +72,22 @@
     sql = ddl,
     progressBar = TRUE
   )
+  
+  # convert column names to snake case, omitting the checkId column, 
+  # which has no underscore in the results table DDL
+  for (i in 1:ncol(checkResults)){
+    if (colnames(checkResults)[i] == "checkId") {
+      colnames(checkResults)[i] <- tolower(colnames(checkResults)[i])
+    } else {
+      colnames(checkResults)[i] <- SqlRender::camelCaseToSnakeCase(colnames(checkResults)[i])
+    }
+  }
 
   tryCatch(
     expr = {
       DatabaseConnector::insertTable(
         connection = connection, tableName = tableName, data = checkResults,
-        dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE, 
-        camelCaseToSnakeCase = TRUE
+        dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE
       )
       ParallelLogger::logInfo("Finished writing table")
     },
