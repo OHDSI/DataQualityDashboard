@@ -7,3 +7,5 @@ compare_versions
 deploy.sh
 docs/*
 extras/*
+^doc$
+^Meta$
