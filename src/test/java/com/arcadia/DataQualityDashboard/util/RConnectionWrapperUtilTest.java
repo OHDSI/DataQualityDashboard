@@ -60,6 +60,7 @@ class RConnectionWrapperUtilTest {
                                 "dqd_user = \"dqd\", " +
                                 "dqd_password = \"password\", " +
                                 "username = \"perseus\"" +
+                                "httppath = \"perseus\"" +
                          ")";
         assertEquals(expected, command);
     }
