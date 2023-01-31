@@ -18,17 +18,26 @@ dataQualityCheck <- function(cdm_dataType,
                              dqd_dataBaseSchema,
                              dqd_user,
                              dqd_password,
-                             username) {
+                             username,
+                             httppath) {
   print("Starting Data Quality Check process..")
 
   Sys.setenv('DATABASECONNECTOR_JAR_FOLDER' = '~/jdbcDrivers')
 
+  if(cdm_dataType == "databricks") {
+    connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "spark",
+                                                 connectionString = sprintf("jdbc:spark://%s:%s/default;transportMode=http;ssl=1;httpPath=%s;AuthMech=3;UseNativeQuery=1;", cdm_server, cdm_port, httppath),
+                                                 user = "token",
+                                                 password = cdm_password)
+  }
+  else {
   connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = cdm_dataType,
                                                                   user = cdm_user,
                                                                   password = cdm_password,
                                                                   server = cdm_server,
                                                                   port = cdm_port,
                                                                   extraSettings = "")
+  }
   resultsDatabaseSchema <- "" # the fully qualified database schema name of the results schema (that you can write to)
 
   # determine how many threads (concurrent SQL sessions) to use ----------------------------------------
