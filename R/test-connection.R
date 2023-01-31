@@ -1,7 +1,7 @@
 testConnection <- function(dataType, server, port, dataBaseSchema, user, password, httpPath) {
   Sys.setenv('DATABASECONNECTOR_JAR_FOLDER' = '~/jdbcDrivers')
   
-  if(dataType == 'databricks') {
+  if(dataType == "databricks") {
     connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "spark",
                                                  connectionString = sprintf("jdbc:spark://%s:%s/default;transportMode=http;ssl=1;httpPath=%s;AuthMech=3;UseNativeQuery=1;", server, port, httpPath),
                                                  user = "token",
