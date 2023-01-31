@@ -51,4 +51,6 @@ RUN chmod +x entrypoint.sh
 
 EXPOSE 6311 2222
 
+RUN mkdir /root/jdbcDrivers
+
 CMD ["./entrypoint.sh"]
