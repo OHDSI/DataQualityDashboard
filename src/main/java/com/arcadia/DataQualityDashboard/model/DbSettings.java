@@ -50,6 +50,8 @@ public class DbSettings {
 
     @Column(name = "schema_name")
     private String schema;
+    
+    private String httppath;
 
     @JsonIgnore
     @OneToOne(fetch = LAZY, optional = false)

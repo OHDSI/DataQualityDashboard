@@ -12,7 +12,8 @@ public class DbTypeAdapter {
             "sql server",
             "postgresql",
             "oracle",
-            "redshift"
+            "redshift",
+            "databricks"
     );
 
     private static final List<String> dbRequireSchema = List.of(
