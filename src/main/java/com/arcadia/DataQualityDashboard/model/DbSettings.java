@@ -46,7 +46,7 @@ public class DbSettings {
 
     @NotNull
     @Column(name = "database_name", nullable = false)
-    private String database;
+    private String database = "default";
 
     @Column(name = "schema_name")
     private String schema;
