@@ -36,7 +36,7 @@ public class RConnectionWrapperUtil {
                     "dqd_user = \"" + dqdDatabaseProperties.getUser() + "\", " +
                     "dqd_password = \"" + dqdDatabaseProperties.getPassword() + "\", " +
                     "username = \"" + scan.getUsername() + "\"" +
-                    "httppath = \"" + scan.getHttppath() + "\"" +
+                    "httppath = \"" + dbSettings.getHttppath() + "\"" +
                 ")";
     }
 }
