@@ -59,8 +59,8 @@ class RConnectionWrapperUtilTest {
                                 "dqd_dataBaseSchema = \"dqd\", " +
                                 "dqd_user = \"dqd\", " +
                                 "dqd_password = \"password\", " +
-                                "username = \"perseus\"" +
-                                "httppath = \"perseus\"" +
+                                "username = \"perseus\", " +
+                                "httppath = \"null\"" +
                          ")";
         assertEquals(expected, command);
     }
