@@ -45,8 +45,8 @@ public class DbSettings {
     private String password;
 
     @NotNull
-    @Column(name = "database_name", nullable = false)
-    private String database = "default";
+    @Column(name = "database_name", nullable = false, columnDefinition = "varchar(250) default 'default'")
+    private String database;
 
     @Column(name = "schema_name")
     private String schema;
