@@ -44,8 +44,8 @@ public class DbSettings {
     @Transient
     private String password;
 
-    //@NotNull
-    @Column(name = "database_name")
+    @NotNull
+    @Column(name = "database_name", nullable = false)
     private String database;
 
     @Column(name = "schema_name")

@@ -22,7 +22,6 @@ import static com.arcadia.DataQualityDashboard.model.ScanStatus.IN_PROGRESS;
 import static com.arcadia.DataQualityDashboard.util.ScanUtil.toScanWithLogsResponse;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static com.arcadia.DataQualityDashboard.util.DbTypeAdapter.*;
 
 @Service
 @RequiredArgsConstructor
@@ -45,13 +44,6 @@ public class DataQualityServiceImpl implements DataQualityService {
     @Override
     public DataQualityScan createDataQualityScan(DbSettings dbSettings, String username) {
         String project = dbSettings.getDatabase();
-
-        String dbType = adaptDbType(dbSettings.getDbType());
-        if (dbType == "databricks") {
-            project = "default";
-            username = "token";
-        }
-
         DataQualityScan scan = DataQualityScan.builder()
                 .username(username)
                 .project(project)
