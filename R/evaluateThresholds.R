@@ -22,7 +22,6 @@
 #' @param conceptChecks             A dataframe containing the concept checks
 #'
 #' @keywords internal
-#'
 
 .evaluateThresholds <- function(checkResults,
                                 tableChecks,
@@ -144,28 +143,28 @@
   }
 
   missingTables <- dplyr::select(
-    dplyr::filter(checkResults, checkName == "cdmTable" & failed == 1),
-    cdmTableName
+    dplyr::filter(checkResults, .data$checkName == "cdmTable" & .data$failed == 1),
+    "cdmTableName"
   )
   if (nrow(missingTables) > 0) {
     missingTables$tableIsMissing <- 1
     checkResults <- dplyr::mutate(
       dplyr::left_join(checkResults, missingTables, by = "cdmTableName"),
-      tableIsMissing = ifelse(checkName != "cdmTable" & isError == 0, tableIsMissing, NA)
+      tableIsMissing = ifelse(.data$checkName != "cdmTable" & .data$isError == 0, .data$tableIsMissing, NA)
     )
   } else {
     checkResults$tableIsMissing <- NA
   }
 
   missingFields <- dplyr::select(
-    dplyr::filter(checkResults, checkName == "cdmField" & failed == 1 & is.na(tableIsMissing)),
-    cdmTableName, cdmFieldName
+    dplyr::filter(checkResults, .data$checkName == "cdmField" & .data$failed == 1 & is.na(.data$tableIsMissing)),
+    "cdmTableName", "cdmFieldName"
   )
   if (nrow(missingFields) > 0) {
     missingFields$fieldIsMissing <- 1
     checkResults <- dplyr::mutate(
       dplyr::left_join(checkResults, missingFields, by = c("cdmTableName", "cdmFieldName")),
-      fieldIsMissing = ifelse(checkName != "cdmField" & isError == 0, fieldIsMissing, NA)
+      fieldIsMissing = ifelse(.data$checkName != "cdmField" & .data$isError == 0, .data$fieldIsMissing, NA)
     )
   } else {
     checkResults$fieldIsMissing <- NA
@@ -173,19 +172,19 @@
 
   emptyTables <- dplyr::distinct(
     dplyr::select(
-      dplyr::filter(checkResults, checkName == "measureValueCompleteness" &
-        numDenominatorRows == 0 &
-        isError == 0 &
-        is.na(tableIsMissing) &
-        is.na(fieldIsMissing)),
-      cdmTableName
+      dplyr::filter(checkResults, .data$checkName == "measureValueCompleteness" &
+        .data$numDenominatorRows == 0 &
+        .data$isError == 0 &
+        is.na(.data$tableIsMissing) &
+        is.na(.data$fieldIsMissing)),
+      "cdmTableName"
     )
   )
   if (nrow(emptyTables) > 0) {
     emptyTables$tableIsEmpty <- 1
     checkResults <- dplyr::mutate(
       dplyr::left_join(checkResults, emptyTables, by = c("cdmTableName")),
-      tableIsEmpty = ifelse(checkName != "cdmField" & checkName != "cdmTable" & isError == 0, tableIsEmpty, NA)
+      tableIsEmpty = ifelse(.data$checkName != "cdmField" & .data$checkName != "cdmTable" & .data$isError == 0, .data$tableIsEmpty, NA)
     )
   } else {
     checkResults$tableIsEmpty <- NA
@@ -193,16 +192,16 @@
 
   emptyFields <-
     dplyr::select(
-      dplyr::filter(checkResults, checkName == "measureValueCompleteness" &
-        numDenominatorRows == numViolatedRows &
-        is.na(tableIsMissing) & is.na(fieldIsMissing) & is.na(tableIsEmpty)),
-      cdmTableName, cdmFieldName
+      dplyr::filter(checkResults, .data$checkName == "measureValueCompleteness" &
+        .data$numDenominatorRows == .data$numViolatedRows &
+        is.na(.data$tableIsMissing) & is.na(.data$fieldIsMissing) & is.na(.data$tableIsEmpty)),
+      .data$cdmTableName, .data$cdmFieldName
     )
   if (nrow(emptyFields) > 0) {
     emptyFields$fieldIsEmpty <- 1
     checkResults <- dplyr::mutate(
       dplyr::left_join(checkResults, emptyFields, by = c("cdmTableName", "cdmFieldName")),
-      fieldIsEmpty = ifelse(checkName != "measureValueCompleteness" & checkName != "cdmField" & checkName != "isRequired" & isError == 0, fieldIsEmpty, NA)
+      fieldIsEmpty = ifelse(.data$checkName != "measureValueCompleteness" & .data$checkName != "cdmField" & .data$checkName != "isRequired" & .data$isError == 0, .data$fieldIsEmpty, NA)
     )
   } else {
     checkResults$fieldIsEmpty <- NA
@@ -211,14 +210,14 @@
   checkResults <- dplyr::mutate(
     checkResults,
     conceptIsMissing = ifelse(
-      isError == 0 &
-        is.na(tableIsMissing) &
-        is.na(fieldIsMissing) &
-        is.na(tableIsEmpty) &
-        is.na(fieldIsEmpty) &
-        checkLevel == "CONCEPT" &
-        is.na(unitConceptId) &
-        numDenominatorRows == 0,
+      .data$isError == 0 &
+        is.na(.data$tableIsMissing) &
+        is.na(.data$fieldIsMissing) &
+        is.na(.data$tableIsEmpty) &
+        is.na(.data$fieldIsEmpty) &
+        .data$checkLevel == "CONCEPT" &
+        is.na(.data$unitConceptId) &
+        .data$numDenominatorRows == 0,
       1,
       NA
     )
@@ -227,14 +226,14 @@
   checkResults <- dplyr::mutate(
     checkResults,
     conceptAndUnitAreMissing = ifelse(
-      isError == 0 &
-        is.na(tableIsMissing) &
-        is.na(fieldIsMissing) &
-        is.na(tableIsEmpty) &
-        is.na(fieldIsEmpty) &
-        checkLevel == "CONCEPT" &
-        !is.na(unitConceptId) &
-        numDenominatorRows == 0,
+      .data$isError == 0 &
+        is.na(.data$tableIsMissing) &
+        is.na(.data$fieldIsMissing) &
+        is.na(.data$tableIsEmpty) &
+        is.na(.data$fieldIsEmpty) &
+        .data$checkLevel == "CONCEPT" &
+        !is.na(.data$unitConceptId) &
+        .data$numDenominatorRows == 0,
       1,
       NA
     )
@@ -242,20 +241,20 @@
 
   checkResults <- dplyr::mutate(
     checkResults,
-    notApplicable = dplyr::coalesce(tableIsMissing, fieldIsMissing, tableIsEmpty, fieldIsEmpty, conceptIsMissing, conceptAndUnitAreMissing, 0),
+    notApplicable = dplyr::coalesce(.data$tableIsMissing, .data$fieldIsMissing, .data$tableIsEmpty, .data$fieldIsEmpty, .data$conceptIsMissing, .data$conceptAndUnitAreMissing, 0),
     notApplicableReason = dplyr::case_when(
-      !is.na(tableIsMissing) ~ sprintf("Table %s does not exist.", cdmTableName),
-      !is.na(fieldIsMissing) ~ sprintf("Field %s.%s does not exist.", cdmTableName, cdmFieldName),
-      !is.na(tableIsEmpty) ~ sprintf("Table %s is empty.", cdmTableName),
-      !is.na(fieldIsEmpty) ~ sprintf("Field %s.%s is not populated.", cdmTableName, cdmFieldName),
-      !is.na(conceptIsMissing) ~ sprintf("%s=%s is missing from the %s table.", cdmFieldName, conceptId, cdmTableName),
-      !is.na(conceptAndUnitAreMissing) ~ sprintf("Combination of %s=%s, unitConceptId=%s and VALUE_AS_NUMBER IS NOT NULL is missing from the %s table.", cdmFieldName, conceptId, unitConceptId, cdmTableName)
+      !is.na(.data$tableIsMissing) ~ sprintf("Table %s does not exist.", .data$cdmTableName),
+      !is.na(.data$fieldIsMissing) ~ sprintf("Field %s.%s does not exist.", .data$cdmTableName, .data$cdmFieldName),
+      !is.na(.data$tableIsEmpty) ~ sprintf("Table %s is empty.", .data$cdmTableName),
+      !is.na(.data$fieldIsEmpty) ~ sprintf("Field %s.%s is not populated.", .data$cdmTableName, .data$cdmFieldName),
+      !is.na(.data$conceptIsMissing) ~ sprintf("%s=%s is missing from the %s table.", .data$cdmFieldName, .data$conceptId, .data$cdmTableName),
+      !is.na(.data$conceptAndUnitAreMissing) ~ sprintf("Combination of %s=%s, unitConceptId=%s and VALUE_AS_NUMBER IS NOT NULL is missing from the %s table.", .data$cdmFieldName, .data$conceptId, .data$unitConceptId, .data$cdmTableName)
     )
   )
 
-  checkResults <- dplyr::select(checkResults, -c(tableIsMissing, fieldIsMissing, tableIsEmpty, fieldIsEmpty, conceptIsMissing, conceptAndUnitAreMissing))
-  checkResults <- dplyr::mutate(checkResults, failed = ifelse(notApplicable == 1, 0, failed))
-  checkResults <- dplyr::mutate(checkResults, passed = ifelse(failed == 0 & isError == 0 & notApplicable == 0, 1, 0))
+  checkResults <- dplyr::select(checkResults, -c("tableIsMissing", "fieldIsMissing", "tableIsEmpty", "fieldIsEmpty", "conceptIsMissing", "conceptAndUnitAreMissing"))
+  checkResults <- dplyr::mutate(checkResults, failed = ifelse(.data$notApplicable == 1, 0, .data$failed))
+  checkResults <- dplyr::mutate(checkResults, passed = ifelse(.data$failed == 0 & .data$isError == 0 & .data$notApplicable == 0, 1, 0))
 
   checkResults
 }

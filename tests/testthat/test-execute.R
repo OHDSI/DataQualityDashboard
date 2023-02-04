@@ -12,7 +12,7 @@ test_that("Execute a single DQ check on Synthea/Eunomia", {
 
   expect_warning(
     results <- executeDqChecks(
-      connectionDetails = connectionDetails,
+      connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchema,
       resultsDatabaseSchema = resultsDatabaseSchema,
       cdmSourceName = "Eunomia",
@@ -31,7 +31,7 @@ test_that("Execute all TABLE checks on Synthea/Eunomia", {
   on.exit(unlink(outputFolder, recursive = TRUE))
 
   results <- executeDqChecks(
-    connectionDetails = connectionDetails,
+    connectionDetails = connectionDetailsEunomia,
     cdmDatabaseSchema = cdmDatabaseSchema,
     resultsDatabaseSchema = resultsDatabaseSchema,
     cdmSourceName = "Eunomia",
@@ -49,7 +49,7 @@ test_that("Execute FIELD checks on Synthea/Eunomia", {
   on.exit(unlink(outputFolder, recursive = TRUE))
 
   results <- executeDqChecks(
-    connectionDetails = connectionDetails,
+    connectionDetails = connectionDetailsEunomia,
     cdmDatabaseSchema = cdmDatabaseSchema,
     resultsDatabaseSchema = resultsDatabaseSchema,
     cdmSourceName = "Eunomia",
@@ -64,7 +64,7 @@ test_that("Execute CONCEPT checks on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
   results <- executeDqChecks(
-    connectionDetails = connectionDetails,
+    connectionDetails = connectionDetailsEunomia,
     cdmDatabaseSchema = cdmDatabaseSchema,
     resultsDatabaseSchema = resultsDatabaseSchema,
     cdmSourceName = "Eunomia",
@@ -138,7 +138,7 @@ test_that("Check invalid cdm version", {
 
   expect_error(
     executeDqChecks(
-      connectionDetails = connectionDetails,
+      connectionDetails = connectionDetailsEunomia,
       resultsDatabaseSchema = resultsDatabaseSchema,
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
@@ -156,7 +156,7 @@ test_that("Write JSON results", {
 
   expect_warning(
     results <- executeDqChecks(
-      connectionDetails = connectionDetails,
+      connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchema,
       resultsDatabaseSchema = resultsDatabaseSchema,
       cdmSourceName = "Eunomia",
@@ -176,12 +176,12 @@ test_that("Write JSON results", {
   expect_true(file.exists(csvPath))
 
   DataQualityDashboard::writeJsonResultsToTable(
-    connectionDetails = connectionDetails,
+    connectionDetails = connectionDetailsEunomia,
     resultsDatabaseSchema = resultsDatabaseSchema,
     jsonFilePath = jsonPath,
     writeTableName = "dqd_results"
   )
-  connection <- DatabaseConnector::connect(connectionDetails)
+  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
   on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
   tableNames <- DatabaseConnector::getTableNames(connection = connection, databaseSchema = resultsDatabaseSchema)
   expect_true("dqd_results" %in% tolower(tableNames))
@@ -194,7 +194,7 @@ test_that("Execute DQ checks and write to table", {
   
   expect_warning(
     results <- executeDqChecks(
-      connectionDetails = connectionDetails,
+      connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchema,
       resultsDatabaseSchema = resultsDatabaseSchema,
       cdmSourceName = "Eunomia",
@@ -205,7 +205,7 @@ test_that("Execute DQ checks and write to table", {
     ),
     regexp = "^Missing check names.*"
   )
-  connection <- DatabaseConnector::connect(connectionDetails)
+  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
   on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
   tableNames <- DatabaseConnector::getTableNames(connection = connection, databaseSchema = resultsDatabaseSchema)
   expect_true("dqd_results" %in% tolower(tableNames))
@@ -218,7 +218,7 @@ test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
 
   expect_warning(
     results <- executeDqChecks(
-      connectionDetails = connectionDetails,
+      connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchema,
       resultsDatabaseSchema = resultsDatabaseSchema,
       cdmSourceName = "Eunomia",

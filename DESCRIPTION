@@ -28,7 +28,9 @@ Imports:
     rJava,
     SqlRender (>= 1.6.0),
     plyr,
-    stringr
+    stringr,
+    rlang,
+    tidyselect
 Suggests:
     testthat,
     knitr,
