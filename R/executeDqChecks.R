@@ -77,8 +77,8 @@ executeDqChecks <- function(connectionDetails,
                             fieldCheckThresholdLoc = "default",
                             conceptCheckThresholdLoc = "default") {
   # Check input -------------------------------------------------------------------------------------------------------------------
-  if (!("connectionDetails" %in% class(connectionDetails))) {
-    stop("connectionDetails must be an object of class 'connectionDetails'.")
+  if (!any(class(connectionDetails) %in% c("connectionDetails", "ConnectionDetails"))) {
+    stop("connectionDetails must be an object of class 'connectionDetails' or 'ConnectionDetails'.")
   }
 
   if (!str_detect(cdmVersion, regex(ACCEPTED_CDM_REGEX))) {
