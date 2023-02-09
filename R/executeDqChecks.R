@@ -27,12 +27,11 @@
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #' @param outputFolder              The folder to output logs, SQL files, and JSON results file to
 #' @param outputFile                (OPTIONAL) File to write results JSON object
-#' @param verboseMode               Boolean to determine if the console will show all execution steps. Default = FALSE
-#' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table
+#' @param verboseMode               Boolean to determine if the console will show all execution steps. Default is FALSE
+#' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table in the resultsDatabaseSchema. Default is TRUE
 #' @param writeTableName            The name of the results table. Defaults to `dqdashboard_results`.
-#' @param writeToCsv                Boolean to indicate if the check results will be written to a csv file
+#' @param writeToCsv                Boolean to indicate if the check results will be written to a csv file. Default is FALSE
 #' @param csvFile                   (OPTIONAL) CSV file to write results
-#'                                  in the resultsDatabaseSchema. Default is TRUE.
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
 #' @param checkNames                (OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Descriptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.
 #' @param cohortDefinitionId        The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
@@ -49,7 +48,9 @@
 #' @importFrom magrittr %>%
 #' @import DatabaseConnector
 #' @importFrom stringr str_detect regex
-#' @importFrom utils packageVersion read.csv
+#' @importFrom utils packageVersion read.csv write.table
+#' @importFrom rlang .data
+#' @importFrom tidyselect all_of
 #'
 #' @export
 #'
@@ -77,11 +78,11 @@ executeDqChecks <- function(connectionDetails,
                             fieldCheckThresholdLoc = "default",
                             conceptCheckThresholdLoc = "default") {
   # Check input -------------------------------------------------------------------------------------------------------------------
-  if (!("connectionDetails" %in% class(connectionDetails))) {
-    stop("connectionDetails must be an object of class 'connectionDetails'.")
+  if (!any(class(connectionDetails) %in% c("connectionDetails", "ConnectionDetails"))) {
+    stop("connectionDetails must be an object of class 'connectionDetails' or 'ConnectionDetails'.")
   }
 
-  if (!str_detect(cdmVersion, regex(ACCEPTED_CDM_REGEX))) {
+  if (!str_detect(cdmVersion, regex(acceptedCdmRegex))) {
     stop("cdmVersion must contain a version of the form '5.X' where X is an integer between 2 and 4 inclusive.")
   }
 
@@ -115,11 +116,11 @@ executeDqChecks <- function(connectionDetails,
       cdmDatabaseSchema = cdmDatabaseSchema
     )
     sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
-    metadata <- DatabaseConnector::querySql(connection = connection, sql = sql)
+    metadata <- DatabaseConnector::querySql(connection = connection, sql = sql, snakeCaseToCamelCase = TRUE)
     if (nrow(metadata) < 1) {
       stop("Please populate the cdm_source table before executing data quality checks.")
     }
-    metadata$DQD_VERSION <- as.character(packageVersion("DataQualityDashboard"))
+    metadata$dqdVersion <- as.character(packageVersion("DataQualityDashboard"))
     DatabaseConnector::disconnect(connection)
   } else {
     metadata <- NA
@@ -191,7 +192,6 @@ executeDqChecks <- function(connectionDetails,
     checkThresholdLoc = conceptCheckThresholdLoc,
     defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion)
   )
-
   # ensure we use only checks that are intended to be run -----------------------------------------
 
   if (length(tablesToExclude) > 0) {
@@ -203,7 +203,7 @@ executeDqChecks <- function(connectionDetails,
   }
 
   ## remove offset from being checked
-  fieldChecks <- subset(fieldChecks, cdmFieldName != "offset")
+  fieldChecks <- subset(fieldChecks, fieldChecks$cdmFieldName != "offset")
 
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |
@@ -258,6 +258,7 @@ executeDqChecks <- function(connectionDetails,
   }
 
   allResults <- NULL
+  
   if (!sqlOnly) {
     checkResults <- do.call(rbind, resultsList)
 
@@ -288,7 +289,7 @@ executeDqChecks <- function(connectionDetails,
     # Write result
     if (nchar(outputFile) == 0) {
       endTimestamp <- format(endTime, "%Y%m%d%H%M%S")
-      outputFile <- sprintf("%s-%s.json", tolower(metadata$CDM_SOURCE_ABBREVIATION), endTimestamp)
+      outputFile <- sprintf("%s-%s.json", tolower(metadata$cdmSourceAbbreviation), endTimestamp)
     }
 
     .writeResultsToJson(allResults, outputFolder, outputFile)

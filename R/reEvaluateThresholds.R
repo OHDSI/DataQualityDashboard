@@ -45,17 +45,17 @@ reEvaluateThresholds <- function(jsonFilePath,
   df <- do.call(plyr::rbind.fill, df)
 
   # Add required fields that might be missing due to writing to json
-  if (!("CDM_FIELD_NAME" %in% colnames(df))) {
-    df$CDM_FIELD_NAME <- NA
+  if (!("cdmFieldName" %in% colnames(df))) {
+    df$cdmFieldName <- NA
   }
-  if (!("ERROR" %in% colnames(df))) {
-    df$ERROR <- NA
+  if (!("error" %in% colnames(df))) {
+    df$error <- NA
   }
-  if (!("CONCEPT_ID" %in% colnames(df))) {
-    df$CONCEPT_ID <- NA
+  if (!("conceptId" %in% colnames(df))) {
+    df$conceptId <- NA
   }
-  if (!("UNIT_CONCEPT_ID" %in% colnames(df))) {
-    df$UNIT_CONCEPT_ID <- NA
+  if (!("unitConceptId" %in% colnames(df))) {
+    df$unitConceptId <- NA
   }
 
   # Read in  new thresholds ----------------------------------------------

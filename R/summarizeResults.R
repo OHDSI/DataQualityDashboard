@@ -24,38 +24,38 @@
 .summarizeResults <- function(checkResults) {
   countTotal <- nrow(checkResults)
 
-  countThresholdFailed <- nrow(checkResults[checkResults$FAILED == 1 &
-    is.na(checkResults$ERROR), ])
+  countThresholdFailed <- nrow(checkResults[checkResults$failed == 1 &
+    is.na(checkResults$error), ])
 
-  countErrorFailed <- nrow(checkResults[!is.na(checkResults$ERROR), ])
+  countErrorFailed <- nrow(checkResults[!is.na(checkResults$error), ])
 
-  countOverallFailed <- nrow(checkResults[checkResults$FAILED == 1, ])
+  countOverallFailed <- nrow(checkResults[checkResults$failed == 1, ])
 
   countPassed <- countTotal - countOverallFailed
 
-  countTotalPlausibility <- nrow(checkResults[checkResults$CATEGORY == "Plausibility", ])
+  countTotalPlausibility <- nrow(checkResults[checkResults$category == "Plausibility", ])
 
-  countTotalConformance <- nrow(checkResults[checkResults$CATEGORY == "Conformance", ])
+  countTotalConformance <- nrow(checkResults[checkResults$category == "Conformance", ])
 
-  countTotalCompleteness <- nrow(checkResults[checkResults$CATEGORY == "Completeness", ])
+  countTotalCompleteness <- nrow(checkResults[checkResults$category == "Completeness", ])
 
-  countFailedPlausibility <- nrow(checkResults[checkResults$CATEGORY == "Plausibility" &
-    checkResults$FAILED == 1, ])
+  countFailedPlausibility <- nrow(checkResults[checkResults$category == "Plausibility" &
+    checkResults$failed == 1, ])
 
-  countFailedConformance <- nrow(checkResults[checkResults$CATEGORY == "Conformance" &
-    checkResults$FAILED == 1, ])
+  countFailedConformance <- nrow(checkResults[checkResults$category == "Conformance" &
+    checkResults$failed == 1, ])
 
-  countFailedCompleteness <- nrow(checkResults[checkResults$CATEGORY == "Completeness" &
-    checkResults$FAILED == 1, ])
+  countFailedCompleteness <- nrow(checkResults[checkResults$category == "Completeness" &
+    checkResults$failed == 1, ])
 
-  countPassedPlausibility <- nrow(checkResults[checkResults$CATEGORY == "Plausibility" &
-    checkResults$PASSED == 1, ])
+  countPassedPlausibility <- nrow(checkResults[checkResults$category == "Plausibility" &
+    checkResults$passed == 1, ])
 
-  countPassedConformance <- nrow(checkResults[checkResults$CATEGORY == "Conformance" &
-    checkResults$PASSED == 1, ])
+  countPassedConformance <- nrow(checkResults[checkResults$category == "Conformance" &
+    checkResults$passed == 1, ])
 
-  countPassedCompleteness <- nrow(checkResults[checkResults$CATEGORY == "Completeness" &
-    checkResults$PASSED == 1, ])
+  countPassedCompleteness <- nrow(checkResults[checkResults$category == "Completeness" &
+    checkResults$passed == 1, ])
 
   list(
     countTotal = countTotal,

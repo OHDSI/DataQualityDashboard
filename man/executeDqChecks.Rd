@@ -50,16 +50,15 @@ executeDqChecks(
 
 \item{outputFile}{(OPTIONAL) File to write results JSON object}
 
-\item{verboseMode}{Boolean to determine if the console will show all execution steps. Default = FALSE}
+\item{verboseMode}{Boolean to determine if the console will show all execution steps. Default is FALSE}
 
-\item{writeToTable}{Boolean to indicate if the check results will be written to the dqdashboard_results table}
+\item{writeToTable}{Boolean to indicate if the check results will be written to the dqdashboard_results table in the resultsDatabaseSchema. Default is TRUE}
 
 \item{writeTableName}{The name of the results table. Defaults to `dqdashboard_results`.}
 
-\item{writeToCsv}{Boolean to indicate if the check results will be written to a csv file}
+\item{writeToCsv}{Boolean to indicate if the check results will be written to a csv file. Default is FALSE}
 
-\item{csvFile}{(OPTIONAL) CSV file to write results
-in the resultsDatabaseSchema. Default is TRUE.}
+\item{csvFile}{(OPTIONAL) CSV file to write results}
 
 \item{checkLevels}{Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)}
 

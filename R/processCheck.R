@@ -57,10 +57,10 @@
           rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
         }
       }
-
       result <- DatabaseConnector::querySql(
         connection = connection, sql = sql,
-        errorReportFile = errorReportFile
+        errorReportFile = errorReportFile,
+        snakeCaseToCamelCase = TRUE
       )
 
       delta <- difftime(Sys.time(), start, units = "secs")

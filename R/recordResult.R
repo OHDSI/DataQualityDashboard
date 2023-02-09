@@ -47,32 +47,32 @@
   )
 
   reportResult <- data.frame(
-    NUM_VIOLATED_ROWS = NA,
-    PCT_VIOLATED_ROWS = NA,
-    NUM_DENOMINATOR_ROWS = NA,
-    EXECUTION_TIME = executionTime,
-    QUERY_TEXT = sql,
-    CHECK_NAME = checkDescription$checkName,
-    CHECK_LEVEL = checkDescription$checkLevel,
-    CHECK_DESCRIPTION = do.call(SqlRender::render, params),
-    CDM_TABLE_NAME = check["cdmTableName"],
-    CDM_FIELD_NAME = check["cdmFieldName"],
-    CONCEPT_ID = check["conceptId"],
-    UNIT_CONCEPT_ID = check["unitConceptId"],
-    SQL_FILE = checkDescription$sqlFile,
-    CATEGORY = checkDescription$kahnCategory,
-    SUBCATEGORY = checkDescription$kahnSubcategory,
-    CONTEXT = checkDescription$kahnContext,
-    WARNING = warning,
-    ERROR = error,
+    numViolatedRows = NA,
+    pctViolatedRows = NA,
+    numDenominatorRows = NA,
+    executionTime = executionTime,
+    queryText = sql,
+    checkName = checkDescription$checkName,
+    checkLevel = checkDescription$checkLevel,
+    checkDescription = do.call(SqlRender::render, params),
+    cdmTableName = check["cdmTableName"],
+    cdmFieldName = check["cdmFieldName"],
+    conceptId = check["conceptId"],
+    unitConceptId = check["unitConceptId"],
+    sqlFile = checkDescription$sqlFile,
+    category = checkDescription$kahnCategory,
+    subcategory = checkDescription$kahnSubcategory,
+    context = checkDescription$kahnContext,
+    warning = warning,
+    error = error,
     checkId = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"]),
     row.names = NULL, stringsAsFactors = FALSE
   )
 
   if (!is.null(result)) {
-    reportResult$NUM_VIOLATED_ROWS <- result$NUM_VIOLATED_ROWS
-    reportResult$PCT_VIOLATED_ROWS <- result$PCT_VIOLATED_ROWS
-    reportResult$NUM_DENOMINATOR_ROWS <- result$NUM_DENOMINATOR_ROWS
+    reportResult$numViolatedRows <- result$numViolatedRows
+    reportResult$pctViolatedRows <- result$pctViolatedRows
+    reportResult$numDenominatorRows <- result$numDenominatorRows
   }
   reportResult
 }

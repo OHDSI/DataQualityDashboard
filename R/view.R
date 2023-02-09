@@ -22,6 +22,8 @@
 #' @param display.mode   Passed on to \code{shiny::runApp}
 #' @param ...            Extra parameters for shiny::runApp() like "port" or "host"
 #'
+#' @importFrom utils menu install.packages
+#'
 #' @export
 viewDqDashboard <- function(jsonPath, launch.browser = NULL, display.mode = NULL, ...) {
   ensure_installed("shiny")

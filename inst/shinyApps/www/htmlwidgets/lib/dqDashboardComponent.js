@@ -171,216 +171,216 @@ class DqDashboard extends HTMLElement {
 
     // Verification Plausibility
     const VerificationPlausibilityPass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
-        c.CONTEXT == "Verification"
-        && c.CATEGORY == "Plausibility"
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0) &&
+        c.context == "Verification"
+        && c.category == "Plausibility"
     ).length;
 
     const VerificationPlausibilityFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
-        c.CONTEXT == "Verification"
-        && c.CATEGORY == "Plausibility"
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1) &&
+        c.context == "Verification"
+        && c.category == "Plausibility"
     ).length;
 
     const VerificationPlausibilityTotal = this.results.filter(
-      c => c.CONTEXT == "Verification"
-        && c.CATEGORY == "Plausibility"
+      c => c.context == "Verification"
+        && c.category == "Plausibility"
     ).length;
 
     const VerificationPlausibilityPercentPass = VerificationPlausibilityTotal == 0 ? "-" : Math.round(VerificationPlausibilityPass / VerificationPlausibilityTotal * 100) + "%";
 
     // Verification Conformance
     const VerificationConformancePass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
-        c.CONTEXT == "Verification"
-        && c.CATEGORY == "Conformance"
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0) &&
+        c.context == "Verification"
+        && c.category == "Conformance"
     ).length;
 
     const VerificationConformanceFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
-        c.CONTEXT == "Verification"
-        && c.CATEGORY == "Conformance"
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1) &&
+        c.context == "Verification"
+        && c.category == "Conformance"
     ).length;
 
     const VerificationConformanceTotal = this.results.filter(
-      c => c.CONTEXT == "Verification"
-        && c.CATEGORY == "Conformance"
+      c => c.context == "Verification"
+        && c.category == "Conformance"
     ).length;
 
     const VerificationConformancePercentPass = VerificationConformanceTotal == 0 ? "-" : Math.round(VerificationConformancePass / VerificationConformanceTotal * 100) + "%";
 
     // Verification Completeness
     const VerificationCompletenessPass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
-        c.CONTEXT == "Verification"
-        && c.CATEGORY == "Completeness"
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0) &&
+        c.context == "Verification"
+        && c.category == "Completeness"
     ).length;
 
     const VerificationCompletenessFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
-        c.CONTEXT == "Verification"
-        && c.CATEGORY == "Completeness"
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1) &&
+        c.context == "Verification"
+        && c.category == "Completeness"
     ).length;
 
     const VerificationCompletenessTotal = this.results.filter(
-      c => c.CONTEXT == "Verification"
-        && c.CATEGORY == "Completeness"
+      c => c.context == "Verification"
+        && c.category == "Completeness"
     ).length;
 
     const VerificationCompletenessPercentPass = VerificationCompletenessTotal == 0 ? "-" : Math.round(VerificationCompletenessPass / VerificationCompletenessTotal * 100) + "%";
 
     // Verification Totals
     const VerificationPass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
-        c.CONTEXT == "Verification"
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0) &&
+        c.context == "Verification"
     ).length;
 
     const VerificationFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
-        c.CONTEXT == "Verification"
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1) &&
+        c.context == "Verification"
     ).length;
 
     const VerificationTotal = this.results.filter(
-      c => c.CONTEXT == "Verification"
+      c => c.context == "Verification"
     ).length;
 
     const VerificationPercentPass = VerificationTotal == 0 ? "-" : Math.round(VerificationPass / VerificationTotal * 100) + "%";
 
     // Validation Plausibility
     const ValidationPlausibilityPass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
-        c.CONTEXT == "Validation"
-        && c.CATEGORY == "Plausibility"
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0) &&
+        c.context == "Validation"
+        && c.category == "Plausibility"
     ).length;
 
     const ValidationPlausibilityFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
-        c.CONTEXT == "Validation"
-        && c.CATEGORY == "Plausibility"
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1) &&
+        c.context == "Validation"
+        && c.category == "Plausibility"
     ).length;
 
     const ValidationPlausibilityTotal = this.results.filter(
-      c => c.CONTEXT == "Validation"
-        && c.CATEGORY == "Plausibility"
+      c => c.context == "Validation"
+        && c.category == "Plausibility"
     ).length;
 
     const ValidationPlausibilityPercentPass = ValidationPlausibilityTotal == 0 ? "-" : Math.round(ValidationPlausibilityPass / ValidationPlausibilityTotal * 100) + "%";
 
     // Validation Conformance
     const ValidationConformancePass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
-        c.CONTEXT == "Validation"
-        && c.CATEGORY == "Conformance"
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0) &&
+        c.context == "Validation"
+        && c.category == "Conformance"
     ).length;
 
     const ValidationConformanceFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
-        c.CONTEXT == "Validation"
-        && c.CATEGORY == "Conformance"
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1) &&
+        c.context == "Validation"
+        && c.category == "Conformance"
     ).length;
 
     const ValidationConformanceTotal = this.results.filter(
-      c => c.CONTEXT == "Validation"
-        && c.CATEGORY == "Conformance"
+      c => c.context == "Validation"
+        && c.category == "Conformance"
     ).length;
 
     const ValidationConformancePercentPass = ValidationConformanceTotal == 0 ? "-" : Math.round(ValidationConformancePass / ValidationConformanceTotal * 100) + "%";
 
     // Validation Completeness
     const ValidationCompletenessPass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
-        c.CONTEXT == "Validation"
-        && c.CATEGORY == "Completeness"
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0) &&
+        c.context == "Validation"
+        && c.category == "Completeness"
     ).length;
 
     const ValidationCompletenessFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
-        c.CONTEXT == "Validation"
-        && c.CATEGORY == "Completeness"
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1) &&
+        c.context == "Validation"
+        && c.category == "Completeness"
     ).length;
 
     const ValidationCompletenessTotal = this.results.filter(
-      c => c.CONTEXT == "Validation"
-        && c.CATEGORY == "Completeness"
+      c => c.context == "Validation"
+        && c.category == "Completeness"
     ).length;
 
     const ValidationCompletenessPercentPass = ValidationCompletenessTotal == 0 ? "-" : Math.round(ValidationCompletenessPass / ValidationCompletenessTotal * 100) + "%";
 
     // Validation
     const ValidationPass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
-        c.CONTEXT == "Validation"
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0) &&
+        c.context == "Validation"
     ).length;
 
     const ValidationFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
-        c.CONTEXT == "Validation"
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1) &&
+        c.context == "Validation"
     ).length;
 
     const ValidationTotal = this.results.filter(
-      c => c.CONTEXT == "Validation"
+      c => c.context == "Validation"
     ).length;
 
     const ValidationPercentPass = ValidationTotal == 0 ? "-" : Math.round(ValidationPass / ValidationTotal * 100) + "%";
 
     // Plausibility
     const PlausibilityPass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0) &&
-        c.CATEGORY == "Plausibility"
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0) &&
+        c.category == "Plausibility"
     ).length;
 
     const PlausibilityFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1) &&
-        c.CATEGORY == "Plausibility"
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1) &&
+        c.category == "Plausibility"
     ).length;
 
     const PlausibilityTotal = this.results.filter(
-      c => c.CATEGORY == "Plausibility"
+      c => c.category == "Plausibility"
     ).length;
 
     const PlausibilityPercentPass = PlausibilityTotal == 0 ? "-" : Math.round(PlausibilityPass / PlausibilityTotal * 100) + "%";
 
     // Conformance
     const ConformancePass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0)
-        && c.CATEGORY == "Conformance"
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0)
+        && c.category == "Conformance"
     ).length;
 
     const ConformanceFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1)
-        && c.CATEGORY == "Conformance"
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1)
+        && c.category == "Conformance"
     ).length;
 
     const ConformanceTotal = this.results.filter(
-      c => c.CATEGORY == "Conformance"
+      c => c.category == "Conformance"
     ).length;
 
     const ConformancePercentPass = ConformanceTotal == 0 ? "-" : Math.round(ConformancePass / ConformanceTotal * 100) + "%";
 
     // Completeness
     const CompletenessPass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0)
-        && c.CATEGORY == "Completeness"
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0)
+        && c.category == "Completeness"
     ).length;
 
     const CompletenessFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1)
-        && c.CATEGORY == "Completeness"
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1)
+        && c.category == "Completeness"
     ).length;
 
     const CompletenessTotal = this.results.filter(
-      c => c.CATEGORY == "Completeness"
+      c => c.category == "Completeness"
     ).length;
 
     const CompletenessPercentPass = CompletenessTotal == 0 ? "-" : Math.round(CompletenessPass / CompletenessTotal * 100) + "%";
 
     // All
     const AllPass = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.PASSED == 1 || c.NOT_APPLICABLE == 1 : c.FAILED == 0)
+      c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0)
     ).length;
 
     const AllFail = this.results.filter(
-      c => (c.hasOwnProperty("PASSED") ? c.FAILED == 1 || c.IS_ERROR == 1 : c.FAILED == 1)
+      c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1)
     ).length;
 
     const AllTotal = this.results.length;
@@ -389,11 +389,11 @@ class DqDashboard extends HTMLElement {
     
     // v2.0 statuses
     const AllNA = this.results.filter(
-      c => c.NOT_APPLICABLE == 1
+      c => c.notApplicable == 1
     ).length;    
     
     const AllError= this.results.filter(
-      c => c.IS_ERROR == 1
+      c => c.isError == 1
     ).length;
     
     const NaTotalPassed = AllPass-AllNA;

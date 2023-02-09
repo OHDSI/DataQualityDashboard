@@ -7,12 +7,11 @@
 .writeResultsToCsv(
   checkResults,
   csvPath,
-  columns = c("checkId", "FAILED", "PASSED", "IS_ERROR", "NOT_APPLICABLE", "CHECK_NAME",
-    "CHECK_DESCRIPTION", "THRESHOLD_VALUE", "NOTES_VALUE", "CHECK_LEVEL", "CATEGORY",
-    "SUBCATEGORY", "CONTEXT", "CHECK_LEVEL", "CDM_TABLE_NAME", "CDM_FIELD_NAME",
-    "CONCEPT_ID", "UNIT_CONCEPT_ID", "NUM_VIOLATED_ROWS", "PCT_VIOLATED_ROWS",
-    "NUM_DENOMINATOR_ROWS", "EXECUTION_TIME", "NOT_APPLICABLE_REASON", "ERROR",
-    "QUERY_TEXT"),
+  columns = c("checkId", "failed", "passed", "isError", "notApplicable", "checkName",
+    "checkDescription", "thresholdValue", "notesValue", "checkLevel", "category",
+    "subcategory", "context", "checkLevel", "cdmTableName", "cdmFieldName", "conceptId",
+    "unitConceptId", "numViolatedRows", "pctViolatedRows", "numDenominatorRows",
+    "executionTime", "notApplicableReason", "error", "queryText"),
   delimiter = ","
 )
 }

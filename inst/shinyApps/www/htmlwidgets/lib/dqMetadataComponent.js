@@ -4,15 +4,15 @@ class DqMetadataRenderer extends HTMLElement {
           <h2>
           Data Source Metadata
           </h2>            
-          <div>{{this.CDM_SOURCE_NAME}}</div>
-          <div>{{this.SOURCE_DESCRIPTION}}</div>          
-          <div>Licensed to: {{this.CDM_HOLDER}}</div>                    
-          <div>Source Released: {{this.SOURCE_RELEASE_DATE}}</div>          
-          <div>CDM Released: {{this.CDM_RELEASE_DATE}}</div>          
-          <div>CDM Version: {{this.CDM_VERSION}}</div>          
-          <div>Vocabulary Version: {{this.VOCABULARY_VERSION}}</div>          
-          <div>Source Documentation: {{this.SOURCE_DOCUMENTATION_REFERENCE}}</div>          
-          <div>ETL Reference: {{this.CDM_ETL_REFERENCE}}</div>                    
+          <div>{{this.cdmSourceName}}</div>
+          <div>{{this.sourceDescription}}</div>          
+          <div>Licensed to: {{this.cdmHolder}}</div>                    
+          <div>Source Released: {{this.sourceReleaseDate}}</div>          
+          <div>CDM Released: {{this.cdmReleaseDate}}</div>          
+          <div>CDM Version: {{this.cdmVersion}}</div>          
+          <div>Vocabulary Version: {{this.vocabularyVersion}}</div>          
+          <div>Source Documentation: {{this.sourceDocumentationReference}}</div>          
+          <div>ETL Reference: {{this.cdmEtlReference}}</div>                    
     `;
     }
 

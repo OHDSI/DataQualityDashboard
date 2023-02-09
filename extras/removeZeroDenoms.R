@@ -30,51 +30,51 @@ df <- do.call(plyr::rbind.fill, checkResults)
 
 ## Remove records with a zero denominator
 dfNonZero <- df %>% 
-    filter(NUM_DENOMINATOR_ROWS != 0)
+    filter(numDenominatorRows != 0)
 
 ## fix the cdmField checks where the DQD was calculating them wrong
-dfNonZero <- sqldf('SELECT CASE WHEN CHECK_NAME = "cdmField" THEN 0 else NUM_VIOLATED_ROWS end as NUM_VIOLATED_ROWS,
-                  CASE WHEN CHECK_NAME = "cdmField" THEN 0 else PCT_VIOLATED_ROWS end as PCT_VIOLATED_ROWS,
-                  NUM_DENOMINATOR_ROWS,
-                  EXECUTION_TIME,
-                  QUERY_TEXT,
-                  CHECK_NAME,
-                  CHECK_LEVEL,
-                  CHECK_DESCRIPTION,
-                  CDM_TABLE_NAME,
-                  SQL_FILE,
-                  CATEGORY,
-                  SUBCATEGORY,
-                  CONTEXT,
+dfNonZero <- sqldf('SELECT CASE WHEN checkName = "cdmField" THEN 0 else numViolatedRows end as numViolatedRows,
+                  CASE WHEN checkName = "cdmField" THEN 0 else pctViolatedRows end as pctViolatedRows,
+                  numDenominatorRows,
+                  executionTime,
+                  queryText,
+                  checkName,
+                  checkLevel,
+                  checkDescription,
+                  cdmTableName,
+                  sqlFile,
+                  category,
+                  subcategory,
+                  context,
                   checkId,
-                  CASE WHEN CHECK_NAME = \'cdmField\' THEN 0 else FAILED end as FAILED,
-                  THRESHOLD_VALUE,
-                  CDM_FIELD_NAME,
-                  ERROR,
-                  CONCEPT_ID,
-                  UNIT_CONCEPT_ID
+                  CASE WHEN checkName = \'cdmField\' THEN 0 else failed end as failed,
+                  thresholdValue,
+                  cdmFieldName,
+                  error,
+                  conceptId,
+                  unitConceptId
                  FROM dfNonZero d')
 
 countTotal <- nrow(dfNonZero)
-countThresholdFailed <- nrow(dfNonZero[dfNonZero$FAILED == 1 & 
-                                            is.na(dfNonZero$ERROR),])
-countErrorFailed <- nrow(dfNonZero[!is.na(dfNonZero$ERROR),])
-countOverallFailed <- nrow(dfNonZero[dfNonZero$FAILED == 1,])
+countThresholdFailed <- nrow(dfNonZero[dfNonZero$failed == 1 & 
+                                            is.na(dfNonZero$error),])
+countErrorFailed <- nrow(dfNonZero[!is.na(dfNonZero$error),])
+countOverallFailed <- nrow(dfNonZero[dfNonZero$failed == 1,])
 
 countPassed <- countTotal - countOverallFailed
 
-countTotalPlausibility <- nrow(dfNonZero[dfNonZero$CATEGORY=='Plausibility',])
-countTotalConformance <- nrow(dfNonZero[dfNonZero$CATEGORY=='Conformance',])
-countTotalCompleteness <- nrow(dfNonZero[dfNonZero$CATEGORY=='Completeness',])
+countTotalPlausibility <- nrow(dfNonZero[dfNonZero$category=='Plausibility',])
+countTotalConformance <- nrow(dfNonZero[dfNonZero$category=='Conformance',])
+countTotalCompleteness <- nrow(dfNonZero[dfNonZero$category=='Completeness',])
 
-countFailedPlausibility <- nrow(dfNonZero[dfNonZero$CATEGORY=='Plausibility' & 
-                                               dfNonZero$FAILED == 1,])
+countFailedPlausibility <- nrow(dfNonZero[dfNonZero$category=='Plausibility' & 
+                                               dfNonZero$failed == 1,])
 
-countFailedConformance <- nrow(dfNonZero[dfNonZero$CATEGORY=='Conformance' &
-                                              dfNonZero$FAILED == 1,])
+countFailedConformance <- nrow(dfNonZero[dfNonZero$category=='Conformance' &
+                                              dfNonZero$failed == 1,])
 
-countFailedCompleteness <- nrow(dfNonZero[dfNonZero$CATEGORY=='Completeness' &
-                                               dfNonZero$FAILED == 1,])
+countFailedCompleteness <- nrow(dfNonZero[dfNonZero$category=='Completeness' &
+                                               dfNonZero$failed == 1,])
 
 countPassedPlausibility <- countTotalPlausibility - countFailedPlausibility
 countPassedConformance <- countTotalConformance - countFailedConformance
