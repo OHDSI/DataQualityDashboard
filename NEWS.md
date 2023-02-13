@@ -1,3 +1,18 @@
+DataQualityDashboard 2.1.0
+===========================
+This release includes:
+
+### Bugfixes
+
+  - cdmDatatype check, which checks that values in integer columns are integers, updated so that float values will now fail the check
+  - Quotes removed from `offset` column name in v5.4 thresholds file so that this column is skipped by DQD in all cases (use of reserved word causes failures in some SQL dialects)
+  - Broken images fixed in addNewCheck vignette
+
+### HADES requirements
+
+  - All snakecase variables updated to camelcase
+  - Global variable binding R Check note resolved
+
 DataQualityDashboard 2.0.0
 ===========================
 This release includes:

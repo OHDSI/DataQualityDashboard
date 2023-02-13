@@ -1,4 +1,4 @@
-# Copyright 2022 Observational Health Data Sciences and Informatics
+# Copyright 2023 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -72,10 +72,10 @@
     sql = ddl,
     progressBar = TRUE
   )
-  
-  # convert column names to snake case, omitting the checkId column, 
+
+  # convert column names to snake case, omitting the checkId column,
   # which has no underscore in the results table DDL
-  for (i in 1:ncol(checkResults)){
+  for (i in 1:ncol(checkResults)) {
     if (colnames(checkResults)[i] == "checkId") {
       colnames(checkResults)[i] <- tolower(colnames(checkResults)[i])
     } else {
