@@ -106,7 +106,7 @@ The testNameNotes column is usually left blank. The convention is that this colu
 
 Add the above three columns to the end of the csv file. In the row for Visit Occurrence/Visit start date put 'Yes' in the ERVisitLength column and 0 in the ERVisitLengthThreshold column. Our test will be run once whenever field level checks are run. If any ER visit length is greater than two days the check will be marked as failed.
 
-You can run just the ERVisitLength test by setting the input paramenter checkNames = c("ERVisitLength") in the R program DataQualityDashboard::executeDqChecks.
+You can run just the ERVisitLength test by setting the input parameter checkNames = c("ERVisitLength") in the R program DataQualityDashboard::executeDqChecks.
 
 
 
