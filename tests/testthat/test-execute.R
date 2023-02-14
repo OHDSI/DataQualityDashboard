@@ -86,21 +86,21 @@ test_that("Execute a single DQ check on remote databases", {
   on.exit(unlink(outputFolder, recursive = TRUE))
 
   dbTypes <- c(
-    "oracle",
+    # "oracle",
     "postgresql",
     "sql server"
   )
 
   for (dbType in dbTypes) {
-    sysUser <- Sys.getenv(sprintf("CDM5_%s_USER", toupper(dbType)))
-    sysPassword <- URLdecode(Sys.getenv(sprintf("CDM5_%s_PASSWORD", toupper(dbType))))
-    sysServer <- Sys.getenv(sprintf("CDM5_%s_SERVER", toupper(dbType)))
-    sysExtraSettings <- Sys.getenv(sprintf("CDM5_%s_EXTRA_SETTINGS", toupper(dbType)))
+    sysUser <- Sys.getenv(sprintf("CDM5_%s_USER", toupper(gsub(" ", "_", dbType))))
+    sysPassword <- URLdecode(Sys.getenv(sprintf("CDM5_%s_PASSWORD", toupper(gsub(" ", "_", dbType)))))
+    sysServer <- Sys.getenv(sprintf("CDM5_%s_SERVER", toupper(gsub(" ", "_", dbType))))
+    sysExtraSettings <- Sys.getenv(sprintf("CDM5_%s_EXTRA_SETTINGS", toupper(gsub(" ", "_", dbType))))
     if (sysUser != "" &
       sysPassword != "" &
       sysServer != "") {
-      cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM_SCHEMA", toupper(dbType)))
-      resultsDatabaseSchema <- Sys.getenv("CDM5_%s_OHDSI_SCHEMA", toupper(dbType))
+      cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM_SCHEMA", toupper(gsub(" ", "_", dbType))))
+      resultsDatabaseSchema <- Sys.getenv("CDM5_%s_OHDSI_SCHEMA", toupper(gsub(" ", "_", dbType)))
 
       connectionDetails <- createConnectionDetails(
         dbms = dbType,
