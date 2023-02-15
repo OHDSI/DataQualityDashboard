@@ -52,13 +52,14 @@ public class RConnectionWrapperImpl implements RConnectionWrapper {
         String dbType = adaptDbType(dbSettings.getDbType());
         String server = adaptServer(dbType, dbSettings.getServer(), dbSettings.getDatabase());
         String schema = adaptDataBaseSchema(dbSettings.getDatabase(), dbSettings.getSchema());
-        String dqdCmd = format("testConnection(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")",
+        String dqdCmd = format("testConnection(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")",
                 dbType,
                 server,
                 dbSettings.getPort(),
                 schema,
                 dbSettings.getUser(),
-                dbSettings.getPassword()
+                dbSettings.getPassword(),
+                dbSettings.getHttppath()
         );
         REXP runResponse = rConnection.parseAndEval(toTryCmd(dqdCmd));
         if (runResponse.inherits("try-error")) {
