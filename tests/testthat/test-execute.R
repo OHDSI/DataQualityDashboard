@@ -86,7 +86,7 @@ test_that("Execute a single DQ check on remote databases", {
   on.exit(unlink(outputFolder, recursive = TRUE))
 
   dbTypes <- c(
-    # "oracle",
+    "oracle",
     "postgresql",
     "sql server"
   )
@@ -95,7 +95,6 @@ test_that("Execute a single DQ check on remote databases", {
     sysUser <- Sys.getenv(sprintf("CDM5_%s_USER", toupper(gsub(" ", "_", dbType))))
     sysPassword <- URLdecode(Sys.getenv(sprintf("CDM5_%s_PASSWORD", toupper(gsub(" ", "_", dbType)))))
     sysServer <- Sys.getenv(sprintf("CDM5_%s_SERVER", toupper(gsub(" ", "_", dbType))))
-    sysExtraSettings <- Sys.getenv(sprintf("CDM5_%s_EXTRA_SETTINGS", toupper(gsub(" ", "_", dbType))))
     if (sysUser != "" &
       sysPassword != "" &
       sysServer != "") {
@@ -107,7 +106,6 @@ test_that("Execute a single DQ check on remote databases", {
         user = sysUser,
         password = sysPassword,
         server = sysServer,
-        extraSettings = sysExtraSettings,
         pathToDriver = jdbcDriverFolder
       )
 
