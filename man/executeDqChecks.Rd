@@ -23,6 +23,7 @@ executeDqChecks(
   checkNames = c(),
   cohortDefinitionId = c(),
   cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTableName = "cohort",
   tablesToExclude = c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR",
     "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
   cdmVersion = "5.3",
@@ -68,6 +69,8 @@ executeDqChecks(
 with the fields cohort_definition_id and subject_id.}
 
 \item{cohortDatabaseSchema}{The schema where the cohort table is located.}
+
+\item{cohortTableName}{The name of the cohort table. Defaults to `cohort`.}
 
 \item{tablesToExclude}{(OPTIONAL) Choose which CDM tables to exclude from the execution.}
 
