@@ -1,4 +1,4 @@
-# Copyright 2022 Observational Health Data Sciences and Informatics
+# Copyright 2023 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -21,6 +21,8 @@
 #' @param launch.browser Passed on to \code{shiny::runApp}
 #' @param display.mode   Passed on to \code{shiny::runApp}
 #' @param ...            Extra parameters for shiny::runApp() like "port" or "host"
+#'
+#' @importFrom utils menu install.packages
 #'
 #' @export
 viewDqDashboard <- function(jsonPath, launch.browser = NULL, display.mode = NULL, ...) {

@@ -8,12 +8,17 @@ if (Sys.getenv("DONT_DOWNLOAD_JDBC_DRIVERS", "") == "TRUE") {
   downloadJdbcDrivers("oracle", jdbcDriverFolder)
 }
 
-# dbms <- getOption("dbms", default = "sqlite")
-# if (dbms == "sqlite") {
-connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
 cdmDatabaseSchema <- "main"
 resultsDatabaseSchema <- "main"
 cdmVersion <- 5
+
+# dbms <- getOption("dbms", default = "sqlite")
+# if (dbms == "sqlite") {
+# connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+# cdmDatabaseSchema <- "main"
+# resultsDatabaseSchema <- "main"
+# cdmVersion <- 5
 # }
 # if (dbms == "postgresql") {
 #   DatabaseConnector::downloadJdbcDrivers("postgresql", pathToDriver = jdbcDriverFolder)

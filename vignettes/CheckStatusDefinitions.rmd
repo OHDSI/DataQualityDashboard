@@ -38,15 +38,15 @@ In the DataQualityDashboard v2, new check statuses were introduced: `Error` and 
 
 ## Not Applicable
 
-The results of a DQ check may not be applicable to a given CDM instance depending on the implementation and content of the instance. For example, the DQ check for plausible values of HbA1c lab results would pass with no violations even if there were no results for that lab test in the database. It is not uncommon to have \> 1000 DQ checks that do not apply to a given CDM instance. The results from DQ checks that are not applicable skew to overall results. Listed below are the scenarios for which a DQ check result is flagged as Not_applicable:
+The results of a DQ check may not be applicable to a given CDM instance depending on the implementation and content of the instance. For example, the DQ check for plausible values of HbA1c lab results would pass with no violations even if there were no results for that lab test in the database. It is not uncommon to have \> 1000 DQ checks that do not apply to a given CDM instance. The results from DQ checks that are not applicable skew to overall results. Listed below are the scenarios for which a DQ check result is flagged as notApplicable:
 
-1.  If the cdmTable DQ check determines that a table does not exist in the database, then all DQ checks (except cdm_table) addressing that table are flagged as Not_applicable.
+1.  If the cdmTable DQ check determines that a table does not exist in the database, then all DQ checks (except cdm_table) addressing that table are flagged as notApplicable
 
-2.  If a table exists but is empty, then all field level and concept level checks for that table are flagged as Not_applicable, except for cdmField checks, which evaluates if the field is defined or not. A cdmField check is marked as not_applicable if the CDM table it refers to does not exist (tested by cdmTable). An empty table is detected when the measureValueCompleteness DQ check for any of the fields in the table returns a denominator count = 0 (NUM_DENOMINATOR_ROWS=0).
+2.  If a table exists but is empty, then all field level and concept level checks for that table are flagged as notApplicable, except for cdmField checks, which evaluates if the field is defined or not. A cdmField check is marked as notApplicable if the CDM table it refers to does not exist (tested by cdmTable). An empty table is detected when the measureValueCompleteness DQ check for any of the fields in the table returns a denominator count = 0 (numDenominatorRows=0).
 
-3.  If a field is not populated, then all field level and concept level checks except for measureValueCompleteness and isRequired are flagged as Not_applicable.
+3.  If a field is not populated, then all field level and concept level checks except for measureValueCompleteness and isRequired are flagged as notApplicable
 
-    a. A field is not populated if the measureValueCompleteness DQ check finds denominator count \> 0 and number of violated rows = denominator count (NUM_DENOMINATOR_ROWS \> 0 AND NUM_DENOMINATOR_ROWS = NUM_VIOLATED_ROWS).
+    a. A field is not populated if the measureValueCompleteness DQ check finds denominator count \> 0 and number of violated rows = denominator count (numDenominatorRows \> 0 AND numDenominatorRows = numViolatedRows).
 
     b. The measureValueCompleteness check is marked as not applicable if:
 
@@ -60,9 +60,9 @@ The results of a DQ check may not be applicable to a given CDM instance dependin
 
         b. The CDM field it refers to does not exist.
 
-4.  Flagging a Concept_ID level DQ check as Not_applicable depends on whether the DQ check logic includes a UNIT_CONCEPT_ID. There are two scenarios for DQ checks evaluating specific Concept_ids.
+4.  Flagging a Concept_ID level DQ check as notApplicable depends on whether the DQ check logic includes a UNIT_CONCEPT_ID. There are two scenarios for DQ checks evaluating specific Concept_ids.
 
-    a. The DQ check does not include a UNIT_CONCEPT_ID (value is null). A DQ check is flagged as Not_applicable if there are no instances of the Concept_ID in the table/field. E.g. plausibility checks for specific conditions and gender. Both pregnancy and male do not have UNIT_CONCEPT_IDs.
+    a. The DQ check does not include a UNIT_CONCEPT_ID (value is null). A DQ check is flagged as notApplicable if there are no instances of the Concept_ID in the table/field. E.g. plausibility checks for specific conditions and gender. Both pregnancy and male do not have UNIT_CONCEPT_IDs.
 
-    b. The DQ check includes a UNIT_CONCEPT_ID. A DQ check is flagged as Not_applicable if there are no instances of both concept and unit concept IDs in the table/field. E.g. all DQ checks referencing the concept_ID for HbA1c lab results expressed in mg/dl units will be flagged as Not_applicable if there are no instances of that concept_ID in the table/field addressed by the DQ check.
+    b. The DQ check includes a UNIT_CONCEPT_ID. A DQ check is flagged as notApplicable if there are no instances of both concept and unit concept IDs in the table/field. E.g. all DQ checks referencing the concept_ID for HbA1c lab results expressed in mg/dl units will be flagged as notApplicable if there are no instances of that concept_ID in the table/field addressed by the DQ check.
 

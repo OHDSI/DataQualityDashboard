@@ -1,4 +1,4 @@
-# Copyright 2022 Observational Health Data Sciences and Informatics
+# Copyright 2023 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -51,7 +51,7 @@ conceptChecks <- read.csv("C:/Users/mblacke/OneDrive - JNJ/DQD_Thresholds/MDCD/O
 
 ## Remove the thresholds, failures, and notes from existing results
 
-checks <- subset(df, select = -c(FAILED, THRESHOLD_VALUE)) #NOTES_VALUE column should be removed also if it exists
+checks <- subset(df, select = -c(failed, thresholdValue)) #notesValue column should be removed also if it exists
 
 ## use the .evaluateThreshold function to add the new thresholds
 
@@ -63,25 +63,25 @@ checkResults <- evaluateThresholds(checkResults = checks,
 ## Recalculate totals and regenerate JSON
 
 countTotal <- nrow(checkResults)
-countThresholdFailed <- nrow(checkResults[checkResults$FAILED == 1 & 
-                                        is.na(checkResults$ERROR),])
-countErrorFailed <- nrow(checkResults[!is.na(checkResults$ERROR),])
-countOverallFailed <- nrow(checkResults[checkResults$FAILED == 1,])
+countThresholdFailed <- nrow(checkResults[checkResults$failed == 1 & 
+                                        is.na(checkResults$error),])
+countErrorFailed <- nrow(checkResults[!is.na(checkResults$error),])
+countOverallFailed <- nrow(checkResults[checkResults$failed == 1,])
 
 countPassed <- countTotal - countOverallFailed
 
-countTotalPlausibility <- nrow(checkResults[checkResults$CATEGORY=='Plausibility',])
-countTotalConformance <- nrow(checkResults[checkResults$CATEGORY=='Conformance',])
-countTotalCompleteness <- nrow(checkResults[checkResults$CATEGORY=='Completeness',])
+countTotalPlausibility <- nrow(checkResults[checkResults$category=='Plausibility',])
+countTotalConformance <- nrow(checkResults[checkResults$category=='Conformance',])
+countTotalCompleteness <- nrow(checkResults[checkResults$category=='Completeness',])
 
-countFailedPlausibility <- nrow(checkResults[checkResults$CATEGORY=='Plausibility' & 
-                                           checkResults$FAILED == 1,])
+countFailedPlausibility <- nrow(checkResults[checkResults$category=='Plausibility' & 
+                                           checkResults$failed == 1,])
 
-countFailedConformance <- nrow(checkResults[checkResults$CATEGORY=='Conformance' &
-                                          checkResults$FAILED == 1,])
+countFailedConformance <- nrow(checkResults[checkResults$category=='Conformance' &
+                                          checkResults$failed == 1,])
 
-countFailedCompleteness <- nrow(checkResults[checkResults$CATEGORY=='Completeness' &
-                                           checkResults$FAILED == 1,])
+countFailedCompleteness <- nrow(checkResults[checkResults$category=='Completeness' &
+                                           checkResults$failed == 1,])
 
 countPassedPlausibility <- countTotalPlausibility - countFailedPlausibility
 countPassedConformance <- countTotalConformance - countFailedConformance
@@ -131,67 +131,67 @@ evaluateThresholds <- function(checkResults,
                                 fieldChecks,
                                 conceptChecks) {
   
-  checkResults$FAILED <- 0
-  checkResults$THRESHOLD_VALUE <- NA
-  checkResults$NOTES_VALUE <- NA
+  checkResults$failed <- 0
+  checkResults$thresholdValue <- NA
+  checkResults$notesValue <- NA
   
-  if("ERROR" %in% colnames(checkResults) == FALSE){
-    checkResults$ERROR <- NA
+  if("error" %in% colnames(checkResults) == FALSE){
+    checkResults$error <- NA
   }
   
   for (i in 1:nrow(checkResults)) {
-    thresholdField <- sprintf("%sThreshold", checkResults[i,]$CHECK_NAME)
-    notesField <- sprintf("%sNotes", checkResults[i,]$CHECK_NAME)
+    thresholdField <- sprintf("%sThreshold", checkResults[i,]$checkName)
+    notesField <- sprintf("%sNotes", checkResults[i,]$checkName)
     
     # find if field exists -----------------------------------------------
     thresholdFieldExists <- eval(parse(text = 
                                          sprintf("'%s' %%in%% colnames(%sChecks)", 
                                                  thresholdField, 
-                                                 tolower(checkResults[i,]$CHECK_LEVEL))))
+                                                 tolower(checkResults[i,]$checkLevel))))
     
     if (!thresholdFieldExists) {
       thresholdValue <- NA
       notesValue <- NA
     } else {
-      if (checkResults[i,]$CHECK_LEVEL == "TABLE") {
+      if (checkResults[i,]$checkLevel == "TABLE") {
         
         thresholdFilter <- sprintf("tableChecks$%s[tableChecks$cdmTableName == '%s']",
-                                   thresholdField, checkResults[i,]$CDM_TABLE_NAME)
+                                   thresholdField, checkResults[i,]$cdmTableName)
         notesFilter <- sprintf("tableChecks$%s[tableChecks$cdmTableName == '%s']",
-                               notesField, checkResults[i,]$CDM_TABLE_NAME)
+                               notesField, checkResults[i,]$cdmTableName)
         
-      } else if (checkResults[i,]$CHECK_LEVEL == "FIELD") {
+      } else if (checkResults[i,]$checkLevel == "FIELD") {
         
         thresholdFilter <- sprintf("fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
                                    fieldChecks$cdmFieldName == '%s']",
                                    thresholdField, 
-                                   checkResults[i,]$CDM_TABLE_NAME,
-                                   checkResults[i,]$CDM_FIELD_NAME)
+                                   checkResults[i,]$cdmTableName,
+                                   checkResults[i,]$cdmFieldName)
         notesFilter <- sprintf("fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
                                fieldChecks$cdmFieldName == '%s']",
                                notesField, 
-                               checkResults[i,]$CDM_TABLE_NAME,
-                               checkResults[i,]$CDM_FIELD_NAME)
+                               checkResults[i,]$cdmTableName,
+                               checkResults[i,]$cdmFieldName)
         
         
-      } else if (checkResults[i,]$CHECK_LEVEL == "CONCEPT") {
+      } else if (checkResults[i,]$checkLevel == "CONCEPT") {
         
-        if (is.na(checkResults[i,]$UNIT_CONCEPT_ID)) {
+        if (is.na(checkResults[i,]$unitConceptId)) {
           
           thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                      conceptChecks$cdmFieldName == '%s' &
                                      conceptChecks$conceptId == %s]",
                                      thresholdField, 
-                                     checkResults[i,]$CDM_TABLE_NAME,
-                                     checkResults[i,]$CDM_FIELD_NAME,
-                                     checkResults[i,]$CONCEPT_ID)
+                                     checkResults[i,]$cdmTableName,
+                                     checkResults[i,]$cdmFieldName,
+                                     checkResults[i,]$conceptId)
           notesFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                  conceptChecks$cdmFieldName == '%s' &
                                  conceptChecks$conceptId == %s]",
                                  notesField, 
-                                 checkResults[i,]$CDM_TABLE_NAME,
-                                 checkResults[i,]$CDM_FIELD_NAME,
-                                 checkResults[i,]$CONCEPT_ID)
+                                 checkResults[i,]$cdmTableName,
+                                 checkResults[i,]$cdmFieldName,
+                                 checkResults[i,]$conceptId)
         } else {
           
           thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
@@ -199,37 +199,37 @@ evaluateThresholds <- function(checkResults,
                                      conceptChecks$conceptId == %s &
                                      conceptChecks$unitConceptId == '%s']",
                                      thresholdField, 
-                                     checkResults[i,]$CDM_TABLE_NAME,
-                                     checkResults[i,]$CDM_FIELD_NAME,
-                                     checkResults[i,]$CONCEPT_ID,
-                                     checkResults[i,]$UNIT_CONCEPT_ID)
+                                     checkResults[i,]$cdmTableName,
+                                     checkResults[i,]$cdmFieldName,
+                                     checkResults[i,]$conceptId,
+                                     checkResults[i,]$unitConceptId)
           notesFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
                                   conceptChecks$conceptId == %s &
                                   conceptChecks$unitConceptId == '%s']",
                                  notesField, 
-                                 checkResults[i,]$CDM_TABLE_NAME,
-                                 checkResults[i,]$CDM_FIELD_NAME,
-                                 checkResults[i,]$CONCEPT_ID,
-                                 checkResults[i,]$UNIT_CONCEPT_ID)
+                                 checkResults[i,]$cdmTableName,
+                                 checkResults[i,]$cdmFieldName,
+                                 checkResults[i,]$conceptId,
+                                 checkResults[i,]$unitConceptId)
         } 
       }
       
       thresholdValue <- eval(parse(text = thresholdFilter))
       notesValue <- eval(parse(text = notesFilter))
       
-      checkResults[i,]$THRESHOLD_VALUE <- thresholdValue
-      checkResults[i,]$NOTES_VALUE <- notesValue
+      checkResults[i,]$thresholdValue <- thresholdValue
+      checkResults[i,]$notesValue <- notesValue
     }
     
-    if (!is.na(checkResults[i,]$ERROR)) {
-      checkResults[i,]$FAILED <- 1
+    if (!is.na(checkResults[i,]$error)) {
+      checkResults[i,]$failed <- 1
     } else if (is.na(thresholdValue)) {
-      if (!is.na(checkResults[i,]$NUM_VIOLATED_ROWS) & checkResults[i,]$NUM_VIOLATED_ROWS > 0) {
-        checkResults[i,]$FAILED <- 1
+      if (!is.na(checkResults[i,]$numViolatedRows) & checkResults[i,]$numViolatedRows > 0) {
+        checkResults[i,]$failed <- 1
       }
-    } else if (checkResults[i,]$PCT_VIOLATED_ROWS * 100 > thresholdValue) {
-      checkResults[i,]$FAILED <- 1  
+    } else if (checkResults[i,]$pctViolatedRows * 100 > thresholdValue) {
+      checkResults[i,]$failed <- 1  
     }  
   }
   

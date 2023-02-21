@@ -37,3 +37,5 @@ docs/Gemfile
 docs/Gemfile.lock
 sql
 vignettes/*.log
+/doc/
+/Meta/
