@@ -4,7 +4,7 @@ Title: Execute and View Data Quality Checks on OMOP CDM Database
 Version: 2.1.1
 Date: 2023-02-27
 Authors@R: c(
-  person("Katy", "Sadowski", "katy.sadowski@gmail.com", role = c("aut", "cre")),
+  person("Katy", "Sadowski", email = "katy.sadowski@gmail.com", role = c("aut", "cre")),
   person("Clair", "Blacketer", role = c("aut")),
   person("Ajit", "Londhe", role = c("aut")),
   person("Anthony", "Sena", role = c("aut")),
