@@ -51,9 +51,13 @@ jobs:
       CDM5_SPARK_USER: ${{ secrets.CDM5_SPARK_USER }}
       CDM5_SPARK_PASSWORD: ${{ secrets.CDM5_SPARK_PASSWORD }}
       CDM5_SPARK_CONNECTION_STRING: ${{ secrets.CDM5_SPARK_CONNECTION_STRING }}
+      WEBAPI_TEST_WEBAPI_URL: ${{ secrets.WEBAPI_TEST_WEBAPI_URL }}
+      WEBAPI_TEST_SECURE_WEBAPI_URL: ${{ secrets.WEBAPI_TEST_SECURE_WEBAPI_URL }}
+      WEBAPI_TEST_ADMIN_USER_NAME: ${{ secrets.WEBAPI_TEST_ADMIN_USER_NAME }}
+      WEBAPI_TEST_ADMIN_USER_PASSWORD: ${{ secrets.WEBAPI_TEST_ADMIN_USER_PASSWORD }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-r@v2
         with:
@@ -81,6 +85,7 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           args: 'c("--no-manual", "--as-cran")'
+          build_args: 'c("--compact-vignettes=both")'
           error-on: '"warning"'
           check-dir: '"check"'
 
@@ -114,7 +119,7 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -140,33 +145,33 @@ jobs:
           draft: false
           prerelease: false
 
-      # - uses: r-lib/actions/setup-r@v2
-      #   if: ${{ env.new_version != '' }}
-      # 
-      # - name: Install drat
-      #   if: ${{ env.new_version != '' }}
-      #   run: |
-      #     install.packages('drat')
-      #   shell: Rscript {0}
-      # 
-      # - name: Remove any tarballs that already exists
-      #   if: ${{ env.new_version != '' }}
-      #   run: |
-      #     rm -f *.tar.gz
-      # 
-      # - name: Download package tarball
-      #   if: ${{ env.new_version != '' }}
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: package_tarball
-      # 
-      # - name: Push to drat
-      #   if: ${{ env.new_version != '' }}
-      #   run: |
-      #     bash deploy.sh
-      # 
-      # - name: Push to BroadSea
-      #   if: ${{ env.new_version != '' }}
-      #   run: |
-      #     curl --data "build=true" -X POST https://registry.hub.docker.com/u/ohdsi/broadsea-methodslibrary/trigger/f0b51cec-4027-4781-9383-4b38b42dd4f5/
+      - uses: r-lib/actions/setup-r@v2
+        if: ${{ env.new_version != '' }}
+
+      - name: Install drat
+        if: ${{ env.new_version != '' }}
+        run: |
+          install.packages('drat')
+        shell: Rscript {0}
+
+      - name: Remove any tarballs that already exists
+        if: ${{ env.new_version != '' }}
+        run: |
+          rm -f *.tar.gz
+
+      - name: Download package tarball
+        if: ${{ env.new_version != '' }}
+        uses: actions/download-artifact@v2
+        with:
+          name: package_tarball
+
+      - name: Push to drat
+        if: ${{ env.new_version != '' }}
+        run: |
+          bash deploy.sh
+
+      - name: Push to BroadSea
+        if: ${{ env.new_version != '' }}
+        run: |
+          curl --data "build=true" -X POST https://registry.hub.docker.com/u/ohdsi/broadsea-methodslibrary/trigger/f0b51cec-4027-4781-9383-4b38b42dd4f5/
 
