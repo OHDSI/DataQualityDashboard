@@ -191,7 +191,7 @@ test_that("Write JSON results", {
 test_that("Execute DQ checks and write to table", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  
+
   expect_warning(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
