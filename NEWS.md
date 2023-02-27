@@ -1,5 +1,10 @@
+DataQualityDashboard 2.1.1
+==========================
+
+1. Updating author list in DESCRIPTION.
+
 DataQualityDashboard 2.1.0
-===========================
+==========================
 This release includes:
 
 ### Bugfixes
