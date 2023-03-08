@@ -479,7 +479,7 @@ SPECIMEN,anatomic_site_source_value,No,,,varchar(50),0,,,"This is the site on th
 SPECIMEN,disease_status_concept_id,No,,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,Yes,,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,Yes,,,
 SPECIMEN,disease_status_source_value,No,,,varchar(50),0,,,,No,,,No,,,,,,,,,,,No,,,Yes,,,No,,,No,,,Yes,100,,DISEASE_STATUS_CONCEPT_ID,,,,,,,,,,,,No,,,Yes,,,
 SPECIMEN,person_id,Yes,0,,integer,0,,The person from whom the specimen is collected.,,No,,,Yes,0,,PERSON,PERSON_ID,,,,,,,No,,,Yes,,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,Yes,,,
-SPECIMEN,quantity,No,,,float,0,,The amount of specimen collected from the person.,,No,,,No,,,,,,,,,,,No,,,Yes,,,No,,,No,,,No,,,,1,1,,,,,,,,,,No,,,Yes,,,
+SPECIMEN,quantity,No,,,float,0,,The amount of specimen collected from the person.,,No,,,No,,,,,,,,,,,No,,,Yes,,,No,,,No,,,No,,,,0,1,,,,,,,,,,No,,,Yes,,,
 SPECIMEN,specimen_concept_id,Yes,0,,integer,0,,,The standard CONCEPT_ID that the SPECIMEN_SOURCE_VALUE maps to in the specimen domain. [Accepted Concepts](https://athena.ohdsi.org/search-terms/terms?domain=Specimen&standardConcept=Standard&page=1&pageSize=15&query=),No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,Yes,,,Yes,5,,No,,,No,,,,,,,,,,,,,,,No,,,Yes,,,
 SPECIMEN,specimen_date,Yes,0,,date,0,,The date the specimen was collected.,,No,,,No,,,,,,,,,,,No,,,Yes,,,No,,,No,,,No,,,,'1950-01-01',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,PERSON,BIRTH_DATETIME,1,,No,,,Yes,,,
 SPECIMEN,specimen_datetime,No,,,datetime,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,,,No,,,No,,,No,,,,'1950-01-01',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,PERSON,BIRTH_DATETIME,1,,No,,,Yes,,,
