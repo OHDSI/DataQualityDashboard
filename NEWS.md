@@ -1,3 +1,8 @@
+DataQualityDashboard 2.1.2
+==========================
+
+1. Fixing bug in cdmDatatype check SQL that was causing NULL values to fail the check.
+
 DataQualityDashboard 2.1.1
 ==========================
 
