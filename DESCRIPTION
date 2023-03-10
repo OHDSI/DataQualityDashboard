@@ -1,8 +1,8 @@
 Package: DataQualityDashboard
 Type: Package
 Title: Execute and View Data Quality Checks on OMOP CDM Database
-Version: 2.1.1
-Date: 2023-02-27
+Version: 2.1.2
+Date: 2023-03-10
 Authors@R: c(
   person("Katy", "Sadowski", email = "sadowski@ohdsi.org", role = c("aut", "cre")),
   person("Clair", "Blacketer", role = c("aut")),
@@ -12,7 +12,7 @@ Authors@R: c(
   person("Frank", "DeFalco", role = c("aut")),
   person("Pavel", "Grafkin", role = c("aut"))
   )
-Maintainer: Katy Sadowski <katy.sadowski@gmail.com>
+Maintainer: Katy Sadowski <sadowski@ohdsi.org>
 Description: An R package for assessing data quality in standardized OMOP Common Data Model data sources.
 License: Apache License (>= 2)
 VignetteBuilder: knitr
