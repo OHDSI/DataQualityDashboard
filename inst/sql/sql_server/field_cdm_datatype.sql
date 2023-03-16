@@ -30,11 +30,9 @@ FROM
 		  cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		WHERE 
-		  ISNUMERIC(cdmTable.@cdmFieldName) = 0 
-		  OR (
-		    ISNUMERIC(cdmTable.@cdmFieldName) = 1 
-		    AND CHARINDEX('.', CAST(ABS(cdmTable.@cdmFieldName) AS varchar)) != 0
-		  )
+		  (ISNUMERIC(cdmTable.@cdmFieldName) = 0 
+		    OR (ISNUMERIC(cdmTable.@cdmFieldName) = 1 
+		      AND CHARINDEX('.', CAST(ABS(cdmTable.@cdmFieldName) AS varchar)) != 0))
       AND cdmTable.@cdmFieldName IS NOT NULL
 		/*violatedRowsEnd*/
 	) violated_rows
