@@ -13,8 +13,8 @@ test_that("Execute a single DQ check on Synthea/Eunomia", {
   expect_warning(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
-      cdmDatabaseSchema = cdmDatabaseSchema,
-      resultsDatabaseSchema = resultsDatabaseSchema,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
@@ -32,8 +32,8 @@ test_that("Execute all TABLE checks on Synthea/Eunomia", {
 
   results <- executeDqChecks(
     connectionDetails = connectionDetailsEunomia,
-    cdmDatabaseSchema = cdmDatabaseSchema,
-    resultsDatabaseSchema = resultsDatabaseSchema,
+    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     cdmSourceName = "Eunomia",
     checkLevels = "TABLE",
     outputFolder = outputFolder,
@@ -50,8 +50,8 @@ test_that("Execute FIELD checks on Synthea/Eunomia", {
 
   results <- executeDqChecks(
     connectionDetails = connectionDetailsEunomia,
-    cdmDatabaseSchema = cdmDatabaseSchema,
-    resultsDatabaseSchema = resultsDatabaseSchema,
+    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     cdmSourceName = "Eunomia",
     checkLevels = "FIELD",
     outputFolder = outputFolder,
@@ -65,8 +65,8 @@ test_that("Execute CONCEPT checks on Synthea/Eunomia", {
   on.exit(unlink(outputFolder, recursive = TRUE))
   results <- executeDqChecks(
     connectionDetails = connectionDetailsEunomia,
-    cdmDatabaseSchema = cdmDatabaseSchema,
-    resultsDatabaseSchema = resultsDatabaseSchema,
+    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     cdmSourceName = "Eunomia",
     checkLevels = "CONCEPT",
     conceptCheckThresholdLoc = system.file(
@@ -79,7 +79,6 @@ test_that("Execute CONCEPT checks on Synthea/Eunomia", {
   )
   expect_true(nrow(results$CheckResults) > 0)
 })
-
 
 test_that("Execute a single DQ check on remote databases", {
   outputFolder <- tempfile("dqd_")
@@ -139,7 +138,7 @@ test_that("Check invalid cdm version", {
   expect_error(
     executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
-      resultsDatabaseSchema = resultsDatabaseSchema,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
@@ -157,8 +156,8 @@ test_that("Write JSON results", {
   expect_warning(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
-      cdmDatabaseSchema = cdmDatabaseSchema,
-      resultsDatabaseSchema = resultsDatabaseSchema,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
@@ -177,15 +176,15 @@ test_that("Write JSON results", {
 
   DataQualityDashboard::writeJsonResultsToTable(
     connectionDetails = connectionDetailsEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchema,
+    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     jsonFilePath = jsonPath,
     writeTableName = "dqd_results"
   )
   connection <- DatabaseConnector::connect(connectionDetailsEunomia)
   on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
-  tableNames <- DatabaseConnector::getTableNames(connection = connection, databaseSchema = resultsDatabaseSchema)
+  tableNames <- DatabaseConnector::getTableNames(connection = connection, databaseSchema = resultsDatabaseSchemaEunomia)
   expect_true("dqd_results" %in% tolower(tableNames))
-  DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchema)
+  DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
 })
 
 test_that("Execute DQ checks and write to table", {
@@ -195,8 +194,8 @@ test_that("Execute DQ checks and write to table", {
   expect_warning(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
-      cdmDatabaseSchema = cdmDatabaseSchema,
-      resultsDatabaseSchema = resultsDatabaseSchema,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
@@ -207,9 +206,9 @@ test_that("Execute DQ checks and write to table", {
   )
   connection <- DatabaseConnector::connect(connectionDetailsEunomia)
   on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
-  tableNames <- DatabaseConnector::getTableNames(connection = connection, databaseSchema = resultsDatabaseSchema)
+  tableNames <- DatabaseConnector::getTableNames(connection = connection, databaseSchema = resultsDatabaseSchemaEunomia)
   expect_true("dqd_results" %in% tolower(tableNames))
-  DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchema)
+  DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
 })
 
 test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
@@ -219,8 +218,8 @@ test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
   expect_warning(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
-      cdmDatabaseSchema = cdmDatabaseSchema,
-      resultsDatabaseSchema = resultsDatabaseSchema,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
