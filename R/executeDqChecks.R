@@ -48,9 +48,10 @@
 #' @importFrom magrittr %>%
 #' @import DatabaseConnector
 #' @importFrom stringr str_detect regex
-#' @importFrom utils packageVersion read.csv write.table
+#' @importFrom utils packageVersion write.table
 #' @importFrom rlang .data
 #' @importFrom tidyselect all_of
+#' @importFrom readr read_csv
 #'
 #' @export
 #'
@@ -169,13 +170,12 @@ executeDqChecks <- function(connectionDetails,
 
   startTime <- Sys.time()
 
-  checkDescriptionsDf <- read.csv(
+  checkDescriptionsDf <- read_csv(
     file = system.file(
       "csv",
       sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion),
       package = "DataQualityDashboard"
-    ),
-    stringsAsFactors = FALSE
+    )
   )
 
   tableChecks <- .readThresholdFile(
