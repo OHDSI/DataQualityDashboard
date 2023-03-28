@@ -87,7 +87,7 @@ test_that("Execute a single DQ check on a cohort in Synthea/Eunomia", {
   fakeCohortId <- 123
   DatabaseConnector::renderTranslateExecuteSql(connection, 
                                                "INSERT INTO @results_schema.cohort SELECT @cohort_id, person_id, observation_period_start_date, observation_period_end_date FROM @cdm_schema.observation_period LIMIT 10;", 
-                                               results_schema = resultsDatabaseSchema,
+                                               results_schema = resultsDatabaseSchemaEunomia,
                                                cohort_id = fakeCohortId,
                                                cdm_schema = cdmDatabaseSchema
                                                )
@@ -99,7 +99,7 @@ test_that("Execute a single DQ check on a cohort in Synthea/Eunomia", {
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchema,
-      resultsDatabaseSchema = resultsDatabaseSchema,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
@@ -113,7 +113,7 @@ test_that("Execute a single DQ check on a cohort in Synthea/Eunomia", {
   expect_true(nrow(results$CheckResults) > 1)
   DatabaseConnector::renderTranslateExecuteSql(connection, 
                                                "DELETE FROM @results_schema.cohort WHERE cohort_definition_id = @cohort_id", 
-                                               results_schema = resultsDatabaseSchema,
+                                               results_schema = resultsDatabaseSchemaEunomia,
                                                cohort_id = fakeCohortId)
 })
 
