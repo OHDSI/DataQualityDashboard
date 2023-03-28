@@ -31,7 +31,8 @@ Imports:
     plyr,
     stringr,
     rlang,
-    tidyselect
+    tidyselect,
+    readr
 Suggests:
     testthat,
     knitr,

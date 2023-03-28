@@ -16,20 +16,18 @@
 
 .readThresholdFile <- function(checkThresholdLoc, defaultLoc) {
   if (checkThresholdLoc == "default") {
-    result <- read.csv(
+    result <- read_csv(
       file = system.file(
         "csv",
         defaultLoc,
         package = "DataQualityDashboard"
       ),
-      stringsAsFactors = FALSE,
-      na.strings = c(" ", "")
+      na = c(" ", "")
     )
   } else {
-    result <- read.csv(
+    result <- read_csv(
       file = checkThresholdLoc,
-      stringsAsFactors = FALSE,
-      na.strings = c(" ", "")
+      na = c(" ", "")
     )
   }
   return(result)

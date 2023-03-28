@@ -9,9 +9,8 @@ if (Sys.getenv("DONT_DOWNLOAD_JDBC_DRIVERS", "") == "TRUE") {
 }
 
 connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
-cdmDatabaseSchema <- "main"
-resultsDatabaseSchema <- "main"
-cdmVersion <- 5
+cdmDatabaseSchemaEunomia <- "main"
+resultsDatabaseSchemaEunomia <- "main"
 
 # dbms <- getOption("dbms", default = "sqlite")
 # if (dbms == "sqlite") {
