@@ -25,6 +25,7 @@
 #' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema
 #' @param vocabDatabaseSchema       The fully qualified database name of the vocabulary schema (default is to set it as the cdmDatabaseSchema)
 #' @param cohortDatabaseSchema      The schema where the cohort table is located.
+#' @param cohortTableName           The name of the cohort table.
 #' @param cohortDefinitionId        The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
 #' @param outputFolder              The folder to output logs and SQL files to
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
@@ -42,6 +43,7 @@
                       cdmDatabaseSchema,
                       vocabDatabaseSchema,
                       cohortDatabaseSchema,
+                      cohortTableName,
                       cohortDefinitionId,
                       outputFolder,
                       sqlOnly) {
@@ -77,6 +79,7 @@
         list(warnOnMissingParameters = FALSE),
         list(cdmDatabaseSchema = cdmDatabaseSchema),
         list(cohortDatabaseSchema = cohortDatabaseSchema),
+        list(cohortTableName = cohortTableName),
         list(cohortDefinitionId = cohortDefinitionId),
         list(vocabDatabaseSchema = vocabDatabaseSchema),
         list(cohort = cohort),

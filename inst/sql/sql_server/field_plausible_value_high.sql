@@ -11,6 +11,7 @@ plausibleValueHigh = @plausibleValueHigh
 {@cohort & '@runForCohort' == 'Yes'}?{
 cohortDefinitionId = @cohortDefinitionId
 cohortDatabaseSchema = @cohortDatabaseSchema
+cohortTableName = @cohortTableName
 }
 **********/
 
@@ -32,7 +33,7 @@ FROM
 		cdmTable.*
     	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
     		{@cohort & '@runForCohort' == 'Yes'}?{
-    			JOIN @cohortDatabaseSchema.cohort c ON cdmTable.person_id = c.subject_id
+    			JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
     				AND c.cohort_definition_id = @cohortDefinitionId
     		}
     		{@cdmDatatype == "datetime" | @cdmDatatype == "date"}?{
@@ -48,7 +49,7 @@ FROM
 		COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
-    		JOIN @cohortDatabaseSchema.cohort c ON cdmTable.person_id = c.subject_id
+    		JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
     			AND c.cohort_definition_id = @cohortDefinitionId
     	}
   	WHERE @cdmFieldName IS NOT NULL

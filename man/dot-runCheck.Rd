@@ -14,6 +14,7 @@
   cdmDatabaseSchema,
   vocabDatabaseSchema,
   cohortDatabaseSchema,
+  cohortTableName,
   cohortDefinitionId,
   outputFolder,
   sqlOnly
@@ -35,6 +36,8 @@
 \item{vocabDatabaseSchema}{The fully qualified database name of the vocabulary schema (default is to set it as the cdmDatabaseSchema)}
 
 \item{cohortDatabaseSchema}{The schema where the cohort table is located.}
+
+\item{cohortTableName}{The name of the cohort table.}
 
 \item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'}
 

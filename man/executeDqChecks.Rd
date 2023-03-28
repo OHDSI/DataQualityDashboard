@@ -23,6 +23,7 @@ executeDqChecks(
   checkNames = c(),
   cohortDefinitionId = c(),
   cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTableName = "cohort",
   tablesToExclude = c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR",
     "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
   cdmVersion = "5.3",
@@ -64,10 +65,12 @@ executeDqChecks(
 
 \item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Descriptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.}
 
-\item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
+\item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table
 with the fields cohort_definition_id and subject_id.}
 
 \item{cohortDatabaseSchema}{The schema where the cohort table is located.}
+
+\item{cohortTableName}{The name of the cohort table. Defaults to `cohort`.}
 
 \item{tablesToExclude}{(OPTIONAL) Choose which CDM tables to exclude from the execution.}
 
