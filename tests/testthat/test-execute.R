@@ -89,7 +89,7 @@ test_that("Execute a single DQ check on a cohort in Synthea/Eunomia", {
                                                "INSERT INTO @results_schema.cohort SELECT @cohort_id, person_id, observation_period_start_date, observation_period_end_date FROM @cdm_schema.observation_period LIMIT 10;", 
                                                results_schema = resultsDatabaseSchemaEunomia,
                                                cohort_id = fakeCohortId,
-                                               cdm_schema = cdmDatabaseSchema
+                                               cdm_schema = cdmDatabaseSchemaEunomia
                                                )
   
   outputFolder <- tempfile("dqd_")
@@ -98,7 +98,7 @@ test_that("Execute a single DQ check on a cohort in Synthea/Eunomia", {
   expect_warning(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
-      cdmDatabaseSchema = cdmDatabaseSchema,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
       resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
