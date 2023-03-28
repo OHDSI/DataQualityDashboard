@@ -12,6 +12,7 @@ plausibleTemporalAfterFieldName = @plausibleTemporalAfterFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
 cohortDefinitionId = @cohortDefinitionId
 cohortDatabaseSchema = @cohortDatabaseSchema
+cohortTableName = @cohortTableName
 }
 **********/
 
@@ -36,7 +37,7 @@ FROM
     		{@cdmDatabaseSchema.@cdmTableName != @cdmDatabaseSchema.@plausibleTemporalAfterTableName}?{
 				JOIN @cdmDatabaseSchema.@plausibleTemporalAfterTableName plausibleTable ON cdmTable.person_id = plausibleTable.person_id}
 			{@cohort & '@runForCohort' == 'Yes'}?{
-    			JOIN @cohortDatabaseSchema.cohort c ON cdmTable.person_id = c.subject_id
+    			JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
     				AND c.cohort_definition_id = @cohortDefinitionId
 			}
     WHERE 
@@ -56,7 +57,7 @@ FROM
 		COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
-  			JOIN @cohortDatabaseSchema.cohort c ON cdmTable.person_id = c.subject_id
+  			JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
     			AND c.cohort_definition_id = @cohortDefinitionId 
 		}
 ) denominator

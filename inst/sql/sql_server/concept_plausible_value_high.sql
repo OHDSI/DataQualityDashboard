@@ -13,6 +13,7 @@ plausibleValueHigh = @plausibleValueHigh
 {@cohort}?{
 cohortDefinitionId = @cohortDefinitionId
 cohortDatabaseSchema = @cohortDatabaseSchema
+cohortTableName = @cohortTableName
 }
 **********/
 
@@ -35,7 +36,7 @@ FROM
 		  m.* 
 		FROM @cdmDatabaseSchema.@cdmTableName m
   		{@cohort}?{
-      	JOIN @cohortDatabaseSchema.cohort c
+      	JOIN @cohortDatabaseSchema.@cohortTableName c
       	ON m.person_id = c.subject_id
       	AND c.cohort_definition_id = @cohortDefinitionId
     	}
@@ -51,7 +52,7 @@ FROM
 	  COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName m
   	{@cohort}?{
-    	JOIN @cohortDatabaseSchema.cohort c
+    	JOIN @cohortDatabaseSchema.@cohortTableName c
     	ON m.person_id = c.subject_id
     	AND c.cohort_definition_id = @cohortDefinitionId
   	}
