@@ -5,7 +5,7 @@ Foreign key check
 
 Parameters used in this template:
 schema = @schema
-{'@fkTableName' NOT IN ('CONCEPT','DOMAIN','CONCEPT_CLASS','VOCABULARY','RELATIONSHIP')}?{vocabDatabaseSchema = @vocabDatabaseSchema}
+{'@fkTableName' IN ('CONCEPT','DOMAIN','CONCEPT_CLASS','VOCABULARY','RELATIONSHIP')}?{vocabDatabaseSchema = @vocabDatabaseSchema}
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 fkTableName = @fkTableName
