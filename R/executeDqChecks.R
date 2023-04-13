@@ -181,6 +181,7 @@ executeDqChecks <- function(connectionDetails,
       package = "DataQualityDashboard"
     )
   )
+  checkDescriptionsDf <- as.data.frame(checkDescriptionsDf)
 
   tableChecks <- .readThresholdFile(
     checkThresholdLoc = tableCheckThresholdLoc,
