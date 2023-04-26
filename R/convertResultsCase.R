@@ -40,18 +40,20 @@ convertJsonResultsFileCase <- function(
   if (!any(targetCase %in% c("camel", "snake"))) {
     stop("targetCase must be either 'camel' or 'snake'.")
   }
-  if (writeToFile == TRUE && is.na(outputFolder)) {
+  stopifnot(is.logical(writeToFile))
+  if (writeToFile && is.na(outputFolder)) {
     stop("You must specify an output folder if writing to file.")
   }
-  stopifnot(is.logical(writeToFile))
   
   results <- jsonlite::fromJSON(jsonFilePath)
   
   if ("numViolatedRows" %in% names(results$CheckResults) && targetCase == "camel") {
-    stop("File is already in camelcase!")
+    warning("File is already in camelcase! No conversion will be performed.")
+    return(results)
   } 
   if ("NUM_VIOLATED_ROWS" %in% names(results$CheckResults) && targetCase == "snake") {
-    stop("File is already in snakecase!")
+    warning("File is already in snakecase! No conversion will be performed.")
+    return(results)
   }
   
   if (targetCase == "camel") {
