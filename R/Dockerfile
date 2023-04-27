@@ -13,7 +13,7 @@ RUN apt-get update \
 
 COPY sshd_config /etc/ssh/
 
-RUN R -e "install.packages('DatabaseConnector')"
+RUN R -e "remotes::install_github('OHDSI/DatabaseConnector',ref='v5.1.0')"
 RUN R -e "install.packages('SqlRender')"
 RUN R -e "install.packages('ParallelLogger')"
 RUN R -e "install.packages('devtools')"
