@@ -100,11 +100,6 @@
       if (sqlOnly) {
         .createSqlOnlyQueries(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, checkDescription)
         data.frame()
-        #write(x = sql, file = file.path(
-        #  outputFolder,
-        #  sprintf("%s.sql", checkDescription$checkName)
-        #), append = TRUE)
-        #data.frame()
       } else {
         .processCheck(
           connection = connection,
@@ -116,38 +111,14 @@
         )
       }
     })
-    
-    params <- c(list(dbms = connectionDetails$dbms),
-                list(sqlFilename = checkDescription$sqlFile),
-                list(packageName = "DataQualityDashboard"),
-                list(warnOnMissingParameters = FALSE),
-                list(cdmDatabaseSchema = cdmDatabaseSchema),
-                list(cohortDatabaseSchema = cohortDatabaseSchema),
-                list(cohortDefinitionId = cohortDefinitionId),
-                list(vocabDatabaseSchema = vocabDatabaseSchema),
-                list(cohort = cohort),
-                unlist(columns, recursive = FALSE))
-    
-    sql <- do.call(SqlRender::loadRenderTranslateSql, params)
-    
-    if (sqlOnly) {
-      .createSqlOnlyQueries(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, checkDescription)
-      data.frame()
-    } else {
-      .processCheck(
-        connection = connection,
-        connectionDetails = connectionDetails,
-        check = check, 
-        checkDescription = checkDescription, 
-        sql = sql,
-        outputFolder = outputFolder
-      )
-    }
-  }
 
-  if (sqlOnly && length(sql_to_union) > 0) {
-    .writeSqlOnlyQueries(sql_to_union, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
+    if (sqlOnly && length(sql_to_union) > 0) {
+      .writeSqlOnlyQueries(sql_to_union, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
+    }
+      
+    do.call(rbind, dfs)
+  } else {
+    ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
+    data.frame()
   }
-  
-  do.call(rbind, dfs)
 }

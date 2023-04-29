@@ -1,9 +1,9 @@
 --DDL to create dqdashboard_results table.
 
-IF OBJECT_ID('@tableName', 'U') IS NOT NULL
-	DROP TABLE @tableName;
+IF OBJECT_ID('@resultsDatabaseSchema.@tableName', 'U') IS NOT NULL
+	DROP TABLE @resultsDatabaseSchema.@tableName;
 
-CREATE TABLE @tableName
+CREATE TABLE @resultsDatabaseSchema.@tableName
 (
   num_violated_rows     BIGINT,
   pct_violated_rows     FLOAT,
