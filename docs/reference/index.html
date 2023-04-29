@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.2</span>
       </span>
     </div>
 
@@ -41,6 +41,12 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/AddNewCheck.html">Add a New Data Quality Check</a>
+    </li>
+    <li>
+      <a href="../articles/CheckStatusDefinitions.html">Check Status Descriptions</a>
+    </li>
+    <li>
       <a href="../articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
     </li>
     <li>
@@ -50,7 +56,13 @@
       <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
     </li>
   </ul></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+</li>
+<li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
@@ -88,6 +100,30 @@
           <p><code><a href="viewDqDashboard.html">viewDqDashboard()</a></code> </p>
         </td>
         <td><p>View DQ Dashboard</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="re-evaluate-thresholds">Re-evaluate Thresholds <a href="#re-evaluate-thresholds" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Function to take a set of DQD results and re-evaluate them against new thresholds</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="reEvaluateThresholds.html">reEvaluateThresholds()</a></code> </p>
+        </td>
+        <td><p>Re-evaluate Thresholds</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="list-all-dqd-checks">List all DQD Checks <a href="#list-all-dqd-checks" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Function to list all checks run by the application</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="listDqChecks.html">listDqChecks()</a></code> </p>
+        </td>
+        <td><p>List DQ checks</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="write-dqd-results-to-a-csv">Write DQD results to a CSV <a href="#write-dqd-results-to-a-csv" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Function to write the JSON results to a csv file</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="writeJsonResultsToCsv.html">writeJsonResultsToCsv()</a></code> </p>
+        </td>
+        <td><p>Write JSON Results to CSV file</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -97,11 +133,11 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
+  <p></p><p>Developed by Katy Sadowski, Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -15,6 +15,7 @@
   vocabDatabaseSchema,
   resultsDatabaseSchema,
   cohortDatabaseSchema,
+  cohortTableName,
   cohortDefinitionId,
   outputFolder,
   sqlOnlyUnionCount,
@@ -39,6 +40,8 @@
 \item{resultsDatabaseSchema}{The fully qualified database name of the results schema}
 
 \item{cohortDatabaseSchema}{The schema where the cohort table is located.}
+
+\item{cohortTableName}{The name of the cohort table.}
 
 \item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'}
 

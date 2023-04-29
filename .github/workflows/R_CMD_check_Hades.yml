@@ -1,0 +1,177 @@
+# For help debugging build failures open an issue on the RStudio community with the 'github-actions' tag.
+# https://community.rstudio.com/new-topic?category=Package%20development&tags=github-actions
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+name: R-CMD-check
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: windows-latest, r: 'release'}
+          - {os: macOS-latest, r: 'release'}
+          - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GH_TOKEN }}
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: ${{ matrix.config.rspm }}
+      CDM5_ORACLE_CDM_SCHEMA: ${{ secrets.CDM5_ORACLE_CDM_SCHEMA }}
+      CDM5_ORACLE_OHDSI_SCHEMA: ${{ secrets.CDM5_ORACLE_OHDSI_SCHEMA }}
+      CDM5_ORACLE_PASSWORD: ${{ secrets.CDM5_ORACLE_PASSWORD }}
+      CDM5_ORACLE_SERVER: ${{ secrets.CDM5_ORACLE_SERVER }}
+      CDM5_ORACLE_USER: ${{ secrets.CDM5_ORACLE_USER }}
+      CDM5_POSTGRESQL_CDM_SCHEMA: ${{ secrets.CDM5_POSTGRESQL_CDM_SCHEMA }}
+      CDM5_POSTGRESQL_OHDSI_SCHEMA: ${{ secrets.CDM5_POSTGRESQL_OHDSI_SCHEMA }}
+      CDM5_POSTGRESQL_PASSWORD: ${{ secrets.CDM5_POSTGRESQL_PASSWORD }}
+      CDM5_POSTGRESQL_SERVER: ${{ secrets.CDM5_POSTGRESQL_SERVER }}
+      CDM5_POSTGRESQL_USER: ${{ secrets.CDM5_POSTGRESQL_USER }}
+      CDM5_SQL_SERVER_CDM_SCHEMA: ${{ secrets.CDM5_SQL_SERVER_CDM_SCHEMA }}
+      CDM5_SQL_SERVER_OHDSI_SCHEMA: ${{ secrets.CDM5_SQL_SERVER_OHDSI_SCHEMA }}
+      CDM5_SQL_SERVER_PASSWORD: ${{ secrets.CDM5_SQL_SERVER_PASSWORD }}
+      CDM5_SQL_SERVER_SERVER: ${{ secrets.CDM5_SQL_SERVER_SERVER }}
+      CDM5_SQL_SERVER_USER: ${{ secrets.CDM5_SQL_SERVER_USER }}
+      CDM5_REDSHIFT_CDM_SCHEMA: ${{ secrets.CDM5_REDSHIFT_CDM_SCHEMA }}
+      CDM5_REDSHIFT_OHDSI_SCHEMA: ${{ secrets.CDM5_REDSHIFT_OHDSI_SCHEMA }}
+      CDM5_REDSHIFT_PASSWORD: ${{ secrets.CDM5_REDSHIFT_PASSWORD }}
+      CDM5_REDSHIFT_SERVER: ${{ secrets.CDM5_REDSHIFT_SERVER }}
+      CDM5_REDSHIFT_USER: ${{ secrets.CDM5_REDSHIFT_USER }}
+      CDM5_SPARK_USER: ${{ secrets.CDM5_SPARK_USER }}
+      CDM5_SPARK_PASSWORD: ${{ secrets.CDM5_SPARK_PASSWORD }}
+      CDM5_SPARK_CONNECTION_STRING: ${{ secrets.CDM5_SPARK_CONNECTION_STRING }}
+      WEBAPI_TEST_WEBAPI_URL: ${{ secrets.WEBAPI_TEST_WEBAPI_URL }}
+      WEBAPI_TEST_SECURE_WEBAPI_URL: ${{ secrets.WEBAPI_TEST_SECURE_WEBAPI_URL }}
+      WEBAPI_TEST_ADMIN_USER_NAME: ${{ secrets.WEBAPI_TEST_ADMIN_USER_NAME }}
+      WEBAPI_TEST_ADMIN_USER_PASSWORD: ${{ secrets.WEBAPI_TEST_ADMIN_USER_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+
+      - uses: r-lib/actions/setup-tinytex@v2
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install system requirements
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install -y libssh-dev
+          Rscript -e 'install.packages("remotes")'
+          while read -r cmd
+          do
+            eval sudo $cmd
+          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--as-cran")'
+          build_args: 'c("--compact-vignettes=both")'
+          error-on: '"warning"'
+          check-dir: '"check"'
+
+      - name: Upload source package
+        if: success() && runner.os == 'macOS' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v2
+        with:
+          name: package_tarball
+          path: check/*.tar.gz
+
+      - name: Install covr
+        if: runner.os == 'macOS'
+        run: |
+          install.packages("covr")
+        shell: Rscript {0}
+
+      - name: Test coverage
+        if: runner.os == 'macOS'
+        run: covr::codecov()
+        shell: Rscript {0}
+
+  Release:
+    needs: R-CMD-Check
+
+    runs-on: macOS-latest
+
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check if version has increased
+        run: |
+          echo "new_version="$(perl compare_versions --tag) >> $GITHUB_ENV
+
+      - name: Display new version number
+        if: ${{ env.new_version != '' }}
+        run: |
+          echo "${{ env.new_version }}"
+
+      - name: Create release
+        if: ${{ env.new_version != '' }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          tag_name: ${{ env.new_version }}
+          release_name: Release ${{ env.new_version }}
+          body: |
+            See NEWS.md for release notes.
+          draft: false
+          prerelease: false
+
+      - uses: r-lib/actions/setup-r@v2
+        if: ${{ env.new_version != '' }}
+
+      - name: Install drat
+        if: ${{ env.new_version != '' }}
+        run: |
+          install.packages('drat')
+        shell: Rscript {0}
+
+      - name: Remove any tarballs that already exists
+        if: ${{ env.new_version != '' }}
+        run: |
+          rm -f *.tar.gz
+
+      - name: Download package tarball
+        if: ${{ env.new_version != '' }}
+        uses: actions/download-artifact@v2
+        with:
+          name: package_tarball
+
+      - name: Push to drat
+        if: ${{ env.new_version != '' }}
+        run: |
+          bash deploy.sh
+
+      - name: Push to BroadSea
+        if: ${{ env.new_version != '' }}
+        run: |
+          curl --data "build=true" -X POST https://registry.hub.docker.com/u/ohdsi/broadsea-methodslibrary/trigger/f0b51cec-4027-4781-9383-4b38b42dd4f5/
+

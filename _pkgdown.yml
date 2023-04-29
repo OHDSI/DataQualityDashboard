@@ -16,7 +16,8 @@ navbar:
     - intro
     - reference
     - articles
-    right: github
+    - news
+    right: [hades, github]
   components:
     home:
       icon: fa-home fa-lg
@@ -27,6 +28,12 @@ navbar:
     reference:
       text: Reference
       href: reference/index.html
+    news:
+      text: Changelog
+      href: news/index.html
+    hades:
+      text: hadesLogo
+      href: https://ohdsi.github.io/Hades
   
 reference:
   - title: "Execution"
@@ -40,3 +47,15 @@ reference:
       Function for viewing the data quality dashboard
     contents:
       - viewDqDashboard
+  - title: "Re-evaluate Thresholds"
+    desc: >
+      Function to take a set of DQD results and re-evaluate them against new thresholds
+    contents: reEvaluateThresholds
+  - title: "List all DQD Checks"
+    desc: > 
+      Function to list all checks run by the application
+    contents: listDqChecks
+  - title: "Write DQD results to a CSV"
+    desc: > 
+      Function to write the JSON results to a csv file
+    contents: writeJsonResultsToCsv

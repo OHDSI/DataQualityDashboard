@@ -13,7 +13,7 @@ executeDqChecks(
   numThreads = 1,
   sqlOnly = FALSE,
   sqlOnlyUnionCount = 1,
-  outputFolder = "output",
+  outputFolder,
   outputFile = "",
   verboseMode = FALSE,
   writeToTable = TRUE,
@@ -24,9 +24,10 @@ executeDqChecks(
   checkNames = c(),
   cohortDefinitionId = c(),
   cohortDatabaseSchema = resultsDatabaseSchema,
+  cohortTableName = "cohort",
   tablesToExclude = c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR",
     "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
-  cdmVersion = "5.3.1",
+  cdmVersion = "5.3",
   tableCheckThresholdLoc = "default",
   fieldCheckThresholdLoc = "default",
   conceptCheckThresholdLoc = "default"
@@ -49,31 +50,34 @@ executeDqChecks(
 
 \item{sqlOnlyUnionCount}{How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel)}
 
-\item{outputFolder}{The folder to output logs and SQL files to}
+\item{outputFolder}{The folder to output logs, SQL files, and JSON results file to}
 
 \item{outputFile}{(OPTIONAL) File to write results JSON object}
 
-\item{verboseMode}{Boolean to determine if the console will show all execution steps. Default = FALSE}
+\item{verboseMode}{Boolean to determine if the console will show all execution steps. Default is FALSE}
 
-\item{writeToTable}{Boolean to indicate if the check results will be written to the dqdashboard_results table}
+\item{writeToTable}{Boolean to indicate if the check results will be written to the dqdashboard_results table in the resultsDatabaseSchema. Default is TRUE}
 
-\item{writeToCsv}{Boolean to indicate if the check results will be written to a csv file}
+\item{writeTableName}{The name of the results table. Defaults to `dqdashboard_results`.}
 
-\item{csvFile}{(OPTIONAL) CSV file to write results
-in the resultsDatabaseSchema. Default is TRUE.}
+\item{writeToCsv}{Boolean to indicate if the check results will be written to a csv file. Default is FALSE}
+
+\item{csvFile}{(OPTIONAL) CSV file to write results}
 
 \item{checkLevels}{Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)}
 
-\item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Desciptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.}
+\item{checkNames}{(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Descriptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.}
 
-\item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort' 
+\item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table
 with the fields cohort_definition_id and subject_id.}
 
 \item{cohortDatabaseSchema}{The schema where the cohort table is located.}
 
+\item{cohortTableName}{The name of the cohort table. Defaults to `cohort`.}
+
 \item{tablesToExclude}{(OPTIONAL) Choose which CDM tables to exclude from the execution.}
 
-\item{cdmVersion}{The CDM version to target for the data source. By default, 5.3.1 is used.}
+\item{cdmVersion}{The CDM version to target for the data source. Options are "5.2", "5.3", or "5.4". By default, "5.3" is used.}
 
 \item{tableCheckThresholdLoc}{The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.}
 

@@ -1,80 +1,93 @@
-#' @name listDqChecks
-#' 
-#' @param cdmVersion                The CDM version to target for the data source. By default, 5.3.1 is used.
+# Copyright 2023 Observational Health Data Sciences and Informatics
+#
+# This file is part of DataQualityDashboard
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+#' @title List DQ checks
+#'
+#' @description Details on all checks defined by the DataQualityDashboard Package.
+#'
+#' @param cdmVersion                The CDM version to target for the data source. By default, 5.3 is used.
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
 #'
-#' @return Details on all checks defined by the DataQualityDashboard Package.
+#' @importFrom readr read_csv
 #'
 #' @export
-listDqChecks <- function(cdmVersion = "5.3.1", tableCheckThresholdLoc = "default", fieldCheckThresholdLoc = "default",conceptCheckThresholdLoc = "default") {
+listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default", fieldCheckThresholdLoc = "default", conceptCheckThresholdLoc = "default") {
   dqChecks <- {}
   dqChecks$checkDescriptions <-
-    read.csv(system.file(
+    read_csv(system.file(
       "csv",
       sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion),
       package = "DataQualityDashboard"
-    ),
-    stringsAsFactors = FALSE)
-  
-  
+      )
+    )
+
+
   if (tableCheckThresholdLoc == "default") {
     dqChecks$tableChecks <-
-      read.csv(
+      read_csv(
         system.file(
           "csv",
           sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
           package = "DataQualityDashboard"
         ),
-        stringsAsFactors = FALSE,
-        na.strings = c(" ", "")
+        na = c(" ", "")
       )
   } else {
-    dqChecks$tableChecks <- read.csv(
+    dqChecks$tableChecks <- read_csv(
       tableCheckThresholdLoc,
-      stringsAsFactors = FALSE,
-      na.strings = c(" ", "")
+      na = c(" ", "")
     )
   }
-  
+
   if (fieldCheckThresholdLoc == "default") {
     dqChecks$fieldChecks <-
-      read.csv(
+      read_csv(
         system.file(
           "csv",
           sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
           package = "DataQualityDashboard"
         ),
-        stringsAsFactors = FALSE,
-        na.strings = c(" ", "")
+        na = c(" ", "")
       )
   } else {
-    dqChecks$fieldChecks <- read.csv(
+    dqChecks$fieldChecks <- read_csv(
       fieldCheckThresholdLoc,
-      stringsAsFactors = FALSE,
-      na.strings = c(" ", "")
+      na = c(" ", "")
     )
   }
-  
+
   if (conceptCheckThresholdLoc == "default") {
     dqChecks$conceptChecks <-
-      read.csv(
+      read_csv(
         system.file(
           "csv",
           sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion),
           package = "DataQualityDashboard"
         ),
-        stringsAsFactors = FALSE,
-        na.strings = c(" ", "")
+        na = c(" ", "")
       )
   } else {
-    dqChecks$conceptChecks <- read.csv(
+    dqChecks$conceptChecks <- read_csv(
       conceptCheckThresholdLoc,
-      stringsAsFactors = FALSE,
-      na.strings = c(" ", "")
+      na = c(" ", "")
     )
   }
-  
+
   return(dqChecks)
 }

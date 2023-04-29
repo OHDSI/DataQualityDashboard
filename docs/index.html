@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.2</span>
       </span>
     </div>
 
@@ -59,6 +59,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/AddNewCheck.html">Add a New Data Quality Check</a>
+    </li>
+    <li>
+      <a href="articles/CheckStatusDefinitions.html">Check Status Descriptions</a>
+    </li>
+    <li>
       <a href="articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
     </li>
     <li>
@@ -69,8 +75,14 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+</li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
@@ -93,13 +105,15 @@
 <div class="section level1">
 <div class="page-header"><h1 id="dataqualitydashboard">DataQualityDashboard<a class="anchor" aria-label="anchor" href="#dataqualitydashboard"></a>
 </h1></div>
+<!-- badges: start -->
 
+<p>DataQualityDashboard is part of <a href="https://ohdsi.github.io/Hades" class="external-link">HADES</a>.</p>
 <p>The goal of the Data Quality Dashboard (DQD) project is to design and develop an open-source tool to expose and evaluate observational data quality.</p>
 </div>
 <div class="section level1">
 <h1 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h1>
-<p>This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.4, v5.3.1 and v5.2.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way.</p>
+<p>This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.4, v5.3 and v5.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way.</p>
 </div>
 <div class="section level1">
 <h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -111,9 +125,9 @@
 <p><em>The number and percent of records with a value in the <strong>year_of_birth</strong> field of the <strong>PERSON</strong> table less than <strong>1850</strong>.</em></p>
 <p>And, since it is parameterized, we can similarly apply it to DRUG_EXPOSURE.days_supply:</p>
 <p><em>The number and percent of records with a value in the <strong>days_supply</strong> field of the <strong>DRUG_EXPOSURE</strong> table less than <strong>0</strong>.</em></p>
-<p>Version 1 of the tool includes 20 different check types organized into Kahn contexts and categories. Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs. For a detailed description and definition of each check type please click <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions" class="external-link">here</a>.</p>
-<p>After systematically applying the 20 check types to an OMOP CDM version approximately 3,351 individual data quality checks are resolved, run against the database, and evaluated based on a pre-specified threshold. The R package then creates a json object that is read into an RShiny application to view the results.</p>
-<p><img src="https://github.com/OHDSI/DataQualityDashboard/raw/main/extras/dqDashboardScreenshot.png"></p>
+<p>Version 1 of the tool includes 24 different check types organized into Kahn contexts and categories. Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs. For a detailed description and definition of each check type please click <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions" class="external-link">here</a>.</p>
+<p>After systematically applying the 24 check types to an OMOP CDM version approximately 4,000 individual data quality checks are resolved, run against the database, and evaluated based on a pre-specified threshold. The R package then creates a json object that is read into an RShiny application to view the results.</p>
+<p><img src="reference/figures/dqDashboardScreenshot.png"></p>
 </div>
 <div class="section level1">
 <h1 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
@@ -158,7 +172,7 @@
 <tr class="even">
 <td>source_description</td>
 <td>The description of the CDM instance.</td>
-<td>Add notes, caveats, special characteristics about the source data that would not be assumed from the general descriptive name.  This description intended to help analysists determine if the data is suitable for the problem they are studying.</td>
+<td>Add notes, caveats, special characteristics about the source data that would not be assumed from the general descriptive name.  This description intended to help analysts determine if the data is suitable for the problem they are studying.</td>
 </tr>
 <tr class="odd">
 <td>source_documentation_reference</td>
@@ -206,7 +220,23 @@
 <div class="section level1">
 <h1 id="system-requirements">System Requirements<a class="anchor" aria-label="anchor" href="#system-requirements"></a>
 </h1>
-<p>Requires R (version 3.2.2 or higher). Requires <a href="https://github.com/OHDSI/DatabaseConnector" class="external-link">DatabaseConnector</a> and <a href="https://github.com/OHDSI/SqlRender" class="external-link">SqlRender</a>.</p>
+<p>Requires R (version 3.2.2 or higher). Requires <a href="https://github.com/OHDSI/DatabaseConnector" class="external-link">DatabaseConnector</a> (version 2.0.2 or higher).</p>
+</div>
+<div class="section level1">
+<h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h1>
+<ol style="list-style-type: decimal">
+<li><p>See the instructions <a href="https://ohdsi.github.io/Hades/rSetup.html" class="external-link">here</a> for configuring your R environment, including RTools and Java.</p></li>
+<li><p>In R, use the following commands to download and install DataQualityDashboard:</p></li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"OHDSI/DataQualityDashboard"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level1">
+<h1 id="user-documentation">User Documentation<a class="anchor" aria-label="anchor" href="#user-documentation"></a>
+</h1>
+<p>Documentation can be found on the <a href="https://ohdsi.github.io/DataQualityDashboard/index.html" class="external-link">package website</a>.</p>
 </div>
 <div class="section level1">
 <h1 id="support">Support<a class="anchor" aria-label="anchor" href="#support"></a>
@@ -221,16 +251,23 @@
 <h1 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h1>
 <p>DataQualityDashboard is licensed under Apache License 2.0</p>
+</div>
+<div class="section level1">
+<h1 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
+</h1>
+<p>DataQualityDashboard is being developed in R Studio.</p>
 <div class="section level3">
 <h3 id="development-status">Development status<a class="anchor" aria-label="anchor" href="#development-status"></a>
 </h3>
-<p>V1.4 ready for use.</p>
+<p>V2.0 ready for use.</p>
 </div>
 </div>
 <div class="section level1">
 <h1 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
 </h1>
-<p>This project is supported in part through the National Science Foundation grant IIS 1251151.</p>
+<ul>
+<li>This project is supported in part through the National Science Foundation grant IIS 1251151.</li>
+</ul>
 <p><b id="f1">1</b> Kahn, M.G., et al., A Harmonized Data Quality Assessment Terminology and Framework for the Secondary Use of Electronic Health Record Data. EGEMS (Wash DC), 2016. 4(1): p. 1244. <a href="#kahn">↩︎</a></p>
 </div>
 
@@ -250,7 +287,7 @@
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li>Apache License 2.0</li>
+<li>Apache License (&gt;= 2)</li>
 </ul>
 </div>
 
@@ -265,7 +302,8 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Clair Blacketer <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Katy Sadowski <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Clair Blacketer <br><small class="roles"> Author </small>  </li>
 <li>Ajit Londhe <br><small class="roles"> Author </small>  </li>
 <li>Anthony Sena <br><small class="roles"> Author </small>  </li>
 <li>Anthony Molinaro <br><small class="roles"> Author </small>  </li>
@@ -277,8 +315,8 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/OHDSI/DataQualityDashboard" class="external-link"><img src="https://travis-ci.org/OHDSI/DataQualityDashboard.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://codecov.io/github/OHDSI/DataQualityDashboard?branch=master" class="external-link"><img src="https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=master" alt="codecov.io"></a></li>
+<li><a href="https://codecov.io/github/OHDSI/DataQualityDashboard?branch=main" class="external-link"><img src="https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=main" alt="codecov.io"></a></li>
+<li><a href="https://github.com/OHDSI/DataQualityDashboard/actions?query=workflow%3AR-CMD-check" class="external-link"><img src="https://github.com/OHDSI/DataQualityDashboard/workflows/R-CMD-check/badge.svg" alt="Build Status"></a></li>
 </ul>
 </div>
 
@@ -288,12 +326,12 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
+<p>Developed by Katy Sadowski, Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
