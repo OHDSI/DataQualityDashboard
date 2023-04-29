@@ -72,7 +72,6 @@
     # Global variables for tracking SQL of checks
     sql_to_union <<- c()
     qnum <<- 0
-    # unlink(file.path(outputFolder, sprintf("%s.sql", checkDescription$checkName))) -- TODO from develop - needed?
   }
 
   if (nrow(checks) > 0) {
