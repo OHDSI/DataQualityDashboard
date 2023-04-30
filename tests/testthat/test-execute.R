@@ -272,3 +272,27 @@ test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
   )
   expect_is(results2, "list")
 })
+
+test_that("Execute DQ checks using sqlOnly and sqlOnlyUnionCount", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+  sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "spark", pathToDriver = "/")
+
+  expect_warning(
+    results <- executeDqChecks(
+      connectionDetails = sqlOnlyConnectionDetails,
+      cdmDatabaseSchema = "@cdmDatabaseSchema",
+      resultsDatabaseSchema = "@resultsDatabaseSchema",
+      cdmSourceName = "Eunomia",
+      checkNames = "measureValueCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = TRUE,
+      sqlOnly = TRUE,
+      sqlOnlyUnionCount = 100,
+      writeTableName = "dqd_results"
+    ),
+    regexp = "^(Unknown or uninitialised column|Missing check names).*"
+  )
+  expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
+  expect_true("FIELD_measureValueCompleteness.sql" %in% list.files(outputFolder))
+})

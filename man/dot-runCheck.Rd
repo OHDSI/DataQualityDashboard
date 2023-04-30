@@ -14,6 +14,7 @@
   cdmDatabaseSchema,
   vocabDatabaseSchema,
   resultsDatabaseSchema,
+  writeTableName,
   cohortDatabaseSchema,
   cohortTableName,
   cohortDefinitionId,
@@ -38,6 +39,8 @@
 \item{vocabDatabaseSchema}{The fully qualified database name of the vocabulary schema (default is to set it as the cdmDatabaseSchema)}
 
 \item{resultsDatabaseSchema}{The fully qualified database name of the results schema}
+
+\item{writeTableName}{The table tor write DQD results to. Used when sqlOnly or writeToTable is True.}
 
 \item{cohortDatabaseSchema}{The schema where the cohort table is located.}
 

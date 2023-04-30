@@ -131,12 +131,13 @@
     dbms,
     outputFolder
 ) {
+  tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)
+
   sql <- SqlRender::loadRenderTranslateSql(
     sqlFilename = "result_dataframe_ddl.sql",
     packageName = "DataQualityDashboard",
     dbms = dbms,
-    resultsDatabaseSchema = resultsDatabaseSchema,
-    tableName = writeTableName
+    tableName = tableName
   )
   
   write(
