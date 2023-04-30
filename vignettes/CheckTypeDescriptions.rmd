@@ -277,7 +277,7 @@ This article will detail each check type, its name, check level, description, de
 ## plausibleUnitConceptIds
 
 **Name**: plausibleUnitConceptIds <br>**Level**: Concept check
-<br>**Context**: Validation <br>**Category**: Plausibility
+<br>**Context**: Verification <br>**Category**: Plausibility
 <br>**Subcategory**: Atemporal
 
 **Description**: The number and percent of records for a given
