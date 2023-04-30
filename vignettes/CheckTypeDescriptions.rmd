@@ -190,7 +190,7 @@ This article will detail each check type, its name, check level, description, de
 
 **Definition**: This check will look at all distinct source values in the specified field and calculate how many are mapped to 0. This should be used in conjunction with the [standardConceptRecordCompletness](#standardConceptRecordCompleteness) check to identify any mapping issues in the ETL.
 
-## plausibleValueLow
+## plausibleValueLow - (for Fields)
 
 **Name**: plausibleValueLow
 <br>**Level**: Field check
@@ -202,7 +202,7 @@ This article will detail each check type, its name, check level, description, de
 
 **Definition**: This check will count the number of records that have a value in the specified field that is lower than some value. This is the field-level version of this check so it is not concept specific. For example, it will count the number of records that have an implausibly low value in the year_of_birth field of the PERSON table.
 
-## plausibleValueHigh
+## plausibleValueHigh - (for Fields)
 
 **Name**: plausibleValueHigh
 <br>**Level**: Field check
@@ -238,7 +238,7 @@ This article will detail each check type, its name, check level, description, de
 
 **Definition**: This check will calculate the number of records that occur after a person's death. This is called *plausibleDuringLife* because turning it on indicates that the specified dates should occur during a person's lifetime, like drug exposures, etc.
 
-## plausibleValueLow
+## plausibleValueLow - (for Concept + Unit combinations)
 
 **Name**: plausibleValueLow
 <br>**Level**: Concept check
@@ -250,7 +250,7 @@ This article will detail each check type, its name, check level, description, de
 
 **Definition**: This check will count the number of records that have a value in the specified field with the specified concept_id and unit_concept_id that is lower than some value. This is the concept-level version of this check so it is concept specific and therefore the denominator will only be the records with the specified concept and unit. For example, it will count the number of records that have an implausibly low value in the value_as_number field of the MEASUREMENT table where MEASUREMENT_CONCEPT_ID = 2212241 (Calcium; total) and UNIT_CONCEPT_ID = 8840 (milligram per deciliter). These implausible values were determined by a team of physicians and are meant to be *biologically implausible*, not just lower than the normal value. 
 
-## plausibleValueHigh
+## plausibleValueHigh - (for Concept + Unit combinations)
 
 **Name**: plausibleValueHigh
 <br>**Level**: Concept check
@@ -273,3 +273,23 @@ This article will detail each check type, its name, check level, description, de
 **Description**: For a CONCEPT_ID **conceptId** (**conceptName**), the number and percent of records associated with patients with an implausible gender (correct gender = **plausibleGender**). 
 
 **Definition**: This check will count the number of records that have an incorrect gender associated with a gender-specific concept_id. This check is concept specific and therefore the denominator will only be the records with the specified concept. For example it will count the number of records of prostate cancer that are associated with female persons.
+
+## plausibleUnitConceptIds
+
+**Name**: plausibleUnitConceptIds <br>**Level**: Concept check
+<br>**Context**: Validation <br>**Category**: Plausibility
+<br>**Subcategory**: Atemporal
+
+**Description**: The number and percent of records for a given
+CONCEPT_ID **conceptId** (**conceptName**) with implausible units (i.e.
+UNIT_CONCEPT_ID NOT IN (**plausibleUnitConceptIds**))
+
+**Definition**: This check will count the number of records for a given
+concept that do not use one of the allowable units, which is represented 
+in the csv file as a quoted comma-separated list of unit_concept_ids. 
+If no units are specified for **plausibleUnitConceptIds**, this check will 
+count the number of records that have non-NULL units. This check is concept
+specific and therefore the denominator will only be the records with the
+specified concept. For example it will count the number of records or
+**Glomerular Filtration Rate** (CONCEPT_ID = 3030354) that do not use
+unit **mL/min/1.73.m2** (UNIT_CONCEPT_ID = 9117).
