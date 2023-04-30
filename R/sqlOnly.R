@@ -29,6 +29,7 @@
     plausibleGender = params$plausibleGender,
     plausibleValueHigh = params$plausibleValueHigh,
     plausibleValueLow = params$plausibleValueLow,
+    plausibleUnitConceptIds = params$plausibleUnitConceptIds,
     fkClass = params$fkClass,
     fkDomain = params$fkDomain,
     fkTableName = params$fkTableName,
