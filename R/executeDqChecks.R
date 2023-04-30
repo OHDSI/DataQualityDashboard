@@ -94,7 +94,9 @@ executeDqChecks <- function(connectionDetails,
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
-  stopifnot(is.numeric(sqlOnlyUnionCount))
+  if (sqlOnly) {
+    stopifnot(is.numeric(sqlOnlyUnionCount))
+  }
   stopifnot(is.character(cohortDatabaseSchema), is.character(cohortTableName))
 
   if (!all(checkLevels %in% c("TABLE", "FIELD", "CONCEPT"))) {
