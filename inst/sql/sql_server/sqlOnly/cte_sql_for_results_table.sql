@@ -29,7 +29,7 @@ SELECT
   ,CASE WHEN (cte.pct_violated_rows * 100) <= @threshold_value THEN 1 ELSE 0 END as passed
   ,NULL as not_applicable_reason
   ,@threshold_value as threshold_value
-  ,'' as notes_value
+  ,NULL as notes_value
 FROM (
   @query_text
 ) cte
