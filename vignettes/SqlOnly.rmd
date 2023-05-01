@@ -1,0 +1,186 @@
+---
+title: "SqlOnly"
+author: "Maxim Moinat"
+date: "`r Sys.Date()`"
+header-includes:
+    - \usepackage{fancyhdr}
+    - \pagestyle{fancy}
+    - \fancyhead{}
+    - \fancyhead[CO,CE]{Data Quality Check Type Definitions}
+    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version `r    utils::packageVersion("DataQualityDashboard")`}
+    - \fancyfoot[LE,RO]{\thepage}
+    - \renewcommand{\headrulewidth}{0.4pt}
+    - \renewcommand{\footrulewidth}{0.4pt}
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Running the DQD in SqlOnly mode}
+-->
+
+# Description
+
+This article describes how to generate only the SQL that executes all DataQualityDashoard checks, without executing.
+There are two main advantages of running DQD in Sql-only mode:
+ - Create queries locally, before sending to server. This allows for generation of the SQL on one machine and execution on another (e.g. when R cannot connect directly to the database server)
+ - Performance. If you use `sqlOnlyUnionCount > 1`, multiple checks are unioned within a cte to speed performance. When testing on Spark, this resulted in a 10x or higher performance.
+ - Since these are fully functional queries, this can help with debugging.
+
+There are a few differences in the result when running DQD in Sql-only mode, compared to a normal DQD run:
+- If one check results in an error, multiple checks might fail.
+- The status `not_applicable` is not evaluated. A check fails or passes.
+- The query text is not shown. Instead it shows the query number as 'Query ##'.
+- Notes from threshold file are not included in results.
+- Execution metadata is not automatically added (DQD version, total and query execution time, cdm source data)
+
+# Generating the DQD SQL
+A few things to note:
+- A dummy `connectionDetails` object is needed where only the `dbms` is used during SQL-only execution. Typically, you would setBy setting this to 'sql server' the resulting sql can still be rendered to any other dialect using `SqlRender` (see example below). 
+- `sqlOnlyUnionCount` determines the number of check sqls to union in a single query. A smaller number gives more control and progress information, a higher number typically gives a higher performance. Here, 100 is used.
+```R
+library(DataQualityDashboard)
+
+# ConnectionDetails object needed for sql dialect
+dbmsConnectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = "sql server",  # can be rendered to any dbms upon execution
+  pathToDriver = "/"
+)
+
+# Database parameters that are pre-filled in the written queries
+# Use @-syntax if creating a template-sql at execution-time (e.g. "@cdmDatabaseSchema")
+cdmDatabaseSchema <- "@cdmDatabaseSchema"   # the fully qualified database schema name of the CDM
+resultsDatabaseSchema <- "@resultsDatabaseSchema"   # the fully qualified database schema name of the results schema (that you can write to)
+writeTableName <- "@writeTableName"
+
+sqlFolder <- "./results_sql_only"
+cdmSourceName <- "Synthea"
+
+sqlOnly <- TRUE
+sqlOnlyUnionCount <- 100
+
+verboseMode <- TRUE
+
+cdmVersion <- "5.4"
+checkLevels <- c("TABLE", "FIELD", "CONCEPT")
+tablesToExclude <- c()
+checkNames <- c()
+
+# Run DQD with sqlOnly=TRUE. This will create a sql file for each check type in the output folder
+DataQualityDashboard::executeDqChecks(
+  connectionDetails = dbmsConnectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  resultsDatabaseSchema = resultsDatabaseSchema,
+  writeTableName = writeTableName,
+  cdmSourceName = cdmSourceName,
+  sqlOnly = sqlOnly,
+  sqlOnlyUnionCount = sqlOnlyUnionCount,
+  outputFolder = sqlFolder,
+  checkLevels = checkLevels,
+  verboseMode = verboseMode,
+  cdmVersion = cdmVersion,
+  tablesToExclude = tablesToExclude,
+  checkNames = checkNames
+)
+```
+
+After running above code, you will end up with a number of sql files in the specified output directory:
+- One sql file per check type: `TABLE|FIELD|CONCEPT_<check_name>.sql`
+- `ddlDqdResults.sql` with the result table format.
+
+The queries can then be run in any SQL client, making sure to run `ddlDqdResults.sql` first.
+The order of the check queries is not important, and can even be run in parallell.
+This will run the check, and store the result in the specified `writeTableName`.
+In order to show this result in the DQD Dashboard Shiny app, this table has to be exported and converted to the .json format.
+See below for example code of how this can be achieved.
+
+# (OPTIONAL) Execute queries
+Below code snippet shows how you can run the generated queries on an OMOP CDM database using OHDSI R packages, and display the results in the DQD Dashboard.
+Note that this uses two non-exported DQD functions (`.summarizeResults`, `.writeResultsToJson`) that are not tested for this purpose.
+
+```R
+library(DatabaseConnector)
+cdmSourceName <- "<YourSourceName>"
+sqlFolder <- "./results_sql"
+jsonOutputFolder <- sqlFolder
+jsonOutputFile <- "sql_only_results.json"
+
+dbms <- Sys.getenv("DBMS")
+server <- Sys.getenv("DB_SERVER")
+port <- Sys.getenv("DB_PORT")
+user <- Sys.getenv("DB_USER")
+password <- Sys.getenv("DB_PASSWORD")
+pathToDriver <- Sys.getenv("PATH_TO_DRIVER")
+connectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = dbms,
+  server = server,
+  port = port,
+  user = user,
+  password = password,
+  pathToDriver = pathToDriver
+)
+cdmDatabaseSchema <- 'cdm'
+resultsDatabaseSchema <- 'results'
+writeTableName <- 'dqd_results'
+
+c <- DatabaseConnector::connect(connectionDetails)
+
+# Create results table
+ddlFile <- file.path(sqlFolder, "ddlDqdResults.sql")
+DatabaseConnector::renderTranslateExecuteSql(
+  connection = c,
+  sql = readChar(ddlFile, file.info(ddlFile)$size),
+  resultsDatabaseSchema = resultsDatabaseSchema,
+  writeTableName = writeTableName
+)
+
+# Run checks
+dqdSqlFiles <- Sys.glob(file.path(sqlFolder, "*.sql"))
+for (dqdSqlFile in dqdSqlFiles) {
+  if (dqdSqlFile == ddlFile) {
+    next
+  }
+  print(dqdSqlFile)
+  DatabaseConnector::renderTranslateExecuteSql(
+    connection = c,
+    sql = readChar(dqdSqlFile, file.info(dqdSqlFile)$size),
+    cdmDatabaseSchema = cdmDatabaseSchema,
+    resultsDatabaseSchema = resultsDatabaseSchema,
+    writeTableName = writeTableName
+  )
+}
+
+# Get results
+checkResults <- DatabaseConnector::querySql(
+  c,
+  SqlRender::render(
+    "SELECT * FROM @resultsDatabaseSchema.@writeTableName",
+    resultsDatabaseSchema = resultsDatabaseSchema,
+    writeTableName = writeTableName
+  )
+)
+DatabaseConnector::disconnect(c)
+
+# Get overview of DQD results
+library(DataQualityDashboard)
+overview <- DataQualityDashboard:::.summarizeResults(checkResults = checkResults)
+
+# Create results object, adding fake metadata
+result <- list(
+  startTimestamp = Sys.time(),
+  endTimestamp = Sys.time(),
+  executionTime = 0,
+  Metadata = data.frame(
+    DQD_VERSION = as.character(packageVersion("DataQualityDashboard")),
+    CDM_SOURCE_NAME = cdmSourceName
+  ),
+  Overview = overview,
+  CheckResults = checkResults
+)
+
+DataQualityDashboard:::.writeResultsToJson(result, jsonOutputFolder, jsonOutputFile)
+
+DataQualityDashboard::viewDqDashboard(file.path(jsonOutputFolder, jsonOutputFile))
