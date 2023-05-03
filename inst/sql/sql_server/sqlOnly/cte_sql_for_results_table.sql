@@ -24,7 +24,7 @@ SELECT
   ,'' as error
   ,'@checkid' as checkid
   ,0 as is_error
-  ,0 as not_applicable
+  ,CASE WHEN  cte.num_denominator_rows = 0 THEN 1 ELSE 0 END as not_applicable
   ,CASE WHEN (cte.pct_violated_rows * 100) > @threshold_value THEN 1 ELSE 0 END as failed
   ,CASE WHEN (cte.pct_violated_rows * 100) <= @threshold_value THEN 1 ELSE 0 END as passed
   ,NULL as not_applicable_reason

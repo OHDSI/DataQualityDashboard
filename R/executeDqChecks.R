@@ -83,7 +83,7 @@ executeDqChecks <- function(connectionDetails,
                             fieldCheckThresholdLoc = "default",
                             conceptCheckThresholdLoc = "default") {
   # Check input -------------------------------------------------------------------------------------------------------------------
-  if (!sqlOnly && !any(class(connectionDetails) %in% c("connectionDetails", "ConnectionDetails"))) {
+  if (!any(class(connectionDetails) %in% c("connectionDetails", "ConnectionDetails"))) {
     stop("connectionDetails must be an object of class 'connectionDetails' or 'ConnectionDetails'.")
   }
 
@@ -95,7 +95,7 @@ executeDqChecks <- function(connectionDetails,
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
   if (sqlOnly) {
-    stopifnot(is.numeric(sqlOnlyUnionCount))
+    stopifnot(is.numeric(sqlOnlyUnionCount) && sqlOnlyUnionCount > 0)
   }
   stopifnot(is.character(cohortDatabaseSchema), is.character(cohortTableName))
 

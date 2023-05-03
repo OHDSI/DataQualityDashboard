@@ -291,7 +291,7 @@ test_that("Execute DQ checks using sqlOnly and sqlOnlyUnionCount", {
       sqlOnlyUnionCount = 100,
       writeTableName = "dqd_results"
     ),
-    regexp = "^(Unknown or uninitialised column|Missing check names).*"
+    regexp = "^Missing check names.*"
   )
   expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
   expect_true("FIELD_measureValueCompleteness.sql" %in% list.files(outputFolder))
