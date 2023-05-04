@@ -70,8 +70,8 @@
 
   if (sqlOnly) {
     # Global variables for tracking SQL of checks
-    sql_to_union <<- c()
-    qnum <<- 0
+    globalSqlToUnion <<- c()
+    globalQueryNum <<- 0
   }
 
   if (nrow(checks) > 0) {
@@ -111,8 +111,8 @@
       }
     })
 
-    if (sqlOnly && length(sql_to_union) > 0) {
-      .writeSqlOnlyQueries(sql_to_union, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
+    if (sqlOnly && length(globalSqlToUnion) > 0) {
+      .writeSqlOnlyQueries(globalSqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
     }
       
     do.call(rbind, dfs)

@@ -1,6 +1,23 @@
 /*********
 SQL to create query for insertion into results table. These may be unioned together prior to insert.
 Note that this does not include information about SQL errors or performance.
+
+Parameters used in this template:
+category
+cdmFieldName
+cdmTableName
+renderedCheckDescription
+checkId
+checkLevel
+checkName
+conceptId
+context
+queryNum
+queryText
+sqlFile
+subcategory
+thresholdValue
+unitConceptId
 **********/
 
 SELECT 
@@ -8,28 +25,28 @@ SELECT
   ,cte.pct_violated_rows
   ,cte.num_denominator_rows
   ,'' as execution_time
-  ,'Query @query_num' as query_text
-  ,'@check_name' as check_name
-  ,'@check_level' as check_level
-  ,'@check_description' as check_description
-  ,'@cdm_table_name' as cdm_table_name
-  ,'@cdm_field_name' as cdm_field_name
-  ,'@concept_id' as concept_id
-  ,'@unit_concept_id' as unit_concept_id
-  ,'@sql_file' as sql_file
+  ,'Query #@queryNum' as query_text
+  ,'@checkName' as check_name
+  ,'@checkLevel' as check_level
+  ,'@renderedCheckDescription' as check_description
+  ,'@cdmTableName' as cdm_table_name
+  ,'@cdmFieldName' as cdm_field_name
+  ,'@conceptId' as concept_id
+  ,'@unitConceptId' as unit_concept_id
+  ,'@sqlFile' as sql_file
   ,'@category' as category
   ,'@subcategory' as subcategory
   ,'@context' as context
   ,'' as warning
   ,'' as error
-  ,'@checkid' as checkid
+  ,'@checkId' as checkid
   ,0 as is_error
   ,CASE WHEN  cte.num_denominator_rows = 0 THEN 1 ELSE 0 END as not_applicable
-  ,CASE WHEN (cte.pct_violated_rows * 100) > @threshold_value THEN 1 ELSE 0 END as failed
-  ,CASE WHEN (cte.pct_violated_rows * 100) <= @threshold_value THEN 1 ELSE 0 END as passed
+  ,CASE WHEN (cte.pct_violated_rows * 100) > @thresholdValue THEN 1 ELSE 0 END as failed
+  ,CASE WHEN (cte.pct_violated_rows * 100) <= @thresholdValue THEN 1 ELSE 0 END as passed
   ,NULL as not_applicable_reason
-  ,@threshold_value as threshold_value
+  ,@thresholdValue as threshold_value
   ,NULL as notes_value
 FROM (
-  @query_text
+  @queryText
 ) cte
