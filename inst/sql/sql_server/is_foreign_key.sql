@@ -4,8 +4,8 @@ IS_FOREIGN_KEY
 Foreign key check
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
-{'@fkTableName' IN ('CONCEPT','DOMAIN')}?{vocabDatabaseSchema = @vocabDatabaseSchema}
+schema = @schema
+{'@fkTableName' IN ('CONCEPT','DOMAIN','CONCEPT_CLASS','VOCABULARY','RELATIONSHIP')}?{vocabDatabaseSchema = @vocabDatabaseSchema}
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 fkTableName = @fkTableName
@@ -13,6 +13,7 @@ fkFieldName = @fkFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
 cohortDefinitionId = @cohortDefinitionId
 cohortDatabaseSchema = @cohortDatabaseSchema
+cohortTableName = @cohortTableName
 }
 **********/
 
@@ -31,13 +32,16 @@ FROM (
 		SELECT 
 		  '@cdmTableName.@cdmFieldName' AS violating_field, 
 		  cdmTable.*
-		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		FROM @schema.@cdmTableName cdmTable
 		  {@cohort & '@runForCohort' == 'Yes'}?{
-  	    JOIN @cohortDatabaseSchema.cohort c
+  	    JOIN @cohortDatabaseSchema.@cohortTableName c
   	    ON cdmTable.person_id = c.subject_id
   	    AND c.cohort_definition_id = @cohortDefinitionId
       }
-		  LEFT JOIN {'@fkTableName' IN ('CONCEPT','DOMAIN')}?{@vocabDatabaseSchema.@fkTableName}:{@cdmDatabaseSchema.@fkTableName} fkTable
+		  LEFT JOIN 
+		    {'@fkTableName' IN ('CONCEPT','DOMAIN','CONCEPT_CLASS','VOCABULARY','RELATIONSHIP')}?{@vocabDatabaseSchema.@fkTableName fkTable}
+		    {'@fkTableName' == 'COHORT'}?{@cohortDatabaseSchema.@fkTableName fkTable}
+		    {'@fkTableName' IN ('LOCATION','PERSON','PROVIDER','VISIT_DETAIL','VISIT_OCCURRENCE','PAYER_PLAN_PERIOD','NOTE','CARE_SITE','EPISODE')}?{@cdmDatabaseSchema.@fkTableName fkTable} 
 		  ON cdmTable.@cdmFieldName = fkTable.@fkFieldName
 		WHERE fkTable.@fkFieldName IS NULL 
 		  AND cdmTable.@cdmFieldName IS NOT NULL
@@ -47,9 +51,9 @@ FROM (
 (
 	SELECT 
 	  COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+	FROM @schema.@cdmTableName cdmTable
 	  {@cohort & '@runForCohort' == 'Yes'}?{
-      JOIN @cohortDatabaseSchema.cohort c
+      JOIN @cohortDatabaseSchema.@cohortTableName c
       ON cdmTable.person_id = c.subject_id
       AND c.cohort_definition_id = @cohortDefinitionId
     }

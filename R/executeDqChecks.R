@@ -34,9 +34,10 @@
 #' @param csvFile                   (OPTIONAL) CSV file to write results
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
 #' @param checkNames                (OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Descriptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.
-#' @param cohortDefinitionId        The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
+#' @param cohortDefinitionId        The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table
 #'                                  with the fields cohort_definition_id and subject_id.
 #' @param cohortDatabaseSchema      The schema where the cohort table is located.
+#' @param cohortTableName           The name of the cohort table. Defaults to `cohort`.
 #' @param tablesToExclude           (OPTIONAL) Choose which CDM tables to exclude from the execution.
 #' @param cdmVersion                The CDM version to target for the data source. Options are "5.2", "5.3", or "5.4". By default, "5.3" is used.
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
@@ -48,9 +49,11 @@
 #' @importFrom magrittr %>%
 #' @import DatabaseConnector
 #' @importFrom stringr str_detect regex
-#' @importFrom utils packageVersion read.csv write.table
+#' @importFrom utils packageVersion write.table
 #' @importFrom rlang .data
 #' @importFrom tidyselect all_of
+#' @importFrom readr read_csv
+#' @importFrom dplyr mutate case_when
 #'
 #' @export
 #'
@@ -72,6 +75,7 @@ executeDqChecks <- function(connectionDetails,
                             checkNames = c(),
                             cohortDefinitionId = c(),
                             cohortDatabaseSchema = resultsDatabaseSchema,
+                            cohortTableName = "cohort",
                             tablesToExclude = c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
                             cdmVersion = "5.3",
                             tableCheckThresholdLoc = "default",
@@ -89,6 +93,7 @@ executeDqChecks <- function(connectionDetails,
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
+  stopifnot(is.character(cohortDatabaseSchema), is.character(cohortTableName))
 
   if (!all(checkLevels %in% c("TABLE", "FIELD", "CONCEPT"))) {
     stop('checkLevels argument must be a subset of c("TABLE", "FIELD", "CONCEPT").
@@ -169,14 +174,14 @@ executeDqChecks <- function(connectionDetails,
 
   startTime <- Sys.time()
 
-  checkDescriptionsDf <- read.csv(
+  checkDescriptionsDf <- read_csv(
     file = system.file(
       "csv",
       sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion),
       package = "DataQualityDashboard"
-    ),
-    stringsAsFactors = FALSE
+    )
   )
+  checkDescriptionsDf <- as.data.frame(checkDescriptionsDf)
 
   tableChecks <- .readThresholdFile(
     checkThresholdLoc = tableCheckThresholdLoc,
@@ -202,8 +207,17 @@ executeDqChecks <- function(connectionDetails,
     conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude, ]
   }
 
-  ## remove offset from being checked
+  ## remove offset from being checked as it is a reserved word in some databases
   fieldChecks <- subset(fieldChecks, fieldChecks$cdmFieldName != "offset")
+
+  tableChecks <- dplyr::mutate(tableChecks, schema = dplyr::case_when(
+    schema == "CDM" ~ cdmDatabaseSchema,
+    schema == "VOCAB" ~ vocabDatabaseSchema,
+    schema == "COHORT" ~ cohortDatabaseSchema,
+    TRUE ~ cdmDatabaseSchema
+  ))
+
+  fieldChecks <- merge(x = fieldChecks, y = tableChecks[, c("cdmTableName", "schema")], by = "cdmTableName", all.x = TRUE)
 
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |
@@ -246,6 +260,7 @@ executeDqChecks <- function(connectionDetails,
     cdmDatabaseSchema,
     vocabDatabaseSchema,
     cohortDatabaseSchema,
+    cohortTableName,
     cohortDefinitionId,
     outputFolder,
     sqlOnly,

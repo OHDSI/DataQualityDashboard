@@ -1,3 +1,25 @@
+DataQualityDashboard 2.2.0
+==========================
+This release includes:
+
+### New features
+
+- `cohortTableName` parameter added to `executeDqChecks`. Allows user to specify the name of the cohort table when running DQD on a cohort. Defaults to `"cohort"`
+
+
+### Bugfixes
+
+- Fixed several bugs in the default threshold files:
+  - Updated plausible low value for specimen quantity from 1 to 0
+  - Removed foreign key domains for episode object concept ID (multitude of plausible domains make checking this field infeasible)
+  - Updated date format for hard-coded dates to `YYYYMMDD` to conform to SqlRender standard
+  - Added DEATH checks to v5.2 and v5.3
+  - Fixed field level checks to incorporate user-specified `vocabDatabaseSchema` and `cohortDatabaseSchema` where appropriate
+- Removed `outputFile` parameter from DQD setup vignette (variable not set in script)
+- Removed hidden BOM character from several threshold csv files, and updated csv read method to account for BOM character moving forward. This character caused an error on some operating systems
+  
+And some minor documentation updates for clarity/accuracy.
+
 DataQualityDashboard 2.1.2
 ==========================
 

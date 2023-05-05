@@ -10,6 +10,7 @@ cdmFieldName = @cdmFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
 cohortDefinitionId = @cohortDefinitionId
 cohortDatabaseSchema = @cohortDatabaseSchema
+cohortTableName = @cohortTableName
 }
 **********/
 
@@ -33,7 +34,7 @@ FROM
 			cdmTable.*
     	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
     		{@cohort & '@runForCohort' == 'Yes'}?{
-    			JOIN @cohortDatabaseSchema.cohort c ON cdmTable.person_id = c.subject_id
+    			JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
     				AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
     		}
     	JOIN @cdmDatabaseSchema.death de ON cdmTable.person_id = de.person_id
@@ -46,7 +47,7 @@ FROM
 		COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
-    		JOIN @cohortDatabaseSchema.cohort c ON cdmTable.person_id = c.subject_id
+    		JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
     			AND c.cohort_definition_id = @cohortDefinitionId
     	}
 	WHERE person_id IN

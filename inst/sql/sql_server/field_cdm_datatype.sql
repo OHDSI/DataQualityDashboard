@@ -5,7 +5,7 @@ FIELD_CDM_DATATYPE
 At a minimum, for each field that is supposed to be an integer, verify it is an integer
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 **********/
@@ -28,7 +28,7 @@ FROM
 		SELECT 
 		  '@cdmTableName.@cdmFieldName' AS violating_field, 
 		  cdmTable.* 
-		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		FROM @schema.@cdmTableName cdmTable
 		WHERE 
 		  (ISNUMERIC(cdmTable.@cdmFieldName) = 0 
 		    OR (ISNUMERIC(cdmTable.@cdmFieldName) = 1 
@@ -40,6 +40,6 @@ FROM
 ( 
 	SELECT 
 	  COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName
+	FROM @schema.@cdmTableName
 ) denominator
 ;
