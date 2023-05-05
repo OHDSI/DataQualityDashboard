@@ -28,7 +28,7 @@
   colspec <- readr::spec_csv(thresholdFile)
 
   # plausibleUnitConceptIds is a comma-separated list of concept ids, but it is being interpreted as col_double()
-  if ('plausibleUnitConceptIds' %in% names(colspec$cols)) {
+  if ("plausibleUnitConceptIds" %in% names(colspec$cols)) {
     colspec$cols$plausibleUnitConceptIds <- readr::col_character()
   }
 

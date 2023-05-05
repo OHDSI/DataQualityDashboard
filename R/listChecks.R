@@ -34,8 +34,7 @@ listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default",
       "csv",
       sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion),
       package = "DataQualityDashboard"
-      )
-    )
+    ))
   dqChecks$checkDescriptions <- as.data.frame(dqChecks$checkDescriptions)
 
 
