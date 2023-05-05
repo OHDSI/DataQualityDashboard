@@ -209,16 +209,16 @@ executeDqChecks <- function(connectionDetails,
 
   ## remove offset from being checked as it is a reserved word in some databases
   fieldChecks <- subset(fieldChecks, fieldChecks$cdmFieldName != "offset")
-  
+
   tableChecks <- dplyr::mutate(tableChecks, schema = dplyr::case_when(
-    schema == 'CDM' ~ cdmDatabaseSchema,
-    schema == 'VOCAB' ~ vocabDatabaseSchema,
-    schema == 'COHORT' ~ cohortDatabaseSchema,
-    TRUE ~ cdmDatabaseSchema 
+    schema == "CDM" ~ cdmDatabaseSchema,
+    schema == "VOCAB" ~ vocabDatabaseSchema,
+    schema == "COHORT" ~ cohortDatabaseSchema,
+    TRUE ~ cdmDatabaseSchema
   ))
-  
-  fieldChecks <- merge(x = fieldChecks, y = tableChecks[ , c("cdmTableName", "schema")], by = "cdmTableName", all.x=TRUE)
-  
+
+  fieldChecks <- merge(x = fieldChecks, y = tableChecks[, c("cdmTableName", "schema")], by = "cdmTableName", all.x = TRUE)
+
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |
       !is.null(eval(parse(text = sprintf("fieldChecks$%s", check)))) |

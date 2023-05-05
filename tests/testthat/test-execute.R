@@ -85,16 +85,16 @@ test_that("Execute a single DQ check on a cohort in Synthea/Eunomia", {
   connection <- DatabaseConnector::connect(connectionDetailsEunomia)
   on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
   fakeCohortId <- 123
-  DatabaseConnector::renderTranslateExecuteSql(connection, 
-                                               "INSERT INTO @results_schema.cohort SELECT @cohort_id, person_id, observation_period_start_date, observation_period_end_date FROM @cdm_schema.observation_period LIMIT 10;", 
-                                               results_schema = resultsDatabaseSchemaEunomia,
-                                               cohort_id = fakeCohortId,
-                                               cdm_schema = cdmDatabaseSchemaEunomia
-                                               )
-  
+  DatabaseConnector::renderTranslateExecuteSql(connection,
+    "INSERT INTO @results_schema.cohort SELECT @cohort_id, person_id, observation_period_start_date, observation_period_end_date FROM @cdm_schema.observation_period LIMIT 10;",
+    results_schema = resultsDatabaseSchemaEunomia,
+    cohort_id = fakeCohortId,
+    cdm_schema = cdmDatabaseSchemaEunomia
+  )
+
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  
+
   expect_warning(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
@@ -109,12 +109,13 @@ test_that("Execute a single DQ check on a cohort in Synthea/Eunomia", {
     ),
     regexp = "^Missing check names.*"
   )
-  
+
   expect_true(nrow(results$CheckResults) > 1)
-  DatabaseConnector::renderTranslateExecuteSql(connection, 
-                                               "DELETE FROM @results_schema.cohort WHERE cohort_definition_id = @cohort_id", 
-                                               results_schema = resultsDatabaseSchemaEunomia,
-                                               cohort_id = fakeCohortId)
+  DatabaseConnector::renderTranslateExecuteSql(connection,
+    "DELETE FROM @results_schema.cohort WHERE cohort_definition_id = @cohort_id",
+    results_schema = resultsDatabaseSchemaEunomia,
+    cohort_id = fakeCohortId
+  )
 })
 
 test_that("Execute a single DQ check on remote databases", {
