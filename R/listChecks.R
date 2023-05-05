@@ -36,6 +36,7 @@ listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default",
       package = "DataQualityDashboard"
       )
     )
+  dqChecks$checkDescriptions <- as.data.frame(dqChecks$checkDescriptions)
 
 
   if (tableCheckThresholdLoc == "default") {
@@ -48,11 +49,13 @@ listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default",
         ),
         na = c(" ", "")
       )
+    dqChecks$tableChecks <- as.data.frame(dqChecks$tableChecks)
   } else {
     dqChecks$tableChecks <- read_csv(
       tableCheckThresholdLoc,
       na = c(" ", "")
     )
+    dqChecks$tableChecks <- as.data.frame(dqChecks$tableChecks)
   }
 
   if (fieldCheckThresholdLoc == "default") {
@@ -65,11 +68,13 @@ listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default",
         ),
         na = c(" ", "")
       )
+    dqChecks$fieldChecks <- as.data.frame(dqChecks$fieldChecks)
   } else {
     dqChecks$fieldChecks <- read_csv(
       fieldCheckThresholdLoc,
       na = c(" ", "")
     )
+    dqChecks$fieldChecks <- as.data.frame(dqChecks$fieldChecks)
   }
 
   if (conceptCheckThresholdLoc == "default") {
@@ -82,11 +87,13 @@ listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default",
         ),
         na = c(" ", "")
       )
+    dqChecks$conceptChecks <- as.data.frame(dqChecks$conceptChecks)
   } else {
     dqChecks$conceptChecks <- read_csv(
       conceptCheckThresholdLoc,
       na = c(" ", "")
     )
+    dqChecks$conceptChecks <- as.data.frame(dqChecks$conceptChecks)
   }
 
   return(dqChecks)

@@ -16,6 +16,7 @@
 
 .readThresholdFile <- function(checkThresholdLoc, defaultLoc) {
   thresholdFile <- checkThresholdLoc
+
   if (checkThresholdLoc == "default") {
     thresholdFile <- system.file(
       "csv",
@@ -23,15 +24,19 @@
       package = "DataQualityDashboard"
     )
   }
+
   colspec <- readr::spec_csv(thresholdFile)
+
   # plausibleUnitConceptIds is a comma-separated list of concept ids, but it is being interpreted as col_double()
   if ('plausibleUnitConceptIds' %in% names(colspec$cols)) {
     colspec$cols$plausibleUnitConceptIds <- readr::col_character()
   }
+
   result <- read_csv(
     file = thresholdFile,
     col_types = colspec,
     na = c(" ", "")
   )
+  result <- as.data.frame(result)
   return(result)
 }
