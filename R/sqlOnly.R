@@ -214,7 +214,7 @@
 }
 
 
-#' Internal function to evaluate one threshold
+#' Internal function to get one threshold
 #' Note: this does not evaluate is_error or not_applicable status
 
 #' @param checkName                 The name of the check - such as measurePersonCompleteness
