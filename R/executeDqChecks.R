@@ -26,6 +26,7 @@
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #' @param sqlOnlyUnionCount         (OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.
+#' @param sqlOnlyIncrementalInsert  (OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)
 #' @param outputFolder              The folder to output logs, SQL files, and JSON results file to
 #' @param outputFile                (OPTIONAL) File to write results JSON object
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default is FALSE
@@ -65,6 +66,7 @@ executeDqChecks <- function(connectionDetails,
                             numThreads = 1,
                             sqlOnly = FALSE,
                             sqlOnlyUnionCount = 1,
+                            sqlOnlyIncrementalInsert = FALSE,
                             outputFolder,
                             outputFile = "",
                             verboseMode = FALSE,
@@ -94,9 +96,8 @@ executeDqChecks <- function(connectionDetails,
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
-  if (sqlOnly) {
-    stopifnot(is.numeric(sqlOnlyUnionCount) && sqlOnlyUnionCount > 0)
-  }
+  stopifnot(is.numeric(sqlOnlyUnionCount) && sqlOnlyUnionCount > 0)
+  stopifnot(is.logical(sqlOnlyIncrementalInsert))
   stopifnot(is.character(cohortDatabaseSchema), is.character(cohortTableName))
 
   if (!all(checkLevels %in% c("TABLE", "FIELD", "CONCEPT"))) {
@@ -263,6 +264,7 @@ executeDqChecks <- function(connectionDetails,
     cohortDefinitionId,
     outputFolder, 
     sqlOnlyUnionCount,
+    sqlOnlyIncrementalInsert,
     sqlOnly,
     progressBar = TRUE
   )

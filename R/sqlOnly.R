@@ -28,6 +28,7 @@
 #' @param sql                       The rendered SQL for this check
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param checkDescription          The description of the data quality check
+#' @param sqlOnlyIncrementalInsert  Boolean - if TRUE, generate Insert commands using insert_ctes_into_result_table.sql.  If FALSE, skip use of that CTE.
 #'
 #' @return A list of one or more sql queries to union
 
@@ -42,10 +43,13 @@
     conceptChecks,
     sql,
     connectionDetails,
-    checkDescription
+    checkDescription,
+    sqlOnlyIncrementalInsert
 ) {
   # Update the global variable counting the number of queries that should be unioned together (based upon the sqlOnlyUnionCount parameter)
   globalQueryNum <<- globalQueryNum + 1
+  # remove trailing semi-colon so can embed in a cte or use UNION ALL
+  sql <- gsub(";", "", sql)
   
   # Retrieve the formatted string check description to be inserted in the check_description variable in the dqdashboard_results (@writeTableName) table
   # SqlRender is called in order to do variable substitution of parameters within the check_description template string
@@ -102,7 +106,7 @@
     sqlFilename = file.path("sqlOnly", "cte_sql_for_results_table.sql"),
     packageName = "DataQualityDashboard",
     dbms = connectionDetails$dbms,
-    queryText = gsub(";", "", sql), # remove trailing semi-colon so can embed in a cte
+    queryText = sql,
     checkName = checkDescription$checkName,
     checkLevel = checkDescription$checkLevel,
     renderedCheckDescription = renderedCheckDescription,
@@ -120,7 +124,14 @@
   )
 
   # Add the final SQL to a list of SQL to append via UNION ALL
-  globalSqlToUnion <<- append(globalSqlToUnion, checkQuery)
+  if (sqlOnlyIncrementalInsert == TRUE) {
+    # Add the final SQL to a list of SQL to append via UNION ALL
+    globalSqlToUnion <<- append(globalSqlToUnion, checkQuery)
+  }
+  else {
+    # Use just the original SQL
+    globalSqlToUnion <<- append(globalSqlToUnion, sql)
+  }
 }
 
 
@@ -133,6 +144,7 @@
 #' @param dbms                      The database type (e.g. spark, sql server) - needed for proper query rendering
 #' @param outputFolder              Location to write the generated SQL files
 #' @param checkDescription          The description of the data quality check
+#' @param sqlOnlyIncrementalInsert  Boolean - if TRUE, generate Insert commands using insert_ctes_into_result_table.sql.  If FALSE, skip use of that CTE.
 
 #' @noRd
 #' @keywords internal
@@ -144,7 +156,8 @@
   writeTableName,
   dbms,
   outputFolder,
-  checkDescription
+  checkDescription,
+  sqlOnlyIncrementalInsert
 ) {
   outFile <-file.path(
     outputFolder, 
@@ -160,14 +173,20 @@
     
     sqlUnioned <- paste(globalSqlToUnion[ustart:uend], collapse=' UNION ALL ')
     
-    sql <- SqlRender::loadRenderTranslateSql(
-      sqlFilename = file.path("sqlOnly", "insert_ctes_into_result_table.sql"),
-      packageName = "DataQualityDashboard",
-      dbms = dbms,
-      resultsDatabaseSchema = resultsDatabaseSchema,
-      tableName = writeTableName,
-      queryText = sqlUnioned
-    )
+    if (sqlOnlyIncrementalInsert == TRUE) {
+      # Generate INSERT commands to insert results + metadata into results table
+      sql <- SqlRender::loadRenderTranslateSql(
+        sqlFilename = file.path("sqlOnly", "insert_ctes_into_result_table.sql"),
+        packageName = "DataQualityDashboard",
+        dbms = dbms,
+        resultsDatabaseSchema = resultsDatabaseSchema,
+        tableName = writeTableName,
+        queryText = sqlUnioned
+      )
+    }
+    else {
+      sql <- sprintf("%s;",sqlUnioned)
+    }
     
     write(
       x = sql,

@@ -13,6 +13,7 @@ executeDqChecks(
   numThreads = 1,
   sqlOnly = FALSE,
   sqlOnlyUnionCount = 1,
+  sqlOnlyIncrementalInsert = FALSE,
   outputFolder,
   outputFile = "",
   verboseMode = FALSE,
@@ -49,6 +50,8 @@ executeDqChecks(
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
 
 \item{sqlOnlyUnionCount}{How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel)}
+
+\item{sqlOnlyIncrementalInsert}{(OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)}
 
 \item{outputFolder}{The folder to output logs, SQL files, and JSON results file to}
 

@@ -60,7 +60,9 @@ sqlFolder <- "./results_sql_only"
 cdmSourceName <- "Synthea"
 
 sqlOnly <- TRUE
-sqlOnlyUnionCount <- 100
+sqlOnlyUnionCount <- 100            # this unions 100 queries before doing insert
+sqlOnlyIncrementalInsert <- TRUE    # this wraps the check result with the metadata about the check and performs the insert (as long as writeToTable = TRUE
+writeToTable <- TRUE                # must be TRUE if also using sqlOnlyIncrementalInsert = TRUE
 
 verboseMode <- TRUE
 
@@ -78,6 +80,8 @@ DataQualityDashboard::executeDqChecks(
   cdmSourceName = cdmSourceName,
   sqlOnly = sqlOnly,
   sqlOnlyUnionCount = sqlOnlyUnionCount,
+  sqlOnlyIncrementalInsert = sqlOnlyIncrementalInsert,
+  writeToTable = writeToTable,
   outputFolder = sqlFolder,
   checkLevels = checkLevels,
   verboseMode = verboseMode,

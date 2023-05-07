@@ -71,13 +71,18 @@ sqlOnly <- FALSE # set to TRUE if you just want to get the SQL scripts and not a
 #        pathToDriver = "/"
 #      )
 # 2. The generated SQL also inserts the parameters & results into @resultsDatabaseSchema.@writeTableName
-#    However, defaults are populated for execution_time and query_text.
+#    However, defaults are populated for execution_time and query_text; and the Not_Applicable rules are not applied
 # 3. If you use sqlOnlyUnionCount > 1, multiple checks are unioned within a cte to speed performance.
 #    On Spark, this often yields a 10x or higher throughput
 # 4. Since these are fully functional queries, this can help with debugging.
+# 5. Note, in order to insert metadata into output table, must set sqlOnlyIncrementalInsert <- TRUE.  Otherwise sqlOnly is backwards compatable with <= v2.2.0)
 
 # determine how how many concurrent checks to run within a cte (only relevant for sqlOnly <- TRUE) ----
-sqlOnlyUnionCount <- 100  # Number of check sqls to union in a single query.
+sqlOnlyUnionCount <- 1  # Number of check sqls to union in a single query.  Default is 1.  Higher numbers can improve performance (e.g. a value of 25 may be 25x faster)
+# determine whether insert check results and associated metadata into output table (only relevant for sqlOnly <- TRUE) ----
+sqlOnlyIncrementalInsert <- FALSE # Default is FALSE (for backwards compatability to <= v2.2.0)
+
+
 
 # where should the results and logs go? ----------------------------------------------------------------
 outputFolder <- "output"
@@ -124,6 +129,7 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                               numThreads = numThreads,
                               sqlOnly = sqlOnly, 
                               sqlOnlyUnionCount = sqlOnlyUnionCount,
+                              sqlOnlyIncrementalInsert = sqlOnlyIncrementalInsert,
                               outputFolder = outputFolder,
                               verboseMode = verboseMode,
                               writeToTable = writeToTable,

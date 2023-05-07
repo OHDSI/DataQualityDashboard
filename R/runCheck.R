@@ -30,7 +30,8 @@
 #' @param cohortTableName           The name of the cohort table.
 #' @param cohortDefinitionId        The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
 #' @param outputFolder              The folder to output logs and SQL files to
-#' @param sqlOnlyUnionCount         How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel)
+#' @param sqlOnlyUnionCount         (OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.
+#' @param sqlOnlyIncrementalInsert  (OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #'
 #' @import magrittr
@@ -52,6 +53,7 @@
                       cohortDefinitionId,
                       outputFolder, 
                       sqlOnlyUnionCount,
+                      sqlOnlyIncrementalInsert,
                       sqlOnly) {
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
 
@@ -97,7 +99,7 @@
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)
 
       if (sqlOnly) {
-        .createSqlOnlyQueries(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, checkDescription)
+        .createSqlOnlyQueries(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, checkDescription, sqlOnlyIncrementalInsert)
         data.frame()
       } else {
         .processCheck(
@@ -112,7 +114,7 @@
     })
 
     if (sqlOnly && length(globalSqlToUnion) > 0) {
-      .writeSqlOnlyQueries(globalSqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
+      .writeSqlOnlyQueries(globalSqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription, sqlOnlyIncrementalInsert)
     }
       
     do.call(rbind, dfs)
