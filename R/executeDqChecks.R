@@ -55,6 +55,7 @@
 #' @importFrom rlang .data
 #' @importFrom tidyselect all_of
 #' @importFrom readr read_csv
+#' @importFrom dplyr mutate case_when
 #'
 #' @export
 #'
@@ -189,6 +190,7 @@ executeDqChecks <- function(connectionDetails,
       package = "DataQualityDashboard"
     )
   )
+  checkDescriptionsDf <- as.data.frame(checkDescriptionsDf)
 
   tableChecks <- .readThresholdFile(
     checkThresholdLoc = tableCheckThresholdLoc,
@@ -214,8 +216,17 @@ executeDqChecks <- function(connectionDetails,
     conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude, ]
   }
 
-  ## remove offset from being checked
+  ## remove offset from being checked as it is a reserved word in some databases
   fieldChecks <- subset(fieldChecks, fieldChecks$cdmFieldName != "offset")
+
+  tableChecks <- dplyr::mutate(tableChecks, schema = dplyr::case_when(
+    schema == "CDM" ~ cdmDatabaseSchema,
+    schema == "VOCAB" ~ vocabDatabaseSchema,
+    schema == "COHORT" ~ cohortDatabaseSchema,
+    TRUE ~ cdmDatabaseSchema
+  ))
+
+  fieldChecks <- merge(x = fieldChecks, y = tableChecks[, c("cdmTableName", "schema")], by = "cdmTableName", all.x = TRUE)
 
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
       </span>
     </div>
 
@@ -81,6 +81,29 @@
       <small>Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.2.0" id="dataqualitydashboard-220">DataQualityDashboard 2.2.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-220"></a></h2>
+<p>This release includes:</p>
+<div class="section level4">
+<h4 id="new-features-2-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-2-2-0"></a></h4>
+<ul><li>
+<code>cohortTableName</code> parameter added to <code>executeDqChecks</code>. Allows user to specify the name of the cohort table when running DQD on a cohort. Defaults to <code>"cohort"</code>
+</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bugfixes-2-2-0">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-2-2-0"></a></h4>
+<ul><li>Fixed several bugs in the default threshold files:
+<ul><li>Updated plausible low value for specimen quantity from 1 to 0</li>
+<li>Removed foreign key domains for episode object concept ID (multitude of plausible domains make checking this field infeasible)</li>
+<li>Updated date format for hard-coded dates to <code>YYYYMMDD</code> to conform to SqlRender standard</li>
+<li>Added DEATH checks to v5.2 and v5.3</li>
+<li>Fixed field level checks to incorporate user-specified <code>vocabDatabaseSchema</code> and <code>cohortDatabaseSchema</code> where appropriate</li>
+</ul></li>
+<li>Removed <code>outputFile</code> parameter from DQD setup vignette (variable not set in script)</li>
+<li>Removed hidden BOM character from several threshold csv files, and updated csv read method to account for BOM character moving forward. This character caused an error on some operating systems</li>
+</ul><p>And some minor documentation updates for clarity/accuracy.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.1.2" id="dataqualitydashboard-212">DataQualityDashboard 2.1.2<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-212"></a></h2>
 <ol style="list-style-type: decimal"><li>Fixing bug in cdmDatatype check SQL that was causing NULL values to fail the check.</li>
@@ -174,7 +197,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
