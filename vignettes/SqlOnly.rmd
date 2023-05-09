@@ -177,9 +177,9 @@ result <- list(
   startTimestamp = Sys.time(),
   endTimestamp = Sys.time(),
   executionTime = 0,
-  Metadata = data.frame(
-    DQD_VERSION = as.character(packageVersion("DataQualityDashboard")),
-    CDM_SOURCE_NAME = cdmSourceName
+  metadata = data.frame(
+    dqdVersion = as.character(packageVersion("DataQualityDashboard")),
+    cdmSourceName = cdmSourceName
   ),
   Overview = overview,
   CheckResults = checkResults
