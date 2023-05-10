@@ -1,5 +1,14 @@
 library(testthat)
 
+remove_sql_comments <- function(sql) {
+  sql0 <- gsub("--.*?\\n|--.*?\\r"," ",sql)       # remove single-line SQL comments
+  sql1 <- gsub("\\r|\\n|\\t"," ",sql0)            # convert tabs and newlines to spaces
+  sql2 <- gsub("/*","@@@@ ",sql1,fixed=TRUE)      # must add spaces between multi-line comments for quote removal to work
+  sql3 <- gsub("*/"," @@@@",sql2,fixed=TRUE)      # must add spaces between multi-line comments for quote removal to work
+  sql4 <- gsub("@@@@ .+? @@@@"," ",sql3,)         # remove multi-line comments
+  sql5 <- gsub("\\s+"," ",sql4)                   # remove multiple spaces
+}
+
 test_that("listDqChecks works", {
   checks <- listDqChecks()
   expect_equal(length(checks), 4)
@@ -277,23 +286,39 @@ test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
 test_that("Execute DQ checks using sqlOnly and sqlOnlyUnionCount", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "spark", pathToDriver = "/")
+  sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server", pathToDriver = "/")
 
   expect_warning(
     results <- executeDqChecks(
       connectionDetails = sqlOnlyConnectionDetails,
-      cdmDatabaseSchema = "@cdmDatabaseSchema",
-      resultsDatabaseSchema = "@resultsDatabaseSchema",
+      cdmDatabaseSchema = "@yourCdmSchema",
+      resultsDatabaseSchema = "@yourResultsSchema",
       cdmSourceName = "Eunomia",
-      checkNames = "measureValueCompleteness",
+      checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
       writeToTable = TRUE,
       sqlOnly = TRUE,
-      sqlOnlyUnionCount = 100,
-      writeTableName = "dqd_results"
+      sqlOnlyUnionCount = 4,
+      sqlOnlyIncrementalInsert = TRUE,
+      writeTableName = "dqdashboard_results"
     ),
     regexp = "^Missing check names.*"
   )
   expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
-  expect_true("FIELD_measureValueCompleteness.sql" %in% list.files(outputFolder))
+  dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
+  expect_true(dqdSqlFile %in% list.files(outputFolder))
+
+  dqdSqlFilePath <- Sys.glob(file.path(outputFolder, dqdSqlFile))
+  sql <- readChar(dqdSqlFilePath, file.info(dqdSqlFilePath)$size)
+  
+  # comparison
+  expectedSqlFile <- system.file("testdata/TABLE_measurePersonCompleteness-mssql-union=4-insert.sql",package="DataQualityDashboard")
+  sqlExpected <- readChar(expectedSqlFile, file.info(expectedSqlFile)$size)
+  
+  # test if identical, removing comments and excess whitespace
+  expect_true(
+    remove_sql_comments(sql)
+    ==
+    remove_sql_comments(sqlExpected)
+  )
 })
