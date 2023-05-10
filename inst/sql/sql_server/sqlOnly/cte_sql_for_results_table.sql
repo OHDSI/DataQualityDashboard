@@ -1,23 +1,6 @@
 /*********
 SQL to create query for insertion into results table. These may be unioned together prior to insert.
 Note that this does not include information about SQL errors or performance.
-
-Parameters used in this template:
-category
-cdmFieldName
-cdmTableName
-renderedCheckDescription
-checkId
-checkLevel
-checkName
-conceptId
-context
-queryNum
-queryText
-sqlFile
-subcategory
-thresholdValue
-unitConceptId
 **********/
 
 SELECT 

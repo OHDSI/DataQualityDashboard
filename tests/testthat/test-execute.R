@@ -283,7 +283,7 @@ test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
   expect_is(results2, "list")
 })
 
-test_that("Execute DQ checks using sqlOnly and sqlOnlyUnionCount", {
+test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=4 and sqlOnlyIncrementalInsert=TRUE", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
   sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server", pathToDriver = "/")
@@ -322,3 +322,124 @@ test_that("Execute DQ checks using sqlOnly and sqlOnlyUnionCount", {
     remove_sql_comments(sqlExpected)
   )
 })
+
+test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlOnlyIncrementalInsert=TRUE", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+  sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server", pathToDriver = "/")
+
+  expect_warning(
+    results <- executeDqChecks(
+      connectionDetails = sqlOnlyConnectionDetails,
+      cdmDatabaseSchema = "@yourCdmSchema",
+      resultsDatabaseSchema = "@yourResultsSchema",
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = TRUE,
+      sqlOnly = TRUE,
+      sqlOnlyUnionCount = 1,
+      sqlOnlyIncrementalInsert = TRUE,
+      writeTableName = "dqdashboard_results"
+    ),
+    regexp = "^Missing check names.*"
+  )
+  expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
+  dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
+  expect_true(dqdSqlFile %in% list.files(outputFolder))
+
+  dqdSqlFilePath <- Sys.glob(file.path(outputFolder, dqdSqlFile))
+  sql <- readChar(dqdSqlFilePath, file.info(dqdSqlFilePath)$size)
+  
+  # comparison
+  expectedSqlFile <- system.file("testdata/TABLE_measurePersonCompleteness-mssql-union=1-insert.sql",package="DataQualityDashboard")
+  sqlExpected <- readChar(expectedSqlFile, file.info(expectedSqlFile)$size)
+  
+  # test if identical, removing comments and excess whitespace
+  expect_true(
+    remove_sql_comments(sql)
+    ==
+    remove_sql_comments(sqlExpected)
+  )
+})
+
+test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlOnlyIncrementalInsert=FALSE (the behavior in version <= 2.2.0)", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+  sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server", pathToDriver = "/")
+
+  expect_warning(
+    results <- executeDqChecks(
+      connectionDetails = sqlOnlyConnectionDetails,
+      cdmDatabaseSchema = "@yourCdmSchema",
+      resultsDatabaseSchema = "@yourResultsSchema",
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = TRUE,
+      sqlOnly = TRUE,
+      sqlOnlyUnionCount = 1,
+      sqlOnlyIncrementalInsert = FALSE,
+      writeTableName = "dqdashboard_results"
+    ),
+    regexp = "^Missing check names.*"
+  )
+  expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
+  dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
+  expect_true(dqdSqlFile %in% list.files(outputFolder))
+
+  dqdSqlFilePath <- Sys.glob(file.path(outputFolder, dqdSqlFile))
+  sql <- readChar(dqdSqlFilePath, file.info(dqdSqlFilePath)$size)
+  
+  # comparison
+  expectedSqlFile <- system.file("testdata/TABLE_measurePersonCompleteness-mssql-union=1-legacy.sql",package="DataQualityDashboard")
+  sqlExpected <- readChar(expectedSqlFile, file.info(expectedSqlFile)$size)
+  
+  # test if identical, removing comments and excess whitespace
+  expect_true(
+    remove_sql_comments(sql)
+    ==
+    remove_sql_comments(sqlExpected)
+  )
+})
+
+test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=4 and sqlOnlyIncrementalInsert=FALSE (the behavior in version <= 2.2.0)", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+  sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server", pathToDriver = "/")
+
+  expect_warning(
+    results <- executeDqChecks(
+      connectionDetails = sqlOnlyConnectionDetails,
+      cdmDatabaseSchema = "@yourCdmSchema",
+      resultsDatabaseSchema = "@yourResultsSchema",
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = TRUE,
+      sqlOnly = TRUE,
+      sqlOnlyUnionCount = 4,
+      sqlOnlyIncrementalInsert = FALSE,
+      writeTableName = "dqdashboard_results"
+    ),
+    regexp = "^Missing check names.*"
+  )
+  expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
+  dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
+  expect_true(dqdSqlFile %in% list.files(outputFolder))
+
+  dqdSqlFilePath <- Sys.glob(file.path(outputFolder, dqdSqlFile))
+  sql <- readChar(dqdSqlFilePath, file.info(dqdSqlFilePath)$size)
+  
+  # comparison
+  expectedSqlFile <- system.file("testdata/TABLE_measurePersonCompleteness-mssql-union=4-legacy.sql",package="DataQualityDashboard")
+  sqlExpected <- readChar(expectedSqlFile, file.info(expectedSqlFile)$size)
+  
+  # test if identical, removing comments and excess whitespace
+  expect_true(
+    remove_sql_comments(sql)
+    ==
+    remove_sql_comments(sqlExpected)
+  )
+})
+
