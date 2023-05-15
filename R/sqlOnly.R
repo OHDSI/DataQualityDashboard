@@ -48,47 +48,20 @@
 ) {
   # Update the global variable counting the number of queries that should be unioned together (based upon the sqlOnlyUnionCount parameter)
   globalQueryNum <<- globalQueryNum + 1
-  # remove trailing semi-colon so can embed in a cte or use UNION ALL
-  sql <- gsub(";", "", sql)
   
-  # Retrieve the formatted string check description to be inserted in the check_description variable in the dqdashboard_results (@writeTableName) table
-  # SqlRender is called in order to do variable substitution of parameters within the check_description template string
-  # For example, the checkDescription for checkName = plausibleValueLow is:
-  #          The number and percent of records with a value in the @cdmFieldName field of the @cdmTableName table less than @plausibleValueLow.
-  # SqlRender updates that string to do @ parameter substitution.
-  renderedCheckDescription <- SqlRender::render(
-    sql = checkDescription$checkDescription,
-    warnOnMissingParameters = FALSE,
-    cdmFieldName = params$cdmFieldName,
-    cdmTableName = params$cdmTableName,
-    conceptId = params$conceptId,
-    conceptName = params$conceptName,
-    unitConceptId = params$unitConceptId,
-    unitConceptName = params$unitConceptName,
-    plausibleGender = params$plausibleGender,
-    plausibleValueHigh = params$plausibleValueHigh,
-    plausibleValueLow = params$plausibleValueLow,
-    plausibleUnitConceptIds = params$plausibleUnitConceptIds,
-    fkClass = params$fkClass,
-    fkDomain = params$fkDomain,
-    fkTableName = params$fkTableName,
-    plausibleTemporalAfterFieldName = params$plausibleTemporalAfterFieldName,
-    plausibleTemporalAfterTableName = params$plausibleTemporalAfterTableName
-  )
-  renderedCheckDescription <- gsub("'", "''", renderedCheckDescription)
-  renderedCheckDescription <- gsub("\n", " ", renderedCheckDescription)
-  renderedCheckDescription <- gsub("\r", " ", renderedCheckDescription)
-  renderedCheckDescription <- gsub("\t", " ", renderedCheckDescription)
+  resultShell <- .recordResult(check = check, checkDescription = checkDescription, sql = sql)
+  
+  resultShell$queryText <- gsub(";", "", resultShell$queryText)
+  resultShell$checkDescription <- gsub("\t", " ", gsub("\r", " ", gsub("\n", " ", gsub("'", "''", resultShell$checkDescription))))
 
-  
   # Retrieve the numeric threshold value for the specific check.
   thresholdValue <- .getThreshold(
-    checkName = checkDescription$checkName,
-    checkLevel = checkDescription$checkLevel,
-    cdmTableName = check["cdmTableName"],
-    cdmFieldName = check["cdmFieldName"],
-    conceptId = check["conceptId"],
-    unitConceptId = check["unitConceptId"],
+    checkName = resultShell$checkName,
+    checkLevel = resultShell$checkLevel,
+    cdmTableName = resultShell$cdmTableName,
+    cdmFieldName = resultShell$cdmFieldName,
+    conceptId = resultShell$conceptId,
+    unitConceptId = resultShell$unitConceptId,
     tableChecks = tableChecks, 
     fieldChecks = fieldChecks,
     conceptChecks = conceptChecks
@@ -97,42 +70,35 @@
   # Generate the wrapping query for the desired check. This creates a final row for insertion that includes nearly all the metadata for the query (in addition to calling the check query itself)
   # The only metadata that are not included in this wrapping query include:
   # 1. execution_time -- since this query is not being executed (only the SQL is generated), execution_time is not available
-  # 2. queryText -- although this could be included, it seemed redundant since it is part of  the generated SQL file
+  # 2. queryText -- although this could be included, it seemed redundant since it is part of the generated SQL file
   # 3. warning -- not available since the SQL is not executed
   # 4. error -- not available since the SQL is not executed
-  # 5. not_applicable_reason - this currently requires post-processing
-  # 6. notes_value - although this could be included, it seemed redundant
+  # 5. not_applicable_reason -- this currently requires post-processing
+  # 6. notes_value -- although this could be included, it seemed redundant
   checkQuery <- SqlRender::loadRenderTranslateSql(
     sqlFilename = file.path("sqlOnly", "cte_sql_for_results_table.sql"),
     packageName = "DataQualityDashboard",
     dbms = connectionDetails$dbms,
     queryText = sql,
-    checkName = checkDescription$checkName,
-    checkLevel = checkDescription$checkLevel,
-    renderedCheckDescription = renderedCheckDescription,
-    cdmTableName = check["cdmTableName"],
-    cdmFieldName = check["cdmFieldName"],
-    conceptId = check["conceptId"],
-    unitConceptId = check["unitConceptId"],
+    checkName = resultShell$checkName,
+    checkLevel = resultShell$checkLevel,
+    renderedCheckDescription = resultShell$checkDescription,
+    cdmTableName = resultShell$cdmTableName,
+    cdmFieldName = resultShell$cdmFieldName,
+    conceptId = resultShell$conceptId,
+    unitConceptId = resultShell$unitConceptId,
     sqlFile = checkDescription$sqlFile,
-    category = checkDescription$kahnCategory,
-    subcategory = checkDescription$kahnSubcategory,
-    context = checkDescription$kahnContext,
-    checkId = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"]),
+    category = resultShell$kahnCategory,
+    subcategory = resultShell$kahnSubcategory,
+    context = resultShell$kahnContext,
+    checkId = resultShell$checkId,
     thresholdValue = thresholdValue,
     queryNum = globalQueryNum
   )
 
   # Add the final SQL to a list of SQL to append via UNION ALL
-  if (sqlOnlyIncrementalInsert == TRUE) {
-    # Add the final SQL to a list of SQL to append via UNION ALL
     globalSqlToUnion <<- append(globalSqlToUnion, checkQuery)
   }
-  else {
-    # Use just the original SQL
-    globalSqlToUnion <<- append(globalSqlToUnion, sql)
-  }
-}
 
 
 #' Internal function to write queries when running in SqlOnly mode

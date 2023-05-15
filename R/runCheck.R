@@ -70,7 +70,7 @@
     cohort <- FALSE
   }
 
-  if (sqlOnly) {
+  if (sqlOnly && sqlOnlyIncrementalInsert) {
     # Global variables for tracking SQL of checks
     globalSqlToUnion <<- c()
     globalQueryNum <<- 0
@@ -98,8 +98,23 @@
 
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)
 
-      if (sqlOnly) {
-        .createSqlOnlyQueries(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, checkDescription, sqlOnlyIncrementalInsert)
+      if (sqlOnly && sqlOnlyIncrementalInsert) {
+        .createSqlOnlyQueries(
+          params, 
+          check, 
+          tableChecks, 
+          fieldChecks, 
+          conceptChecks, 
+          sql, 
+          connectionDetails, 
+          checkDescription, 
+          sqlOnlyIncrementalInsert)
+        data.frame()
+      } else if (sqlOnly) {
+        write(x = sql, file = file.path(
+          outputFolder,
+          sprintf("%s.sql", checkDescription$checkName)
+        ), append = TRUE)
         data.frame()
       } else {
         .processCheck(
@@ -113,7 +128,7 @@
       }
     })
 
-    if (sqlOnly && length(globalSqlToUnion) > 0) {
+    if (sqlOnlyIncrementalInsert && length(globalSqlToUnion) > 0) {
       .writeSqlOnlyQueries(globalSqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription, sqlOnlyIncrementalInsert)
     }
       

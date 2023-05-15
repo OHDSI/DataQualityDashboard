@@ -49,7 +49,7 @@ executeDqChecks(
 
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
 
-\item{sqlOnlyUnionCount}{How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel)}
+\item{sqlOnlyUnionCount}{(OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.}
 
 \item{sqlOnlyIncrementalInsert}{(OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)}
 
@@ -61,7 +61,7 @@ executeDqChecks(
 
 \item{writeToTable}{Boolean to indicate if the check results will be written to the dqdashboard_results table in the resultsDatabaseSchema. Default is TRUE}
 
-\item{writeTableName}{The name of the results table. Defaults to `dqdashboard_results`.}
+\item{writeTableName}{The name of the results table. Defaults to `dqdashboard_results`.  Used when sqlOnly or writeToTable is True.}
 
 \item{writeToCsv}{Boolean to indicate if the check results will be written to a csv file. Default is FALSE}
 
