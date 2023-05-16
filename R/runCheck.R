@@ -28,7 +28,9 @@
 #' @param cohortTableName           The name of the cohort table.
 #' @param cohortDefinitionId        The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
 #' @param outputFolder              The folder to output logs and SQL files to
+#' @param outputFile                (OPTIONAL) File to re-use results of previous execution if resume is set
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
+#' @param resume                    Boolean to indicate if processing will be resumed
 #'
 #' @import magrittr
 #'
@@ -46,7 +48,9 @@
                       cohortTableName,
                       cohortDefinitionId,
                       outputFolder,
-                      sqlOnly) {
+                      outputFile = "",
+                      sqlOnly,
+                      resume) {
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
 
   filterExpression <- sprintf(
@@ -67,6 +71,21 @@
   }
 
   if (nrow(checks) > 0) {
+    recoveredNumber <- 0
+    checkResultsSaved <- NULL
+    if (resume && nchar(outputFile) > 0 && file.exists(file.path(outputFolder, outputFile))) {
+      dqdResults <- jsonlite::read_json(
+        path = file.path(outputFolder, outputFile)
+      )
+      checkResultsSaved <- lapply(
+        dqdResults$CheckResults,
+        function(cr) {
+          cr[sapply(cr, is.null)] <- NA
+          as.data.frame(cr)
+        }
+      )
+      checkResultsSaved <- do.call(plyr::rbind.fill, checkResultsSaved)
+    }
     dfs <- apply(X = checks, MARGIN = 1, function(check) {
       columns <- lapply(names(check), function(c) {
         setNames(check[c], c)
@@ -95,16 +114,52 @@
         ), append = TRUE)
         data.frame()
       } else {
-        .processCheck(
-          connection = connection,
-          connectionDetails = connectionDetails,
-          check = check,
-          checkDescription = checkDescription,
-          sql = sql,
-          outputFolder = outputFolder
-        )
+        checkResult <- NULL
+        if (!is.null(checkResultsSaved)) {
+          currentCheckId <- .getCheckId(
+            checkLevel = checkDescription$checkLevel,
+            checkName = checkDescription$checkName,
+            cdmTableName = check["cdmTableName"],
+            cdmFieldName = check["cdmFieldName"],
+            conceptId = check["conceptId"],
+            unitConceptId = check["unitConceptId"]
+          )
+          checkResultCandidates <- checkResultsSaved %>% dplyr::filter(checkId == currentCheckId & is.na(ERROR))
+          if (1 == nrow(checkResultCandidates)) {
+              savedResult <- checkResultCandidates[1, ]
+              warning <- if (is.null(savedResult$WARNING)) { NA } else { savedResult$WARNING }
+              checkResult <- .recordResult(
+                result = savedResult,
+                check = check,
+                checkDescription = checkDescription,
+                sql = sql,
+                executionTime = savedResult$EXECUTION_TIME,
+                warning = warning,
+                error = NA
+              )
+              recoveredNumber <<- recoveredNumber + 1
+          }
+        }
+
+        if (is.null(checkResult)) {
+          checkResult <- .processCheck(
+            connection = connection,
+            connectionDetails = connectionDetails,
+            check = check,
+            checkDescription = checkDescription,
+            sql = sql,
+            outputFolder = outputFolder
+          )
+        }
+
+        checkResult
       }
     })
+
+    if (recoveredNumber > 0) {
+      ParallelLogger::logInfo(sprintf("Recovered %s of %s results from %s", recoveredNumber, nrow(checks), outputFile))
+    }
+
     do.call(rbind, dfs)
   } else {
     ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
