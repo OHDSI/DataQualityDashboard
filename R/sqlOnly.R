@@ -28,7 +28,6 @@
 #' @param sql                       The rendered SQL for this check
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param checkDescription          The description of the data quality check
-#' @param sqlOnlyIncrementalInsert  Boolean - if TRUE, generate Insert commands using insert_ctes_into_result_table.sql.  If FALSE, skip use of that CTE.
 #'
 #' @return A rendered SQL query to add into the incremental insert sqlOnly query
 
@@ -43,8 +42,7 @@
     conceptChecks,
     sql,
     connectionDetails,
-    checkDescription,
-    sqlOnlyIncrementalInsert
+    checkDescription
 ) {
   resultShell <- .recordResult(check = check, checkDescription = checkDescription, sql = sql)
   
@@ -105,7 +103,6 @@
 #' @param dbms                      The database type (e.g. spark, sql server) - needed for proper query rendering
 #' @param outputFolder              Location to write the generated SQL files
 #' @param checkDescription          The description of the data quality check
-#' @param sqlOnlyIncrementalInsert  Boolean - if TRUE, generate Insert commands using insert_ctes_into_result_table.sql.  If FALSE, skip use of that CTE.
 
 #' @noRd
 #' @keywords internal
@@ -117,8 +114,7 @@
   writeTableName,
   dbms,
   outputFolder,
-  checkDescription,
-  sqlOnlyIncrementalInsert
+  checkDescription
 ) {
   outFile <-file.path(
     outputFolder, 
@@ -134,20 +130,15 @@
     
     sqlUnioned <- paste(sqlToUnion[ustart:uend], collapse=' UNION ALL ')
     
-    if (sqlOnlyIncrementalInsert == TRUE) {
-      # Generate INSERT commands to insert results + metadata into results table
-      sql <- SqlRender::loadRenderTranslateSql(
-        sqlFilename = file.path("sqlOnly", "insert_ctes_into_result_table.sql"),
-        packageName = "DataQualityDashboard",
-        dbms = dbms,
-        resultsDatabaseSchema = resultsDatabaseSchema,
-        tableName = writeTableName,
-        queryText = sqlUnioned
-      )
-    }
-    else {
-      sql <- sprintf("%s;",sqlUnioned)
-    }
+    # Generate INSERT commands to insert results + metadata into results table
+    sql <- SqlRender::loadRenderTranslateSql(
+      sqlFilename = file.path("sqlOnly", "insert_ctes_into_result_table.sql"),
+      packageName = "DataQualityDashboard",
+      dbms = dbms,
+      resultsDatabaseSchema = resultsDatabaseSchema,
+      tableName = writeTableName,
+      queryText = sqlUnioned
+    )
     
     write(
       x = sql,

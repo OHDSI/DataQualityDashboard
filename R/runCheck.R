@@ -101,8 +101,7 @@
           conceptChecks, 
           sql, 
           connectionDetails, 
-          checkDescription, 
-          sqlOnlyIncrementalInsert)
+          checkDescription)
         data.frame(query = checkQuery)
       } else if (sqlOnly) {
         write(x = sql, file = file.path(
@@ -127,7 +126,7 @@
     if (sqlOnlyIncrementalInsert) {
       sqlToUnion <- dfs$query
       if (length(sqlToUnion) > 0) {
-        .writeSqlOnlyQueries(sqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription, sqlOnlyIncrementalInsert)
+        .writeSqlOnlyQueries(sqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
       }
     } else {
       dfs
