@@ -1,14 +1,5 @@
 library(testthat)
 
-remove_sql_comments <- function(sql) {
-  sql0 <- gsub("--.*?\\n|--.*?\\r"," ",sql)       # remove single-line SQL comments
-  sql1 <- gsub("\\r|\\n|\\t"," ",sql0)            # convert tabs and newlines to spaces
-  sql2 <- gsub("/*","@@@@ ",sql1,fixed=TRUE)      # must add spaces between multi-line comments for quote removal to work
-  sql3 <- gsub("*/"," @@@@",sql2,fixed=TRUE)      # must add spaces between multi-line comments for quote removal to work
-  sql4 <- gsub("@@@@ .+? @@@@"," ",sql3,)         # remove multi-line comments
-  sql5 <- gsub("\\s+"," ",sql4)                   # remove multiple spaces
-}
-
 test_that("listDqChecks works", {
   checks <- listDqChecks()
   expect_equal(length(checks), 4)
@@ -308,19 +299,15 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=4 and sqlO
   dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
   expect_true(dqdSqlFile %in% list.files(outputFolder))
 
-  dqdSqlFilePath <- Sys.glob(file.path(outputFolder, dqdSqlFile))
-  sql <- readChar(dqdSqlFilePath, file.info(dqdSqlFilePath)$size)
+  dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
+  sql <- SqlRender::readSql(dqdSqlFilePath)
   
   # comparison
   expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=4-insert.sql", package="DataQualityDashboard")
-  sqlExpected <- readChar(expectedSqlFile, file.info(expectedSqlFile)$size)
+  sqlExpected <- SqlRender::readSql(expectedSqlFile)
   
   # test if identical, removing comments and excess whitespace
-  expect_true(
-    remove_sql_comments(sql)
-    ==
-    remove_sql_comments(sqlExpected)
-  )
+  expect_equal(remove_sql_comments(sql), remove_sql_comments(sqlExpected))
 })
 
 test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlOnlyIncrementalInsert=TRUE", {
@@ -348,19 +335,15 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
   dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
   expect_true(dqdSqlFile %in% list.files(outputFolder))
 
-  dqdSqlFilePath <- Sys.glob(file.path(outputFolder, dqdSqlFile))
-  sql <- readChar(dqdSqlFilePath, file.info(dqdSqlFilePath)$size)
+  dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
+  sql <- SqlRender::readSql(dqdSqlFilePath)
   
   # comparison
   expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=1-insert.sql", package="DataQualityDashboard")
-  sqlExpected <- readChar(expectedSqlFile, file.info(expectedSqlFile)$size)
+  sqlExpected <- SqlRender::readSql(expectedSqlFile)
   
   # test if identical, removing comments and excess whitespace
-  expect_true(
-    remove_sql_comments(sql)
-    ==
-    remove_sql_comments(sqlExpected)
-  )
+  expect_equal(remove_sql_comments(sql), remove_sql_comments(sqlExpected))
 })
 
 test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlOnlyIncrementalInsert=FALSE (the behavior in version <= 2.2.0)", {
@@ -388,17 +371,49 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
   dqdSqlFile <- "measurePersonCompleteness.sql"
   expect_true(dqdSqlFile %in% list.files(outputFolder))
 
-  dqdSqlFilePath <- Sys.glob(file.path(outputFolder, dqdSqlFile))
-  sql <- readChar(dqdSqlFilePath, file.info(dqdSqlFilePath)$size)
+  dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
+  sql <- SqlRender::readSql(dqdSqlFilePath)
   
   # comparison
   expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=1-legacy.sql", package="DataQualityDashboard")
-  sqlExpected <- readChar(expectedSqlFile, file.info(expectedSqlFile)$size)
+  sqlExpected <- SqlRender::readSql(expectedSqlFile)
   
   # test if identical, removing comments and excess whitespace
-  expect_true(
-    remove_sql_comments(sql)
-    ==
-    remove_sql_comments(sqlExpected)
+  expect_equal(remove_sql_comments(sql), remove_sql_comments(sqlExpected))
+})
+
+test_that("Incremental insert SQL is valid.", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+
+  expect_warning(
+    results <- executeDqChecks(
+      connectionDetails = connectionDetailsEunomia,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = FALSE,
+      sqlOnly = TRUE,
+      sqlOnlyUnionCount = 4,
+      sqlOnlyIncrementalInsert = TRUE,
+      writeTableName = "dqd_results"
+    ),
+    regexp = "^Missing check names.*"
   )
+
+  ddlSqlFile <- file.path(outputFolder, "ddlDqdResults.sql")
+  ddlSql <- SqlRender::readSql(ddlSqlFile)
+  checkSqlFile <- file.path(outputFolder, "TABLE_measurePersonCompleteness.sql")
+  checkSql <- SqlRender::readSql(checkSqlFile)
+
+  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
+  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
+  DatabaseConnector::executeSql(connection = connection, sql = ddlSql)
+  DatabaseConnector::executeSql(connection = connection, sql = checkSql)
+
+  checkResults <- DatabaseConnector::renderTranslateQuerySql(connection, "SELECT * FROM @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
+  expect_true(nrow(checkResults) == 15)
+  DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
 })

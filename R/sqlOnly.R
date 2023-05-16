@@ -14,11 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' @file sqlOnly.R
-
-#' @title Create Sql Only Queries
-#'
-#' @description Internal function to create queries when running in "incremental insert" sqlOnly mode
+#' Internal function to create queries when running in "incremental insert" sqlOnly mode
 #'
 #' @param params                    Collection of parameters from .runCheck
 #' @param check                     Create SQL for this specific check type
