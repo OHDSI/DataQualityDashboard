@@ -51,7 +51,7 @@
 
 \item{outputFolder}{The folder to output logs and SQL files to}
 
-\item{sqlOnlyUnionCount}{How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel)}
+\item{sqlOnlyUnionCount}{(OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.}
 
 \item{sqlOnlyIncrementalInsert}{(OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)}
 
@@ -62,10 +62,4 @@
 \description{
 Internal function to run and process each data quality check.
 }
-\keyword{'.runCheck'}
-\keyword{TODO:}
-\keyword{a}
-\keyword{create}
-\keyword{function}
 \keyword{internal}
-\keyword{sqlOnly}

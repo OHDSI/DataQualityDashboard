@@ -14,23 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' @file sqlOnly.R
-
-#' @title Create Sql Only Queries
-#'
-#' @description Internal function to create queries when running in SqlOnly mode
+#' Internal function to create queries when running in "incremental insert" sqlOnly mode
 #'
 #' @param params                    Collection of parameters from .runCheck
-#' @param check                     Create SQL for this specific check level
+#' @param check                     Create SQL for this specific check type
 #' @param tablechecks               A dataframe containing the table checks
 #' @param fieldChecks               A dataframe containing the field checks
 #' @param conceptChecks             A dataframe containing the concept checks
 #' @param sql                       The rendered SQL for this check
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param checkDescription          The description of the data quality check
-#' @param sqlOnlyIncrementalInsert  Boolean - if TRUE, generate Insert commands using insert_ctes_into_result_table.sql.  If FALSE, skip use of that CTE.
 #'
-#' @return A list of one or more sql queries to union
+#' @return A rendered SQL query to add into the incremental insert sqlOnly query
 
 #' @noRd
 #' @keywords internal
@@ -43,52 +38,21 @@
     conceptChecks,
     sql,
     connectionDetails,
-    checkDescription,
-    sqlOnlyIncrementalInsert
+    checkDescription
 ) {
-  # Update the global variable counting the number of queries that should be unioned together (based upon the sqlOnlyUnionCount parameter)
-  globalQueryNum <<- globalQueryNum + 1
-  # remove trailing semi-colon so can embed in a cte or use UNION ALL
-  sql <- gsub(";", "", sql)
+  resultShell <- .recordResult(check = check, checkDescription = checkDescription, sql = sql)
   
-  # Retrieve the formatted string check description to be inserted in the check_description variable in the dqdashboard_results (@writeTableName) table
-  # SqlRender is called in order to do variable substitution of parameters within the check_description template string
-  # For example, the checkDescription for checkName = plausibleValueLow is:
-  #          The number and percent of records with a value in the @cdmFieldName field of the @cdmTableName table less than @plausibleValueLow.
-  # SqlRender updates that string to do @ parameter substitution.
-  renderedCheckDescription <- SqlRender::render(
-    sql = checkDescription$checkDescription,
-    warnOnMissingParameters = FALSE,
-    cdmFieldName = params$cdmFieldName,
-    cdmTableName = params$cdmTableName,
-    conceptId = params$conceptId,
-    conceptName = params$conceptName,
-    unitConceptId = params$unitConceptId,
-    unitConceptName = params$unitConceptName,
-    plausibleGender = params$plausibleGender,
-    plausibleValueHigh = params$plausibleValueHigh,
-    plausibleValueLow = params$plausibleValueLow,
-    plausibleUnitConceptIds = params$plausibleUnitConceptIds,
-    fkClass = params$fkClass,
-    fkDomain = params$fkDomain,
-    fkTableName = params$fkTableName,
-    plausibleTemporalAfterFieldName = params$plausibleTemporalAfterFieldName,
-    plausibleTemporalAfterTableName = params$plausibleTemporalAfterTableName
-  )
-  renderedCheckDescription <- gsub("'", "''", renderedCheckDescription)
-  renderedCheckDescription <- gsub("\n", " ", renderedCheckDescription)
-  renderedCheckDescription <- gsub("\r", " ", renderedCheckDescription)
-  renderedCheckDescription <- gsub("\t", " ", renderedCheckDescription)
+  resultShell$queryText <- gsub(";", "", resultShell$queryText)
+  resultShell$checkDescription <- gsub("\t", " ", gsub("\r", " ", gsub("\n", " ", gsub("'", "''", resultShell$checkDescription))))
 
-  
   # Retrieve the numeric threshold value for the specific check.
   thresholdValue <- .getThreshold(
-    checkName = checkDescription$checkName,
-    checkLevel = checkDescription$checkLevel,
-    cdmTableName = check["cdmTableName"],
-    cdmFieldName = check["cdmFieldName"],
-    conceptId = check["conceptId"],
-    unitConceptId = check["unitConceptId"],
+    checkName = resultShell$checkName,
+    checkLevel = resultShell$checkLevel,
+    cdmTableName = resultShell$cdmTableName,
+    cdmFieldName = resultShell$cdmFieldName,
+    conceptId = resultShell$conceptId,
+    unitConceptId = resultShell$unitConceptId,
     tableChecks = tableChecks, 
     fieldChecks = fieldChecks,
     conceptChecks = conceptChecks
@@ -97,67 +61,56 @@
   # Generate the wrapping query for the desired check. This creates a final row for insertion that includes nearly all the metadata for the query (in addition to calling the check query itself)
   # The only metadata that are not included in this wrapping query include:
   # 1. execution_time -- since this query is not being executed (only the SQL is generated), execution_time is not available
-  # 2. queryText -- although this could be included, it seemed redundant since it is part of  the generated SQL file
+  # 2. queryText -- although this could be included, it seemed redundant since it is part of the generated SQL file
   # 3. warning -- not available since the SQL is not executed
   # 4. error -- not available since the SQL is not executed
-  # 5. not_applicable_reason - this currently requires post-processing
-  # 6. notes_value - although this could be included, it seemed redundant
+  # 5. not_applicable_reason -- this currently requires post-processing
+  # 6. notes_value -- although this could be included, it seemed redundant
   checkQuery <- SqlRender::loadRenderTranslateSql(
     sqlFilename = file.path("sqlOnly", "cte_sql_for_results_table.sql"),
     packageName = "DataQualityDashboard",
     dbms = connectionDetails$dbms,
-    queryText = sql,
-    checkName = checkDescription$checkName,
-    checkLevel = checkDescription$checkLevel,
-    renderedCheckDescription = renderedCheckDescription,
-    cdmTableName = check["cdmTableName"],
-    cdmFieldName = check["cdmFieldName"],
-    conceptId = check["conceptId"],
-    unitConceptId = check["unitConceptId"],
+    queryText = resultShell$queryText,
+    checkName = resultShell$checkName,
+    checkLevel = resultShell$checkLevel,
+    renderedCheckDescription = resultShell$checkDescription,
+    cdmTableName = resultShell$cdmTableName,
+    cdmFieldName = resultShell$cdmFieldName,
+    conceptId = resultShell$conceptId,
+    unitConceptId = resultShell$unitConceptId,
     sqlFile = checkDescription$sqlFile,
-    category = checkDescription$kahnCategory,
-    subcategory = checkDescription$kahnSubcategory,
-    context = checkDescription$kahnContext,
-    checkId = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"]),
-    thresholdValue = thresholdValue,
-    queryNum = globalQueryNum
+    category = resultShell$category,
+    subcategory = resultShell$subcategory,
+    context = resultShell$context,
+    checkId = resultShell$checkId,
+    thresholdValue = thresholdValue
   )
 
-  # Add the final SQL to a list of SQL to append via UNION ALL
-  if (sqlOnlyIncrementalInsert == TRUE) {
-    # Add the final SQL to a list of SQL to append via UNION ALL
-    globalSqlToUnion <<- append(globalSqlToUnion, checkQuery)
+  return(checkQuery)
   }
-  else {
-    # Use just the original SQL
-    globalSqlToUnion <<- append(globalSqlToUnion, sql)
-  }
-}
 
 
-#' Internal function to write queries when running in SqlOnly mode
+#' Internal function to write queries when running in sqlOnly mode
 #' 
-#' @param globalSqlToUnion          list of one or more SQL queries to union
-#' @param sqlOnlyUnionCount         value of @sqlOnlyUnionCount - determines max # of sql queries to union in a single cte
+#' @param sqlToUnion                List of one or more SQL queries to union
+#' @param sqlOnlyUnionCount         Value of @sqlOnlyUnionCount - determines max # of sql queries to union in a single cte
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
 #' @param writeTableName            The table tor write DQD results to. Used when sqlOnly or writeToTable is True.
 #' @param dbms                      The database type (e.g. spark, sql server) - needed for proper query rendering
 #' @param outputFolder              Location to write the generated SQL files
 #' @param checkDescription          The description of the data quality check
-#' @param sqlOnlyIncrementalInsert  Boolean - if TRUE, generate Insert commands using insert_ctes_into_result_table.sql.  If FALSE, skip use of that CTE.
 
 #' @noRd
 #' @keywords internal
 #' 
 .writeSqlOnlyQueries <- function(
-  globalSqlToUnion,
+  sqlToUnion,
   sqlOnlyUnionCount,
   resultsDatabaseSchema,
   writeTableName,
   dbms,
   outputFolder,
-  checkDescription,
-  sqlOnlyIncrementalInsert
+  checkDescription
 ) {
   outFile <-file.path(
     outputFolder, 
@@ -168,25 +121,20 @@
   unlink(outFile)
 
   ustart <- 1
-  while (ustart <= length(globalSqlToUnion)) {
-    uend <- min(ustart + sqlOnlyUnionCount - 1, length(globalSqlToUnion))
+  while (ustart <= length(sqlToUnion)) {
+    uend <- min(ustart + sqlOnlyUnionCount - 1, length(sqlToUnion))
     
-    sqlUnioned <- paste(globalSqlToUnion[ustart:uend], collapse=' UNION ALL ')
+    sqlUnioned <- paste(sqlToUnion[ustart:uend], collapse=' UNION ALL ')
     
-    if (sqlOnlyIncrementalInsert == TRUE) {
-      # Generate INSERT commands to insert results + metadata into results table
-      sql <- SqlRender::loadRenderTranslateSql(
-        sqlFilename = file.path("sqlOnly", "insert_ctes_into_result_table.sql"),
-        packageName = "DataQualityDashboard",
-        dbms = dbms,
-        resultsDatabaseSchema = resultsDatabaseSchema,
-        tableName = writeTableName,
-        queryText = sqlUnioned
-      )
-    }
-    else {
-      sql <- sprintf("%s;",sqlUnioned)
-    }
+    # Generate INSERT commands to insert results + metadata into results table
+    sql <- SqlRender::loadRenderTranslateSql(
+      sqlFilename = file.path("sqlOnly", "insert_ctes_into_result_table.sql"),
+      packageName = "DataQualityDashboard",
+      dbms = dbms,
+      resultsDatabaseSchema = resultsDatabaseSchema,
+      tableName = writeTableName,
+      queryText = sqlUnioned
+    )
     
     write(
       x = sql,

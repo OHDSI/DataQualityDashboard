@@ -70,12 +70,6 @@
     cohort <- FALSE
   }
 
-  if (sqlOnly) {
-    # Global variables for tracking SQL of checks
-    globalSqlToUnion <<- c()
-    globalQueryNum <<- 0
-  }
-
   if (nrow(checks) > 0) {
     dfs <- apply(X = checks, MARGIN = 1, function(check) {
       columns <- lapply(names(check), function(c) {
@@ -98,8 +92,22 @@
 
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)
 
-      if (sqlOnly) {
-        .createSqlOnlyQueries(params, check, tableChecks, fieldChecks, conceptChecks, sql, connectionDetails, checkDescription, sqlOnlyIncrementalInsert)
+      if (sqlOnly && sqlOnlyIncrementalInsert) {
+        checkQuery <- .createSqlOnlyQueries(
+          params, 
+          check, 
+          tableChecks, 
+          fieldChecks, 
+          conceptChecks, 
+          sql, 
+          connectionDetails, 
+          checkDescription)
+        data.frame(query = checkQuery)
+      } else if (sqlOnly) {
+        write(x = sql, file = file.path(
+          outputFolder,
+          sprintf("%s.sql", checkDescription$checkName)
+        ), append = TRUE)
         data.frame()
       } else {
         .processCheck(
@@ -112,12 +120,18 @@
         )
       }
     })
-
-    if (sqlOnly && length(globalSqlToUnion) > 0) {
-      .writeSqlOnlyQueries(globalSqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription, sqlOnlyIncrementalInsert)
+    
+    dfs <- do.call(rbind, dfs)
+    
+    if (sqlOnlyIncrementalInsert) {
+      sqlToUnion <- dfs$query
+      if (length(sqlToUnion) > 0) {
+        .writeSqlOnlyQueries(sqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
+      }
+    } else {
+      dfs
     }
-      
-    do.call(rbind, dfs)
+
   } else {
     ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
     data.frame()
