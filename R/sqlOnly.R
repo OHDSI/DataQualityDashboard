@@ -18,10 +18,10 @@
 
 #' @title Create Sql Only Queries
 #'
-#' @description Internal function to create queries when running in SqlOnly mode
+#' @description Internal function to create queries when running in "incremental insert" sqlOnly mode
 #'
 #' @param params                    Collection of parameters from .runCheck
-#' @param check                     Create SQL for this specific check level
+#' @param check                     Create SQL for this specific check type
 #' @param tablechecks               A dataframe containing the table checks
 #' @param fieldChecks               A dataframe containing the field checks
 #' @param conceptChecks             A dataframe containing the concept checks
@@ -30,7 +30,7 @@
 #' @param checkDescription          The description of the data quality check
 #' @param sqlOnlyIncrementalInsert  Boolean - if TRUE, generate Insert commands using insert_ctes_into_result_table.sql.  If FALSE, skip use of that CTE.
 #'
-#' @return A list of one or more sql queries to union
+#' @return A rendered SQL query to add into the incremental insert sqlOnly query
 
 #' @noRd
 #' @keywords internal
@@ -46,9 +46,6 @@
     checkDescription,
     sqlOnlyIncrementalInsert
 ) {
-  # Update the global variable counting the number of queries that should be unioned together (based upon the sqlOnlyUnionCount parameter)
-  globalQueryNum <<- globalQueryNum + 1
-  
   resultShell <- .recordResult(check = check, checkDescription = checkDescription, sql = sql)
   
   resultShell$queryText <- gsub(";", "", resultShell$queryText)
@@ -92,19 +89,17 @@
     subcategory = resultShell$subcategory,
     context = resultShell$context,
     checkId = resultShell$checkId,
-    thresholdValue = thresholdValue,
-    queryNum = globalQueryNum
+    thresholdValue = thresholdValue
   )
 
-  # Add the final SQL to a list of SQL to append via UNION ALL
-    globalSqlToUnion <<- append(globalSqlToUnion, checkQuery)
+  return(checkQuery)
   }
 
 
-#' Internal function to write queries when running in SqlOnly mode
+#' Internal function to write queries when running in sqlOnly mode
 #' 
-#' @param globalSqlToUnion          list of one or more SQL queries to union
-#' @param sqlOnlyUnionCount         value of @sqlOnlyUnionCount - determines max # of sql queries to union in a single cte
+#' @param sqlToUnion                List of one or more SQL queries to union
+#' @param sqlOnlyUnionCount         Value of @sqlOnlyUnionCount - determines max # of sql queries to union in a single cte
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
 #' @param writeTableName            The table tor write DQD results to. Used when sqlOnly or writeToTable is True.
 #' @param dbms                      The database type (e.g. spark, sql server) - needed for proper query rendering
@@ -116,7 +111,7 @@
 #' @keywords internal
 #' 
 .writeSqlOnlyQueries <- function(
-  globalSqlToUnion,
+  sqlToUnion,
   sqlOnlyUnionCount,
   resultsDatabaseSchema,
   writeTableName,
@@ -134,10 +129,10 @@
   unlink(outFile)
 
   ustart <- 1
-  while (ustart <= length(globalSqlToUnion)) {
-    uend <- min(ustart + sqlOnlyUnionCount - 1, length(globalSqlToUnion))
+  while (ustart <= length(sqlToUnion)) {
+    uend <- min(ustart + sqlOnlyUnionCount - 1, length(sqlToUnion))
     
-    sqlUnioned <- paste(globalSqlToUnion[ustart:uend], collapse=' UNION ALL ')
+    sqlUnioned <- paste(sqlToUnion[ustart:uend], collapse=' UNION ALL ')
     
     if (sqlOnlyIncrementalInsert == TRUE) {
       # Generate INSERT commands to insert results + metadata into results table
