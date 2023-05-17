@@ -24,23 +24,31 @@ output:
 
 # Description
 
-This article describes how to generate only the SQL that executes all DataQualityDashoard checks, without executing.
-There are two main advantages of running DQD in Sql-only mode:
- - Create queries locally, before sending to server. This allows for generation of the SQL on one machine and execution on another (e.g. when R cannot connect directly to the database server)
- - Performance. If you use `sqlOnlyUnionCount > 1`, multiple checks are unioned within a cte to speed performance. When testing on Spark, this resulted in a 10x or higher performance.
- - Since these are fully functional queries, this can help with debugging.
+This article describes how to use DQD to generate only the SQL that executes all DataQualityDashoard checks, without actually executing them.
+There are a few main advantages of running DQD in Sql-only mode:
 
-There are a few differences in the result when running DQD in Sql-only mode, compared to a normal DQD run:
-- If one check results in an error, multiple checks might fail.
-- The status `not_applicable` is not evaluated. A check fails or passes.
-- The query text is not shown. Instead it shows the query number as 'Query ##'.
-- Notes from threshold file are not included in results.
-- Execution metadata is not automatically added (DQD version, total and query execution time, cdm source data)
+* Create queries locally, before sending to server. This allows for generation of the SQL on one machine and execution on another (e.g. when R cannot connect directly to the database server, or you want to run the DQD SQL as part of your ETL).
+* Since these are fully functional queries, this can help with debugging.
+* **[NEW in v2.3.0!]** Performance. If you use `sqlOnlyIncrementalInsert = TRUE` and `sqlOnlyUnionCount > 1`, multiple checks are unioned within a cte in the output SQL query to speed performance. When testing on Spark, this resulted in a 10x or higher performance gain.
+  - Performance for these queries has NOT been benchmarked on all database systems. In order to obtain optimal results in your database you may need to adjust the `sqlOnlyUnionCount` and/or tune database parameters such as indexing and parallelism
 
-# Generating the DQD SQL
+The new `sqlOnlyIncrementalInsert` mode generates SQL queries that will actually populate a DQD results table in your database with the results of the checks.  There are currently some differences in the result when running these queries, compared to a normal DQD run:
+
+* If you set `sqlOnlyUnionCount` > 1, if one check results in an error, multiple checks might fail (since the queries are unioned in ctes).
+* The status `not_applicable` is not evaluated. A check fails or passes.
+* The query text is not shown in the results table.
+* Notes from threshold file are not included in results.
+* Execution metadata is not automatically added (total and query execution time; CDM_SOURCE metadata).
+
+Running DQD with `sqlOnly = TRUE` and `sqlOnlyIncrementalInsert = FALSE` will generate SQL queries that can be run to generate the result of each DQ check, but which will not write the results back to the database.
+
+# Generating the "Incremental Insert" DQD SQL
 A few things to note:
-- A dummy `connectionDetails` object is needed where only the `dbms` is used during SQL-only execution. Typically, you would setBy setting this to 'sql server' the resulting sql can still be rendered to any other dialect using `SqlRender` (see example below). 
-- `sqlOnlyUnionCount` determines the number of check sqls to union in a single query. A smaller number gives more control and progress information, a higher number typically gives a higher performance. Here, 100 is used.
+
+* A dummy `connectionDetails` object is needed where only the `dbms` is used during SQL-only execution.
+  - By setting the dbms to 'sql server' the output SQL can still be rendered to any other dialect using `SqlRender` (see example below). 
+* `sqlOnlyUnionCount` determines the number of check sqls to union in a single query. A smaller number gives more control and progress information, a higher number typically gives a higher performance. Here, 100 is used.
+
 ```R
 library(DataQualityDashboard)
 
@@ -60,9 +68,8 @@ sqlFolder <- "./results_sql_only"
 cdmSourceName <- "Synthea"
 
 sqlOnly <- TRUE
-sqlOnlyUnionCount <- 100            # this unions 100 queries before doing insert
-sqlOnlyIncrementalInsert <- TRUE    # this wraps the check result with the metadata about the check and performs the insert (as long as writeToTable = TRUE
-writeToTable <- TRUE                # must be TRUE if also using sqlOnlyIncrementalInsert = TRUE
+sqlOnlyIncrementalInsert <- TRUE    # this will generate an insert SQL query for each check type that will compute check results and insert them into a database table
+sqlOnlyUnionCount <- 100            # this unions up to 100 queries in each insert query
 
 verboseMode <- TRUE
 
@@ -71,7 +78,7 @@ checkLevels <- c("TABLE", "FIELD", "CONCEPT")
 tablesToExclude <- c()
 checkNames <- c()
 
-# Run DQD with sqlOnly=TRUE. This will create a sql file for each check type in the output folder
+# Run DQD with sqlOnly=TRUE and sqlOnlyIncrementalInsert=TRUE. This will create a sql file for each check type in the output folder
 DataQualityDashboard::executeDqChecks(
   connectionDetails = dbmsConnectionDetails,
   cdmDatabaseSchema = cdmDatabaseSchema,
@@ -81,7 +88,6 @@ DataQualityDashboard::executeDqChecks(
   sqlOnly = sqlOnly,
   sqlOnlyUnionCount = sqlOnlyUnionCount,
   sqlOnlyIncrementalInsert = sqlOnlyIncrementalInsert,
-  writeToTable = writeToTable,
   outputFolder = sqlFolder,
   checkLevels = checkLevels,
   verboseMode = verboseMode,
@@ -92,23 +98,24 @@ DataQualityDashboard::executeDqChecks(
 ```
 
 After running above code, you will end up with a number of sql files in the specified output directory:
-- One sql file per check type: `TABLE|FIELD|CONCEPT_<check_name>.sql`
-- `ddlDqdResults.sql` with the result table format.
+
+* One sql file per check type: `TABLE|FIELD|CONCEPT_<check_name>.sql`.
+* `ddlDqdResults.sql` with the result table creation query.
 
 The queries can then be run in any SQL client, making sure to run `ddlDqdResults.sql` first.
-The order of the check queries is not important, and can even be run in parallell.
+The order of the check queries is not important, and can even be run in parallel.
 This will run the check, and store the result in the specified `writeTableName`.
 In order to show this result in the DQD Dashboard Shiny app, this table has to be exported and converted to the .json format.
 See below for example code of how this can be achieved.
 
 # (OPTIONAL) Execute queries
 Below code snippet shows how you can run the generated queries on an OMOP CDM database using OHDSI R packages, and display the results in the DQD Dashboard.
-Note that this uses two non-exported DQD functions (`.summarizeResults`, `.writeResultsToJson`) that are not tested for this purpose.
+Note that this approach uses two non-exported DQD functions (`.summarizeResults`, `.writeResultsToJson`) that are not tested for this purpose. In the future we plan to expand support for incremental-insert mode with a more robust set of public functions.  Please reach out with feedback on our [GitHub page](https://github.com/OHDSI/DataQualityDashboard/issues) if you'd like to have input on the development of this new feature!
 
 ```R
 library(DatabaseConnector)
 cdmSourceName <- "<YourSourceName>"
-sqlFolder <- "./results_sql"
+sqlFolder <- "./results_sql_only"
 jsonOutputFolder <- sqlFolder
 jsonOutputFile <- "sql_only_results.json"
 
@@ -126,9 +133,9 @@ connectionDetails <- DatabaseConnector::createConnectionDetails(
   password = password,
   pathToDriver = pathToDriver
 )
-cdmDatabaseSchema <- 'cdm'
-resultsDatabaseSchema <- 'results'
-writeTableName <- 'dqd_results'
+cdmDatabaseSchema <- '<YourCdmSchemaName>'
+resultsDatabaseSchema <- '<YourResultsSchemaName>'
+writeTableName <- 'dqd_results' # or whatever you want to name your results table
 
 c <- DatabaseConnector::connect(connectionDetails)
 
@@ -148,12 +155,19 @@ for (dqdSqlFile in dqdSqlFiles) {
     next
   }
   print(dqdSqlFile)
-  DatabaseConnector::renderTranslateExecuteSql(
-    connection = c,
-    sql = readChar(dqdSqlFile, file.info(dqdSqlFile)$size),
-    cdmDatabaseSchema = cdmDatabaseSchema,
-    resultsDatabaseSchema = resultsDatabaseSchema,
-    writeTableName = writeTableName
+  tryCatch(
+    expr = {
+      DatabaseConnector::renderTranslateExecuteSql(
+        connection = c,
+        sql = readChar(dqdSqlFile, file.info(dqdSqlFile)$size),
+        cdmDatabaseSchema = cdmDatabaseSchema,
+        resultsDatabaseSchema = resultsDatabaseSchema,
+        writeTableName = writeTableName
+      )
+    },
+    error = function(e) {
+     print(sprintf("Writing table failed for check %s with error %s", dqdSqlFile, e$message))
+    }
   )
 }
 
@@ -164,9 +178,13 @@ checkResults <- DatabaseConnector::querySql(
     "SELECT * FROM @resultsDatabaseSchema.@writeTableName",
     resultsDatabaseSchema = resultsDatabaseSchema,
     writeTableName = writeTableName
-  )
+  ),
+  snakeCaseToCamelCase = TRUE
 )
 DatabaseConnector::disconnect(c)
+
+# convert check ID column name to correct format
+colnames(checkResults)[colnames(checkResults) == "checkid"] ="checkId"
 
 # Get overview of DQD results
 library(DataQualityDashboard)
@@ -176,10 +194,20 @@ overview <- DataQualityDashboard:::.summarizeResults(checkResults = checkResults
 result <- list(
   startTimestamp = Sys.time(),
   endTimestamp = Sys.time(),
-  executionTime = 0,
-  metadata = data.frame(
-    dqdVersion = as.character(packageVersion("DataQualityDashboard")),
-    cdmSourceName = cdmSourceName
+  executionTime = "",
+  Metadata = data.frame(
+    cdmSourceName = cdmSourceName,
+    cdmSourceAbbreviation = cdmSourceName,
+    cdmHolder = "",
+    sourceDescription = "",
+    sourceDocumentationReference = "",
+    cdmEtlReference = "",
+    sourceReleaseDate = "",
+    cdmReleaseDate = "",
+    cdmVersion = cdmVersion,
+    cdmVersionConceptId = 0,
+    vocabularyVersion = "",
+    dqdVersion = as.character(packageVersion("DataQualityDashboard"))
   ),
   Overview = overview,
   CheckResults = checkResults
@@ -187,4 +215,6 @@ result <- list(
 
 DataQualityDashboard:::.writeResultsToJson(result, jsonOutputFolder, jsonOutputFile)
 
-DataQualityDashboard::viewDqDashboard(file.path(jsonOutputFolder, jsonOutputFile))
+jsonFilePath <- R.utils::getAbsolutePath(file.path(jsonOutputFolder, jsonOutputFile))
+DataQualityDashboard::viewDqDashboard(jsonFilePath)
+```
