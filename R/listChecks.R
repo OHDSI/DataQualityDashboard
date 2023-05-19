@@ -37,57 +37,20 @@ listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default",
       )
     )
 
+  dqChecks$tableChecks <- .readThresholdFile(
+    checkThresholdLoc = tableCheckThresholdLoc,
+    defaultLoc = sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion)
+  )
 
-  if (tableCheckThresholdLoc == "default") {
-    dqChecks$tableChecks <-
-      read_csv(
-        system.file(
-          "csv",
-          sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion),
-          package = "DataQualityDashboard"
-        ),
-        na = c(" ", "")
-      )
-  } else {
-    dqChecks$tableChecks <- read_csv(
-      tableCheckThresholdLoc,
-      na = c(" ", "")
-    )
-  }
+  dqChecks$fieldChecks <- .readThresholdFile(
+    checkThresholdLoc = fieldCheckThresholdLoc,
+    defaultLoc = sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion)
+  )
 
-  if (fieldCheckThresholdLoc == "default") {
-    dqChecks$fieldChecks <-
-      read_csv(
-        system.file(
-          "csv",
-          sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
-          package = "DataQualityDashboard"
-        ),
-        na = c(" ", "")
-      )
-  } else {
-    dqChecks$fieldChecks <- read_csv(
-      fieldCheckThresholdLoc,
-      na = c(" ", "")
-    )
-  }
-
-  if (conceptCheckThresholdLoc == "default") {
-    dqChecks$conceptChecks <-
-      read_csv(
-        system.file(
-          "csv",
-          sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion),
-          package = "DataQualityDashboard"
-        ),
-        na = c(" ", "")
-      )
-  } else {
-    dqChecks$conceptChecks <- read_csv(
-      conceptCheckThresholdLoc,
-      na = c(" ", "")
-    )
-  }
+  dqChecks$conceptChecks <- .readThresholdFile(
+    checkThresholdLoc = conceptCheckThresholdLoc,
+    defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion)
+  )
 
   return(dqChecks)
 }

@@ -5,7 +5,7 @@ FIELD_IS_NOT_NULLABLE
 For each table, check that the fields in which IS_NOT_NULLABLE == TRUE, there are no null values in that field.
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
@@ -31,7 +31,7 @@ FROM (
 		SELECT 
 		  '@cdmTableName.@cdmFieldName' AS violating_field, 
 		  cdmTable.* 
-		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		FROM @schema.@cdmTableName cdmTable
 		  {@cohort & '@runForCohort' == 'Yes'}?{
       	JOIN @cohortDatabaseSchema.@cohortTableName c
       	ON cdmTable.person_id = c.subject_id
@@ -44,7 +44,7 @@ FROM (
 ( 
 	SELECT 
 	  COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+	FROM @schema.@cdmTableName cdmTable
 	  {@cohort & '@runForCohort' == 'Yes'}?{
     	JOIN @cohortDatabaseSchema.@cohortTableName c 
     	ON cdmTable.person_id = c.subject_id

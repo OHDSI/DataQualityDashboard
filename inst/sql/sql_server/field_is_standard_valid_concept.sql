@@ -5,7 +5,7 @@ FIELD_IS_STANDARD_VALID_CONCEPT
 all standard concept id fields are standard and valid
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 vocabDatabaseSchema = @vocabDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
@@ -33,7 +33,7 @@ FROM
 		SELECT 
 			'@cdmTableName.@cdmFieldName' AS violating_field, 
 			cdmTable.* 
-		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		FROM @schema.@cdmTableName cdmTable
 			{@cohort & '@runForCohort' == 'Yes'}?{
   			JOIN @cohortDatabaseSchema.@cohortTableName c 
   			ON cdmTable.person_id = c.subject_id
@@ -49,7 +49,7 @@ FROM
 ( 
 	SELECT 
 		COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+	FROM @schema.@cdmTableName cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
   		JOIN @cohortDatabaseSchema.@cohortTableName c 
   		ON cdmTable.person_id = c.subject_id

@@ -15,20 +15,28 @@
 # limitations under the License.
 
 .readThresholdFile <- function(checkThresholdLoc, defaultLoc) {
+  thresholdFile <- checkThresholdLoc
+
   if (checkThresholdLoc == "default") {
-    result <- read_csv(
-      file = system.file(
-        "csv",
-        defaultLoc,
-        package = "DataQualityDashboard"
-      ),
-      na = c(" ", "")
-    )
-  } else {
-    result <- read_csv(
-      file = checkThresholdLoc,
-      na = c(" ", "")
+    thresholdFile <- system.file(
+      "csv",
+      defaultLoc,
+      package = "DataQualityDashboard"
     )
   }
+
+  colspec <- readr::spec_csv(thresholdFile)
+
+  # plausibleUnitConceptIds is a comma-separated list of concept ids, but it is being interpreted as col_double()
+  if ("plausibleUnitConceptIds" %in% names(colspec$cols)) {
+    colspec$cols$plausibleUnitConceptIds <- readr::col_character()
+  }
+
+  result <- read_csv(
+    file = thresholdFile,
+    col_types = colspec,
+    na = c(" ", "")
+  )
+  result <- as.data.frame(result)
   return(result)
 }

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
       </span>
     </div>
 
@@ -106,6 +106,7 @@
 <span>  checkNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  cohortDefinitionId <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
+<span>  cohortTableName <span class="op">=</span> <span class="st">"cohort"</span>,</span>
 <span>  tablesToExclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CONCEPT"</span>, <span class="st">"VOCABULARY"</span>, <span class="st">"CONCEPT_ANCESTOR"</span>,</span>
 <span>    <span class="st">"CONCEPT_RELATIONSHIP"</span>, <span class="st">"CONCEPT_CLASS"</span>, <span class="st">"CONCEPT_SYNONYM"</span>, <span class="st">"RELATIONSHIP"</span>, <span class="st">"DOMAIN"</span><span class="op">)</span>,</span>
 <span>  cdmVersion <span class="op">=</span> <span class="st">"5.3"</span>,</span>
@@ -182,12 +183,16 @@
 
 
 <dt>cohortDefinitionId</dt>
-<dd><p>The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
+<dd><p>The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table
 with the fields cohort_definition_id and subject_id.</p></dd>
 
 
 <dt>cohortDatabaseSchema</dt>
 <dd><p>The schema where the cohort table is located.</p></dd>
+
+
+<dt>cohortTableName</dt>
+<dd><p>The name of the cohort table. Defaults to `cohort`.</p></dd>
 
 
 <dt>tablesToExclude</dt>
@@ -229,7 +234,7 @@ with the fields cohort_definition_id and subject_id.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

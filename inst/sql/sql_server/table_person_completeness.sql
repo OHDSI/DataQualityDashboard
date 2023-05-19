@@ -5,7 +5,7 @@ MEASURE_PERSON_COMPLETENESS
 Determine what #/% of persons have at least one record in the cdmTable
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 cdmTableName = @cdmTableName
 {@cohort & '@runForCohort' == 'Yes'}?{
 cohortDefinitionId = @cohortDefinitionId
@@ -37,7 +37,7 @@ FROM
     		ON cdmTable.person_id = c.subject_id
     		AND c.cohort_definition_id = @cohortDefinitionId
     	}
-			LEFT JOIN @cdmDatabaseSchema.@cdmTableName cdmTable2 
+			LEFT JOIN @schema.@cdmTableName cdmTable2 
 			ON cdmTable.person_id = cdmTable2.person_id
 		WHERE cdmTable2.person_id IS NULL
 		/*violatedRowsEnd*/

@@ -4,7 +4,7 @@ FIELD LEVEL check:
 CDM_FIELD - verify the field exists
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 
@@ -24,7 +24,7 @@ FROM (
         WHEN COUNT_BIG(@cdmFieldName) = 0 THEN 0
         ELSE 0
       END AS num_violated_rows
-    FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+    FROM @schema.@cdmTableName cdmTable
     ) violated_rows
 ) violated_row_count,
 ( 

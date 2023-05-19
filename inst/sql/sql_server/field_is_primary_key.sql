@@ -5,7 +5,7 @@ FIELD_IS_PRIMARY_KEY
 Primary Key - verify those fields where IS_PRIMARY_KEY == Yes, the values in that field are unique
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
@@ -33,7 +33,7 @@ FROM
 		SELECT 
 			'@cdmTableName.@cdmFieldName' AS violating_field, 
 			cdmTable.* 
-		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		FROM @schema.@cdmTableName cdmTable
 			{@cohort & '@runForCohort' == 'Yes'}?{
   			JOIN @cohortDatabaseSchema.@cohortTableName c 
   			ON cdmTable.person_id = c.subject_id
@@ -42,7 +42,7 @@ FROM
 		WHERE cdmTable.@cdmFieldName IN ( 
 			SELECT 
 			  @cdmFieldName 
-		  FROM @cdmDatabaseSchema.@cdmTableName
+		  FROM @schema.@cdmTableName
 			GROUP BY @cdmFieldName
 			HAVING COUNT_BIG(*) > 1 
 		)
@@ -52,7 +52,7 @@ FROM
 ( 
 	SELECT 
 		COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+	FROM @schema.@cdmTableName cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
 			JOIN @cohortDatabaseSchema.@cohortTableName c 
 			ON cdmTable.person_id = c.subject_id
