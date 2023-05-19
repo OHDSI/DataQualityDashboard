@@ -25,8 +25,8 @@
 #' @param numThreads                The number of concurrent threads to use to execute the queries
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
-#' @param sqlOnlyUnionCount         (OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.
-#' @param sqlOnlyIncrementalInsert  (OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)
+#' @param sqlOnlyUnionCount         (OPTIONAL) In sqlOnlyIncrementalInsert mode, how many SQL commands to union in each query to insert into results table (can speed processing when queries done in parallel). Default is 1.
+#' @param sqlOnlyIncrementalInsert  (OPTIONAL) In sqlOnly mode, boolean to determine whether to generate SQL queries that insert check results and associated metadata into results database table.  Default is FALSE (for backwards compatibility to <= v2.2.0)
 #' @param outputFolder              The folder to output logs, SQL files, and JSON results file to
 #' @param outputFile                (OPTIONAL) File to write results JSON object
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default is FALSE
