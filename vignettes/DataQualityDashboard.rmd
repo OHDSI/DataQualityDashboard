@@ -73,7 +73,7 @@ sqlOnlyUnionCount <- 1  # in sqlOnlyIncrementalInsert mode, the number of check 
 #        pathToDriver = "/"
 #      )
 # 2. Since these are fully functional queries, this can help with debugging.
-# 3. In the results output by the sqlOnlyIncrementalInsert queries, placeholders are populated for execution_time and query_text, and the NOT_APPLICABLE rules are not applied.
+# 3. In the results output by the sqlOnlyIncrementalInsert queries, placeholders are populated for execution_time, query_text, and warnings/errors; and the NOT_APPLICABLE rules are not applied.
 # 4. In order to use the generated SQL to insert metadata and check results into output table, you must set sqlOnlyIncrementalInsert = TRUE.  Otherwise sqlOnly is backwards compatable with <= v2.2.0, generating queries which run the checks but don't store the results.
 
 
