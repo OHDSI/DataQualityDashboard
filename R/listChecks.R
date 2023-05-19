@@ -34,23 +34,23 @@ listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default",
       "csv",
       sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion),
       package = "DataQualityDashboard"
-      )
     )
-
+    )
+  
   dqChecks$tableChecks <- .readThresholdFile(
     checkThresholdLoc = tableCheckThresholdLoc,
     defaultLoc = sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion)
   )
-
+  
   dqChecks$fieldChecks <- .readThresholdFile(
     checkThresholdLoc = fieldCheckThresholdLoc,
     defaultLoc = sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion)
   )
-
+  
   dqChecks$conceptChecks <- .readThresholdFile(
     checkThresholdLoc = conceptCheckThresholdLoc,
     defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion)
   )
-
+  
   return(dqChecks)
 }

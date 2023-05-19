@@ -104,7 +104,7 @@ DataQualityDashboard is being developed in R Studio.
 
 ### Development status
 
-V2.0 ready for use. 
+DataQualityDashboard latest release (representing code in the `main` branch) is ready for use. 
 
 # Acknowledgements
 - This project is supported in part through the National Science Foundation grant IIS 1251151.
