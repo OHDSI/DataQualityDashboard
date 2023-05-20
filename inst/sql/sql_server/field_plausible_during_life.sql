@@ -19,7 +19,7 @@ SELECT
         WHEN denominator.num_rows = 0 THEN 0 
         ELSE 1.0*num_violated_rows/denominator.num_rows
     END AS pct_violated_rows, 
-  	denominator.num_rows AS num_denominator_rows
+    denominator.num_rows AS num_denominator_rows
 FROM
 (
     SELECT 
@@ -36,7 +36,8 @@ FROM
                 ON cdmTable.person_id = c.subject_id
                 AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
         }
-        JOIN @cdmDatabaseSchema.death de ON cdmTable.person_id = de.person_id
+        JOIN @cdmDatabaseSchema.death de 
+            ON cdmTable.person_id = de.person_id
         WHERE cast(cdmTable.@cdmFieldName AS DATE) > DATEADD(day, 60, cast(de.death_date AS DATE))
         /*violatedRowsEnd*/
     ) violated_rows
@@ -50,7 +51,7 @@ FROM
             ON cdmTable.person_id = c.subject_id
             AND c.cohort_definition_id = @cohortDefinitionId
     }
-    JOIN @cdmDatabaseSchema.death
-        ON death.person_id = cdmTable.person_id
+    JOIN @cdmDatabaseSchema.death de
+        ON cdmTable.person_id = de.person_id
 ) denominator
 ;
