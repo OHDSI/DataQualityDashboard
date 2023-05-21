@@ -23,6 +23,7 @@
 #' @param ...            Extra parameters for shiny::runApp() like "port" or "host"
 #'
 #' @importFrom utils menu install.packages
+#' @importFrom jsonlite toJSON parse_json
 #'
 #' @export
 viewDqDashboard <- function(jsonPath, launch.browser = NULL, display.mode = NULL, ...) {

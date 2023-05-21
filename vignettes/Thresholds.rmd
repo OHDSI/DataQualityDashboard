@@ -30,7 +30,7 @@ A default set of failure thresholds are shipped with the package. Many of these 
 
 ## DQD Control Files
 
-There is a set of three csv files that underly the DQD. These files indicate which checks should be run and what their failure thresholds should be. There is one file per check level: TABLE, FIELD, and CONCEPT. This vignette will walk through how to update the field level check thresholds but the process is the same for all three files. 
+There is a set of three csv files that underlie the DQD. These files indicate which checks should be run and what their failure thresholds should be. There is one file per check level: TABLE, FIELD, and CONCEPT. This vignette will walk through how to update the field level check thresholds but the process is the same for all three files. 
 
 ### Step 1: Find and copy the control files
 

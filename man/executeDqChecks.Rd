@@ -12,6 +12,8 @@ executeDqChecks(
   cdmSourceName,
   numThreads = 1,
   sqlOnly = FALSE,
+  sqlOnlyUnionCount = 1,
+  sqlOnlyIncrementalInsert = FALSE,
   outputFolder,
   outputFile = "",
   verboseMode = FALSE,
@@ -47,6 +49,10 @@ executeDqChecks(
 
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
 
+\item{sqlOnlyUnionCount}{(OPTIONAL) In sqlOnlyIncrementalInsert mode, how many SQL commands to union in each query to insert check results into results table (can speed processing when queries done in parallel). Default is 1.}
+
+\item{sqlOnlyIncrementalInsert}{(OPTIONAL) In sqlOnly mode, boolean to determine whether to generate SQL queries that insert check results and associated metadata into results table.  Default is FALSE (for backwards compatibility to <= v2.2.0)}
+
 \item{outputFolder}{The folder to output logs, SQL files, and JSON results file to}
 
 \item{outputFile}{(OPTIONAL) File to write results JSON object}
@@ -55,7 +61,7 @@ executeDqChecks(
 
 \item{writeToTable}{Boolean to indicate if the check results will be written to the dqdashboard_results table in the resultsDatabaseSchema. Default is TRUE}
 
-\item{writeTableName}{The name of the results table. Defaults to `dqdashboard_results`.}
+\item{writeTableName}{The name of the results table. Defaults to `dqdashboard_results`.  Used when sqlOnly or writeToTable is True.}
 
 \item{writeToCsv}{Boolean to indicate if the check results will be written to a csv file. Default is FALSE}
 

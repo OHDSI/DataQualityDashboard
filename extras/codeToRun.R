@@ -37,7 +37,8 @@ cdmVersion <- "5.4" # the CDM version you are targetting. Currently supporst 5.2
 numThreads <- 1 # on Redshift, 3 seems to work well
 
 # specify if you want to execute the queries or inspect them ------------------------------------------
-sqlOnly <- FALSE # set to TRUE if you just want to get the SQL scripts and not actually run the queries
+sqlOnly <- FALSE # set to TRUE if you just want to get the SQL scripts and not actually run the queries.  See codeToRun_sqlOnly.R for other sqlOnly parameters
+
 
 # where should the results and logs go? ----------------------------------------------------------------
 outputFolder <- "output"

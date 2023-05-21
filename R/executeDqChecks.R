@@ -25,11 +25,13 @@
 #' @param numThreads                The number of concurrent threads to use to execute the queries
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
+#' @param sqlOnlyUnionCount         (OPTIONAL) In sqlOnlyIncrementalInsert mode, how many SQL commands to union in each query to insert check results into results table (can speed processing when queries done in parallel). Default is 1.
+#' @param sqlOnlyIncrementalInsert  (OPTIONAL) In sqlOnly mode, boolean to determine whether to generate SQL queries that insert check results and associated metadata into results table.  Default is FALSE (for backwards compatibility to <= v2.2.0)
 #' @param outputFolder              The folder to output logs, SQL files, and JSON results file to
 #' @param outputFile                (OPTIONAL) File to write results JSON object
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default is FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table in the resultsDatabaseSchema. Default is TRUE
-#' @param writeTableName            The name of the results table. Defaults to `dqdashboard_results`.
+#' @param writeTableName            The name of the results table. Defaults to `dqdashboard_results`.  Used when sqlOnly or writeToTable is True.
 #' @param writeToCsv                Boolean to indicate if the check results will be written to a csv file. Default is FALSE
 #' @param csvFile                   (OPTIONAL) CSV file to write results
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
@@ -64,6 +66,8 @@ executeDqChecks <- function(connectionDetails,
                             cdmSourceName,
                             numThreads = 1,
                             sqlOnly = FALSE,
+                            sqlOnlyUnionCount = 1,
+                            sqlOnlyIncrementalInsert = FALSE,
                             outputFolder,
                             outputFile = "",
                             verboseMode = FALSE,
@@ -93,6 +97,8 @@ executeDqChecks <- function(connectionDetails,
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
+  stopifnot(is.numeric(sqlOnlyUnionCount) && sqlOnlyUnionCount > 0)
+  stopifnot(is.logical(sqlOnlyIncrementalInsert))
   stopifnot(is.character(cohortDatabaseSchema), is.character(cohortTableName))
 
   if (!all(checkLevels %in% c("TABLE", "FIELD", "CONCEPT"))) {
@@ -128,7 +134,10 @@ executeDqChecks <- function(connectionDetails,
     metadata$dqdVersion <- as.character(packageVersion("DataQualityDashboard"))
     DatabaseConnector::disconnect(connection)
   } else {
-    metadata <- NA
+    metadata <- data.frame(
+      dqdVersion = as.character(packageVersion("DataQualityDashboard")),
+      cdmSourceName = cdmSourceName
+    )
   }
 
   # Setup output folder ------------------------------------------------------------------------------------------------------------
@@ -259,10 +268,14 @@ executeDqChecks <- function(connectionDetails,
     connection,
     cdmDatabaseSchema,
     vocabDatabaseSchema,
+    resultsDatabaseSchema,
+    writeTableName,
     cohortDatabaseSchema,
     cohortTableName,
     cohortDefinitionId,
     outputFolder,
+    sqlOnlyUnionCount,
+    sqlOnlyIncrementalInsert,
     sqlOnly,
     progressBar = TRUE
   )
@@ -310,8 +323,9 @@ executeDqChecks <- function(connectionDetails,
     .writeResultsToJson(allResults, outputFolder, outputFile)
 
     ParallelLogger::logInfo("Execution Complete")
+  } else {
+    .writeDDL(resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder)
   }
-
 
   # write to table ----------------------------------------------------------------------
 
