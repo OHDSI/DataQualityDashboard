@@ -25,8 +25,8 @@ devtools::document()
 
 # Create manual and vignettes:
 unlink("extras/DataQualityDashboard.pdf")
-shell("R CMD Rd2pdf ./ --output=extras/DataQualityDashboard.pdf")
-# on Mac: system("R CMD Rd2pdf ./ --output=extras/DataQualityDashboard.pdf")
+shell("R CMD Rd2pdf ./ --output=extras/DataQualityDashboard.pdf") # PC
+system("R CMD Rd2pdf ./ --output=extras/DataQualityDashboard.pdf") # Mac
 
 rmarkdown::render("vignettes/AddNewCheck.Rmd",
                   output_file = "../inst/doc/AddNewCheck.pdf",

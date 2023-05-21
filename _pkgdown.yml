@@ -59,3 +59,7 @@ reference:
     desc: > 
       Function to write the JSON results to a csv file
     contents: writeJsonResultsToCsv
+  - title: "Convert results JSON file case"
+    desc: > 
+      Function to convert the case of a results JSON file between snakecase and camelcase
+    contents: convertJsonResultsFileCase

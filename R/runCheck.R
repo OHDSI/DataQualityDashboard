@@ -51,7 +51,7 @@
                       cohortDatabaseSchema,
                       cohortTableName,
                       cohortDefinitionId,
-                      outputFolder, 
+                      outputFolder,
                       sqlOnlyUnionCount,
                       sqlOnlyIncrementalInsert,
                       sqlOnly) {
@@ -94,14 +94,15 @@
 
       if (sqlOnly && sqlOnlyIncrementalInsert) {
         checkQuery <- .createSqlOnlyQueries(
-          params, 
-          check, 
-          tableChecks, 
-          fieldChecks, 
-          conceptChecks, 
-          sql, 
-          connectionDetails, 
-          checkDescription)
+          params,
+          check,
+          tableChecks,
+          fieldChecks,
+          conceptChecks,
+          sql,
+          connectionDetails,
+          checkDescription
+        )
         data.frame(query = checkQuery)
       } else if (sqlOnly) {
         write(x = sql, file = file.path(
@@ -120,9 +121,9 @@
         )
       }
     })
-    
+
     dfs <- do.call(rbind, dfs)
-    
+
     if (sqlOnlyIncrementalInsert) {
       sqlToUnion <- dfs$query
       if (length(sqlToUnion) > 0) {
@@ -131,7 +132,6 @@
     } else {
       dfs
     }
-
   } else {
     ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
     data.frame()

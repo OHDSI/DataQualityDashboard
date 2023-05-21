@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.3.0</span>
       </span>
     </div>
 
@@ -51,6 +51,9 @@
     </li>
     <li>
       <a href="../articles/DqdForCohorts.html">Running the DQD on a Cohort</a>
+    </li>
+    <li>
+      <a href="../articles/SqlOnly.html">SqlOnly</a>
     </li>
     <li>
       <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
@@ -95,6 +98,8 @@
 <span>  <span class="va">cdmSourceName</span>,</span>
 <span>  numThreads <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  sqlOnly <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  sqlOnlyUnionCount <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  sqlOnlyIncrementalInsert <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">outputFolder</span>,</span>
 <span>  outputFile <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  verboseMode <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -146,6 +151,14 @@
 <dd><p>Should the SQLs be executed (FALSE) or just returned (TRUE)?</p></dd>
 
 
+<dt>sqlOnlyUnionCount</dt>
+<dd><p>(OPTIONAL) In sqlOnlyIncrementalInsert mode, how many SQL commands to union in each query to insert check results into results table (can speed processing when queries done in parallel). Default is 1.</p></dd>
+
+
+<dt>sqlOnlyIncrementalInsert</dt>
+<dd><p>(OPTIONAL) In sqlOnly mode, boolean to determine whether to generate SQL queries that insert check results and associated metadata into results table.  Default is FALSE (for backwards compatibility to &lt;= v2.2.0)</p></dd>
+
+
 <dt>outputFolder</dt>
 <dd><p>The folder to output logs, SQL files, and JSON results file to</p></dd>
 
@@ -163,7 +176,7 @@
 
 
 <dt>writeTableName</dt>
-<dd><p>The name of the results table. Defaults to `dqdashboard_results`.</p></dd>
+<dd><p>The name of the results table. Defaults to `dqdashboard_results`.  Used when sqlOnly or writeToTable is True.</p></dd>
 
 
 <dt>writeToCsv</dt>

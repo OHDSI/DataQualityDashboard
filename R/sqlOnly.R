@@ -29,7 +29,7 @@
 
 #' @noRd
 #' @keywords internal
-#' 
+#'
 .createSqlOnlyQueries <- function(
     params,
     check,
@@ -38,10 +38,9 @@
     conceptChecks,
     sql,
     connectionDetails,
-    checkDescription
-) {
+    checkDescription) {
   resultShell <- .recordResult(check = check, checkDescription = checkDescription, sql = sql)
-  
+
   resultShell$queryText <- gsub(";", "", resultShell$queryText)
   resultShell$checkDescription <- gsub("\t", " ", gsub("\r", " ", gsub("\n", " ", gsub("'", "''", resultShell$checkDescription))))
 
@@ -53,11 +52,11 @@
     cdmFieldName = resultShell$cdmFieldName,
     conceptId = resultShell$conceptId,
     unitConceptId = resultShell$unitConceptId,
-    tableChecks = tableChecks, 
+    tableChecks = tableChecks,
     fieldChecks = fieldChecks,
     conceptChecks = conceptChecks
   )
-  
+
   # Generate the wrapping query for the desired check. This creates a final row for insertion that includes nearly all the metadata for the query (in addition to calling the check query itself)
   # The only metadata that are not included in this wrapping query include:
   # 1. execution_time -- since this query is not being executed (only the SQL is generated), execution_time is not available
@@ -87,11 +86,11 @@
   )
 
   return(checkQuery)
-  }
+}
 
 
 #' Internal function to write queries when running in sqlOnly mode
-#' 
+#'
 #' @param sqlToUnion                List of one or more SQL queries to union
 #' @param sqlOnlyUnionCount         Value of @sqlOnlyUnionCount - determines max # of sql queries to union in a single cte
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
@@ -102,18 +101,17 @@
 
 #' @noRd
 #' @keywords internal
-#' 
+#'
 .writeSqlOnlyQueries <- function(
-  sqlToUnion,
-  sqlOnlyUnionCount,
-  resultsDatabaseSchema,
-  writeTableName,
-  dbms,
-  outputFolder,
-  checkDescription
-) {
-  outFile <-file.path(
-    outputFolder, 
+    sqlToUnion,
+    sqlOnlyUnionCount,
+    resultsDatabaseSchema,
+    writeTableName,
+    dbms,
+    outputFolder,
+    checkDescription) {
+  outFile <- file.path(
+    outputFolder,
     sprintf("%s_%s.sql", checkDescription$checkLevel, checkDescription$checkName)
   )
 
@@ -123,9 +121,9 @@
   ustart <- 1
   while (ustart <= length(sqlToUnion)) {
     uend <- min(ustart + sqlOnlyUnionCount - 1, length(sqlToUnion))
-    
-    sqlUnioned <- paste(sqlToUnion[ustart:uend], collapse=' UNION ALL ')
-    
+
+    sqlUnioned <- paste(sqlToUnion[ustart:uend], collapse = " UNION ALL ")
+
     # Generate INSERT commands to insert results + metadata into results table
     sql <- SqlRender::loadRenderTranslateSql(
       sqlFilename = file.path("sqlOnly", "insert_ctes_into_result_table.sql"),
@@ -135,13 +133,13 @@
       tableName = writeTableName,
       queryText = sqlUnioned
     )
-    
+
     write(
       x = sql,
       file = outFile,
       append = TRUE
     )
-    
+
     ustart <- ustart + sqlOnlyUnionCount
   }
 }
@@ -160,8 +158,7 @@
     resultsDatabaseSchema,
     writeTableName,
     dbms,
-    outputFolder
-) {
+    outputFolder) {
   tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)
 
   sql <- SqlRender::loadRenderTranslateSql(
@@ -170,11 +167,11 @@
     dbms = dbms,
     tableName = tableName
   )
-  
+
   write(
     x = sql,
     file = file.path(
-      outputFolder, 
+      outputFolder,
       "ddlDqdResults.sql"
     )
   )
@@ -205,59 +202,66 @@
     unitConceptId,
     tableChecks,
     fieldChecks,
-    conceptChecks
-) {
+    conceptChecks) {
   thresholdField <- sprintf("%sThreshold", checkName)
-  
+
   # find if field exists -----------------------------------------------
   thresholdFieldExists <- eval(parse(
-    text = sprintf("'%s' %%in%% colnames(%sChecks)", 
-                   thresholdField, 
-                   tolower(checkLevel)
-    )))
-  
+    text = sprintf(
+      "'%s' %%in%% colnames(%sChecks)",
+      thresholdField,
+      tolower(checkLevel)
+    )
+  ))
+
   if (!thresholdFieldExists) {
     thresholdValue <- NA
   } else {
     if (checkLevel == "TABLE") {
-      thresholdFilter <- sprintf("tableChecks$%s[tableChecks$cdmTableName == '%s']",
-                                 thresholdField, cdmTableName)
-      
+      thresholdFilter <- sprintf(
+        "tableChecks$%s[tableChecks$cdmTableName == '%s']",
+        thresholdField, cdmTableName
+      )
     } else if (checkLevel == "FIELD") {
-      thresholdFilter <- sprintf("fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
+      thresholdFilter <- sprintf(
+        "fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
                                 fieldChecks$cdmFieldName == '%s']",
-                                 thresholdField, 
-                                 cdmTableName,
-                                 cdmFieldName)
+        thresholdField,
+        cdmTableName,
+        cdmFieldName
+      )
     } else if (checkLevel == "CONCEPT") {
       if (is.na(unitConceptId)) {
-        thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+        thresholdFilter <- sprintf(
+          "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
                                   conceptChecks$conceptId == %s]",
-                                   thresholdField, 
-                                   cdmTableName,
-                                   cdmFieldName,
-                                   conceptId)
+          thresholdField,
+          cdmTableName,
+          cdmFieldName,
+          conceptId
+        )
       } else {
-        thresholdFilter <- sprintf("conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+        thresholdFilter <- sprintf(
+          "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
                                   conceptChecks$conceptId == %s &
                                   conceptChecks$unitConceptId == '%s']",
-                                   thresholdField, 
-                                   cdmTableName,
-                                   cdmFieldName,
-                                   conceptId,
-                                   as.integer(unitConceptId))
+          thresholdField,
+          cdmTableName,
+          cdmFieldName,
+          conceptId,
+          as.integer(unitConceptId)
+        )
       }
     }
     thresholdValue <- eval(parse(text = thresholdFilter))
   }
-  
+
   # Need value of 0 for NA in generated SQL
   if (is.na(thresholdValue)) {
     thresholdValue <- 0
   }
-  
+
   thresholdValue
 }
-    

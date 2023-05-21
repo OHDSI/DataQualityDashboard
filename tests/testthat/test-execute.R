@@ -301,11 +301,11 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=4 and sqlO
 
   dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
   sql <- SqlRender::readSql(dqdSqlFilePath)
-  
+
   # comparison
-  expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=4-insert.sql", package="DataQualityDashboard")
+  expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=4-insert.sql", package = "DataQualityDashboard")
   sqlExpected <- SqlRender::readSql(expectedSqlFile)
-  
+
   # test if identical, removing comments and excess whitespace
   expect_equal(remove_sql_comments(sql), remove_sql_comments(sqlExpected))
 })
@@ -337,11 +337,11 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
 
   dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
   sql <- SqlRender::readSql(dqdSqlFilePath)
-  
+
   # comparison
-  expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=1-insert.sql", package="DataQualityDashboard")
+  expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=1-insert.sql", package = "DataQualityDashboard")
   sqlExpected <- SqlRender::readSql(expectedSqlFile)
-  
+
   # test if identical, removing comments and excess whitespace
   expect_equal(remove_sql_comments(sql), remove_sql_comments(sqlExpected))
 })
@@ -373,11 +373,11 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
 
   dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
   sql <- SqlRender::readSql(dqdSqlFilePath)
-  
+
   # comparison
-  expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=1-legacy.sql", package="DataQualityDashboard")
+  expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=1-legacy.sql", package = "DataQualityDashboard")
   sqlExpected <- SqlRender::readSql(expectedSqlFile)
-  
+
   # test if identical, removing comments and excess whitespace
   expect_equal(remove_sql_comments(sql), remove_sql_comments(sqlExpected))
 })
