@@ -273,7 +273,7 @@ executeDqChecks <- function(connectionDetails,
     cohortDatabaseSchema,
     cohortTableName,
     cohortDefinitionId,
-    outputFolder, 
+    outputFolder,
     sqlOnlyUnionCount,
     sqlOnlyIncrementalInsert,
     sqlOnly,
@@ -321,12 +321,12 @@ executeDqChecks <- function(connectionDetails,
     }
 
     .writeResultsToJson(allResults, outputFolder, outputFile)
-    
-    ParallelLogger::logInfo("Execution Complete")  
+
+    ParallelLogger::logInfo("Execution Complete")
   } else {
     .writeDDL(resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder)
   }
-  
+
   # write to table ----------------------------------------------------------------------
 
   if (!sqlOnly && writeToTable) {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/convertResultsCase.R
 \name{convertJsonResultsFileCase}
 \alias{convertJsonResultsFileCase}
-\title{Convert a DQD JSON results file between camelcase and (all-caps) snakecase. Enables viewing of pre-v.2.1.0 results files in later DQD versions, and vice versa}
+\title{Convert JSON results file case}
 \usage{
 convertJsonResultsFileCase(
   jsonFilePath,

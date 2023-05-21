@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.3.0</span>
       </span>
     </div>
 
@@ -71,6 +71,9 @@
       <a href="../articles/DqdForCohorts.html">Running the DQD on a Cohort</a>
     </li>
     <li>
+      <a href="../articles/SqlOnly.html">SqlOnly</a>
+    </li>
+    <li>
       <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
     </li>
   </ul>
@@ -106,7 +109,7 @@
                         <h4 data-toc-skip class="author">Clair
 Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2023-05-05</h4>
+            <h4 data-toc-skip class="date">2023-05-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/Thresholds.rmd" class="external-link"><code>vignettes/Thresholds.rmd</code></a></small>
       <div class="hidden name"><code>Thresholds.rmd</code></div>
@@ -144,7 +147,7 @@ thresholds for different databases.</p>
 <div class="section level3">
 <h3 id="dqd-control-files">DQD Control Files<a class="anchor" aria-label="anchor" href="#dqd-control-files"></a>
 </h3>
-<p>There is a set of three csv files that underly the DQD. These files
+<p>There is a set of three csv files that underlie the DQD. These files
 indicate which checks should be run and what their failure thresholds
 should be. There is one file per check level: TABLE, FIELD, and CONCEPT.
 This vignette will walk through how to update the field level check

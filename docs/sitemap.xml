@@ -49,6 +49,9 @@
     <loc>/articles/GettingStarted.html</loc>
   </url>
   <url>
+    <loc>/articles/SqlOnly.html</loc>
+  </url>
+  <url>
     <loc>/articles/Thresholds.html</loc>
   </url>
   <url>
@@ -68,6 +71,9 @@
   </url>
   <url>
     <loc>/pull_request_template.html</loc>
+  </url>
+  <url>
+    <loc>/reference/convertJsonResultsFileCase.html</loc>
   </url>
   <url>
     <loc>/reference/dot-evaluateThresholds.html</loc>
