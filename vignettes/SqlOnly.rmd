@@ -24,7 +24,7 @@ output:
 
 # Description
 
-This article describes how to use DQD to generate only the SQL that executes all DataQualityDashoard checks, without actually executing them.
+This article describes how to use DQD to generate only the SQL that executes all DataQualityDashboard checks, without actually executing them.
 There are a few main advantages of running DQD in Sql-only mode:
 
 * Create queries locally, before sending to server. This allows for generation of the SQL on one machine and execution on another (e.g. when R cannot connect directly to the database server, or you want to run the DQD SQL as part of your ETL).
