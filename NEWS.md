@@ -78,6 +78,10 @@ This release includes:
 
   - The `outputFolder` parameter for the `executeDqChecks` function is now REQUIRED and no longer has a default value.  **This may be a breaking change for users who have not specified this parameter in their script to run DQD.**
 
+### Removal of measurement plausibility checks
+
+  - Most plausibleValueLow and plausibleValueHigh measurement values were removed from the concept check threshold files, due to feedback from the community that many of these ranges included plausible values and as such were causing unexpected check failures. An initiative is planned to reinterrogate these ranges and add them back once the team has higher confidence that they will only flag legitimately implausible values 
+
 ### Integrated testing was also added and the package was refactored on the backend
 
 DataQualityDashboard 1.4.1
