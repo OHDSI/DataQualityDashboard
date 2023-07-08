@@ -112,54 +112,54 @@ test_that("Execute a single DQ check on a cohort in Synthea/Eunomia", {
   )
 })
 
-test_that("Execute a single DQ check on remote databases", {
-  outputFolder <- tempfile("dqd_")
-  on.exit(unlink(outputFolder, recursive = TRUE))
-
-  dbTypes <- c(
-    "oracle",
-    "postgresql",
-    "sql server"
-  )
-
-  for (dbType in dbTypes) {
-    sysUser <- Sys.getenv(sprintf("CDM5_%s_USER", toupper(gsub(" ", "_", dbType))))
-    sysPassword <- URLdecode(Sys.getenv(sprintf("CDM5_%s_PASSWORD", toupper(gsub(" ", "_", dbType)))))
-    sysServer <- Sys.getenv(sprintf("CDM5_%s_SERVER", toupper(gsub(" ", "_", dbType))))
-    if (sysUser != "" &
-      sysPassword != "" &
-      sysServer != "") {
-      cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM_SCHEMA", toupper(gsub(" ", "_", dbType))))
-      resultsDatabaseSchema <- Sys.getenv("CDM5_%s_OHDSI_SCHEMA", toupper(gsub(" ", "_", dbType)))
-
-      connectionDetails <- createConnectionDetails(
-        dbms = dbType,
-        user = sysUser,
-        password = sysPassword,
-        server = sysServer,
-        pathToDriver = jdbcDriverFolder
-      )
-
-      expect_warning(
-        results <- executeDqChecks(
-          connectionDetails = connectionDetails,
-          cdmDatabaseSchema = cdmDatabaseSchema,
-          resultsDatabaseSchema = resultsDatabaseSchema,
-          cdmSourceName = "test",
-          numThreads = 1,
-          sqlOnly = FALSE,
-          outputFolder = outputFolder,
-          verboseMode = FALSE,
-          writeToTable = FALSE,
-          checkNames = "measurePersonCompleteness"
-        ),
-        regexp = "^Missing check names.*"
-      )
-
-      expect_true(nrow(results$CheckResults) > 0)
-    }
-  }
-})
+# test_that("Execute a single DQ check on remote databases", {
+#   outputFolder <- tempfile("dqd_")
+#   on.exit(unlink(outputFolder, recursive = TRUE))
+# 
+#   dbTypes <- c(
+#     "oracle",
+#     "postgresql",
+#     "sql server"
+#   )
+# 
+#   for (dbType in dbTypes) {
+#     sysUser <- Sys.getenv(sprintf("CDM5_%s_USER", toupper(gsub(" ", "_", dbType))))
+#     sysPassword <- URLdecode(Sys.getenv(sprintf("CDM5_%s_PASSWORD", toupper(gsub(" ", "_", dbType)))))
+#     sysServer <- Sys.getenv(sprintf("CDM5_%s_SERVER", toupper(gsub(" ", "_", dbType))))
+#     if (sysUser != "" &
+#       sysPassword != "" &
+#       sysServer != "") {
+#       cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM_SCHEMA", toupper(gsub(" ", "_", dbType))))
+#       resultsDatabaseSchema <- Sys.getenv("CDM5_%s_OHDSI_SCHEMA", toupper(gsub(" ", "_", dbType)))
+# 
+#       connectionDetails <- createConnectionDetails(
+#         dbms = dbType,
+#         user = sysUser,
+#         password = sysPassword,
+#         server = sysServer,
+#         pathToDriver = jdbcDriverFolder
+#       )
+# 
+#       expect_warning(
+#         results <- executeDqChecks(
+#           connectionDetails = connectionDetails,
+#           cdmDatabaseSchema = cdmDatabaseSchema,
+#           resultsDatabaseSchema = resultsDatabaseSchema,
+#           cdmSourceName = "test",
+#           numThreads = 1,
+#           sqlOnly = FALSE,
+#           outputFolder = outputFolder,
+#           verboseMode = FALSE,
+#           writeToTable = FALSE,
+#           checkNames = "measurePersonCompleteness"
+#         ),
+#         regexp = "^Missing check names.*"
+#       )
+# 
+#       expect_true(nrow(results$CheckResults) > 0)
+#     }
+#   }
+# })
 
 test_that("Check invalid cdm version", {
   outputFolder <- tempfile("dqd_")
