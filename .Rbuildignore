@@ -9,3 +9,4 @@ compare_versions
 .github
 docs
 ^LICENSE$
+^inst/doc/.*\.pdf$
