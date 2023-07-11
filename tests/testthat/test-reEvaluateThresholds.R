@@ -24,5 +24,6 @@ test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
     outputFolder = outputFolder,
     outputFile = "reEvaluated.txt"
   )
+
   expect_type(results2, "list")
 })
