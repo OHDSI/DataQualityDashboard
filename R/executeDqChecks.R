@@ -45,6 +45,8 @@
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
+#' @param runMode                   The run mode to determine if checks should be executed, failures captured, or failures cleansed. Default is "execute"
+#' @param captureDatabaseSchema     The fully qualified database name of the capture schema
 #'
 #' @return If sqlOnly = FALSE, a list object of results
 #'
@@ -79,12 +81,14 @@ executeDqChecks <- function(connectionDetails,
                             checkNames = c(),
                             cohortDefinitionId = c(),
                             cohortDatabaseSchema = resultsDatabaseSchema,
+                            captureDatabaseSchema = "",
                             cohortTableName = "cohort",
                             tablesToExclude = c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
                             cdmVersion = "5.3",
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
-                            conceptCheckThresholdLoc = "default") {
+                            conceptCheckThresholdLoc = "default",
+                            runMode = "execute") {
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!any(class(connectionDetails) %in% c("connectionDetails", "ConnectionDetails"))) {
     stop("connectionDetails must be an object of class 'connectionDetails' or 'ConnectionDetails'.")
@@ -106,6 +110,19 @@ executeDqChecks <- function(connectionDetails,
          You passed in ', paste(checkLevels, collapse = ", "))
   }
 
+  if (!runMode %in% c("execute","capture","cleanse")) {
+    stop('runMode argument must be one of the following: "execute", "capture", "cleanse"')
+  }
+  
+  if (runMode == "capture") {
+    if (captureDatabaseSchema=="") {
+      stop('When using runMode="capture" the captureDatabaseSchema parameter must be provided')  
+    }
+    if (captureDatabaseSchema == cdmDatabaseSchema) {
+      stop('runMode "capture" requires that the captureDatabaseSchema be unique from the cdmDatabaseSchema')
+    }
+  }
+    
   stopifnot(is.null(checkNames) | is.character(checkNames), is.null(tablesToExclude) | is.character(tablesToExclude))
   stopifnot(is.character(cdmVersion))
 
@@ -215,6 +232,10 @@ executeDqChecks <- function(connectionDetails,
     fieldChecks <- fieldChecks[!fieldChecks$cdmTableName %in% tablesToExclude, ]
     conceptChecks <- conceptChecks[!conceptChecks$cdmTableName %in% tablesToExclude, ]
   }
+  
+  if (runMode == "capture") {
+    checkDescriptionsDf <- checkDescriptionsDf[checkDescriptionsDf$ccEligible=='Yes',]
+  }  
 
   ## remove offset from being checked as it is a reserved word in some databases
   fieldChecks <- subset(fieldChecks, fieldChecks$cdmFieldName != "offset")
@@ -277,6 +298,8 @@ executeDqChecks <- function(connectionDetails,
     sqlOnlyUnionCount,
     sqlOnlyIncrementalInsert,
     sqlOnly,
+    runMode,
+    captureDatabaseSchema,
     progressBar = TRUE
   )
   ParallelLogger::stopCluster(cluster = cluster)
@@ -287,7 +310,7 @@ executeDqChecks <- function(connectionDetails,
 
   allResults <- NULL
 
-  if (!sqlOnly) {
+  if (!sqlOnly && !runMode %in% c("capture","cleanse") ) {
     checkResults <- do.call(rbind, resultsList)
 
     # evaluate thresholds-------------------------------------------------------------------

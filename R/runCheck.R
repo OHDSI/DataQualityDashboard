@@ -33,6 +33,7 @@
 #' @param sqlOnlyUnionCount         (OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.
 #' @param sqlOnlyIncrementalInsert  (OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
+#' @param runMode                   The run mode to determine if checks should be executed, failures captured, or failures cleansed. Default is "execute"
 #'
 #' @import magrittr
 #'
@@ -54,7 +55,9 @@
                       outputFolder,
                       sqlOnlyUnionCount,
                       sqlOnlyIncrementalInsert,
-                      sqlOnly) {
+                      sqlOnly,
+                      runMode,
+                      captureDatabaseSchema = "") {
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
 
   filterExpression <- sprintf(
@@ -75,10 +78,10 @@
       columns <- lapply(names(check), function(c) {
         setNames(check[c], c)
       })
-
+      
       params <- c(
         list(dbms = connectionDetails$dbms),
-        list(sqlFilename = checkDescription$sqlFile),
+        list(sqlFilename = file.path(runMode, checkDescription$sqlFile)),
         list(packageName = "DataQualityDashboard"),
         list(warnOnMissingParameters = FALSE),
         list(cdmDatabaseSchema = cdmDatabaseSchema),
@@ -87,6 +90,8 @@
         list(cohortDefinitionId = cohortDefinitionId),
         list(vocabDatabaseSchema = vocabDatabaseSchema),
         list(cohort = cohort),
+        list(runMode = runMode),
+        list(captureDatabaseSchema = captureDatabaseSchema),
         unlist(columns, recursive = FALSE)
       )
 
@@ -117,7 +122,8 @@
           check = check,
           checkDescription = checkDescription,
           sql = sql,
-          outputFolder = outputFolder
+          outputFolder = outputFolder,
+          runMode = runMode
         )
       }
     })

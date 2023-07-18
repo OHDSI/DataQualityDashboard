@@ -22,6 +22,7 @@
 #' @param checkDescription          The description of the data quality check
 #' @param sql                       The fully qualified sql for the data quality check
 #' @param outputFolder              The folder to output logs and SQL files to.
+#' @param runMode                   Determines how DatabaseConnector attempts to run the sql statement
 #'
 #' @keywords internal
 #'
@@ -31,7 +32,8 @@
                           check,
                           checkDescription,
                           sql,
-                          outputFolder) {
+                          outputFolder,
+                          runMode = "execute") {
   singleThreaded <- TRUE
   start <- Sys.time()
   if (is.null(connection)) {
@@ -57,11 +59,20 @@
           rJava::.jcall(connection@jConnection, "V", "setAutoCommit", TRUE)
         }
       }
-      result <- DatabaseConnector::querySql(
-        connection = connection, sql = sql,
-        errorReportFile = errorReportFile,
-        snakeCaseToCamelCase = TRUE
-      )
+      if (runMode == "execute") {
+        result <- DatabaseConnector::querySql(
+          connection = connection, 
+          sql = sql,
+          errorReportFile = errorReportFile,
+          snakeCaseToCamelCase = TRUE
+        )
+      } else {
+        result <- DatabaseConnector::executeSql(
+          connection = connection, 
+          sql = sql,
+          errorReportFile = errorReportFile
+        )
+      }
 
       delta <- difftime(Sys.time(), start, units = "secs")
       .recordResult(
