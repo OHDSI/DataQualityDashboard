@@ -195,7 +195,7 @@
       dplyr::filter(checkResults, .data$checkName == "measureValueCompleteness" &
         .data$numDenominatorRows == .data$numViolatedRows &
         is.na(.data$tableIsMissing) & is.na(.data$fieldIsMissing) & is.na(.data$tableIsEmpty)),
-      .data$cdmTableName, .data$cdmFieldName
+      "cdmTableName", "cdmFieldName"
     )
   if (nrow(emptyFields) > 0) {
     emptyFields$fieldIsEmpty <- 1
