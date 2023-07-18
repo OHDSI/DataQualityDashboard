@@ -323,6 +323,6 @@ test_that("Incremental insert SQL is valid.", {
   
   checkResults <- DatabaseConnector::renderTranslateQuerySql(connection, "SELECT * FROM @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
   expect_equal(nrow(checkResults), 16)
-
+  
   DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
 })
