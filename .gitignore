@@ -35,7 +35,6 @@ thresholds/
 hs_err_pid*.log
 docs/Gemfile
 docs/Gemfile.lock
-sql
 vignettes/*.log
 /doc/
 /Meta/
