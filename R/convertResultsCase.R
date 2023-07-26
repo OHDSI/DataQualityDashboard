@@ -15,7 +15,7 @@
 # limitations under the License.
 
 #' @title Convert JSON results file case
-#' 
+#'
 #' @description Convert a DQD JSON results file between camelcase and (all-caps) snakecase. Enables viewing of pre-v.2.1.0 results files in later DQD versions, and vice versa
 #'
 #' @param jsonFilePath  Path to the JSON results file to be converted

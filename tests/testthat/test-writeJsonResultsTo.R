@@ -3,7 +3,7 @@ library(testthat)
 test_that("Write JSON results", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  
+
   expect_warning(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
@@ -16,7 +16,7 @@ test_that("Write JSON results", {
     ),
     regexp = "^Missing check names.*"
   )
-  
+
   jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)
   csvPath <- file.path(outputFolder, "results.csv")
   writeJsonResultsToCsv(
@@ -24,7 +24,7 @@ test_that("Write JSON results", {
     csvPath = csvPath
   )
   expect_true(file.exists(csvPath))
-  
+
   DataQualityDashboard::writeJsonResultsToTable(
     connectionDetails = connectionDetailsEunomia,
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,

@@ -227,7 +227,7 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=4 and sqlO
   expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
   dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
   expect_true(dqdSqlFile %in% list.files(outputFolder))
-  
+
   dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
   expect_snapshot(cat(SqlRender::readSql(dqdSqlFilePath)))
 })
@@ -256,7 +256,7 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
   expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
   dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
   expect_true(dqdSqlFile %in% list.files(outputFolder))
-  
+
   dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
   expect_snapshot(cat(SqlRender::readSql(dqdSqlFilePath)))
 })
@@ -285,7 +285,7 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
   expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
   dqdSqlFile <- "measurePersonCompleteness.sql"
   expect_true(dqdSqlFile %in% list.files(outputFolder))
-  
+
   dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
   expect_snapshot(cat(SqlRender::readSql(dqdSqlFilePath)))
 })
@@ -320,9 +320,9 @@ test_that("Incremental insert SQL is valid.", {
   on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
   DatabaseConnector::executeSql(connection = connection, sql = ddlSql)
   DatabaseConnector::executeSql(connection = connection, sql = checkSql)
-  
+
   checkResults <- DatabaseConnector::renderTranslateQuerySql(connection, "SELECT * FROM @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
   expect_equal(nrow(checkResults), 16)
-  
+
   DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
 })
