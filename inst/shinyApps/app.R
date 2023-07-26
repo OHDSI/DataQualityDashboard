@@ -2,7 +2,7 @@ library(shiny)
 server <- function(input, output, session) {
   observe({
     jsonPath <- Sys.getenv("jsonPath")
-    results <- convertJsonResultsFileCase(jsonPath, writeToFile = FALSE, targetCase = "camel")
+    results <- DataQualityDashboard::convertJsonResultsFileCase(jsonPath, writeToFile = FALSE, targetCase = "camel")
     results <- jsonlite::parse_json(jsonlite::toJSON(results))
     session$sendCustomMessage("results", results)
   })
