@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.0</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@
                         <h4 data-toc-skip class="author">Clair
 Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2023-05-21</h4>
+            <h4 data-toc-skip class="date">2023-07-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/Thresholds.rmd" class="external-link"><code>vignettes/Thresholds.rmd</code></a></small>
       <div class="hidden name"><code>Thresholds.rmd</code></div>
@@ -183,8 +183,8 @@ change the failure thresholds for any of these checks copy this file to
 a location the R instance can access. An example of this file is seen in
 figure 1 below.</li>
 </ul>
-<div class="figure">
-<img src="images/fieldLevelFile.png" alt=""><p class="caption">Figure 1: Field Level Control File Example</p>
+<div class="float">
+<img src="images/fieldLevelFile.png" alt="Figure 1: Field Level Control File Example"><div class="figcaption">Figure 1: Field Level Control File Example</div>
 </div>
 <ul>
 <li>
@@ -274,21 +274,21 @@ options <strong>tableCheckThresholdLoc</strong>,
 qualified location of the files. If you would like to revert to the
 default thresholds these options can be removed from the execute
 function call or be set to “default”.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>DataQualityDashboard<span class="sc">::</span><span class="fu">executeDqChecks</span>(<span class="at">connectionDetails =</span> connectionDetails, </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">cdmDatabaseSchema =</span> cdmDatabaseSchema, </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">resultsDatabaseSchema =</span> resultsDatabaseSchema,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">cdmSourceName =</span> cdmSourceName, </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">numThreads =</span> numThreads,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">sqlOnly =</span> sqlOnly, </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">outputFolder =</span> outputFolder, </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">verboseMode =</span> verboseMode,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">writeToTable =</span> writeToTable,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">checkLevels =</span> checkLevels,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">tablesToExclude =</span> tablesToExclude,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">checkNames =</span> checkNames,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">tableCheckThresholdLoc =</span> location of the table check file,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">fieldCheckThresholdLoc =</span> location of the field check file,</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">conceptCheckThresholdLoc =</span> location of the concept check file)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>DataQualityDashboard<span class="sc">::</span><span class="fu">executeDqChecks</span>(<span class="at">connectionDetails =</span> connectionDetails, </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>                                      <span class="at">cdmDatabaseSchema =</span> cdmDatabaseSchema, </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>                                      <span class="at">resultsDatabaseSchema =</span> resultsDatabaseSchema,</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>                                      <span class="at">cdmSourceName =</span> cdmSourceName, </span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>                                      <span class="at">numThreads =</span> numThreads,</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>                                      <span class="at">sqlOnly =</span> sqlOnly, </span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>                                      <span class="at">outputFolder =</span> outputFolder, </span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>                                      <span class="at">verboseMode =</span> verboseMode,</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>                                      <span class="at">writeToTable =</span> writeToTable,</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>                                      <span class="at">checkLevels =</span> checkLevels,</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>                                      <span class="at">tablesToExclude =</span> tablesToExclude,</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>                                      <span class="at">checkNames =</span> checkNames,</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>                                      <span class="at">tableCheckThresholdLoc =</span> location of the table check file,</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>                                      <span class="at">fieldCheckThresholdLoc =</span> location of the field check file,</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>                                      <span class="at">conceptCheckThresholdLoc =</span> location of the concept check file)</span></code></pre></div>
 </div>
 </div>
 </div>

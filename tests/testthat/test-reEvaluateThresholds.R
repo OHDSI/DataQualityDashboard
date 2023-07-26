@@ -3,7 +3,7 @@ library(testthat)
 test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  
+
   expect_warning(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
@@ -16,9 +16,9 @@ test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
     ),
     regexp = "^Missing check names.*"
   )
-  
+
   jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)
-  
+
   results2 <- reEvaluateThresholds(
     jsonFilePath = jsonPath,
     outputFolder = outputFolder,
