@@ -1,10 +1,5 @@
 library(testthat)
-
-test_that("listDqChecks works", {
-  checks <- listDqChecks()
-  expect_equal(length(checks), 4)
-  expect_true(all(sapply(checks, is.data.frame)))
-})
+local_edition(3)
 
 test_that("Execute a single DQ check on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
@@ -42,7 +37,6 @@ test_that("Execute all TABLE checks on Synthea/Eunomia", {
 
   expect_true(nrow(results$CheckResults) > 0)
 })
-
 
 test_that("Execute FIELD checks on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
@@ -185,44 +179,6 @@ test_that("Check invalid cdm version", {
   )
 })
 
-test_that("Write JSON results", {
-  outputFolder <- tempfile("dqd_")
-  on.exit(unlink(outputFolder, recursive = TRUE))
-
-  expect_warning(
-    results <- executeDqChecks(
-      connectionDetails = connectionDetailsEunomia,
-      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-      cdmSourceName = "Eunomia",
-      checkNames = "measurePersonCompleteness",
-      outputFolder = outputFolder,
-      writeToTable = FALSE
-    ),
-    regexp = "^Missing check names.*"
-  )
-
-  jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)
-  csvPath <- file.path(outputFolder, "results.csv")
-  writeJsonResultsToCsv(
-    jsonPath = jsonPath,
-    csvPath = csvPath
-  )
-  expect_true(file.exists(csvPath))
-
-  DataQualityDashboard::writeJsonResultsToTable(
-    connectionDetails = connectionDetailsEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    jsonFilePath = jsonPath,
-    writeTableName = "dqd_results"
-  )
-  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
-  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
-  tableNames <- DatabaseConnector::getTableNames(connection = connection, databaseSchema = resultsDatabaseSchemaEunomia)
-  expect_true("dqd_results" %in% tolower(tableNames))
-  DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
-})
-
 test_that("Execute DQ checks and write to table", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
@@ -245,33 +201,6 @@ test_that("Execute DQ checks and write to table", {
   tableNames <- DatabaseConnector::getTableNames(connection = connection, databaseSchema = resultsDatabaseSchemaEunomia)
   expect_true("dqd_results" %in% tolower(tableNames))
   DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
-})
-
-test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
-  outputFolder <- tempfile("dqd_")
-  on.exit(unlink(outputFolder, recursive = TRUE))
-
-  expect_warning(
-    results <- executeDqChecks(
-      connectionDetails = connectionDetailsEunomia,
-      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-      cdmSourceName = "Eunomia",
-      checkNames = "measurePersonCompleteness",
-      outputFolder = outputFolder,
-      writeToTable = F
-    ),
-    regexp = "^Missing check names.*"
-  )
-
-  jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)
-
-  results2 <- reEvaluateThresholds(
-    jsonFilePath = jsonPath,
-    outputFolder = outputFolder,
-    outputFile = "reEvaluated.txt"
-  )
-  expect_is(results2, "list")
 })
 
 test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=4 and sqlOnlyIncrementalInsert=TRUE", {
@@ -300,14 +229,7 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=4 and sqlO
   expect_true(dqdSqlFile %in% list.files(outputFolder))
 
   dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
-  sql <- SqlRender::readSql(dqdSqlFilePath)
-
-  # comparison
-  expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=4-insert.sql", package = "DataQualityDashboard")
-  sqlExpected <- SqlRender::readSql(expectedSqlFile)
-
-  # test if identical, removing comments and excess whitespace
-  expect_equal(remove_sql_comments(sql), remove_sql_comments(sqlExpected))
+  expect_snapshot(cat(SqlRender::readSql(dqdSqlFilePath)))
 })
 
 test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlOnlyIncrementalInsert=TRUE", {
@@ -336,14 +258,7 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
   expect_true(dqdSqlFile %in% list.files(outputFolder))
 
   dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
-  sql <- SqlRender::readSql(dqdSqlFilePath)
-
-  # comparison
-  expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=1-insert.sql", package = "DataQualityDashboard")
-  sqlExpected <- SqlRender::readSql(expectedSqlFile)
-
-  # test if identical, removing comments and excess whitespace
-  expect_equal(remove_sql_comments(sql), remove_sql_comments(sqlExpected))
+  expect_snapshot(cat(SqlRender::readSql(dqdSqlFilePath)))
 })
 
 test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlOnlyIncrementalInsert=FALSE (the behavior in version <= 2.2.0)", {
@@ -372,14 +287,7 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
   expect_true(dqdSqlFile %in% list.files(outputFolder))
 
   dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
-  sql <- SqlRender::readSql(dqdSqlFilePath)
-
-  # comparison
-  expectedSqlFile <- system.file("testdata", "TABLE_measurePersonCompleteness-mssql-union=1-legacy.sql", package = "DataQualityDashboard")
-  sqlExpected <- SqlRender::readSql(expectedSqlFile)
-
-  # test if identical, removing comments and excess whitespace
-  expect_equal(remove_sql_comments(sql), remove_sql_comments(sqlExpected))
+  expect_snapshot(cat(SqlRender::readSql(dqdSqlFilePath)))
 })
 
 test_that("Incremental insert SQL is valid.", {
@@ -414,6 +322,7 @@ test_that("Incremental insert SQL is valid.", {
   DatabaseConnector::executeSql(connection = connection, sql = checkSql)
 
   checkResults <- DatabaseConnector::renderTranslateQuerySql(connection, "SELECT * FROM @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
-  expect_true(nrow(checkResults) == 15)
+  expect_equal(nrow(checkResults), 16)
+
   DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
 })

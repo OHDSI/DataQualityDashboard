@@ -1,3 +1,23 @@
+DataQualityDashboard 2.4.0
+==========================
+This release includes:
+
+### Threshold file updates
+**The following changes involve updates to the default data quality check threshold files. If you are currently using an older version of DQD and update to v2.4.0, you may see changes in your DQD results. The failure threshold changes are fixes to incorrect thresholds in the v5.4 files and thus should result in more accurate, easier to interpret results. The unit concept ID changes ensure that long-invalid concepts will no longer be accepted as plausible measurement units.**
+
+- The incorrect failure thresholds for `measurePersonCompleteness` and `measureValueCompleteness` were fixed in the v5.4 table & field level threshold files.  This issue has existed since v5.4 support was initially added in March 2022
+  - Many `measurePersonCompleteness` checks had a threshold of 0 when it should have been 95 or 100
+  - Many `measureValueCompleteness` checks had a threshold of 100 when it should have been 0, and many had no threshold (defaulting to 0) when it should have been 100
+  - The thresholds have now been updated to match expectations for required/non-required tables/fields
+- In the v5.2, v5.3, and v5.4 table level threshold files, `measurePersonCompleteness` for the DEATH table has been toggled to `Yes`, with a threshold of 100
+- In the v5.2, v5.3, and v5.4 concept level threshold files, all references to unit concept 9117 in `plausibleUnitConceptIds` have been updated to 720870.  Concept 9117 became non-standard and was replaced with concept 720870, on 28-Mar-2022
+- In the v5.2, v5.3, and v5.4 concept level threshold files, all references to unit concepts 9258 and 9259 in `plausibleUnitConceptIds` have been removed. These concepts were deprecated on 05-May-2022
+
+### Bugfix
+- Call to new function `convertJsonResultsFileCase` in Shiny app was appended with `DataQualityDashboard::`. This prevents potential issues related to package loading and function naming conflicts
+
+Some minor refactoring of testthat files and package build configuration and some minor documentation updates were also added in this release.
+
 DataQualityDashboard 2.3.0
 ==========================
 This release includes:
@@ -77,6 +97,10 @@ This release includes:
 ### outputFolder input parameter
 
   - The `outputFolder` parameter for the `executeDqChecks` function is now REQUIRED and no longer has a default value.  **This may be a breaking change for users who have not specified this parameter in their script to run DQD.**
+
+### Removal of measurement plausibility checks
+
+  - Most plausibleValueLow and plausibleValueHigh measurement values were removed from the concept check threshold files, due to feedback from the community that many of these ranges included plausible values and as such were causing unexpected check failures. An initiative is planned to reinterrogate these ranges and add them back once the team has higher confidence that they will only flag legitimately implausible values 
 
 ### Integrated testing was also added and the package was refactored on the backend
 
