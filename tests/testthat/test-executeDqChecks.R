@@ -129,7 +129,7 @@ test_that("Execute a single DQ check on remote databases", {
     if (sysUser != "" &
       sysPassword != "" &
       sysServer != "") {
-      cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM_SCHEMA", toupper(gsub(" ", "_", dbType))))
+      cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM54_SCHEMA", toupper(gsub(" ", "_", dbType))))
       resultsDatabaseSchema <- Sys.getenv("CDM5_%s_OHDSI_SCHEMA", toupper(gsub(" ", "_", dbType)))
 
       connectionDetails <- createConnectionDetails(
@@ -151,7 +151,8 @@ test_that("Execute a single DQ check on remote databases", {
           outputFolder = outputFolder,
           verboseMode = FALSE,
           writeToTable = FALSE,
-          checkNames = "measurePersonCompleteness"
+          checkNames = "measurePersonCompleteness",
+          cdmVersion = "5.4"
         ),
         regexp = "^Missing check names.*"
       )
