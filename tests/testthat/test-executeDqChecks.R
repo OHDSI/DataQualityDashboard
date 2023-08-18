@@ -158,6 +158,8 @@ test_that("Execute a single DQ check on remote databases", {
       )
 
       expect_true(nrow(results$CheckResults) > 0)
+    } else {
+      expect_true(sysUser == "")
     }
   }
 })
