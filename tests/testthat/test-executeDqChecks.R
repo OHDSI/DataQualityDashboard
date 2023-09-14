@@ -119,7 +119,8 @@ test_that("Execute a single DQ check on remote databases", {
   dbTypes <- c(
     "oracle",
     "postgresql",
-    "sql server"
+    "sql server",
+    "redshift"
   )
 
   for (dbType in dbTypes) {
