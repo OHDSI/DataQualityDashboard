@@ -6,6 +6,7 @@ if (Sys.getenv("DONT_DOWNLOAD_JDBC_DRIVERS", "") == "TRUE") {
   downloadJdbcDrivers("postgresql", jdbcDriverFolder)
   downloadJdbcDrivers("sql server", jdbcDriverFolder)
   downloadJdbcDrivers("oracle", jdbcDriverFolder)
+  downloadJdbcDrivers("redshift", jdbcDriverFolder)
 }
 
 connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
