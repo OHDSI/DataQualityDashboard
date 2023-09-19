@@ -73,6 +73,10 @@ System Requirements
 ===================
 Requires R (version 3.2.2 or higher). Requires [DatabaseConnector](https://github.com/OHDSI/DatabaseConnector) (version 2.0.2 or higher).
 
+A variety of database platforms are supported, as documented [here](https://ohdsi.github.io/Hades/supportedPlatforms.html). 
+
+Note that while data quality check threshold files are provided for OMOP CDM versions 5.2, 5.3, and 5.4, the package is currently only tested against versions 5.3 and 5.4.
+
 Installation
 =============
 1. See the instructions [here](https://ohdsi.github.io/Hades/rSetup.html) for configuring your R environment, including RTools and Java.
