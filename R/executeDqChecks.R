@@ -16,7 +16,7 @@
 
 #' @title Execute DQ checks
 #'
-#' @description This function will connect to the database, generate the sql scripts, and run the data quality checks against the database.
+#' @description This function will connect to the database, generate the sql scripts, and run the data quality checks against the database. By default, results will be written to a json file as well as a database table.
 #'
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema
