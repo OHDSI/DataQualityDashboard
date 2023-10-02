@@ -12,13 +12,17 @@ Dev Setup
    
    b. Create a new database in localhost for your test CDM, and create a schema in that database for the CDM tables 
    
-   c.Using the CDMConnector package:
+   c. Using the [CDMConnector](https://cran.r-project.org/web/packages/CDMConnector/index.html)  package:
+     
+      <code>
+             i.  Download a sample OMOP CDM into a DuckDB database, as documented here 
+      
+     ii. Copy the CDM into your local Postgres database, as documented here
+</code>
 
-       i.  Download a sample OMOP CDM into a DuckDB database, as documented here 
-       ii. Copy the CDM into your local Postgres database, as documented here 
- 3.Fork the DataQualityDashboard repo 
+3. Fork the DataQualityDashboard repo 
 
- 4.Clone your fork to your computer 
+ 4. Clone your fork to your computer 
  
 PR Process 
 ====================
