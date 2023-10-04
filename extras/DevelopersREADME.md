@@ -4,26 +4,38 @@ DQD Developers README
 Dev Setup 
 ====================
 1. R setup: https://ohdsi.github.io/Hades/rSetup.html  
-2. Local OMOP CDM setup 
+
+2. Local OMOP CDM setup
 
    If you already have a CDM available for development work/testing, you may skip this step 
    
-   a. Install Postgres and create a localhost server 
+     a. Install Postgres and create a localhost server 
    
-   b. Create a new database in localhost for your test CDM, and create a schema in that database for the CDM tables 
+     b. Create a new database in localhost for your test CDM, and create a schema in that database for the CDM tables 
    
-   c. Using the [CDMConnector](https://cran.r-project.org/web/packages/CDMConnector/index.html)  package:
+     c. Using the [CDMConnector](https://cran.r-project.org/web/packages/CDMConnector/index.html)  package:
      
-      <code>
-             i.  Download a sample OMOP CDM into a DuckDB database, as documented here 
+      - i.  Download a sample OMOP CDM into a DuckDB database, as documented here 
       
-     ii. Copy the CDM into your local Postgres database, as documented here
+     - ii. Copy the CDM into your local Postgres database, as documented here
 </code>
 
 3. Fork the DataQualityDashboard repo 
 
  4. Clone your fork to your computer 
  
+
+-1. First item
+
+-2.
+   - a. Sub-item A
+   - b. Sub-item B
+        i. Sub-sub-item 1
+        ii. Sub-sub-item 2
+
+
+
+
 PR Process 
 ====================
 
