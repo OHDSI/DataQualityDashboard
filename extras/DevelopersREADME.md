@@ -25,15 +25,6 @@ Dev Setup
  4. Clone your fork to your computer 
  
 
--1. First item
-
--2.
-   - a. Sub-item A
-   - b. Sub-item B
-        i. Sub-sub-item 1
-        ii. Sub-sub-item 2
-
-
 
 
 PR Process 
