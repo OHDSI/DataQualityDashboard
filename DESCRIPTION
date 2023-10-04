@@ -34,7 +34,8 @@ Imports:
     stringr,
     rlang,
     tidyselect,
-    readr
+    readr,
+    vroom (<= 1.6.3)
 Suggests:
     testthat,
     knitr,
