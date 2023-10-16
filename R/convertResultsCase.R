@@ -30,6 +30,7 @@
 #' @importFrom SqlRender snakeCaseToCamelCase camelCaseToSnakeCase
 #' @importFrom dplyr rename_with
 #' @importFrom tools file_path_sans_ext
+#' @importFrom readr local_edition
 #'
 #' @export
 

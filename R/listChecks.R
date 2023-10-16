@@ -24,7 +24,7 @@
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
 #'
-#' @importFrom readr read_csv
+#' @importFrom readr read_csv local_edition
 #'
 #' @export
 listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default", fieldCheckThresholdLoc = "default", conceptCheckThresholdLoc = "default") {

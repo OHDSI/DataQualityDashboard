@@ -54,7 +54,7 @@
 #' @importFrom utils packageVersion write.table
 #' @importFrom rlang .data
 #' @importFrom tidyselect all_of
-#' @importFrom readr read_csv
+#' @importFrom readr read_csv local_edition
 #' @importFrom dplyr mutate case_when
 #'
 #' @export
