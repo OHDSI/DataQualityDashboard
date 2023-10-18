@@ -30,6 +30,7 @@
 #' @importFrom SqlRender snakeCaseToCamelCase camelCaseToSnakeCase
 #' @importFrom dplyr rename_with
 #' @importFrom tools file_path_sans_ext
+#' @importFrom readr local_edition
 #'
 #' @export
 
@@ -46,6 +47,9 @@ convertJsonResultsFileCase <- function(
   if (writeToFile && is.na(outputFolder)) {
     stop("You must specify an output folder if writing to file.")
   }
+  
+  # temporary patch to work around vroom 1.6.4 bug
+  readr::local_edition(1)
 
   results <- jsonlite::fromJSON(jsonFilePath)
 

@@ -1,5 +1,5 @@
 library(testthat)
-local_edition(3)
+testthat::local_edition(3)
 
 test_that("Execute a single DQ check on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")

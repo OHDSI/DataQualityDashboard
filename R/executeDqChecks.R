@@ -54,7 +54,7 @@
 #' @importFrom utils packageVersion write.table
 #' @importFrom rlang .data
 #' @importFrom tidyselect all_of
-#' @importFrom readr read_csv
+#' @importFrom readr read_csv local_edition
 #' @importFrom dplyr mutate case_when
 #'
 #' @export
@@ -118,6 +118,9 @@ executeDqChecks <- function(connectionDetails,
       warning(sprintf("Missing check names to calculate the 'Not Applicable' status: %s", missingNACheckNames))
     }
   }
+  
+  # temporary patch to work around vroom 1.6.4 bug
+  readr::local_edition(1)
 
   # capture metadata -----------------------------------------------------------------------
   if (!sqlOnly) {
