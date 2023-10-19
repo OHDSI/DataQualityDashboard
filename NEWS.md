@@ -1,3 +1,11 @@
+DataQualityDashboard 2.4.1
+==========================
+This release includes: 
+
+- Minor documentation updates
+- A patch for an issue in one of DQD's transitive dependencies, `vroom`
+- Test suite upgrades to run remote DB tests against OMOP v5.4, and to add Redshift to remote DB tests
+
 DataQualityDashboard 2.4.0
 ==========================
 This release includes:
