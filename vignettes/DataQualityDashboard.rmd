@@ -111,6 +111,14 @@ checkLevels <- c("TABLE", "FIELD", "CONCEPT")
 # which DQ checks to run? ------------------------------------
 checkNames <- c() # Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descriptions.csv
 
+# want to EXCLUDE a pre-specified list of checks? run the following code:
+#
+# checksToExclude <- c() # Names of check types to exclude from your DQD run
+# allChecks <- DataQualityDashboard::listDqChecks()
+# checkNames <- allChecks$checkDescriptions %>%
+#   subset(!(checkName %in% checksToExclude)) %>%
+#   select(checkName)
+
 # which CDM tables to exclude? ------------------------------------
 tablesToExclude <- c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN") # list of CDM table names to skip evaluating checks against; by default DQD excludes the vocab tables
 
@@ -119,11 +127,13 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                               cdmDatabaseSchema = cdmDatabaseSchema, 
                               resultsDatabaseSchema = resultsDatabaseSchema,
                               cdmSourceName = cdmSourceName, 
+                              cdmVersion = cdmVersion,
                               numThreads = numThreads,
                               sqlOnly = sqlOnly, 
                               sqlOnlyUnionCount = sqlOnlyUnionCount,
                               sqlOnlyIncrementalInsert = sqlOnlyIncrementalInsert,
                               outputFolder = outputFolder,
+                              outputFile = outputFile,
                               verboseMode = verboseMode,
                               writeToTable = writeToTable,
                               writeToCsv = writeToCsv,

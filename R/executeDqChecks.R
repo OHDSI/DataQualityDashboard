@@ -16,7 +16,7 @@
 
 #' @title Execute DQ checks
 #'
-#' @description This function will connect to the database, generate the sql scripts, and run the data quality checks against the database.
+#' @description This function will connect to the database, generate the sql scripts, and run the data quality checks against the database. By default, results will be written to a json file as well as a database table.
 #'
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema
@@ -54,7 +54,7 @@
 #' @importFrom utils packageVersion write.table
 #' @importFrom rlang .data
 #' @importFrom tidyselect all_of
-#' @importFrom readr read_csv
+#' @importFrom readr read_csv local_edition
 #' @importFrom dplyr mutate case_when
 #'
 #' @export
@@ -118,6 +118,9 @@ executeDqChecks <- function(connectionDetails,
       warning(sprintf("Missing check names to calculate the 'Not Applicable' status: %s", missingNACheckNames))
     }
   }
+
+  # temporary patch to work around vroom 1.6.4 bug
+  readr::local_edition(1)
 
   # capture metadata -----------------------------------------------------------------------
   if (!sqlOnly) {

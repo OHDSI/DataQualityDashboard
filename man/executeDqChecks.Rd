@@ -92,5 +92,5 @@ with the fields cohort_definition_id and subject_id.}
 If sqlOnly = FALSE, a list object of results
 }
 \description{
-This function will connect to the database, generate the sql scripts, and run the data quality checks against the database.
+This function will connect to the database, generate the sql scripts, and run the data quality checks against the database. By default, results will be written to a json file as well as a database table.
 }

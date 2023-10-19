@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@
                         <h4 data-toc-skip class="author">Clair
 Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2023-07-26</h4>
+            <h4 data-toc-skip class="date">2023-10-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/DataQualityDashboard.rmd" class="external-link"><code>vignettes/DataQualityDashboard.rmd</code></a></small>
       <div class="hidden name"><code>DataQualityDashboard.rmd</code></div>
@@ -218,6 +218,14 @@ prior to running the DQD.</p>
 <span><span class="co"># which DQ checks to run? ------------------------------------</span></span>
 <span><span class="va">checkNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descriptions.csv</span></span>
 <span></span>
+<span><span class="co"># want to EXCLUDE a pre-specified list of checks? run the following code:</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># checksToExclude &lt;- c() # Names of check types to exclude from your DQD run</span></span>
+<span><span class="co"># allChecks &lt;- DataQualityDashboard::listDqChecks()</span></span>
+<span><span class="co"># checkNames &lt;- allChecks$checkDescriptions %&gt;%</span></span>
+<span><span class="co">#   subset(!(checkName %in% checksToExclude)) %&gt;%</span></span>
+<span><span class="co">#   select(checkName)</span></span>
+<span></span>
 <span><span class="co"># which CDM tables to exclude? ------------------------------------</span></span>
 <span><span class="va">tablesToExclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CONCEPT"</span>, <span class="st">"VOCABULARY"</span>, <span class="st">"CONCEPT_ANCESTOR"</span>, <span class="st">"CONCEPT_RELATIONSHIP"</span>, <span class="st">"CONCEPT_CLASS"</span>, <span class="st">"CONCEPT_SYNONYM"</span>, <span class="st">"RELATIONSHIP"</span>, <span class="st">"DOMAIN"</span><span class="op">)</span> <span class="co"># list of CDM table names to skip evaluating checks against; by default DQD excludes the vocab tables</span></span>
 <span></span>
@@ -226,11 +234,13 @@ prior to running the DQD.</p>
 <span>                            cdmDatabaseSchema <span class="op">=</span> <span class="va">cdmDatabaseSchema</span>, </span>
 <span>                            resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
 <span>                            cdmSourceName <span class="op">=</span> <span class="va">cdmSourceName</span>, </span>
+<span>                            cdmVersion <span class="op">=</span> <span class="va">cdmVersion</span>,</span>
 <span>                            numThreads <span class="op">=</span> <span class="va">numThreads</span>,</span>
 <span>                            sqlOnly <span class="op">=</span> <span class="va">sqlOnly</span>, </span>
 <span>                            sqlOnlyUnionCount <span class="op">=</span> <span class="va">sqlOnlyUnionCount</span>,</span>
 <span>                            sqlOnlyIncrementalInsert <span class="op">=</span> <span class="va">sqlOnlyIncrementalInsert</span>,</span>
 <span>                            outputFolder <span class="op">=</span> <span class="va">outputFolder</span>,</span>
+<span>                            outputFile <span class="op">=</span> <span class="va">outputFile</span>,</span>
 <span>                            verboseMode <span class="op">=</span> <span class="va">verboseMode</span>,</span>
 <span>                            writeToTable <span class="op">=</span> <span class="va">writeToTable</span>,</span>
 <span>                            writeToCsv <span class="op">=</span> <span class="va">writeToCsv</span>,</span>
