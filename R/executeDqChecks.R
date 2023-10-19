@@ -118,7 +118,7 @@ executeDqChecks <- function(connectionDetails,
       warning(sprintf("Missing check names to calculate the 'Not Applicable' status: %s", missingNACheckNames))
     }
   }
-  
+
   # temporary patch to work around vroom 1.6.4 bug
   readr::local_edition(1)
 

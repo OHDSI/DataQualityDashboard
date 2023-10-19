@@ -28,10 +28,9 @@
 #'
 #' @export
 listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default", fieldCheckThresholdLoc = "default", conceptCheckThresholdLoc = "default") {
-  
   # temporary patch to work around vroom 1.6.4 bug
   readr::local_edition(1)
-  
+
   dqChecks <- {}
   dqChecks$checkDescriptions <-
     read_csv(system.file(
