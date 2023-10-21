@@ -34,8 +34,6 @@ writeDBResultsToJson <- function(connection,
                                     writeTableName,
                                     outputFolder,
                                     outputFile) {
-    startTime <- Sys.time()
-
     metadata <- DatabaseConnector::renderTranslateQuerySql(
           connection,
           sql = "select * from @cdmDatabaseSchema.cdm_source;",
@@ -62,10 +60,6 @@ writeDBResultsToJson <- function(connection,
     overview <- .summarizeResults(
         checkResults = checkResults
         )
-
-    endTime <- Sys.time()
-
-    delta <- startTime - endTime
 
     # Quick patch for non-camel-case column name
     names(checkResults)[names(checkResults) == "checkid"] <- "checkId"
