@@ -171,49 +171,18 @@ for (dqdSqlFile in dqdSqlFiles) {
   )
 }
 
-# Get results
-checkResults <- DatabaseConnector::querySql(
-  c,
-  SqlRender::render(
-    "SELECT * FROM @resultsDatabaseSchema.@writeTableName",
-    resultsDatabaseSchema = resultsDatabaseSchema,
-    writeTableName = writeTableName
-  ),
-  snakeCaseToCamelCase = TRUE
-)
-DatabaseConnector::disconnect(c)
+# Extract results table to JSON file for viewing or secondary use
 
-# convert check ID column name to correct format
-colnames(checkResults)[colnames(checkResults) == "checkid"] ="checkId"
+DataQualityDashboard::writeDBResultsToJson(
+    c,
+    connectionDetails,
+    resultsDatabaseSchema,
+    cdmDatabaseSchema,
+    writeTableName,
+    jsonOutputFolder,
+    jsonOutputFile
+  )
 
-# Get overview of DQD results
-library(DataQualityDashboard)
-overview <- DataQualityDashboard:::.summarizeResults(checkResults = checkResults)
-
-# Create results object, adding fake metadata
-result <- list(
-  startTimestamp = Sys.time(),
-  endTimestamp = Sys.time(),
-  executionTime = "",
-  Metadata = data.frame(
-    cdmSourceName = cdmSourceName,
-    cdmSourceAbbreviation = cdmSourceName,
-    cdmHolder = "",
-    sourceDescription = "",
-    sourceDocumentationReference = "",
-    cdmEtlReference = "",
-    sourceReleaseDate = "",
-    cdmReleaseDate = "",
-    cdmVersion = cdmVersion,
-    cdmVersionConceptId = 0,
-    vocabularyVersion = "",
-    dqdVersion = as.character(packageVersion("DataQualityDashboard"))
-  ),
-  Overview = overview,
-  CheckResults = checkResults
-)
-
-DataQualityDashboard:::.writeResultsToJson(result, jsonOutputFolder, jsonOutputFile)
 
 jsonFilePath <- R.utils::getAbsolutePath(file.path(jsonOutputFolder, jsonOutputFile))
 DataQualityDashboard::viewDqDashboard(jsonFilePath)

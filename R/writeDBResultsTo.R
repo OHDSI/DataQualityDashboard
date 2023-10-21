@@ -20,9 +20,9 @@
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
 #' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema
-#' @param writeTableName            Name of table in the database to write results to
-#' @param outputFolder              The output folder
-#' @param outputFile                The output filename
+#' @param writeTableName            Name of DQD results table in the database to read from
+#' @param outputFolder              The folder to output the json results file to
+#' @param outputFile                The output filename of the json results file
 #'
 #' @export
 #'
@@ -36,43 +36,27 @@ writeDBResultsToJson <- function(connection,
                                     outputFile) {
     startTime <- Sys.time()
 
-    sql <- SqlRender::render(
+    metadata <- DatabaseConnector::renderTranslateQuerySql(
+          connection,
           sql = "select * from @cdmDatabaseSchema.cdm_source;",
-          cdmDatabaseSchema = cdmDatabaseSchema
+          cdmDatabaseSchema = cdmDatabaseSchema,
+          targetDialect = connectionDetails$dbms,
+          snakeCaseToCamelCase = TRUE
         )
 
-    sql <- SqlRender::translate(
-         sql = sql,
-         targetDialect = connectionDetails$dbms
-        )
-
-    metadata <- DatabaseConnector::querySql(
-         connection = connection,
-         sql = sql,
-         snakeCaseToCamelCase = TRUE
-        )
-
-    sql <- SqlRender::render(
+    checkResults <- DatabaseConnector::renderTranslateQuerySql(
+          connection,
           sql = "select * from @resultsDatabaseSchema.@writeTableName;",
           resultsDatabaseSchema = resultsDatabaseSchema,
-          writeTableName = writeTableName
-        )
-
-    sql <- SqlRender::translate(
-          sql = sql,
-          targetDialect = connectionDetails$dbms
-         )
-
-    checkResults <- DatabaseConnector::querySql(
-         connection,
-         sql,
-         snakeCaseToCamelCase = TRUE
+          writeTableName = writeTableName,
+          targetDialect = connectionDetails$dbms,
+          snakeCaseToCamelCase = TRUE
         )
 
     # Quick patch for missing value issues related to SQL Only Implementation
     checkResults["error"][checkResults["error"] == ''] <- NA
     checkResults["warning"][checkResults["warning"] == ''] <- NA
-    checkResults["executionTime"][checkResults["executionTime"] == ''] <- '0.1 secs'
+    checkResults["executionTime"][checkResults["executionTime"] == ''] <- '0 secs'
     checkResults["queryText"][checkResults["queryText"] == ''] <- '[Generated via SQL Only]'
 
     overview <- .summarizeResults(
@@ -89,7 +73,7 @@ writeDBResultsToJson <- function(connection,
     allResults <- list(
         startTimestamp = Sys.time(),
         endTimestamp = Sys.time(),
-        executionTime = sprintf("%.0f %s", delta, attr(delta, "units")),
+        executionTime = '0 secs',
         CheckResults = checkResults,
         Metadata = metadata,
         Overview = overview
