@@ -55,7 +55,22 @@
     <loc>/articles/Thresholds.html</loc>
   </url>
   <url>
+    <loc>/articles/cdmDatatype.html</loc>
+  </url>
+  <url>
+    <loc>/articles/cdmField.html</loc>
+  </url>
+  <url>
+    <loc>/articles/cdmTable.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>/articles/isForeignKey.html</loc>
+  </url>
+  <url>
+    <loc>/articles/isPrimaryKey.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>

@@ -1,7 +1,8 @@
 
 /*********
 IS_FOREIGN_KEY
-Foreign key check
+
+Foreign key check.
 
 Parameters used in this template:
 schema = @schema

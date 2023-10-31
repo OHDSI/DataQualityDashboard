@@ -1,0 +1,65 @@
+---
+title: "fkDomain"
+author: "Katy Sadowski"
+date: "`r Sys.Date()`"
+header-includes:
+    - \usepackage{fancyhdr}
+    - \pagestyle{fancy}
+    - \fancyhead{}
+    - \fancyhead[CO,CE]{fkDomain}
+    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version `r    utils::packageVersion("DataQualityDashboard")`}
+    - \fancyfoot[LE,RO]{\thepage}
+    - \renewcommand{\headrulewidth}{0.4pt}
+    - \renewcommand{\footrulewidth}{0.4pt}
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## fkDomain
+
+**Name**: fkDomain
+<br>**Level**: Field check
+<br>**Context**: Verification
+<br>**Category**: Conformance
+<br>**Subcategory**: Value
+<br>**Severity**: CDM convention
+
+**Description**: The number and percent of records that have a value in the **cdmFieldName** field in the **cdmTableName** table that do not conform to the **fkDomain** domain. 
+
+**Definition**: It is often the case that standard concept fields in the OMOP CDM should belong to a certain domain. All possible domains are listed in the vocabulary table DOMAIN and the expected domain for CDM fields are listed as part of the CDM documentation. For example, all concepts in the field PERSON.gender_concept_id should conform to the [*gender* domain](http://athena.ohdsi.org/search-terms/terms?standardConcept=Standard&domain=Gender&page=1&pageSize=15&query=).
+
+- *Numerator*: The number of rows in the table where the standard concept ID field contains a concept that does not conform to the specified `domain_id`. This numerator specifically excludes concept_id 0
+- *Denominator*: The total number of rows in the table. This denominator includes rows with concept_id 0
+- *Related CDM Convention(s)*: FK Domain flag in [CDM table specs](http://ohdsi.github.io/CommonDataModel/cdm54.html)
+- *CDM Fields/Tables*: This check runs on all standard concept ID fields (e.g. condition_concept_id; gender_concept_id; etc.)
+
+**User Guidance**: OHDSI tools and analyses assume that standard concepts in event tables and demographic data conform to the relevant domain.  If incorrect concepts are allowed to persist, a study package could run on this table but may not produce expected results.
+
+To assess the impacted rows/tables, you may run a query like the one below:
+
+```
+SELECT 
+  c.concept_id, 
+  c.domain_id, 
+  c.concept_name, 
+  c.concept_code, 
+  count(distinct x_occurrence_id), 
+  count(distinct person_id) 
+FROM x_occurrence 
+JOIN concept c ON c.concept_id = x_concept_id 
+  AND c.domain_id != {fkDomain} AND c.concept_id != 0 
+GROUP BY 1,2,3,4 
+```
+
+*ETL Developers*\
+Recommended actions:
+- Identify the specific concepts in the table that have an incorrect `domain_id`, grouping on the standard concept ID
+- Investigate the ETL process that moves records to the tables based on the standard concept ID domain. Likely there is an error that is letting records through with the incorrect `domain_id` 
+- Ultimately the ETL process should be improved so that the correct rows are moved to the correct tables based on their domain
+
+*Data Users*\
+If this check is failing it means that there is likely an error in the ETL process that builds the domain tables. If there are records in the standard tables that have concepts in the wrong domain then cohorts and analyses will run but they will return unexpected or erroneous results.
+
+You may characterize the potential impact of the erroneous domain sorting on your analysis by running a query like the one above.  Use the results to see what concepts in a table were incorrectly sorted, and how many events/patients are impacted.

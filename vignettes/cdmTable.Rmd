@@ -1,0 +1,50 @@
+---
+title: "cdmTable"
+author: "Katy Sadowski"
+date: "`r Sys.Date()`"
+header-includes:
+    - \usepackage{fancyhdr}
+    - \pagestyle{fancy}
+    - \fancyhead{}
+    - \fancyhead[CO,CE]{cdmTable}
+    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version `r    utils::packageVersion("DataQualityDashboard")`}
+    - \fancyfoot[LE,RO]{\thepage}
+    - \renewcommand{\headrulewidth}{0.4pt}
+    - \renewcommand{\footrulewidth}{0.4pt}
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+**Name**: cdmTable
+<br>**Level**: Table check
+<br>**Context**: Verification
+<br>**Category**: Conformance
+<br>**Subcategory**: Relational
+<br>**Severity**: Fatal
+
+**Description**: A yes or no value indicating if the **cdmTable** table is present in the database.
+
+**Definition**: This check verifies if a table is present as specified in the CDM specification for the relevant CDM version. 
+
+- *Numerator*: If the table is present, the numerator of the check result will be 0; if the table is absent the check will throw an error
+- *Denominator*: The denominator is always a placeholder value of 1
+- *Related CDM Convention(s)*: Listed tables in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
+- *CDM Fields/Tables*: By default, this check runs on all tables & fields in the CDM
+
+**User Guidance**: This check failure must be resolved to avoid errors in downstream tools/analyses.  OHDSI tools assume a complete set of OMOP CDM tables, as may anyone designing an analysis on OMOP data.  Even if you don’t intend to populate a table, it should still be present in the database.
+
+There are 3 possible causes for this check failure: 
+
+- The wrong CDM version was specified in `executeDqChecks` 
+- The table does not exist in the table 
+- The table has the wrong name 
+
+Before taking any action to investigate/fix the failure, make sure the CDM version you specified when running `executeDqChecks` matches the version of your CDM. Some tables were added between CDM versions 5.3 and 5.4 so it’s important you’re running DQD with the correct configuration. If the versions *do* match, there is most likely an issue with the ETL. 
+
+*ETL Developers*\
+To resolve the failure, you will need to amend the code/process that creates the table (e.g. DDL script). Make sure you know whether the table is missing altogether or if it has the wrong name.  In the latter case, the table should be renamed/replaced with the correctly named table. Reference the CDM documentation to confirm correct column naming. 
+
+*Data Users*\
+Missing tables must be added to the CDM even if they are empty. This can be done using the CDM DDL scripts available in the [CommonDataModel GitHub repo](https://github.com/OHDSI/CommonDataModel). If a table has the wrong name, rename it or create a new table with the correct name and migrate the other table's data there.

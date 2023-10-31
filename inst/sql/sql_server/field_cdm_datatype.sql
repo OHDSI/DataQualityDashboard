@@ -2,7 +2,8 @@
 /*********
 FIELD_CDM_DATATYPE
 
-At a minimum, for each field that is supposed to be an integer, verify it is an integer
+In some SQL dialects, check that integer fields only contain digits.
+In others, check that integer fields are numeric and contain no decimal points
 
 Parameters used in this template:
 schema = @schema

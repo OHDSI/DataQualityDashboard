@@ -16,6 +16,7 @@ navbar:
     - intro
     - reference
     - articles
+    - checks
     - news
     right: [hades, github]
   components:
@@ -31,6 +32,34 @@ navbar:
     news:
       text: Changelog
       href: news/index.html
+    articles:
+      text: Articles
+      menu:
+      - text: Check Type Definitions
+        href: articles/CheckTypeDescriptions.html
+      - text: DQ Check Failure Thresholds
+        href: articles/Thresholds.html
+      - text: DQ Check Statuses
+        href: articles/CheckStatusDefinitions.html
+      - text: Adding a New Data Quality Check
+        href: articles/AddNewCheck.html
+      - text: DQD for Cohorts
+        href: articles/DqdForCohorts.html
+      - text: SQL-only Mode
+        href: articles/SqlOnly.html
+    checks:
+      text: Data Quality Check Types
+      menu:
+      - text: cdmTable
+        href: articles/cdmTable.html
+      - text: cdmField
+        href: articles/cdmField.html
+      - text: cdmDatatype
+        href: articles/cdmDatatype.html
+      - text: isPrimaryKey
+        href: articles/isPrimaryKey.html
+      - text: isForeignKey
+        href: articles/isForeignKey.html
     hades:
       text: hadesLogo
       href: https://ohdsi.github.io/Hades

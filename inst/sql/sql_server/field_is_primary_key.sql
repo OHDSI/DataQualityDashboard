@@ -2,7 +2,7 @@
 /*********
 FIELD_IS_PRIMARY_KEY
 
-Primary Key - verify those fields where IS_PRIMARY_KEY == Yes, the values in that field are unique
+Primary Key - verify that values in fields where isPrimaryKey == Yes are unique
 
 Parameters used in this template:
 schema = @schema

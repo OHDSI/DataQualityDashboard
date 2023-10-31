@@ -1,7 +1,8 @@
 
 /*********
-TABLE LEVEL check:
-CDM_TABLE - verify the table exists
+CDM_TABLE
+
+Verify the table exists.
 
 Parameters used in this template:
 schema = @schema

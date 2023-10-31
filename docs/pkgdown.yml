@@ -9,5 +9,10 @@ articles:
   DqdForCohorts: DqdForCohorts.html
   SqlOnly: SqlOnly.html
   Thresholds: Thresholds.html
+  cdmDatatype: cdmDatatype.html
+  cdmField: cdmField.html
+  cdmTable: cdmTable.html
+  isForeignKey: isForeignKey.html
+  isPrimaryKey: isPrimaryKey.html
 last_built: 2023-11-04T23:07Z
 

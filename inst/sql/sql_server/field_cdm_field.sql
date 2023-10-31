@@ -1,7 +1,8 @@
 
 /*********
-FIELD LEVEL check:
-CDM_FIELD - verify the field exists
+CDM_FIELD
+
+Verify the field exists.
 
 Parameters used in this template:
 schema = @schema

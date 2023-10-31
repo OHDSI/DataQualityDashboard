@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Check Status Descriptions • DataQualityDashboard</title>
+<title>isPrimaryKey • DataQualityDashboard</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Check Status Descriptions">
+<script src="../pkgdown.js"></script><meta property="og:title" content="isPrimaryKey">
 <meta property="og:description" content="DataQualityDashboard">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
       </span>
     </div>
 
@@ -129,122 +129,68 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Check Status Descriptions</h1>
-                        <h4 data-toc-skip class="author">Dmitry
-Ilyn</h4>
+      <h1 data-toc-skip>isPrimaryKey</h1>
+                        <h4 data-toc-skip class="author">Katy
+Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2023-11-04</h4>
+            <h4 data-toc-skip class="date">2023-10-22</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/CheckStatusDefinitions.rmd" class="external-link"><code>vignettes/CheckStatusDefinitions.rmd</code></a></small>
-      <div class="hidden name"><code>CheckStatusDefinitions.rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/isPrimaryKey.Rmd" class="external-link"><code>vignettes/isPrimaryKey.Rmd</code></a></small>
+      <div class="hidden name"><code>isPrimaryKey.Rmd</code></div>
 
     </div>
 
     
     
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Check Status Descriptions}
--->
-<div class="section level2">
-<h2 id="dqd-check-statuses">DQD check statuses<a class="anchor" aria-label="anchor" href="#dqd-check-statuses"></a>
-</h2>
-<div class="section level3">
-<h3 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
-</h3>
-<p>In the DataQualityDashboard v2, new check statuses were introduced:
-<code>Error</code> and <code>Not Applicable</code>. These were
-introduced to more accurately reflect the quality of data contained in a
-CDM instance, addressing scenarios where pass/fail is not appropriate.
-The new set of mutually exclusive status states are listed below in
-priority order:</p>
+<p><strong>Name</strong>: isPrimaryKey <br><strong>Level</strong>: Field
+check <br><strong>Context</strong>: Verification
+<br><strong>Category</strong>: Conformance
+<br><strong>Subcategory</strong>: Relational
+<br><strong>Severity</strong>: Fatal</p>
+<p><strong>Description</strong>: The number and percent of records that
+have a duplicate value in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong>.</p>
+<p><strong>Definition</strong>: This check will make sure that all
+primary keys as specified in the CDM version are truly unique values in
+the database. While this should be caught by primary key constraints,
+some database management systems such as Redshift do not enforce
+these.</p>
 <ul>
-<li><p><strong>Is Error:</strong> if a SQL error occurred during
-execution</p></li>
-<li><p><strong>Not Applicable:</strong> if DQ check is not applicable
-for reasons explained in the section below</p></li>
-<li><p><strong>Failed:</strong> if percent violating rows is greater
-than the threshold</p></li>
-<li><p><strong>Passed:</strong> if percent violating rows is smaller
-than the threshold</p></li>
+<li>
+<em>Numerator</em>: The number of values in the column that appear
+in more than 1 row</li>
+<li>
+<em>Denominator</em>: The total number of rows in the table</li>
+<li>
+<em>Related CDM Convention(s)</em>: Primary Key flag in <a href="https://ohdsi.github.io/CommonDataModel/index.html" class="external-link">CDM table
+specs</a>
+</li>
+<li>
+<em>CDM Fields/Tables</em>: By default, this check runs on all
+primary key columns in the CDM</li>
 </ul>
-</div>
-<div class="section level3">
-<h3 id="not-applicable">Not Applicable<a class="anchor" aria-label="anchor" href="#not-applicable"></a>
-</h3>
-<p>The results of a DQ check may not be applicable to a given CDM
-instance depending on the implementation and content of the instance.
-For example, the DQ check for plausible values of HbA1c lab results
-would pass with no violations even if there were no results for that lab
-test in the database. It is not uncommon to have &gt; 1000 DQ checks
-that do not apply to a given CDM instance. The results from DQ checks
-that are not applicable skew to overall results. Listed below are the
-scenarios for which a DQ check result is flagged as notApplicable:</p>
-<ol style="list-style-type: decimal">
-<li><p>If the cdmTable DQ check determines that a table does not exist
-in the database, then all DQ checks (except cdm_table) addressing that
-table are flagged as notApplicable</p></li>
-<li><p>If a table exists but is empty, then all field level and concept
-level checks for that table are flagged as notApplicable, except for
-cdmField checks, which evaluates if the field is defined or not. A
-cdmField check is marked as notApplicable if the CDM table it refers to
-does not exist (tested by cdmTable). An empty table is detected when the
-measureValueCompleteness DQ check for any of the fields in the table
-returns a denominator count = 0 (numDenominatorRows=0).</p></li>
-<li>
-<p>If a field is not populated, then all field level and concept
-level checks except for measureValueCompleteness and isRequired are
-flagged as notApplicable</p>
-<ol style="list-style-type: lower-alpha">
-<li><p>A field is not populated if the measureValueCompleteness DQ check
-finds denominator count &gt; 0 and number of violated rows = denominator
-count (numDenominatorRows &gt; 0 AND numDenominatorRows =
-numViolatedRows).</p></li>
-<li>
-<p>The measureValueCompleteness check is marked as not applicable
-if:</p>
-<ol style="list-style-type: lower-alpha">
-<li><p>The CDM table it refers to does not exist or is empty.</p></li>
-<li><p>The CDM field it refers to does not exist.</p></li>
-</ol>
-</li>
-<li>
-<p>The isRequired check is marked as not applicable if:</p>
-<ol style="list-style-type: lower-alpha">
-<li><p>The CDM table it refers to does not exist or is empty.</p></li>
-<li><p>The CDM field it refers to does not exist.</p></li>
-</ol>
-</li>
-</ol>
-</li>
-<li>
-<p>Flagging a Concept_ID level DQ check as notApplicable depends on
-whether the DQ check logic includes a UNIT_CONCEPT_ID. There are two
-scenarios for DQ checks evaluating specific Concept_ids.</p>
-<ol style="list-style-type: lower-alpha">
-<li><p>The DQ check does not include a UNIT_CONCEPT_ID (value is null).
-A DQ check is flagged as notApplicable if there are no instances of the
-Concept_ID in the table/field. E.g. plausibility checks for specific
-conditions and gender. Both pregnancy and male do not have
-UNIT_CONCEPT_IDs.</p></li>
-<li><p>The DQ check includes a UNIT_CONCEPT_ID. A DQ check is flagged as
-notApplicable if there are no instances of both concept and unit concept
-IDs in the table/field. E.g. all DQ checks referencing the concept_ID
-for HbA1c lab results expressed in mg/dl units will be flagged as
-notApplicable if there are no instances of that concept_ID in the
-table/field addressed by the DQ check.</p></li>
-</ol>
-</li>
-</ol>
-</div>
-</div>
+<p><strong>User Guidance</strong>: Multiple values for a primary must be
+corrected. Multiple values for a primary key will often come from errors
+in the ETL process. In these cases the ETL process needs to be
+corrected.</p>
+<p>In some cases, this type of error could arise from a 1:1 relationship
+modeled in the CDM that is modeled as a 1:n relationship in the sources
+system. For example, a single person could have multiple patient
+identifiers in a source system. In these cases the multiple records need
+to be collapsed into a single record or multiple records need to be
+created for the same person with unique identifiers. The intent of the
+multiple records needs be ascertained. For example, multiple records
+could exist for the same patient in a claims system that was covered by
+the insurer during one period as a member of a first group and then
+re-entered into the system as a new member of a different group
+(e.g. new employer). In other cases multiple records could indicate
+updates to the original record and the latest record could be considered
+the “correct” information.</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 

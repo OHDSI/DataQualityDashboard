@@ -1,8 +1,8 @@
 
 /*********
-FIELD_IS_NOT_NULLABLE
+FIELD_IS_REQUIRED
 
-For each table, check that the fields in which IS_NOT_NULLABLE == TRUE, there are no null values in that field.
+Check that values in fields where isRequired == TRUE are non-null
 
 Parameters used in this template:
 schema = @schema
