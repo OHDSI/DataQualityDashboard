@@ -93,6 +93,10 @@ executeDqChecks <- function(connectionDetails,
   if (!str_detect(cdmVersion, regex(acceptedCdmRegex))) {
     stop("cdmVersion must contain a version of the form '5.X' where X is an integer between 2 and 4 inclusive.")
   }
+  
+  if (sqlOnlyIncrementalInsert == TRUE && sqlOnly == FALSE) {
+    stop("Set `sqlOnly` to TRUE in order to use `sqlOnlyIncrementalInsert` mode.")
+  }
 
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
