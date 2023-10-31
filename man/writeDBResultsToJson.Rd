@@ -23,11 +23,11 @@ writeDBResultsToJson(
 
 \item{cdmDatabaseSchema}{The fully qualified database name of the CDM schema}
 
-\item{writeTableName}{Name of table in the database to write results to}
+\item{writeTableName}{Name of DQD results table in the database to read from}
 
-\item{outputFolder}{The output folder}
+\item{outputFolder}{The folder to output the json results file to}
 
-\item{outputFile}{The output filename}
+\item{outputFile}{The output filename of the json results file}
 }
 \description{
 Write DQD results database table to json
