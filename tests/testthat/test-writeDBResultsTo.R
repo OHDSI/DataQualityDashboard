@@ -8,17 +8,19 @@ test_that("Write DB results to json", {
   resultsDatabaseSchemaEunomia <- "main"
   writeTableName <- "dqdashboard_results"
 
-  results <- DataQualityDashboard::executeDqChecks(
-    connectionDetails = connectionDetailsEunomia,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkNames = "measurePersonCompleteness",
-    outputFolder = outputFolder,
-    writeToTable = TRUE,
-    writeTableName = writeTableName
+  expect_warning(
+    results <- DataQualityDashboard::executeDqChecks(
+      connectionDetails = connectionDetailsEunomia,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = TRUE,
+      writeTableName = writeTableName
+    ),
+    regexp = "^Missing check names.*"
   )
-
 
   connection <- DatabaseConnector::connect(connectionDetailsEunomia)
 
@@ -26,7 +28,6 @@ test_that("Write DB results to json", {
 
   DataQualityDashboard::writeDBResultsToJson(
     connection,
-    connectionDetailsEunomia,
     resultsDatabaseSchemaEunomia,
     cdmDatabaseSchemaEunomia,
     writeTableName,
@@ -46,7 +47,6 @@ test_that("Write DB results to json", {
     sql = "select count(*) from @resultsDatabaseSchema.@writeTableName;",
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     writeTableName = writeTableName,
-    targetDialect = connectionDetailsEunomia$dbms,
     snakeCaseToCamelCase = TRUE
   )
   expect_true(length(results$CheckResults) == table_rows)

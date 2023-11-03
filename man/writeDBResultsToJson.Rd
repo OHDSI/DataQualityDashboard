@@ -6,7 +6,6 @@
 \usage{
 writeDBResultsToJson(
   connection,
-  connectionDetails,
   resultsDatabaseSchema,
   cdmDatabaseSchema,
   writeTableName,
@@ -16,8 +15,6 @@ writeDBResultsToJson(
 }
 \arguments{
 \item{connection}{A connection object}
-
-\item{connectionDetails}{A connectionDetails object for connecting to the CDM database}
 
 \item{resultsDatabaseSchema}{The fully qualified database name of the results schema}
 
