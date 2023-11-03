@@ -138,6 +138,10 @@ executeDqChecks <- function(connectionDetails,
     if (nrow(metadata) < 1) {
       stop("Please populate the cdm_source table before executing data quality checks.")
     }
+    if (nrow(metadata) > 1) {
+      metadata <- metadata[1]
+      warning("The cdm_source table has more than 1 row. A single row from this table has been selected to populate DQD metadata.")
+    }
     metadata$dqdVersion <- as.character(packageVersion("DataQualityDashboard"))
     DatabaseConnector::disconnect(connection)
   } else {
