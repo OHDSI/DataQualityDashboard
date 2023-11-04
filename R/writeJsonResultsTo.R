@@ -47,7 +47,7 @@ writeJsonResultsToTable <- function(connectionDetails,
 
   ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
 
-  if ("unitConceptId" %in% colnames(df)) {
+  if ("conceptId" %in% colnames(df)) {
     ddl <- SqlRender::loadRenderTranslateSql(
       sqlFilename = "result_table_ddl_concept.sql",
       packageName = "DataQualityDashboard",
