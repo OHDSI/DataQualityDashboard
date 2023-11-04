@@ -93,7 +93,7 @@ executeDqChecks <- function(connectionDetails,
   if (!str_detect(cdmVersion, regex(acceptedCdmRegex))) {
     stop("cdmVersion must contain a version of the form '5.X' where X is an integer between 2 and 4 inclusive.")
   }
-  
+
   if (sqlOnlyIncrementalInsert == TRUE && sqlOnly == FALSE) {
     stop("Set `sqlOnly` to TRUE in order to use `sqlOnlyIncrementalInsert` mode.")
   }
@@ -139,7 +139,7 @@ executeDqChecks <- function(connectionDetails,
       stop("Please populate the cdm_source table before executing data quality checks.")
     }
     if (nrow(metadata) > 1) {
-      metadata <- metadata[1,]
+      metadata <- metadata[1, ]
       warning("The cdm_source table has more than 1 row. A single row from this table has been selected to populate DQD metadata.")
     }
     metadata$dqdVersion <- as.character(packageVersion("DataQualityDashboard"))

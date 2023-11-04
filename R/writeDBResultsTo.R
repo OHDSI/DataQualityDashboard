@@ -27,52 +27,51 @@
 #'
 
 writeDBResultsToJson <- function(connection,
-                                    resultsDatabaseSchema,
-                                    cdmDatabaseSchema,
-                                    writeTableName,
-                                    outputFolder,
-                                    outputFile) {
-    metadata <- DatabaseConnector::renderTranslateQuerySql(
-          connection,
-          sql = "select * from @cdmDatabaseSchema.cdm_source;",
-          snakeCaseToCamelCase = TRUE,
-          cdmDatabaseSchema = cdmDatabaseSchema
-        )
+                                 resultsDatabaseSchema,
+                                 cdmDatabaseSchema,
+                                 writeTableName,
+                                 outputFolder,
+                                 outputFile) {
+  metadata <- DatabaseConnector::renderTranslateQuerySql(
+    connection,
+    sql = "select * from @cdmDatabaseSchema.cdm_source;",
+    snakeCaseToCamelCase = TRUE,
+    cdmDatabaseSchema = cdmDatabaseSchema
+  )
 
-    checkResults <- DatabaseConnector::renderTranslateQuerySql(
-          connection,
-          sql = "select * from @resultsDatabaseSchema.@writeTableName;",
-          snakeCaseToCamelCase = TRUE,
-          resultsDatabaseSchema = resultsDatabaseSchema,
-          writeTableName = writeTableName
-        )
+  checkResults <- DatabaseConnector::renderTranslateQuerySql(
+    connection,
+    sql = "select * from @resultsDatabaseSchema.@writeTableName;",
+    snakeCaseToCamelCase = TRUE,
+    resultsDatabaseSchema = resultsDatabaseSchema,
+    writeTableName = writeTableName
+  )
 
-    # Quick patch for missing value issues related to SQL Only Implementation
-    checkResults["error"][checkResults["error"] == ''] <- NA
-    checkResults["warning"][checkResults["warning"] == ''] <- NA
-    checkResults["executionTime"][checkResults["executionTime"] == ''] <- '0 secs'
-    checkResults["queryText"][checkResults["queryText"] == ''] <- '[Generated via SQL Only]'
+  # Quick patch for missing value issues related to SQL Only Implementation
+  checkResults["error"][checkResults["error"] == ""] <- NA
+  checkResults["warning"][checkResults["warning"] == ""] <- NA
+  checkResults["executionTime"][checkResults["executionTime"] == ""] <- "0 secs"
+  checkResults["queryText"][checkResults["queryText"] == ""] <- "[Generated via SQL Only]"
 
-    overview <- .summarizeResults(
-        checkResults = checkResults
-        )
+  overview <- .summarizeResults(
+    checkResults = checkResults
+  )
 
-    # Quick patch for non-camel-case column name
-    names(checkResults)[names(checkResults) == "checkid"] <- "checkId"
+  # Quick patch for non-camel-case column name
+  names(checkResults)[names(checkResults) == "checkid"] <- "checkId"
 
-    allResults <- list(
-        startTimestamp = Sys.time(),
-        endTimestamp = Sys.time(),
-        executionTime = '0 secs',
-        CheckResults = checkResults,
-        Metadata = metadata,
-        Overview = overview
-        )
+  allResults <- list(
+    startTimestamp = Sys.time(),
+    endTimestamp = Sys.time(),
+    executionTime = "0 secs",
+    CheckResults = checkResults,
+    Metadata = metadata,
+    Overview = overview
+  )
 
-    .writeResultsToJson(
-        allResults,
-        outputFolder,
-        outputFile
-        )
-
+  .writeResultsToJson(
+    allResults,
+    outputFolder,
+    outputFile
+  )
 }
