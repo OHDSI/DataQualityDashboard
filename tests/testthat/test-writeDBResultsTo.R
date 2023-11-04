@@ -6,7 +6,7 @@ test_that("Write DB results to json", {
   connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
   cdmDatabaseSchemaEunomia <- "main"
   resultsDatabaseSchemaEunomia <- "main"
-  writeTableName <- "dqdashboard_results"
+  writeTableName <- "dqd_db_results"
 
   expect_warning(
     results <- DataQualityDashboard::executeDqChecks(

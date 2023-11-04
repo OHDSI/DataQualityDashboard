@@ -29,11 +29,11 @@ test_that("Write JSON results", {
     connectionDetails = connectionDetailsEunomia,
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     jsonFilePath = jsonPath,
-    writeTableName = "dqd_results"
+    writeTableName = "dqd_json_results"
   )
   connection <- DatabaseConnector::connect(connectionDetailsEunomia)
   on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
   tableNames <- DatabaseConnector::getTableNames(connection = connection, databaseSchema = resultsDatabaseSchemaEunomia)
-  expect_true("dqd_results" %in% tolower(tableNames))
-  DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
+  expect_true("dqd_json_results" %in% tolower(tableNames))
+  DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_json_results;", database_schema = resultsDatabaseSchemaEunomia)
 })

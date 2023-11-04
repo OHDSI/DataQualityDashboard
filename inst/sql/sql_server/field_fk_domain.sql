@@ -5,7 +5,7 @@ FIELD_FK_DOMAIN
 all standard concept ids are part of specified domain
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 vocabDatabaseSchema = @vocabDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
@@ -32,7 +32,7 @@ FROM (
 		SELECT 
 		  '@cdmTableName.@cdmFieldName' AS violating_field, 
 		  cdmTable.* 
-		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+		FROM @schema.@cdmTableName cdmTable
 		  LEFT JOIN @vocabDatabaseSchema.concept co
 		  ON cdmTable.@cdmFieldName = co.concept_id
 		  {@cohort & '@runForCohort' == 'Yes'}?{
@@ -48,7 +48,7 @@ FROM (
 ( 
 	SELECT 
 	  COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+	FROM @schema.@cdmTableName cdmTable
 	{@cohort & '@runForCohort' == 'Yes'}?{
     JOIN @cohortDatabaseSchema.@cohortTableName c 
     ON cdmTable.PERSON_ID = c.SUBJECT_ID
