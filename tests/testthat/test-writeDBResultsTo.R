@@ -38,10 +38,10 @@ test_that("Write DB results to json", {
   on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
 
   # Check that file was exported properly
-  expect_true(file.exists(file.path(outputFolder,testExportFile)))
+  expect_true(file.exists(file.path(outputFolder, testExportFile)))
 
   # Check that export length matches length of db table
-  results <- jsonlite::fromJSON(file.path(outputFolder,testExportFile))
+  results <- jsonlite::fromJSON(file.path(outputFolder, testExportFile))
   table_rows <- DatabaseConnector::renderTranslateQuerySql(
     connection,
     sql = "select count(*) from @resultsDatabaseSchema.@writeTableName;",
@@ -50,5 +50,4 @@ test_that("Write DB results to json", {
     snakeCaseToCamelCase = TRUE
   )
   expect_true(length(results$CheckResults) == table_rows)
-
 })
