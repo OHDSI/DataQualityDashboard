@@ -328,3 +328,30 @@ test_that("Incremental insert SQL is valid.", {
 
   DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
 })
+
+test_that("Multiple cdm_source rows triggers warning.", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+
+  connectionDetailsEunomiaCS <- Eunomia::getEunomiaConnectionDetails()
+  connection <- DatabaseConnector::connect(connectionDetailsEunomiaCS)
+  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
+  DatabaseConnector::renderTranslateExecuteSql(connection, "INSERT INTO @database_schema.cdm_source VALUES ('foo',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);", database_schema = cdmDatabaseSchemaEunomia)
+
+  w <- capture_warnings(
+    results <- executeDqChecks(
+      connectionDetails = connectionDetailsEunomiaCS,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = F
+    )
+  )
+
+  expect_match(w, "Missing check names", all = FALSE)
+  expect_match(w, "The cdm_source table has", all = FALSE)
+
+  expect_true(nrow(results$CheckResults) > 1)
+})

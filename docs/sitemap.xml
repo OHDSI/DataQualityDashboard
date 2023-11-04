@@ -118,6 +118,9 @@
     <loc>/reference/viewDqDashboard.html</loc>
   </url>
   <url>
+    <loc>/reference/writeDBResultsToJson.html</loc>
+  </url>
+  <url>
     <loc>/reference/writeJsonResultsToCsv.html</loc>
   </url>
   <url>

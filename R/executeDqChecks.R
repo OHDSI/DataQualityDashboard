@@ -94,6 +94,10 @@ executeDqChecks <- function(connectionDetails,
     stop("cdmVersion must contain a version of the form '5.X' where X is an integer between 2 and 4 inclusive.")
   }
 
+  if (sqlOnlyIncrementalInsert == TRUE && sqlOnly == FALSE) {
+    stop("Set `sqlOnly` to TRUE in order to use `sqlOnlyIncrementalInsert` mode.")
+  }
+
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
@@ -133,6 +137,10 @@ executeDqChecks <- function(connectionDetails,
     metadata <- DatabaseConnector::querySql(connection = connection, sql = sql, snakeCaseToCamelCase = TRUE)
     if (nrow(metadata) < 1) {
       stop("Please populate the cdm_source table before executing data quality checks.")
+    }
+    if (nrow(metadata) > 1) {
+      metadata <- metadata[1, ]
+      warning("The cdm_source table has more than 1 row. A single row from this table has been selected to populate DQD metadata.")
     }
     metadata$dqdVersion <- as.character(packageVersion("DataQualityDashboard"))
     DatabaseConnector::disconnect(connection)

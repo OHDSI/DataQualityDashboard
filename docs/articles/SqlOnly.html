@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.0</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@
                         <h4 data-toc-skip class="author">Maxim
 Moinat</h4>
             
-            <h4 data-toc-skip class="date">2023-10-18</h4>
+            <h4 data-toc-skip class="date">2023-11-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/SqlOnly.rmd" class="external-link"><code>vignettes/SqlOnly.rmd</code></a></small>
       <div class="hidden name"><code>SqlOnly.rmd</code></div>
@@ -324,49 +324,18 @@ feature!</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Get results</span></span>
-<span><span class="va">checkResults</span> <span class="op">&lt;-</span> <span class="fu">DatabaseConnector</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/DatabaseConnector/reference/querySql.html" class="external-link">querySql</a></span><span class="op">(</span></span>
-<span>  <span class="va">c</span>,</span>
-<span>  <span class="fu">SqlRender</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/SqlRender/reference/render.html" class="external-link">render</a></span><span class="op">(</span></span>
-<span>    <span class="st">"SELECT * FROM @resultsDatabaseSchema.@writeTableName"</span>,</span>
-<span>    resultsDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
-<span>    writeTableName <span class="op">=</span> <span class="va">writeTableName</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  snakeCaseToCamelCase <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu">DatabaseConnector</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/DatabaseConnector/reference/disconnect.html" class="external-link">disconnect</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span></span>
+<span><span class="co"># Extract results table to JSON file for viewing or secondary use</span></span>
 <span></span>
-<span><span class="co"># convert check ID column name to correct format</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">checkResults</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">checkResults</span><span class="op">)</span> <span class="op">==</span> <span class="st">"checkid"</span><span class="op">]</span> <span class="op">=</span><span class="st">"checkId"</span></span>
+<span><span class="fu">DataQualityDashboard</span><span class="fu">::</span><span class="fu"><a href="../reference/writeDBResultsToJson.html">writeDBResultsToJson</a></span><span class="op">(</span></span>
+<span>    <span class="va">c</span>,</span>
+<span>    <span class="va">connectionDetails</span>,</span>
+<span>    <span class="va">resultsDatabaseSchema</span>,</span>
+<span>    <span class="va">cdmDatabaseSchema</span>,</span>
+<span>    <span class="va">writeTableName</span>,</span>
+<span>    <span class="va">jsonOutputFolder</span>,</span>
+<span>    <span class="va">jsonOutputFile</span></span>
+<span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Get overview of DQD results</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/OHDSI/DataQualityDashboard" class="external-link">DataQualityDashboard</a></span><span class="op">)</span></span>
-<span><span class="va">overview</span> <span class="op">&lt;-</span> <span class="fu">DataQualityDashboard</span><span class="fu">:::</span><span class="fu"><a href="../reference/dot-summarizeResults.html">.summarizeResults</a></span><span class="op">(</span>checkResults <span class="op">=</span> <span class="va">checkResults</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create results object, adding fake metadata</span></span>
-<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  startTimestamp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  endTimestamp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  executionTime <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  Metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    cdmSourceName <span class="op">=</span> <span class="va">cdmSourceName</span>,</span>
-<span>    cdmSourceAbbreviation <span class="op">=</span> <span class="va">cdmSourceName</span>,</span>
-<span>    cdmHolder <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    sourceDescription <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    sourceDocumentationReference <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    cdmEtlReference <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    sourceReleaseDate <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    cdmReleaseDate <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    cdmVersion <span class="op">=</span> <span class="va">cdmVersion</span>,</span>
-<span>    cdmVersionConceptId <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    vocabularyVersion <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    dqdVersion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"DataQualityDashboard"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  Overview <span class="op">=</span> <span class="va">overview</span>,</span>
-<span>  CheckResults <span class="op">=</span> <span class="va">checkResults</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">DataQualityDashboard</span><span class="fu">:::</span><span class="fu"><a href="../reference/dot-writeResultsToJson.html">.writeResultsToJson</a></span><span class="op">(</span><span class="va">result</span>, <span class="va">jsonOutputFolder</span>, <span class="va">jsonOutputFile</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">jsonFilePath</span> <span class="op">&lt;-</span> <span class="fu">R.utils</span><span class="fu">::</span><span class="fu"><a href="https://henrikbengtsson.github.io/R.utils/reference/getAbsolutePath.html" class="external-link">getAbsolutePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">jsonOutputFolder</span>, <span class="va">jsonOutputFile</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">DataQualityDashboard</span><span class="fu">::</span><span class="fu"><a href="../reference/viewDqDashboard.html">viewDqDashboard</a></span><span class="op">(</span><span class="va">jsonFilePath</span><span class="op">)</span></span></code></pre></div>

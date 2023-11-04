@@ -124,7 +124,7 @@
 
     dfs <- do.call(rbind, dfs)
 
-    if (sqlOnlyIncrementalInsert) {
+    if (sqlOnly && sqlOnlyIncrementalInsert) {
       sqlToUnion <- dfs$query
       if (length(sqlToUnion) > 0) {
         .writeSqlOnlyQueries(sqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
