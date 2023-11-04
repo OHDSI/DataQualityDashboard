@@ -17,7 +17,6 @@
 #' Write DQD results database table to json
 #'
 #' @param connection                A connection object
-#' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
 #' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema
 #' @param writeTableName            Name of DQD results table in the database to read from
@@ -28,7 +27,6 @@
 #'
 
 writeDBResultsToJson <- function(connection,
-                                    connectionDetails,
                                     resultsDatabaseSchema,
                                     cdmDatabaseSchema,
                                     writeTableName,
@@ -37,18 +35,16 @@ writeDBResultsToJson <- function(connection,
     metadata <- DatabaseConnector::renderTranslateQuerySql(
           connection,
           sql = "select * from @cdmDatabaseSchema.cdm_source;",
-          cdmDatabaseSchema = cdmDatabaseSchema,
-          targetDialect = connectionDetails$dbms,
-          snakeCaseToCamelCase = TRUE
+          snakeCaseToCamelCase = TRUE,
+          cdmDatabaseSchema = cdmDatabaseSchema
         )
 
     checkResults <- DatabaseConnector::renderTranslateQuerySql(
           connection,
           sql = "select * from @resultsDatabaseSchema.@writeTableName;",
+          snakeCaseToCamelCase = TRUE,
           resultsDatabaseSchema = resultsDatabaseSchema,
-          writeTableName = writeTableName,
-          targetDialect = connectionDetails$dbms,
-          snakeCaseToCamelCase = TRUE
+          writeTableName = writeTableName
         )
 
     # Quick patch for missing value issues related to SQL Only Implementation

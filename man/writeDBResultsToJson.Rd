@@ -6,7 +6,6 @@
 \usage{
 writeDBResultsToJson(
   connection,
-  connectionDetails,
   resultsDatabaseSchema,
   cdmDatabaseSchema,
   writeTableName,
@@ -17,17 +16,15 @@ writeDBResultsToJson(
 \arguments{
 \item{connection}{A connection object}
 
-\item{connectionDetails}{A connectionDetails object for connecting to the CDM database}
-
 \item{resultsDatabaseSchema}{The fully qualified database name of the results schema}
 
 \item{cdmDatabaseSchema}{The fully qualified database name of the CDM schema}
 
-\item{writeTableName}{Name of table in the database to write results to}
+\item{writeTableName}{Name of DQD results table in the database to read from}
 
-\item{outputFolder}{The output folder}
+\item{outputFolder}{The folder to output the json results file to}
 
-\item{outputFile}{The output filename}
+\item{outputFile}{The output filename of the json results file}
 }
 \description{
 Write DQD results database table to json
