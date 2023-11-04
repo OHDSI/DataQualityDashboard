@@ -1,3 +1,15 @@
+DataQualityDashboard 2.5.0
+==========================
+This release includes: 
+
+### New Feature
+A new function `writeDBResultsToJson` which can be used to write DQD results previously written to a database table (by setting `writeToTable` = TRUE in `executeDqChecks` or by using the `writeJsonResultsToTable` function) into a JSON file in the standard DQD JSON format.
+
+### Bugfixes
+- DQD previously threw an error if the CDM_SOURCE table contained more than 1 row. It has now been updated to select a random row from CDM_SOURCE to use for its metadata and warn the user upon doing this. Whether or not CDM_SOURCE *should* ever contain more than 1 row is still an unresolved discussion in the community. Either way, DQD should be allowed to run if the table has been improperly populated - and perhaps check(s) should be added for its proper use once a convention is finalized
+- Fixed additional field level checks (fkDomain, fkClass, plausibleTemporalAfter) to incorporate user-specified `vocabDatabaseSchema` where appropriate
+- Additional minor bugfixes & refactors
+
 DataQualityDashboard 2.4.1
 ==========================
 This release includes: 
