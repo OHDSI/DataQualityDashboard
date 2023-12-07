@@ -34,21 +34,12 @@ FROM
 			'@cdmTableName.@cdmFieldName' AS violating_field, 
 			cdmTable.*
     	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
-    		{@cdmDatabaseSchema.@cdmTableName != @cdmDatabaseSchema.@plausibleTemporalAfterTableName}?{
-				JOIN @cdmDatabaseSchema.@plausibleTemporalAfterTableName plausibleTable ON cdmTable.person_id = plausibleTable.person_id}
 			{@cohort & '@runForCohort' == 'Yes'}?{
     			JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
     				AND c.cohort_definition_id = @cohortDefinitionId
 			}
     WHERE 
-    	{'@plausibleTemporalAfterTableName' == 'PERSON'}?{
-			COALESCE(
-				CAST(plausibleTable.@plausibleTemporalAfterFieldName AS DATE),
-				CAST(CONCAT(plausibleTable.year_of_birth,'-06-01') AS DATE)
-			) 
-		}:{
-			CAST(cdmTable.@plausibleTemporalAfterFieldName AS DATE)
-		} > CAST(cdmTable.@cdmFieldName AS DATE)
+		CAST(cdmTable.@plausibleTemporalAfterFieldName AS DATE) > CAST(cdmTable.@cdmFieldName AS DATE)
 		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
