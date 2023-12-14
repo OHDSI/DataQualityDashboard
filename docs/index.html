@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.0</span>
       </span>
     </div>
 
@@ -71,6 +71,9 @@
       <a href="articles/DqdForCohorts.html">Running the DQD on a Cohort</a>
     </li>
     <li>
+      <a href="articles/SqlOnly.html">SqlOnly</a>
+    </li>
+    <li>
       <a href="articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
     </li>
   </ul>
@@ -81,7 +84,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -177,7 +180,7 @@
 <tr class="odd">
 <td>source_documentation_reference</td>
 <td>Reference to where one can find documentation about the source data.</td>
-<td>Can include URL’s, file name, source data experts contact information (if they agree to it)</td>
+<td>Can include URLs, file name, source data experts contact information (if they agree to it)</td>
 </tr>
 <tr class="even">
 <td>cdm_etl_reference</td>
@@ -221,6 +224,8 @@
 <h1 id="system-requirements">System Requirements<a class="anchor" aria-label="anchor" href="#system-requirements"></a>
 </h1>
 <p>Requires R (version 3.2.2 or higher). Requires <a href="https://github.com/OHDSI/DatabaseConnector" class="external-link">DatabaseConnector</a> (version 2.0.2 or higher).</p>
+<p>A variety of database platforms are supported, as documented <a href="https://ohdsi.github.io/Hades/supportedPlatforms.html" class="external-link">here</a>.</p>
+<p>Note that while data quality check threshold files are provided for OMOP CDM versions 5.2, 5.3, and 5.4, the package is currently only tested against versions 5.3 and 5.4.</p>
 </div>
 <div class="section level1">
 <h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -237,6 +242,23 @@
 <h1 id="user-documentation">User Documentation<a class="anchor" aria-label="anchor" href="#user-documentation"></a>
 </h1>
 <p>Documentation can be found on the <a href="https://ohdsi.github.io/DataQualityDashboard/index.html" class="external-link">package website</a>.</p>
+<p>PDF versions of the documentation are also available:</p>
+<ul>
+<li>Vignette: <a href="https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/AddNewCheck.pdf" class="external-link">Add a New Data Quality Check</a>
+</li>
+<li>Vignette: <a href="https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/CheckStatusDefinitions.pdf" class="external-link">Check Status Descriptions</a>
+</li>
+<li>Vignette: <a href="https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/CheckTypeDescriptions.pdf" class="external-link">Data Quality Check Type Descriptions</a>
+</li>
+<li>Vignette: <a href="https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/DqdForCohorts.pdf" class="external-link">Running the DQD on a Cohort</a>
+</li>
+<li>Vignette: <a href="https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/Thresholds.pdf" class="external-link">Failure Thresholds and How to Change Them</a>
+</li>
+<li>Vignette: <a href="https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/SqlOnly.pdf" class="external-link">SqlOnly Mode</a>
+</li>
+<li>Package manual: <a href="https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/DataQualityDashboard.pdf" class="external-link">DataQualityDashboard manual</a>
+</li>
+</ul>
 </div>
 <div class="section level1">
 <h1 id="support">Support<a class="anchor" aria-label="anchor" href="#support"></a>
@@ -259,7 +281,7 @@
 <div class="section level3">
 <h3 id="development-status">Development status<a class="anchor" aria-label="anchor" href="#development-status"></a>
 </h3>
-<p>V2.0 ready for use.</p>
+<p>DataQualityDashboard latest release (representing code in the <code>main</code> branch) is ready for use.</p>
 </div>
 </div>
 <div class="section level1">

@@ -13,10 +13,14 @@
   connection,
   cdmDatabaseSchema,
   vocabDatabaseSchema,
+  resultsDatabaseSchema,
+  writeTableName,
   cohortDatabaseSchema,
   cohortTableName,
   cohortDefinitionId,
   outputFolder,
+  sqlOnlyUnionCount,
+  sqlOnlyIncrementalInsert,
   sqlOnly
 )
 }
@@ -35,6 +39,10 @@
 
 \item{vocabDatabaseSchema}{The fully qualified database name of the vocabulary schema (default is to set it as the cdmDatabaseSchema)}
 
+\item{resultsDatabaseSchema}{The fully qualified database name of the results schema}
+
+\item{writeTableName}{The table tor write DQD results to. Used when sqlOnly or writeToTable is True.}
+
 \item{cohortDatabaseSchema}{The schema where the cohort table is located.}
 
 \item{cohortTableName}{The name of the cohort table.}
@@ -42,6 +50,10 @@
 \item{cohortDefinitionId}{The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'}
 
 \item{outputFolder}{The folder to output logs and SQL files to}
+
+\item{sqlOnlyUnionCount}{(OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.}
+
+\item{sqlOnlyIncrementalInsert}{(OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)}
 
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
 

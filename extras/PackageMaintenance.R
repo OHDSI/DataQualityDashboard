@@ -25,8 +25,8 @@ devtools::document()
 
 # Create manual and vignettes:
 unlink("extras/DataQualityDashboard.pdf")
-shell("R CMD Rd2pdf ./ --output=extras/DataQualityDashboard.pdf")
-# on Mac: system("R CMD Rd2pdf ./ --output=extras/DataQualityDashboard.pdf")
+shell("R CMD Rd2pdf ./ --output=extras/DataQualityDashboard.pdf") # PC
+system("R CMD Rd2pdf ./ --output=extras/DataQualityDashboard.pdf") # Mac
 
 rmarkdown::render("vignettes/AddNewCheck.Rmd",
                   output_file = "../inst/doc/AddNewCheck.pdf",
@@ -70,6 +70,12 @@ rmarkdown::render("vignettes/Thresholds.Rmd",
                                           number_sections = TRUE))
 unlink("inst/doc/Thresholds.tex")
 
+rmarkdown::render("vignettes/SqlOnly.Rmd",
+                  output_file = "../inst/doc/SqlOnly.pdf",
+                  rmarkdown::pdf_document(latex_engine = "pdflatex",
+                                          toc = TRUE,
+                                          number_sections = TRUE))
+unlink("inst/doc/SqlOnly.tex")
 
 pkgdown::build_site()
 OhdsiRTools::fixHadesLogo()

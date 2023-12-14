@@ -1,10 +1,5 @@
 library(testthat)
-
-test_that("listDqChecks works", {
-  checks <- listDqChecks()
-  expect_equal(length(checks), 4)
-  expect_true(all(sapply(checks, is.data.frame)))
-})
+testthat::local_edition(3)
 
 test_that("Execute a single DQ check on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
@@ -42,7 +37,6 @@ test_that("Execute all TABLE checks on Synthea/Eunomia", {
 
   expect_true(nrow(results$CheckResults) > 0)
 })
-
 
 test_that("Execute FIELD checks on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
@@ -125,7 +119,8 @@ test_that("Execute a single DQ check on remote databases", {
   dbTypes <- c(
     "oracle",
     "postgresql",
-    "sql server"
+    "sql server",
+    "redshift"
   )
 
   for (dbType in dbTypes) {
@@ -135,7 +130,7 @@ test_that("Execute a single DQ check on remote databases", {
     if (sysUser != "" &
       sysPassword != "" &
       sysServer != "") {
-      cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM_SCHEMA", toupper(gsub(" ", "_", dbType))))
+      cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM54_SCHEMA", toupper(gsub(" ", "_", dbType))))
       resultsDatabaseSchema <- Sys.getenv("CDM5_%s_OHDSI_SCHEMA", toupper(gsub(" ", "_", dbType)))
 
       connectionDetails <- createConnectionDetails(
@@ -157,7 +152,8 @@ test_that("Execute a single DQ check on remote databases", {
           outputFolder = outputFolder,
           verboseMode = FALSE,
           writeToTable = FALSE,
-          checkNames = "measurePersonCompleteness"
+          checkNames = "measurePersonCompleteness",
+          cdmVersion = "5.4"
         ),
         regexp = "^Missing check names.*"
       )
@@ -185,44 +181,6 @@ test_that("Check invalid cdm version", {
   )
 })
 
-test_that("Write JSON results", {
-  outputFolder <- tempfile("dqd_")
-  on.exit(unlink(outputFolder, recursive = TRUE))
-
-  expect_warning(
-    results <- executeDqChecks(
-      connectionDetails = connectionDetailsEunomia,
-      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-      cdmSourceName = "Eunomia",
-      checkNames = "measurePersonCompleteness",
-      outputFolder = outputFolder,
-      writeToTable = FALSE
-    ),
-    regexp = "^Missing check names.*"
-  )
-
-  jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)
-  csvPath <- file.path(outputFolder, "results.csv")
-  writeJsonResultsToCsv(
-    jsonPath = jsonPath,
-    csvPath = csvPath
-  )
-  expect_true(file.exists(csvPath))
-
-  DataQualityDashboard::writeJsonResultsToTable(
-    connectionDetails = connectionDetailsEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    jsonFilePath = jsonPath,
-    writeTableName = "dqd_results"
-  )
-  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
-  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
-  tableNames <- DatabaseConnector::getTableNames(connection = connection, databaseSchema = resultsDatabaseSchemaEunomia)
-  expect_true("dqd_results" %in% tolower(tableNames))
-  DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
-})
-
 test_that("Execute DQ checks and write to table", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
@@ -247,7 +205,94 @@ test_that("Execute DQ checks and write to table", {
   DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
 })
 
-test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
+test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=4 and sqlOnlyIncrementalInsert=TRUE", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+  sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server", pathToDriver = "/")
+
+  expect_warning(
+    results <- executeDqChecks(
+      connectionDetails = sqlOnlyConnectionDetails,
+      cdmDatabaseSchema = "@yourCdmSchema",
+      resultsDatabaseSchema = "@yourResultsSchema",
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = FALSE,
+      sqlOnly = TRUE,
+      sqlOnlyUnionCount = 4,
+      sqlOnlyIncrementalInsert = TRUE,
+      writeTableName = "dqdashboard_results"
+    ),
+    regexp = "^Missing check names.*"
+  )
+  expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
+  dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
+  expect_true(dqdSqlFile %in% list.files(outputFolder))
+
+  dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
+  expect_snapshot(cat(SqlRender::readSql(dqdSqlFilePath)))
+})
+
+test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlOnlyIncrementalInsert=TRUE", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+  sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server", pathToDriver = "/")
+
+  expect_warning(
+    results <- executeDqChecks(
+      connectionDetails = sqlOnlyConnectionDetails,
+      cdmDatabaseSchema = "@yourCdmSchema",
+      resultsDatabaseSchema = "@yourResultsSchema",
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = FALSE,
+      sqlOnly = TRUE,
+      sqlOnlyUnionCount = 1,
+      sqlOnlyIncrementalInsert = TRUE,
+      writeTableName = "dqdashboard_results"
+    ),
+    regexp = "^Missing check names.*"
+  )
+  expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
+  dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
+  expect_true(dqdSqlFile %in% list.files(outputFolder))
+
+  dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
+  expect_snapshot(cat(SqlRender::readSql(dqdSqlFilePath)))
+})
+
+test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlOnlyIncrementalInsert=FALSE (the behavior in version <= 2.2.0)", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+  sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server", pathToDriver = "/")
+
+  expect_warning(
+    results <- executeDqChecks(
+      connectionDetails = sqlOnlyConnectionDetails,
+      cdmDatabaseSchema = "@yourCdmSchema",
+      resultsDatabaseSchema = "@yourResultsSchema",
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = FALSE,
+      sqlOnly = TRUE,
+      sqlOnlyUnionCount = 1,
+      sqlOnlyIncrementalInsert = FALSE,
+      writeTableName = "dqdashboard_results"
+    ),
+    regexp = "^Missing check names.*"
+  )
+  expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
+  dqdSqlFile <- "measurePersonCompleteness.sql"
+  expect_true(dqdSqlFile %in% list.files(outputFolder))
+
+  dqdSqlFilePath <- file.path(outputFolder, dqdSqlFile)
+  expect_snapshot(cat(SqlRender::readSql(dqdSqlFilePath)))
+})
+
+test_that("Incremental insert SQL is valid.", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
@@ -259,17 +304,54 @@ test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
-      writeToTable = F
+      writeToTable = FALSE,
+      sqlOnly = TRUE,
+      sqlOnlyUnionCount = 4,
+      sqlOnlyIncrementalInsert = TRUE,
+      writeTableName = "dqd_results"
     ),
     regexp = "^Missing check names.*"
   )
 
-  jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)
+  ddlSqlFile <- file.path(outputFolder, "ddlDqdResults.sql")
+  ddlSql <- SqlRender::readSql(ddlSqlFile)
+  checkSqlFile <- file.path(outputFolder, "TABLE_measurePersonCompleteness.sql")
+  checkSql <- SqlRender::readSql(checkSqlFile)
 
-  results2 <- reEvaluateThresholds(
-    jsonFilePath = jsonPath,
-    outputFolder = outputFolder,
-    outputFile = "reEvaluated.txt"
+  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
+  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
+  DatabaseConnector::executeSql(connection = connection, sql = ddlSql)
+  DatabaseConnector::executeSql(connection = connection, sql = checkSql)
+
+  checkResults <- DatabaseConnector::renderTranslateQuerySql(connection, "SELECT * FROM @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
+  expect_equal(nrow(checkResults), 16)
+
+  DatabaseConnector::renderTranslateExecuteSql(connection, "DROP TABLE @database_schema.dqd_results;", database_schema = resultsDatabaseSchemaEunomia)
+})
+
+test_that("Multiple cdm_source rows triggers warning.", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+
+  connectionDetailsEunomiaCS <- Eunomia::getEunomiaConnectionDetails()
+  connection <- DatabaseConnector::connect(connectionDetailsEunomiaCS)
+  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
+  DatabaseConnector::renderTranslateExecuteSql(connection, "INSERT INTO @database_schema.cdm_source VALUES ('foo',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);", database_schema = cdmDatabaseSchemaEunomia)
+
+  w <- capture_warnings(
+    results <- executeDqChecks(
+      connectionDetails = connectionDetailsEunomiaCS,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = F
+    )
   )
-  expect_is(results2, "list")
+
+  expect_match(w, "Missing check names", all = FALSE)
+  expect_match(w, "The cdm_source table has", all = FALSE)
+
+  expect_true(nrow(results$CheckResults) > 1)
 })

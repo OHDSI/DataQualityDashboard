@@ -4,7 +4,7 @@ PLAUSIBLE_TEMPORAL_AFTER
 get number of records and the proportion to total number of eligible records with datetimes that do not occur on or after their corresponding datetimes
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 plausibleTemporalAfterTableName = @plausibleTemporalAfterTableName
@@ -33,7 +33,7 @@ FROM
 		SELECT 
 			'@cdmTableName.@cdmFieldName' AS violating_field, 
 			cdmTable.*
-    	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+    	FROM @schema.@cdmTableName cdmTable
 			{@cohort & '@runForCohort' == 'Yes'}?{
     			JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
     				AND c.cohort_definition_id = @cohortDefinitionId
@@ -46,7 +46,7 @@ FROM
 (
 	SELECT 
 		COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+	FROM @schema.@cdmTableName cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
   			JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
     			AND c.cohort_definition_id = @cohortDefinitionId 

@@ -16,7 +16,7 @@
 
 #' @title Execute DQ checks
 #'
-#' @description This function will connect to the database, generate the sql scripts, and run the data quality checks against the database.
+#' @description This function will connect to the database, generate the sql scripts, and run the data quality checks against the database. By default, results will be written to a json file as well as a database table.
 #'
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema
@@ -25,11 +25,13 @@
 #' @param numThreads                The number of concurrent threads to use to execute the queries
 #' @param cdmSourceName             The name of the CDM data source
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
+#' @param sqlOnlyUnionCount         (OPTIONAL) In sqlOnlyIncrementalInsert mode, how many SQL commands to union in each query to insert check results into results table (can speed processing when queries done in parallel). Default is 1.
+#' @param sqlOnlyIncrementalInsert  (OPTIONAL) In sqlOnly mode, boolean to determine whether to generate SQL queries that insert check results and associated metadata into results table.  Default is FALSE (for backwards compatibility to <= v2.2.0)
 #' @param outputFolder              The folder to output logs, SQL files, and JSON results file to
 #' @param outputFile                (OPTIONAL) File to write results JSON object
 #' @param verboseMode               Boolean to determine if the console will show all execution steps. Default is FALSE
 #' @param writeToTable              Boolean to indicate if the check results will be written to the dqdashboard_results table in the resultsDatabaseSchema. Default is TRUE
-#' @param writeTableName            The name of the results table. Defaults to `dqdashboard_results`.
+#' @param writeTableName            The name of the results table. Defaults to `dqdashboard_results`.  Used when sqlOnly or writeToTable is True.
 #' @param writeToCsv                Boolean to indicate if the check results will be written to a csv file. Default is FALSE
 #' @param csvFile                   (OPTIONAL) CSV file to write results
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
@@ -52,7 +54,7 @@
 #' @importFrom utils packageVersion write.table
 #' @importFrom rlang .data
 #' @importFrom tidyselect all_of
-#' @importFrom readr read_csv
+#' @importFrom readr read_csv local_edition
 #' @importFrom dplyr mutate case_when
 #'
 #' @export
@@ -64,6 +66,8 @@ executeDqChecks <- function(connectionDetails,
                             cdmSourceName,
                             numThreads = 1,
                             sqlOnly = FALSE,
+                            sqlOnlyUnionCount = 1,
+                            sqlOnlyIncrementalInsert = FALSE,
                             outputFolder,
                             outputFile = "",
                             verboseMode = FALSE,
@@ -90,9 +94,15 @@ executeDqChecks <- function(connectionDetails,
     stop("cdmVersion must contain a version of the form '5.X' where X is an integer between 2 and 4 inclusive.")
   }
 
+  if (sqlOnlyIncrementalInsert == TRUE && sqlOnly == FALSE) {
+    stop("Set `sqlOnly` to TRUE in order to use `sqlOnlyIncrementalInsert` mode.")
+  }
+
   stopifnot(is.character(cdmDatabaseSchema), is.character(resultsDatabaseSchema), is.numeric(numThreads))
   stopifnot(is.character(cdmSourceName), is.logical(sqlOnly), is.character(outputFolder), is.logical(verboseMode))
   stopifnot(is.logical(writeToTable), is.character(checkLevels))
+  stopifnot(is.numeric(sqlOnlyUnionCount) && sqlOnlyUnionCount > 0)
+  stopifnot(is.logical(sqlOnlyIncrementalInsert))
   stopifnot(is.character(cohortDatabaseSchema), is.character(cohortTableName))
 
   if (!all(checkLevels %in% c("TABLE", "FIELD", "CONCEPT"))) {
@@ -113,6 +123,9 @@ executeDqChecks <- function(connectionDetails,
     }
   }
 
+  # temporary patch to work around vroom 1.6.4 bug
+  readr::local_edition(1)
+
   # capture metadata -----------------------------------------------------------------------
   if (!sqlOnly) {
     connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
@@ -125,10 +138,17 @@ executeDqChecks <- function(connectionDetails,
     if (nrow(metadata) < 1) {
       stop("Please populate the cdm_source table before executing data quality checks.")
     }
+    if (nrow(metadata) > 1) {
+      metadata <- metadata[1, ]
+      warning("The cdm_source table has more than 1 row. A single row from this table has been selected to populate DQD metadata.")
+    }
     metadata$dqdVersion <- as.character(packageVersion("DataQualityDashboard"))
     DatabaseConnector::disconnect(connection)
   } else {
-    metadata <- NA
+    metadata <- data.frame(
+      dqdVersion = as.character(packageVersion("DataQualityDashboard")),
+      cdmSourceName = cdmSourceName
+    )
   }
 
   # Setup output folder ------------------------------------------------------------------------------------------------------------
@@ -259,10 +279,14 @@ executeDqChecks <- function(connectionDetails,
     connection,
     cdmDatabaseSchema,
     vocabDatabaseSchema,
+    resultsDatabaseSchema,
+    writeTableName,
     cohortDatabaseSchema,
     cohortTableName,
     cohortDefinitionId,
     outputFolder,
+    sqlOnlyUnionCount,
+    sqlOnlyIncrementalInsert,
     sqlOnly,
     progressBar = TRUE
   )
@@ -310,8 +334,9 @@ executeDqChecks <- function(connectionDetails,
     .writeResultsToJson(allResults, outputFolder, outputFile)
 
     ParallelLogger::logInfo("Execution Complete")
+  } else {
+    .writeDDL(resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder)
   }
-
 
   # write to table ----------------------------------------------------------------------
 

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.0</span>
       </span>
     </div>
 
@@ -53,6 +53,9 @@
       <a href="../articles/DqdForCohorts.html">Running the DQD on a Cohort</a>
     </li>
     <li>
+      <a href="../articles/SqlOnly.html">SqlOnly</a>
+    </li>
+    <li>
       <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
     </li>
   </ul></li>
@@ -60,7 +63,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -96,10 +99,14 @@
 <span>  <span class="va">connection</span>,</span>
 <span>  <span class="va">cdmDatabaseSchema</span>,</span>
 <span>  <span class="va">vocabDatabaseSchema</span>,</span>
+<span>  <span class="va">resultsDatabaseSchema</span>,</span>
+<span>  <span class="va">writeTableName</span>,</span>
 <span>  <span class="va">cohortDatabaseSchema</span>,</span>
 <span>  <span class="va">cohortTableName</span>,</span>
 <span>  <span class="va">cohortDefinitionId</span>,</span>
 <span>  <span class="va">outputFolder</span>,</span>
+<span>  <span class="va">sqlOnlyUnionCount</span>,</span>
+<span>  <span class="va">sqlOnlyIncrementalInsert</span>,</span>
 <span>  <span class="va">sqlOnly</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -134,6 +141,14 @@
 <dd><p>The fully qualified database name of the vocabulary schema (default is to set it as the cdmDatabaseSchema)</p></dd>
 
 
+<dt>resultsDatabaseSchema</dt>
+<dd><p>The fully qualified database name of the results schema</p></dd>
+
+
+<dt>writeTableName</dt>
+<dd><p>The table tor write DQD results to. Used when sqlOnly or writeToTable is True.</p></dd>
+
+
 <dt>cohortDatabaseSchema</dt>
 <dd><p>The schema where the cohort table is located.</p></dd>
 
@@ -148,6 +163,14 @@
 
 <dt>outputFolder</dt>
 <dd><p>The folder to output logs and SQL files to</p></dd>
+
+
+<dt>sqlOnlyUnionCount</dt>
+<dd><p>(OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.</p></dd>
+
+
+<dt>sqlOnlyIncrementalInsert</dt>
+<dd><p>(OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to &lt;= v2.2.0)</p></dd>
 
 
 <dt>sqlOnly</dt>

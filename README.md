@@ -57,7 +57,7 @@ cdm_source_name | The name of the CDM instance. | Descriptive name for the sourc
 cdm_source_abbreviation | The abbreviation of the CDM   instance. | The abbreviation should   consistent for different release from the same source.
 cdm_holder | The holder of the CDM instance. | The institution that controls   access to the data.  If possible   include contact information for who to contact to request access to the data.
 source_description | The description of the CDM   instance. | Add notes, caveats, special   characteristics about the source data that would not be assumed from the   general descriptive name.  This   description intended to help analysts determine if the data is suitable for   the problem they are studying.
-source_documentation_reference | Reference to where one can find   documentation about the source data. | Can include URL's, file name,   source data experts contact information (if they agree to it)
+source_documentation_reference | Reference to where one can find   documentation about the source data. | Can include URLs, file name,   source data experts contact information (if they agree to it)
 cdm_etl_reference | Reference to where one can find   documentation about the source to ETL into OMOP CDM. | Assuming there is a document or   files (such as Rabbit in the Hat) describing the ETL.  May be the location of the ETL source and   documentation repository.
 source_release_date | The release date of the source   data. | When the source data was made   available for ETL'ing.  For sites doing   incremental updates, the date the last increment made available.  This implies that for sites doing incremental   updates the CDM Source table should be updated to reflect that changes were   made to the CDM.
 cdm_release_date | The release date of the CDM   instance. | When the source data was made   available for general use.  For sites   doing incremental updates, this implies that the CDM Source table should be   updated to reflect that changes were made to the CDM.
@@ -73,6 +73,10 @@ System Requirements
 ===================
 Requires R (version 3.2.2 or higher). Requires [DatabaseConnector](https://github.com/OHDSI/DatabaseConnector) (version 2.0.2 or higher).
 
+A variety of database platforms are supported, as documented [here](https://ohdsi.github.io/Hades/supportedPlatforms.html). 
+
+Note that while data quality check threshold files are provided for OMOP CDM versions 5.2, 5.3, and 5.4, the package is currently only tested against versions 5.3 and 5.4.
+
 Installation
 =============
 1. See the instructions [here](https://ohdsi.github.io/Hades/rSetup.html) for configuring your R environment, including RTools and Java.
@@ -87,6 +91,16 @@ Installation
 User Documentation
 ==================
 Documentation can be found on the [package website](https://ohdsi.github.io/DataQualityDashboard/index.html).
+
+PDF versions of the documentation are also available:
+
+* Vignette: [Add a New Data Quality Check](https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/AddNewCheck.pdf)
+* Vignette: [Check Status Descriptions](https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/CheckStatusDefinitions.pdf)
+* Vignette: [Data Quality Check Type Descriptions](https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/CheckTypeDescriptions.pdf)
+* Vignette: [Running the DQD on a Cohort](https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/DqdForCohorts.pdf)
+* Vignette: [Failure Thresholds and How to Change Them](https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/Thresholds.pdf)
+* Vignette: [SqlOnly Mode](https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/SqlOnly.pdf)
+* Package manual: [DataQualityDashboard manual](https://github.com/OHDSI/DataQualityDashboard/raw/main/inst/doc/DataQualityDashboard.pdf) 
 
 Support
 =======
@@ -104,7 +118,7 @@ DataQualityDashboard is being developed in R Studio.
 
 ### Development status
 
-V2.0 ready for use. 
+DataQualityDashboard latest release (representing code in the `main` branch) is ready for use. 
 
 # Acknowledgements
 - This project is supported in part through the National Science Foundation grant IIS 1251151.
