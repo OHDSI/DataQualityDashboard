@@ -46,8 +46,8 @@ FROM
 				p.birth_datetime, 
 				CAST(CONCAT(
 					p.year_of_birth, '-',
-					COALESCE(p.plausibleTable.month_of_birth, 1), '-',
-					COALESCE(p.plausibleTable.day_of_birth, 1)
+					COALESCE(p.month_of_birth, 1), '-',
+					COALESCE(p.day_of_birth, 1)
 				) AS DATE)
 			) > CAST(cdmTable.@cdmFieldName AS DATE)
 		/*violatedRowsEnd*/
