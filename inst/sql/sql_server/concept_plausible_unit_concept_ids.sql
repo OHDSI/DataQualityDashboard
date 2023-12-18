@@ -41,7 +41,6 @@ FROM
 		WHERE m.@cdmFieldName = @conceptId
 		  AND COALESCE (m.unit_concept_id, -1) NOT IN (replace (@plausibleUnitConceptIds, 'NA', '-1')) -- '-1' stands for the cases when unit_concept_id is null
 		  AND m.value_as_number IS NOT NULL 
-		  AND (m.unit_source_value IS NOT NULL OR m.unit_source_value <> '')
 		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
