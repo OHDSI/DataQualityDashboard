@@ -38,7 +38,7 @@ FROM
         JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
             AND c.cohort_definition_id = @cohortDefinitionId
         }
-        WHERE CAST(cdmTable.@cdmFieldName AS DATE) < CAST(cdmTable.@plausibleTemporalAfterFieldName AS DATE)
+        WHERE CAST(cdmTable.@cdmFieldName AS DATE) > CAST(cdmTable.@plausibleTemporalAfterFieldName AS DATE)
         /*violatedRowsEnd*/
     ) violated_rows
 ) violated_row_count,

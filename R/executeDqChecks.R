@@ -123,6 +123,7 @@ executeDqChecks <- function(connectionDetails,
     }
   }
 
+
   # temporary patch to work around vroom 1.6.4 bug
   readr::local_edition(1)
 

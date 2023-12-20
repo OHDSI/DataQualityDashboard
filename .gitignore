@@ -28,6 +28,9 @@ inst/results.json
 # Other
 .DS_Store
 
+# Visual Studio Code
+.vscode/
+
 errorReport.txt
 output/
 results/
