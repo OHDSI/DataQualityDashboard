@@ -38,7 +38,7 @@ FROM
         JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
             AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
         }
-        JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = de.person_id
+        JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = p.person_id
         WHERE CAST(cdmTable.@cdmFieldName AS DATE) < COALESCE(
                 p.birth_datetime, 
                 CAST(CONCAT(
