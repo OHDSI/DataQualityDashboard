@@ -1,7 +1,8 @@
 
 /*********
 PLAUSIBLE_START_BEFORE_END
-all start dates are before their corresponding end dates (PLAUSIBLE_START_BEFORE_END == Yes)
+all start dates are before their corresponding end dates (PLAUSIBLE_START_BEFORE_END == Yes).
+@cdmFieldName is the start date and @plausibleStartBeforeEndFieldName is the end date.
 
 Parameters used in this template:
 schema = @schema
@@ -38,7 +39,10 @@ FROM
         JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
             AND c.cohort_definition_id = @cohortDefinitionId
         }
-        WHERE CAST(cdmTable.@cdmFieldName AS DATE) > CAST(cdmTable.@plausibleStartBeforeEndFieldName AS DATE)
+        WHERE 
+            cdmTable.@cdmFieldName IS NOT NULL AND
+            cdmTable.@plausibleStartBeforeEndFieldName IS NOT NULL AND
+            CAST(cdmTable.@cdmFieldName AS DATE) > CAST(cdmTable.@plausibleStartBeforeEndFieldName AS DATE)
         /*violatedRowsEnd*/
     ) violated_rows
 ) violated_row_count,
@@ -50,5 +54,8 @@ FROM
     JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
         AND c.cohort_definition_id = @cohortDefinitionId 
     }
+    WHERE 
+        cdmTable.@cdmFieldName IS NOT NULL AND
+        cdmTable.@plausibleStartBeforeEndFieldName IS NOT NULL
 ) denominator
 ;

@@ -1,7 +1,7 @@
 
 /*********
 PLAUSIBLE_BEFORE_DEATH
-all events occur after death (PLAUSIBLE_BEFORE_DEATH == Yes)
+Chedcks for events that occur more than 60 days after death (PLAUSIBLE_BEFORE_DEATH == Yes).
 Denominator is number of events of persons who died.
 
 Parameters used in this template:
@@ -39,7 +39,8 @@ FROM
             AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
         }
         JOIN @cdmDatabaseSchema.death de ON cdmTable.person_id = de.person_id
-        WHERE cast(cdmTable.@cdmFieldName AS DATE) > DATEADD(day, 60, cast(de.death_date AS DATE))
+        WHERE cdmTable.@cdmFieldName IS NOT NULL AND 
+            CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(day, 60, de.death_date)
         /*violatedRowsEnd*/
     ) violated_rows
 ) violated_row_count,
@@ -53,5 +54,6 @@ FROM
     }
     JOIN @cdmDatabaseSchema.death
         ON death.person_id = cdmTable.person_id
+    WHERE cdmTable.@cdmFieldName IS NOT NULL
 ) denominator
 ;

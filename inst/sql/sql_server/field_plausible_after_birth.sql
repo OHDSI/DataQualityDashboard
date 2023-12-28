@@ -39,7 +39,8 @@ FROM
             AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
         }
         JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = p.person_id
-        WHERE CAST(cdmTable.@cdmFieldName AS DATE) < COALESCE(
+        WHERE cdmTable.@cdmFieldName IS NOT NULL AND 
+            CAST(cdmTable.@cdmFieldName AS DATE) < COALESCE(
                 p.birth_datetime, 
                 CAST(CONCAT(
                     p.year_of_birth,
@@ -64,5 +65,6 @@ FROM
     JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
         AND c.cohort_definition_id = @cohortDefinitionId
     }
+    WHERE cdmTable.@cdmFieldName IS NOT NULL
 ) denominator
 ;

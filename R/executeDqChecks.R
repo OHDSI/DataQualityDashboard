@@ -260,11 +260,11 @@ executeDqChecks <- function(connectionDetails,
   }
 
   if ("plausibleDuringLife" %in% checkDescriptionsDf$checkName) {
-    ParallelLogger::logWarn("DEPRECATION WARNING - The plausibleDuringLife check has been reimplemented with the plausibleBeforeDeath check.")
+    warning("DEPRECATION WARNING - The plausibleDuringLife check has been reimplemented with the plausibleBeforeDeath check.")
   }
 
   if ("plausibleTemporalAfter" %in% checkDescriptionsDf$checkName) {
-    ParallelLogger::logWarn("DEPRECATION WARNING - The plausibleTemporalAfter check has been reimplemented with the plausibleAfterBirth and plausibleStartBeforeEnd checks.")
+    warning("DEPRECATION WARNING - The plausibleTemporalAfter check has been reimplemented with the plausibleAfterBirth and plausibleStartBeforeEnd checks.")
   }
 
   checkDescriptions <- split(checkDescriptionsDf, seq_len(nrow(checkDescriptionsDf)))
