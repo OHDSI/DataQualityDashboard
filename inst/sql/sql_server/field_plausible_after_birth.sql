@@ -42,9 +42,15 @@ FROM
         WHERE CAST(cdmTable.@cdmFieldName AS DATE) < COALESCE(
                 p.birth_datetime, 
                 CAST(CONCAT(
-                    p.year_of_birth, '-',
-                    COALESCE(p.month_of_birth, 1), '-',
-                    COALESCE(p.day_of_birth, 1)
+                    p.year_of_birth,
+                    COALESCE(
+                        RIGHT('00' + CAST(p.month_of_birth AS VARCHAR), 2),
+                        '01'
+                    ),
+                    COALESCE(
+                        RIGHT('00' + CAST(p.day_of_birth AS VARCHAR), 2),
+                        '01'
+                    )
                 ) AS DATE)
             )
         /*violatedRowsEnd*/
