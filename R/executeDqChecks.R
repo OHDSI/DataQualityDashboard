@@ -253,14 +253,18 @@ executeDqChecks <- function(connectionDetails,
 
   if (length(checkNames) > 0) {
     checkDescriptionsDf <- checkDescriptionsDf[checkDescriptionsDf$checkName %in% checkNames, ]
-  } else {
-    # No checkNames specified. Do not run plausibleDuringLife and plausibleTemportalAfter as these are superseded three new checks
-    disabledChecks <- c("plausibleDuringLife", "plausibleTemportalAfter")
-    checkDescriptionsDf <- checkDescriptionsDf[!(checkDescriptionsDf$checkName %in% disabledChecks), ]
   }
 
   if (nrow(checkDescriptionsDf) == 0) {
     stop("No checks are available based on excluded tables. Please review tablesToExclude.")
+  }
+
+  if ("plausibleDuringLife" %in% checkDescriptionsDf$checkName) {
+    ParallelLogger::logWarn("DEPRECATION WARNING - The plausibleDuringLife check has been reimplemented with the plausibleBeforeDeath check.")
+  }
+
+  if ("plausibleTemporalAfter" %in% checkDescriptionsDf$checkName) {
+    ParallelLogger::logWarn("DEPRECATION WARNING - The plausibleTemporalAfter check has been reimplemented with the plausibleAfterBirth and plausibleStartBeforeEnd checks.")
   }
 
   checkDescriptions <- split(checkDescriptionsDf, seq_len(nrow(checkDescriptionsDf)))
