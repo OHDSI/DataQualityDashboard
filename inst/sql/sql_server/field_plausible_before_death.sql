@@ -1,7 +1,7 @@
 
 /*********
 PLAUSIBLE_BEFORE_DEATH
-Chedcks for events that occur more than 60 days after death (PLAUSIBLE_BEFORE_DEATH == Yes).
+Checks for events that occur more than 60 days after death (PLAUSIBLE_BEFORE_DEATH == Yes).
 Denominator is number of events of persons who died.
 
 Parameters used in this template:
