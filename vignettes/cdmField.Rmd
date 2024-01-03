@@ -17,12 +17,12 @@ output:
     toc: yes
 ---
 
-**Name**: cdmField
+**Check Name**: cdmField
 <br>**Level**: Field check
 <br>**Context**: Verification
 <br>**Category**: Conformance
 <br>**Subcategory**: Relational
-<br>**Severity**: Fatal
+<br>**Severity**: Fatal &#x1F480;
 
 **Description**: A yes or no value indicating if the **cdmFieldName** field is present in the **cdmTableName** table.
 
@@ -41,11 +41,11 @@ There are 3 possible causes for this check failure:
 - The column does not exist in the table 
 - The column has the wrong name 
 
-Before taking any action in your ETL code, make sure the CDM version you specified when running `executeDqChecks` matches the version of your CDM.  Some columns were renamed between CDM versions 5.3 and 5.4 so it’s important you’re running DQD with the correct configuration. If the versions *do* match, there is most likely an issue with your CDM table.
+Before taking any action in your ETL code, make sure the CDM version you specified when running `executeDqChecks` matches the version of your CDM.  Some columns were renamed between CDM versions 5.3 and 5.4 so it’s important you’re running DQD with the correct configuration. If the versions *do* match, there is most likely an issue with the ETL.
 
-*ETL Developers*
+*ETL Developers*\
 To resolve the failure, you will need to amend the code/process that creates the table (e.g. DDL script).  Make sure you know whether the column is missing altogether or if it has the wrong name.  In the latter case, the column should be renamed or replaced with a correctly named column.  Reference the [CDM documentation](https://ohdsi.github.io/CommonDataModel/index.html) to confirm correct column naming.
 
-*Data Users*
+*Data Users*\
 Missing columns must be added to the CDM even if they are empty. If a column has the wrong name, rename it or create a new column with the correct name and migrate the other column's data there.
 

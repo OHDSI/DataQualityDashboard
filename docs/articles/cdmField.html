@@ -100,6 +100,15 @@
     <li>
       <a href="../articles/isForeignKey.html">isForeignKey</a>
     </li>
+    <li>
+      <a href="../articles/isRequired.html">isRequired</a>
+    </li>
+    <li>
+      <a href="../articles/fkDomain.html">fkDomain</a>
+    </li>
+    <li>
+      <a href="../articles/fkClass.html">fkClass</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -133,7 +142,7 @@
                         <h4 data-toc-skip class="author">Katy
 Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2023-10-22</h4>
+            <h4 data-toc-skip class="date">2024-01-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/cdmField.Rmd" class="external-link"><code>vignettes/cdmField.Rmd</code></a></small>
       <div class="hidden name"><code>cdmField.Rmd</code></div>
@@ -142,11 +151,11 @@ Sadowski</h4>
 
     
     
-<p><strong>Name</strong>: cdmField <br><strong>Level</strong>: Field
-check <br><strong>Context</strong>: Verification
+<p><strong>Check Name</strong>: cdmField <br><strong>Level</strong>:
+Field check <br><strong>Context</strong>: Verification
 <br><strong>Category</strong>: Conformance
 <br><strong>Subcategory</strong>: Relational
-<br><strong>Severity</strong>: Fatal</p>
+<br><strong>Severity</strong>: Fatal 💀</p>
 <p><strong>Description</strong>: A yes or no value indicating if the
 <strong>cdmFieldName</strong> field is present in the
 <strong>cdmTableName</strong> table.</p>
@@ -169,11 +178,11 @@ specs</a>
 <em>CDM Fields/Tables</em>: By default, this check runs on all
 tables &amp; fields in the CDM</li>
 </ul>
-<p><strong>User Guidance</strong>: This check must be resolved to avoid
-errors in downstream tools/analyses. OHDSI tools assume a complete set
-of OMOP CDM tables and columns, as may anyone designing an analysis on
-OMOP data. Even if you don’t intend to populate a column, it should
-still be present in the database.</p>
+<p><strong>User Guidance</strong>: This check failure must be resolved
+to avoid errors in downstream tools/analyses. OHDSI tools assume a
+complete set of OMOP CDM tables and columns, as may anyone designing an
+analysis on OMOP data. Even if you don’t intend to populate a column, it
+should still be present in the database.</p>
 <p>There are 3 possible causes for this check failure:</p>
 <ul>
 <li>The wrong CDM version was specified in
@@ -187,17 +196,18 @@ you specified when running <code>executeDqChecks</code> matches the
 version of your CDM. Some columns were renamed between CDM versions 5.3
 and 5.4 so it’s important you’re running DQD with the correct
 configuration. If the versions <em>do</em> match, there is most likely
-an issue with your CDM table.</p>
-<p><em>ETL Developers</em> To resolve the failure, you will need to
-amend the code/process that creates the table (e.g. DDL script). Make
-sure you know whether the column is missing altogether or if it has the
-wrong name. In the latter case, the column should be renamed or replaced
-with a correctly named column. Reference the <a href="https://ohdsi.github.io/CommonDataModel/index.html" class="external-link">CDM
+an issue with the ETL.</p>
+<p><em>ETL Developers</em><br>
+To resolve the failure, you will need to amend the code/process that
+creates the table (e.g. DDL script). Make sure you know whether the
+column is missing altogether or if it has the wrong name. In the latter
+case, the column should be renamed or replaced with a correctly named
+column. Reference the <a href="https://ohdsi.github.io/CommonDataModel/index.html" class="external-link">CDM
 documentation</a> to confirm correct column naming.</p>
-<p><em>Data Users</em> Missing columns must be added to the CDM even if
-they are empty. If a column has the wrong name, rename it or create a
-new column with the correct name and migrate the other column’s data
-there.</p>
+<p><em>Data Users</em><br>
+Missing columns must be added to the CDM even if they are empty. If a
+column has the wrong name, rename it or create a new column with the
+correct name and migrate the other column’s data there.</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -17,41 +17,34 @@ output:
     toc: yes
 ---
 
-**Name**: isPrimaryKey
+**Check Name**: isPrimaryKey
 <br>**Level**: Field check
 <br>**Context**: Verification
 <br>**Category**: Conformance
 <br>**Subcategory**: Relational
-<br>**Severity**: Fatal
+<br>**Severity**: Fatal &#x1F480;
 
 **Description**: The number and percent of records that have a duplicate value in the **cdmFieldName** field of the **cdmTableName**. 
 
-**Definition**: This check will make sure that all primary keys as specified in the CDM version are truly unique keys. While this should be caught by primary key constraints, some database management systems such as Redshift do not enforce these.
+**Definition**: This check will make sure that all primary keys as specified in the CDM version are truly unique keys. While this issue should generally be prevented by primary key database constraints, some database management systems such as Redshift do not enforce these constraints.
 
 - *Numerator*: The number of values in the column that appear in more than 1 row
 - *Denominator*: The total number of rows in the table
 - *Related CDM Convention(s)*: Primary Key flag in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
 - *CDM Fields/Tables*: By default, this check runs on all primary key columns in the CDM
 
-**User Guidance**:  Multiple values for a primary key must be corrected. Failure to have unique values for a primary key will result in incorrect results being returned for queries that use these fields. This is especially true for joins - joins on columns where multiple records are found where a single record is assumed will result in inflation of the results set ("fanning"). Also, some analytic frameworks may raise errors if more than one record is found for an entity expected to be unique.
+**User Guidance**:  Multiple values for a primary key must be corrected. Failure to have unique values for a primary key will result in incorrect results being returned for queries that use these fields. This is especially true for joins - joins on columns where multiple records are found where a single record is assumed will result in inflation of the result set ("fanning"). Also, some analytic frameworks may raise errors if more than one record is found for an entity expected to be unique.
 
 Failing rows can be inspected as follows:
 
 ```
-SELECT  
-'@cdmTableName.@cdmFieldName' AS violating_field,  
-dupe_count,
-cdmTable.*  
-FROM @schema.@cdmTableName cdmTable 
-WHERE cdmTable.@cdmFieldName IN (  
-  SELECT  
-    @cdmFieldName,
-    COUNT_BIG(*) dupe_count
-  FROM @schema.@cdmTableName 
-  GROUP BY @cdmFieldName 
-  HAVING COUNT_BIG(*) > 1  
-) 
-ORDER BY dupe_count DESC
+SELECT 
+  '@cdmTableName.@cdmFieldName' AS violating_field,  
+  cdmTable.*,
+  COUNT_BIG(*) OVER (PARTITION BY @cdmTableName.@cdmFieldName) AS dupe_count
+FROM @cdmDatabaseSchema.@cdmTableName
+WHERE dupe_count > 1
+ORDER BY dupe_count DESC;
 ```
 
 *ETL Developers*\

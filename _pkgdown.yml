@@ -60,6 +60,12 @@ navbar:
         href: articles/isPrimaryKey.html
       - text: isForeignKey
         href: articles/isForeignKey.html
+      - text: isRequired
+        href: articles/isRequired.html
+      - text: fkDomain
+        href: articles/fkDomain.html
+      - text: fkClass
+        href: articles/fkClass.html
     hades:
       text: hadesLogo
       href: https://ohdsi.github.io/Hades

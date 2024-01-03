@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>cdmTable • DataQualityDashboard</title>
+<title>fkDomain • DataQualityDashboard</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="cdmTable">
+<script src="../pkgdown.js"></script><meta property="og:title" content="fkDomain">
 <meta property="og:description" content="DataQualityDashboard">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -138,81 +138,103 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>cdmTable</h1>
+      <h1 data-toc-skip>fkDomain</h1>
                         <h4 data-toc-skip class="author">Katy
 Sadowski</h4>
             
             <h4 data-toc-skip class="date">2024-01-02</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/cdmTable.Rmd" class="external-link"><code>vignettes/cdmTable.Rmd</code></a></small>
-      <div class="hidden name"><code>cdmTable.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/fkDomain.Rmd" class="external-link"><code>vignettes/fkDomain.Rmd</code></a></small>
+      <div class="hidden name"><code>fkDomain.Rmd</code></div>
 
     </div>
 
     
     
-<p><strong>Check Name</strong>: cdmTable <br><strong>Level</strong>:
-Table check <br><strong>Context</strong>: Verification
+<div class="section level2">
+<h2 id="fkdomain">fkDomain<a class="anchor" aria-label="anchor" href="#fkdomain"></a>
+</h2>
+<p><strong>Check Name</strong>: fkDomain <br><strong>Level</strong>:
+Field check <br><strong>Context</strong>: Verification
 <br><strong>Category</strong>: Conformance
-<br><strong>Subcategory</strong>: Relational
-<br><strong>Severity</strong>: Fatal 💀</p>
-<p><strong>Description</strong>: A yes or no value indicating if the
-<strong>cdmTable</strong> table is present in the database.</p>
-<p><strong>Definition</strong>: This check verifies if a table is
-present as specified in the CDM specification for the relevant CDM
-version.</p>
+<br><strong>Subcategory</strong>: Value <br><strong>Severity</strong>:
+CDM convention ⚠</p>
+<p><strong>Description</strong>: The number and percent of records that
+have a value in the <strong>cdmFieldName</strong> field in the
+<strong>cdmTableName</strong> table that do not conform to the
+<strong>fkDomain</strong> domain.</p>
+<p><strong>Definition</strong>: It is often the case that standard
+concept fields in the OMOP CDM should belong to a certain domain. All
+possible domains are listed in the vocabulary table DOMAIN and the
+expected domain for CDM fields are listed as part of the CDM
+documentation. For example, all concepts in the field
+PERSON.gender_concept_id should conform to the <a href="http://athena.ohdsi.org/search-terms/terms?standardConcept=Standard&amp;domain=Gender&amp;page=1&amp;pageSize=15&amp;query=" class="external-link"><em>gender</em>
+domain</a>.</p>
 <ul>
 <li>
-<em>Numerator</em>: If the table is present, the numerator of the
-check result will be 0; if the table is absent the check will throw an
-error</li>
+<em>Numerator</em>: The number of rows in the table where the
+standard concept ID field contains a concept that does not conform to
+the specified <code>domain_id</code>. This numerator specifically
+excludes concept_id 0</li>
 <li>
-<em>Denominator</em>: The denominator is always a placeholder value
-of 1</li>
+<em>Denominator</em>: The total number of rows in the table. This
+denominator includes rows with concept_id 0</li>
 <li>
-<em>Related CDM Convention(s)</em>: Listed tables in <a href="https://ohdsi.github.io/CommonDataModel/index.html" class="external-link">CDM table
+<em>Related CDM Convention(s)</em>: FK Domain flag in <a href="https://ohdsi.github.io/CommonDataModel/index.html" class="external-link">CDM table
 specs</a>
 </li>
 <li>
-<em>CDM Fields/Tables</em>: By default, this check runs on all
-tables in the CDM</li>
+<em>CDM Fields/Tables</em>: This check runs on all standard concept
+ID fields (e.g. <code>condition_concept_id</code>;
+<code>gender_concept_id</code>; etc.)</li>
 </ul>
-<p><strong>User Guidance</strong>: This check failure must be resolved
-to avoid errors in downstream tools/analyses. OHDSI tools assume a
-complete set of OMOP CDM tables, as may anyone designing an analysis on
-OMOP data. Even if you don’t intend to populate a table, it should still
-be present in the database.</p>
-<p>There are 3 possible causes for this check failure:</p>
-<ul>
-<li>The wrong CDM version was specified in
-<code>executeDqChecks</code>
-</li>
-<li>The table does not exist in the database</li>
-<li>The table has the wrong name</li>
-</ul>
-<p>Before taking any action to investigate/fix the failure, make sure
-the CDM version you specified when running <code>executeDqChecks</code>
-matches the version of your CDM. Some tables were added between CDM
-versions 5.3 and 5.4 so it’s important you’re running DQD with the
-correct configuration. If the versions <em>do</em> match, there is most
-likely an issue with the ETL.</p>
+<p><strong>User Guidance</strong>: OHDSI tools and analyses assume that
+standard concepts in event tables and demographic data conform to the
+relevant domain. If incorrect concepts are allowed to persist, a study
+package could run on this table but may not produce expected
+results.</p>
+<p>To assess the impacted rows/tables, you may run a query like the one
+below:</p>
+<pre><code>-- @cdmTableName.@cdmFieldName is the standard concept ID field in the table
+-- @cdmTableName.@cdmTablePk is the primary key field in the table
+
+SELECT 
+  concept.concept_id, 
+  concept.domain_id, 
+  concept.concept_name, 
+  concept.concept_code, 
+  COUNT(DISTINCT @cdmTableName.@cdmTablePk), 
+  COUNT(DISTINCT @cdmTableName.person_id) 
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable 
+  LEFT JOIN @vocabSchema.concept on @cdmTableName.@cdmFieldName = concept.concept_id   
+    AND concept.domain_id != {fkDomain} AND concept.concept_id != 0 
+GROUP BY concept.concept_id, concept.domain_id, concept.concept_name, concept.concept_code</code></pre>
 <p><em>ETL Developers</em><br>
-To resolve the failure, you will need to amend the code/process that
-creates the table (e.g. DDL script). Make sure you know whether the
-table is missing altogether or if it has the wrong name. In the latter
-case, the table should be renamed/replaced with the correctly named
-table. Reference the CDM documentation to confirm correct table
-naming.</p>
+Recommended actions: - Identify the specific concepts in the table that
+have an incorrect <code>domain_id</code> - Investigate the ETL process
+that moves records to the tables based on the standard concept ID
+domain. Likely there is an error that is letting records through with
+the incorrect <code>domain_id</code> - Ultimately the ETL process should
+be improved so that the correct rows are moved to the correct tables
+based on their domain</p>
 <p><em>Data Users</em><br>
-Missing tables must be added to the CDM even if they are empty. This can
-be done using the CDM DDL scripts available in the <a href="https://github.com/OHDSI/CommonDataModel" class="external-link">CommonDataModel GitHub
-repo</a>. If a table has the wrong name, rename it or create a new table
-with the correct name and migrate the other table’s data there.</p>
+If this check is failing it means that there is likely an error in the
+ETL process that builds the domain tables. If there are records in a
+table with standard concepts in the wrong domain then cohorts and
+analyses will run but they will return unexpected or erroneous
+results.</p>
+<p>You may characterize the potential impact of the erroneous domain
+sorting on your analysis by running a query like the one above. Use the
+results to see what concepts in a table were incorrectly sorted, and how
+many events/patients are impacted.</p>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 

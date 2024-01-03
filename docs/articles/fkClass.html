@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>cdmTable • DataQualityDashboard</title>
+<title>fkClass • DataQualityDashboard</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="cdmTable">
+<script src="../pkgdown.js"></script><meta property="og:title" content="fkClass">
 <meta property="og:description" content="DataQualityDashboard">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -138,81 +138,105 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>cdmTable</h1>
+      <h1 data-toc-skip>fkClass</h1>
                         <h4 data-toc-skip class="author">Katy
 Sadowski</h4>
             
             <h4 data-toc-skip class="date">2024-01-02</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/cdmTable.Rmd" class="external-link"><code>vignettes/cdmTable.Rmd</code></a></small>
-      <div class="hidden name"><code>cdmTable.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/fkClass.Rmd" class="external-link"><code>vignettes/fkClass.Rmd</code></a></small>
+      <div class="hidden name"><code>fkClass.Rmd</code></div>
 
     </div>
 
     
     
-<p><strong>Check Name</strong>: cdmTable <br><strong>Level</strong>:
-Table check <br><strong>Context</strong>: Verification
+<div class="section level2">
+<h2 id="fkclass">fkClass<a class="anchor" aria-label="anchor" href="#fkclass"></a>
+</h2>
+<p><strong>Check Name</strong>: fkClass <br><strong>Level</strong>:
+Field check <br><strong>Context</strong>: Verification
 <br><strong>Category</strong>: Conformance
-<br><strong>Subcategory</strong>: Relational
-<br><strong>Severity</strong>: Fatal 💀</p>
-<p><strong>Description</strong>: A yes or no value indicating if the
-<strong>cdmTable</strong> table is present in the database.</p>
-<p><strong>Definition</strong>: This check verifies if a table is
-present as specified in the CDM specification for the relevant CDM
-version.</p>
+<br><strong>Subcategory</strong>: Computational
+<br><strong>Severity</strong>: CDM convention ⚠</p>
+<p><strong>Description</strong>: The number and percent of records that
+have a value in the <strong>cdmFieldName</strong> field in the
+<strong>cdmTableName</strong> table that do not conform to the
+<strong>fkClass</strong> class.</p>
+<p><strong>Definition</strong>: There is the occasional field in the
+OMOP CDM that expects not only concepts of a certain domain, but of a
+certain concept class as well. The best example is the
+<code>drug_concept_id</code> field in the <code>DRUG_ERA</code> table.
+Drug eras represent the span of time a person was exposed to a
+particular drug <em>ingredient</em>, so all concepts in
+<code>DRUG_ERA.drug_concept_id</code> must be of the drug domain and
+ingredient class.</p>
 <ul>
 <li>
-<em>Numerator</em>: If the table is present, the numerator of the
-check result will be 0; if the table is absent the check will throw an
-error</li>
+<em>Numerator</em>: The number of rows in the table where the
+standard concept ID field contains a concept that does not conform to
+the specified concept_class_id. This numerator specifically excludes
+concept_id 0</li>
 <li>
-<em>Denominator</em>: The denominator is always a placeholder value
-of 1</li>
+<em>Denominator</em>: The total number of rows in the specified cdm
+table. This denominator includes rows with concept_id 0</li>
 <li>
-<em>Related CDM Convention(s)</em>: Listed tables in <a href="https://ohdsi.github.io/CommonDataModel/index.html" class="external-link">CDM table
-specs</a>
-</li>
+<em>Related CDM Convention(s)</em>: This check is specific to <a href="http://ohdsi.github.io/CommonDataModel/cdm54.html#DRUG_ERA" class="external-link">DRUG_ERA</a>
+and <a href="http://ohdsi.github.io/CommonDataModel/cdm54.html#DOSE_ERA" class="external-link">DOSE_ERA</a>
+as the <code>drug_concept_id</code>s in these tables must be
+ingredients, which are denoted by the concept class ‘ingredient’</li>
 <li>
-<em>CDM Fields/Tables</em>: By default, this check runs on all
-tables in the CDM</li>
+<em>CDM Fields/Tables</em>: This check is designed to be run on the
+<code>drug_concept_id</code> field in the DRUG_ERA and DOSE_ERA
+tables</li>
 </ul>
-<p><strong>User Guidance</strong>: This check failure must be resolved
-to avoid errors in downstream tools/analyses. OHDSI tools assume a
-complete set of OMOP CDM tables, as may anyone designing an analysis on
-OMOP data. Even if you don’t intend to populate a table, it should still
-be present in the database.</p>
-<p>There are 3 possible causes for this check failure:</p>
-<ul>
-<li>The wrong CDM version was specified in
-<code>executeDqChecks</code>
-</li>
-<li>The table does not exist in the database</li>
-<li>The table has the wrong name</li>
-</ul>
-<p>Before taking any action to investigate/fix the failure, make sure
-the CDM version you specified when running <code>executeDqChecks</code>
-matches the version of your CDM. Some tables were added between CDM
-versions 5.3 and 5.4 so it’s important you’re running DQD with the
-correct configuration. If the versions <em>do</em> match, there is most
-likely an issue with the ETL.</p>
+<p><strong>User Guidance</strong>: This check identifies whether records
+with the correct concepts were written to the correct tables as derived
+from drug_exposure. If incorrect concepts are allowed to persist, a
+study package could run on the DRUG_ERA and DOSE_ERA tables but may not
+produce expected results.</p>
+<p>You may inspect the violating rows using the following query:</p>
+<pre><code>-- @cdmTableName.@cdmFieldName is either drug_era.drug_concept_id or dose_era.drug_concept_id
+
+SELECT 
+  '@cdmTableName.@cdmFieldName' AS violating_field, 
+  co.concept_class_id AS violating_class,
+    cdmTable.* 
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+    LEFT JOIN @vocabDatabaseSchema.concept co ON cdmTable.@cdmFieldName = co.concept_id
+WHERE co.concept_id != 0 
+  AND (co.concept_class_id != 'ingredient') </code></pre>
 <p><em>ETL Developers</em><br>
-To resolve the failure, you will need to amend the code/process that
-creates the table (e.g. DDL script). Make sure you know whether the
-table is missing altogether or if it has the wrong name. In the latter
-case, the table should be renamed/replaced with the correctly named
-table. Reference the CDM documentation to confirm correct table
-naming.</p>
+Recommended actions:</p>
+<ul>
+<li>Identify the specific concepts in the table that have an incorrect
+concept_class_id</li>
+<li>Investigate the ETL process that builds the specified era tables.
+Likely there is an error that is letting records through with the
+incorrect concept_class_id</li>
+<li>Ultimately the ETL code should be fixed so that the correct concepts
+are identified, or the offending records should be removed</li>
+</ul>
 <p><em>Data Users</em><br>
-Missing tables must be added to the CDM even if they are empty. This can
-be done using the CDM DDL scripts available in the <a href="https://github.com/OHDSI/CommonDataModel" class="external-link">CommonDataModel GitHub
-repo</a>. If a table has the wrong name, rename it or create a new table
-with the correct name and migrate the other table’s data there.</p>
+Few options are available to correct this error without amending the ETL
+code that populated your OMOP CDM. If this check is failing it means
+that there is likely an error in the ETL process that builds the era
+tables. The DRUG_ERA table is used often in network studies and is meant
+to identify periods of time where a person is exposed to a specific drug
+ingredient, allowing for up to 30 days between exposures. If there are
+records in the DRUG_ERA tables that are not mapped to their
+ingredient-level ancestor then cohorts and analyses that make use of the
+DRUG_ERA table will run but they will return unexpected or erroneous
+results. You may consider dropping the offending rows if you know that
+they are not needed for analysis, but do so at your own risk.</p>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 

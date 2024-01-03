@@ -64,6 +64,12 @@
     <loc>/articles/cdmTable.html</loc>
   </url>
   <url>
+    <loc>/articles/fkClass.html</loc>
+  </url>
+  <url>
+    <loc>/articles/fkDomain.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -71,6 +77,9 @@
   </url>
   <url>
     <loc>/articles/isPrimaryKey.html</loc>
+  </url>
+  <url>
+    <loc>/articles/isRequired.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>

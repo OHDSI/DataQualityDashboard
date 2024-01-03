@@ -19,12 +19,12 @@ output:
 
 ## fkDomain
 
-**Name**: fkDomain
+**Check Name**: fkDomain
 <br>**Level**: Field check
 <br>**Context**: Verification
 <br>**Category**: Conformance
 <br>**Subcategory**: Value
-<br>**Severity**: CDM convention
+<br>**Severity**: CDM convention &#x26A0;
 
 **Description**: The number and percent of records that have a value in the **cdmFieldName** field in the **cdmTableName** table that do not conform to the **fkDomain** domain. 
 
@@ -32,34 +32,37 @@ output:
 
 - *Numerator*: The number of rows in the table where the standard concept ID field contains a concept that does not conform to the specified `domain_id`. This numerator specifically excludes concept_id 0
 - *Denominator*: The total number of rows in the table. This denominator includes rows with concept_id 0
-- *Related CDM Convention(s)*: FK Domain flag in [CDM table specs](http://ohdsi.github.io/CommonDataModel/cdm54.html)
-- *CDM Fields/Tables*: This check runs on all standard concept ID fields (e.g. condition_concept_id; gender_concept_id; etc.)
+- *Related CDM Convention(s)*: FK Domain flag in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
+- *CDM Fields/Tables*: This check runs on all standard concept ID fields (e.g. `condition_concept_id`; `gender_concept_id`; etc.)
 
 **User Guidance**: OHDSI tools and analyses assume that standard concepts in event tables and demographic data conform to the relevant domain.  If incorrect concepts are allowed to persist, a study package could run on this table but may not produce expected results.
 
 To assess the impacted rows/tables, you may run a query like the one below:
 
 ```
+-- @cdmTableName.@cdmFieldName is the standard concept ID field in the table
+-- @cdmTableName.@cdmTablePk is the primary key field in the table
+
 SELECT 
-  c.concept_id, 
-  c.domain_id, 
-  c.concept_name, 
-  c.concept_code, 
-  count(distinct x_occurrence_id), 
-  count(distinct person_id) 
-FROM x_occurrence 
-JOIN concept c ON c.concept_id = x_concept_id 
-  AND c.domain_id != {fkDomain} AND c.concept_id != 0 
-GROUP BY 1,2,3,4 
+  concept.concept_id, 
+  concept.domain_id, 
+  concept.concept_name, 
+  concept.concept_code, 
+  COUNT(DISTINCT @cdmTableName.@cdmTablePk), 
+  COUNT(DISTINCT @cdmTableName.person_id) 
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable 
+  LEFT JOIN @vocabSchema.concept on @cdmTableName.@cdmFieldName = concept.concept_id   
+    AND concept.domain_id != {fkDomain} AND concept.concept_id != 0 
+GROUP BY concept.concept_id, concept.domain_id, concept.concept_name, concept.concept_code
 ```
 
 *ETL Developers*\
 Recommended actions:
-- Identify the specific concepts in the table that have an incorrect `domain_id`, grouping on the standard concept ID
+- Identify the specific concepts in the table that have an incorrect `domain_id`
 - Investigate the ETL process that moves records to the tables based on the standard concept ID domain. Likely there is an error that is letting records through with the incorrect `domain_id` 
 - Ultimately the ETL process should be improved so that the correct rows are moved to the correct tables based on their domain
 
 *Data Users*\
-If this check is failing it means that there is likely an error in the ETL process that builds the domain tables. If there are records in the standard tables that have concepts in the wrong domain then cohorts and analyses will run but they will return unexpected or erroneous results.
+If this check is failing it means that there is likely an error in the ETL process that builds the domain tables. If there are records in a table with standard concepts in the wrong domain then cohorts and analyses will run but they will return unexpected or erroneous results.
 
 You may characterize the potential impact of the erroneous domain sorting on your analysis by running a query like the one above.  Use the results to see what concepts in a table were incorrectly sorted, and how many events/patients are impacted.

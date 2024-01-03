@@ -19,12 +19,12 @@ output:
 
 ## isRequired
 
-**Name**: isRequired
+**Check Name**: isRequired
 <br>**Level**: Field check
 <br>**Context**: Validation
 <br>**Category**: Conformance
 <br>**Subcategory**: Relational
-<br>**Severity**: Fatal
+<br>**Severity**: Fatal &#x1F480;
 
 **Description**: The number and percent of records with a NULL value in the **cdmFieldName** of the **cdmTableName** that is considered not nullable
 

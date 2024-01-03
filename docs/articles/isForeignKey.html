@@ -100,6 +100,15 @@
     <li>
       <a href="../articles/isForeignKey.html">isForeignKey</a>
     </li>
+    <li>
+      <a href="../articles/isRequired.html">isRequired</a>
+    </li>
+    <li>
+      <a href="../articles/fkDomain.html">fkDomain</a>
+    </li>
+    <li>
+      <a href="../articles/fkClass.html">fkClass</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -133,7 +142,7 @@
                         <h4 data-toc-skip class="author">Katy
 Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2023-10-22</h4>
+            <h4 data-toc-skip class="date">2024-01-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/isForeignKey.Rmd" class="external-link"><code>vignettes/isForeignKey.Rmd</code></a></small>
       <div class="hidden name"><code>isForeignKey.Rmd</code></div>
@@ -145,20 +154,20 @@ Sadowski</h4>
 <div class="section level2">
 <h2 id="isforeignkey">isForeignKey<a class="anchor" aria-label="anchor" href="#isforeignkey"></a>
 </h2>
-<p><strong>Name</strong>: isForeignKey <br><strong>Level</strong>: Field
-check <br><strong>Context</strong>: Verification
+<p><strong>Check Name</strong>: isForeignKey <br><strong>Level</strong>:
+Field check <br><strong>Context</strong>: Verification
 <br><strong>Category</strong>: Conformance
 <br><strong>Subcategory</strong>: Relational
-<br><strong>Severity</strong>: Fatal</p>
+<br><strong>Severity</strong>: Fatal 💀</p>
 <p><strong>Description</strong>: The number and percent of records that
 have a value in the <strong>cdmFieldName</strong> field in the
 <strong>cdmTableName</strong> table that does not exist in the
 <strong>fkTableName</strong> table.</p>
 <p><strong>Definition</strong>: This check will make sure that all
 foreign keys as specified in the CDM version have a value in the related
-primary key field. While this should be caught by foreign key database
-constraints, some database management systems such as Redshift do not
-enforce these.</p>
+primary key field. While this issue should generally be prevented by
+foreign key database constraints, some database management systems such
+as Redshift do not enforce such constraints.</p>
 <ul>
 <li>
 <em>Numerator</em>: The number of non-null values in the foreign key
@@ -173,35 +182,72 @@ specs</a>
 <em>CDM Fields/Tables</em>: By default, this check runs on foreign
 key columns in the CDM</li>
 </ul>
-<p><strong>User Guidance</strong>: This check failure must be
-resolved:</p>
+<p><strong>User Guidance</strong>: This check failure must be resolved.
+Failures in various fields could impact analysis in many different ways,
+for example:</p>
 <ul>
 <li>If some important event or qualifier (for example, type concept) is
-encoded by a wrong concept, it can’t be included in a concept set or be
-a part of cohort definition or feature.</li>
+encoded by a non-existent concept, it can’t be included in a concept set
+or be a part of cohort definition or feature</li>
 <li>If an event is linked to a non-existent person, it can’t be included
-in any cohort definition or analysis.</li>
+in any cohort definition or analysis</li>
 <li>If an event is linked to a non-existent visit, it will be missed in
-visit-level cohort definition logic.</li>
+visit-level cohort definition logic</li>
 </ul>
-<p>Some potential root causes to investigate:</p>
-<p>An x_concept_id missing from the CONCEPT table might be the result of
-an error in the <code>source_to_concept_map</code>; you may check it
-this way:</p>
-<pre><code>--source to concept map check 
+<p>Many CDM columns are foreign keys to the <code>concept_id</code>
+column in the <code>CONCEPT</code> table. See below for suggested
+investigation steps for concept ID-related foreign key check
+failures:</p>
+<ul>
+<li>An <code>x_concept_id</code> missing from the CONCEPT table might be
+the result of an error in <code>SOURCE_TO_CONCEPT_MAP</code>; you may
+check it this way:</li>
+</ul>
+<pre><code>SELECT *
+FROM @vocabSchema.source_to_concept_map 
+  LEFT JOIN @vocabSchema.concept ON concept.concept_id = source_to_concept_map.target_concept_id
+WHERE concept.concept_id IS NULL;</code></pre>
+<ul>
+<li>Other types of concept-related errors can be investigated by
+inspecting the source values for impacted rows as follows:</li>
+</ul>
+<pre><code>-- @cdmTableName.@cdmFieldName is the x_concept_id or x_source_concept_id field in a CDM table
+-- Inspect the contents of the x_source_value field to investigate the source of the error
 
-select * from source_to_concept_map stcm  
-left join concept c on c.concept_id = stcm.target_concept_id  
-where c.concept_id is null </code></pre>
-<p>If you use 2 billion concepts and custom
-<code>concept_relationship</code>s, you’ll see an error in DQD saying,
-that RELATIONSHIP.concept_id_2 doesn’t exist in CONCEPT. If you use some
-hardcoded concept mappings or concept definitions, you should check
-those as well.</p>
+SELECT 
+  '@cdmTableName.@cdmFieldName' AS violating_field,  
+  cdmTable.*,
+  COUNT(*) OVER(PARTITION BY '@cdmTableName.@cdmFieldName') AS num_violations_per_concept
+FROM @cdmSchema.@cdmTableName  
+  LEFT JOIN @vocabSchema.concept on @cdmTableName.@cdmFieldName = concept.concept_id  
+WHERE concept.concept_id IS NULL
+ORDER BY num_violations_per_concept DESC; </code></pre>
+<ul>
+<li>2-billion concepts are a common source of foreign key issues; for
+example, a check failure may arise if these concepts are used in some
+tables but not fully represented in all relevant vocabulary tables
+(CONCEPT, CONCEPT_RELATIONSHIP, etc.)</li>
+<li>Similarly, make sure to check any hard-coded concept mappings in the
+ETL as a potential source of the issue</li>
+</ul>
 <p>When an entry is missing from one of the other CDM tables (LOCATION,
 PERSON, PROVIDER, VISIT_DETAIL, VISIT_OCCURRENCE, PAYER_PLAN_PERIOD,
-NOTE, CARE_SITE, EPISODE), you need to check the binding logic in the
-ETL.</p>
+NOTE, CARE_SITE, EPISODE), this likely originates from binding / key
+generation errors in the ETL.</p>
+<p><em>ETL Developers</em><br>
+As above, mapping or binding logic needs to be amended in your ETL in
+order to resolve this error.</p>
+<p><em>Data Users</em><br>
+Few options are available to correct this error without amending the ETL
+code that populated your OMOP CDM. If a limited proportion of rows are
+impacted, you could consider dropping them from your database; however,
+do so at your own risk and only if you are confident that doing so will
+not have a significant impact on the downstream use cases of your CDM. A
+less aggressive approach could be to retain the affected rows and
+document the scope of their impact (in order to resolve the check
+failure, nullable values can be set to NULL and non-nullable concept ID
+values to 0). However, it is strongly recommended to pursue resolution
+further upstream in the ETL.</p>
 </div>
   </div>
 
