@@ -45,11 +45,11 @@ FROM
                 CAST(CONCAT(
                     p.year_of_birth,
                     COALESCE(
-                        RIGHT('00' + CAST(p.month_of_birth AS VARCHAR), 2),
+                        RIGHT('0' + CAST(p.month_of_birth AS VARCHAR), 2),
                         '01'
                     ),
                     COALESCE(
-                        RIGHT('00' + CAST(p.day_of_birth AS VARCHAR), 2),
+                        RIGHT('0' + CAST(p.day_of_birth AS VARCHAR), 2),
                         '01'
                     )
                 ) AS DATE)
