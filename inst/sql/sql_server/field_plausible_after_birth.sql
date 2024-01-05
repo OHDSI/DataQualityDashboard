@@ -1,8 +1,8 @@
 /*********
 PLAUSIBLE_AFTER_BIRTH
-all events happen after birth (PLAUSIBLE_AFTER_BIRTH == Yes)
+Checks that all events happen after birth (PLAUSIBLE_AFTER_BIRTH == Yes)
 Birthdate is either birth_datetime or composed from year_of_birth, month_of_birth, day_of_birth (taking 1st month/1st day if missing).
-Denominator is number of events.
+Denominator is number of events with a non-null date.
 
 Parameters used in this template:
 cdmDatabaseSchema = @cdmDatabaseSchema

@@ -1,15 +1,14 @@
 
 /*********
 PLAUSIBLE_START_BEFORE_END
-all start dates are before their corresponding end dates (PLAUSIBLE_START_BEFORE_END == Yes).
+Checks that all start dates are before their corresponding end dates (PLAUSIBLE_START_BEFORE_END == Yes).
 @cdmFieldName is the start date and @plausibleStartBeforeEndFieldName is the end date.
 
 Parameters used in this template:
 schema = @schema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
-plausibleTemporalAfterTableName = @plausibleTemporalAfterTableName
-plausibleTemporalAfterFieldName = @plausibleTemporalAfterFieldName
+plausibleStartBeforeEndFieldName = @plausibleStartBeforeEndFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
 cohortDefinitionId = @cohortDefinitionId
 cohortDatabaseSchema = @cohortDatabaseSchema
