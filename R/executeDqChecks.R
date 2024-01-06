@@ -123,6 +123,7 @@ executeDqChecks <- function(connectionDetails,
     }
   }
 
+
   # temporary patch to work around vroom 1.6.4 bug
   readr::local_edition(1)
 
@@ -256,6 +257,14 @@ executeDqChecks <- function(connectionDetails,
 
   if (nrow(checkDescriptionsDf) == 0) {
     stop("No checks are available based on excluded tables. Please review tablesToExclude.")
+  }
+
+  if ("plausibleDuringLife" %in% checkDescriptionsDf$checkName) {
+    warning("DEPRECATION WARNING - The plausibleDuringLife check has been reimplemented with the plausibleBeforeDeath check.")
+  }
+
+  if ("plausibleTemporalAfter" %in% checkDescriptionsDf$checkName) {
+    warning("DEPRECATION WARNING - The plausibleTemporalAfter check has been reimplemented with the plausibleAfterBirth and plausibleStartBeforeEnd checks.")
   }
 
   checkDescriptions <- split(checkDescriptionsDf, seq_len(nrow(checkDescriptionsDf)))
