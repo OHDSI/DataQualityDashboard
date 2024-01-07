@@ -1,7 +1,9 @@
 
 /*********
 FK_CLASS
-Drug era standard concepts, ingredients only
+
+Check that drug concepts in DRUG_ERA.drug_concept_id, DOSE_ERA.drug_concept_id, 
+and DRUG_STRENGTH.ingredient_concept_id are of class 'Ingredient'. 
 
 Parameters used in this template:
 schema = @schema

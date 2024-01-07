@@ -2,7 +2,7 @@
 /*********
 FIELD_FK_DOMAIN
 
-all standard concept ids are part of specified domain
+Check that all standard concept IDs belong to the appropriate domain for a given table and field.
 
 Parameters used in this template:
 schema = @schema
