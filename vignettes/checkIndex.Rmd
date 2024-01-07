@@ -44,5 +44,8 @@ above to navigate to the check's documentation page.\
 - plausibleTemporalAfter (PAGE UNDER CONSTRUCTION)
 - plausibleDuringLife (PAGE UNDER CONSTRUCTION)
 - withinVisitDates (PAGE UNDER CONSTRUCTION)
+- plausibleAfterBirth (PAGE UNDER CONSTRUCTION)
+- plausibleBeforeDeath (PAGE UNDER CONSTRUCTION)
+- plausibleStartBeforeEnd (PAGE UNDER CONSTRUCTION)
 - plausibleGender (PAGE UNDER CONSTRUCTION)
 - plausibleUnitConceptIds (PAGE UNDER CONSTRUCTION)
