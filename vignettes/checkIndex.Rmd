@@ -24,14 +24,14 @@ above to navigate to the check's documentation page.\
 
 **Checks**:
 
-- [cdmTable](https://ohdsi.github.io/DataQualityDashboard/articles/cdmTable.html)
-- [cdmField](https://ohdsi.github.io/DataQualityDashboard/articles/cdmField.html)
-- [cdmDatatype](https://ohdsi.github.io/DataQualityDashboard/articles/cdmDatatype.html)
-- [isPrimaryKey](https://ohdsi.github.io/DataQualityDashboard/articles/isPrimaryKey.html)
-- [isForeignKey](https://ohdsi.github.io/DataQualityDashboard/articles/isForeignKey.html)
-- [isRequired](https://ohdsi.github.io/DataQualityDashboard/articles/isRequired.html)
-- [fkDomain](https://ohdsi.github.io/DataQualityDashboard/articles/fkDomain.html)
-- [fkClass](https://ohdsi.github.io/DataQualityDashboard/articles/fkClass.html)
+- [cdmTable](cdmTable.html)
+- [cdmField](cdmField.html)
+- [cdmDatatype](cdmDatatype.html)
+- [isPrimaryKey](isPrimaryKey.html)
+- [isForeignKey](isForeignKey.html)
+- [isRequired](isRequired.html)
+- [fkDomain](fkDomain.html)
+- [fkClass](fkClass.html)
 - measurePersonCompleteness (PAGE UNDER CONSTRUCTION)
 - measureConditionEraCompleteness (PAGE UNDER CONSTRUCTION)
 - isStandardValidConcept (PAGE UNDER CONSTRUCTION)

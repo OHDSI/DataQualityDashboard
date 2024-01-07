@@ -164,44 +164,57 @@ in the dropdown menu above to navigate to the check’s documentation
 page.<br></p>
 <p><em>N.B. This section is currently under development. A documentation
 page is not yet available for all checks. The links below will be
-updated as more pages are added. In the meantime, see the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions" class="external-link">Check
+updated as more pages are added. In the meantime, see the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions">Check
 Type Descriptions</a> page for a brief description of each
 check.</em></p>
-<p><strong>General guidance</strong>: - These documentation pages are
-intended to provide a detailed description of each check and guidance
-for users on how to interpret the results of each check - Guidance is
-provided for both <em>ETL developers</em> and <em>OMOP CDM users</em>
-(e.g. analysts, data managers, etc). CDM users are strongly encouraged
-to work with their ETL development team, if possible, to understand and
-address any check failures attributable to ETL design. However, guidance
-is also provided in case this is not possible - In some cases, SQL
-snippets are provided to help investigate the cause of a check failure.
-These snippets are written in OHDSI SQL and can be rendered to run
-against your OMOP CDM using the <a href="https://ohdsi.github.io/SqlRender/" class="external-link">SQLRender</a> package. As
+<p><strong>General guidance</strong>:</p>
+<ul>
+<li>These documentation pages are intended to provide a detailed
+description of each check and guidance for users on how to interpret the
+results of each check</li>
+<li>Guidance is provided for both <em>ETL developers</em> and <em>OMOP
+CDM users</em> (e.g. analysts, data managers, etc). CDM users are
+strongly encouraged to work with their ETL development team, if
+possible, to understand and address any check failures attributable to
+ETL design. However, guidance is also provided in case this is not
+possible</li>
+<li>In some cases, SQL snippets are provided to help investigate the
+cause of a check failure. These snippets are written in OHDSI SQL and
+can be rendered to run against your OMOP CDM using the <a href="https://ohdsi.github.io/SqlRender/" class="external-link">SQLRender</a> package. As
 always, it is also recommended to utilize the “violated rows” SQL
 (indicated by the comment lines <code>/*violatedRowsBegin*/</code> and
 <code>/*violatedRowsEnd*/</code>) from the SQL query displayed in the
-DQD results viewer to investigate a specific check failure</p>
-<p><strong>Checks</strong>: - <a href="https://ohdsi.github.io/DataQualityDashboard/articles/cdmTable.html" class="external-link">cdmTable</a>
-- <a href="https://ohdsi.github.io/DataQualityDashboard/articles/cdmField.html" class="external-link">cdmField</a>
-- <a href="https://ohdsi.github.io/DataQualityDashboard/articles/cdmDatatype.html" class="external-link">cdmDatatype</a>
-- <a href="https://ohdsi.github.io/DataQualityDashboard/articles/isPrimaryKey.html" class="external-link">isPrimaryKey</a>
-- <a href="https://ohdsi.github.io/DataQualityDashboard/articles/isForeignKey.html" class="external-link">isForeignKey</a>
-- <a href="https://ohdsi.github.io/DataQualityDashboard/articles/isRequired.html" class="external-link">isRequired</a>
-- <a href="https://ohdsi.github.io/DataQualityDashboard/articles/fkDomain.html" class="external-link">fkDomain</a>
-- <a href="https://ohdsi.github.io/DataQualityDashboard/articles/fkClass.html" class="external-link">fkClass</a>
-- measurePersonCompleteness (PAGE UNDER CONSTRUCTION) -
-measureConditionEraCompleteness (PAGE UNDER CONSTRUCTION) -
-isStandardValidConcept (PAGE UNDER CONSTRUCTION) -
-measureValueCompleteness (PAGE UNDER CONSTRUCTION) -
-standardConceptRecordCompleteness (PAGE UNDER CONSTRUCTION) -
-sourceConceptRecordCompleteness (PAGE UNDER CONSTRUCTION) -
-sourceValueCompleteness (PAGE UNDER CONSTRUCTION) - plausibleValueLow
-(PAGE UNDER CONSTRUCTION) - plausibleValueHigh (PAGE UNDER CONSTRUCTION)
-- plausibleTemporalAfter (PAGE UNDER CONSTRUCTION) - plausibleDuringLife
-(PAGE UNDER CONSTRUCTION) - withinVisitDates (PAGE UNDER CONSTRUCTION) -
-plausibleGender (PAGE UNDER CONSTRUCTION) - plausibleUnitConceptIds
-(PAGE UNDER CONSTRUCTION)</p>
+DQD results viewer for a given check to inspect rows that failed the
+check</li>
+</ul>
+<p><strong>Checks</strong>:</p>
+<ul>
+<li><a href="cdmTable.html">cdmTable</a></li>
+<li><a href="cdmField.html">cdmField</a></li>
+<li><a href="cdmDatatype.html">cdmDatatype</a></li>
+<li><a href="isPrimaryKey.html">isPrimaryKey</a></li>
+<li><a href="isForeignKey.html">isForeignKey</a></li>
+<li><a href="isRequired.html">isRequired</a></li>
+<li><a href="fkDomain.html">fkDomain</a></li>
+<li><a href="fkClass.html">fkClass</a></li>
+<li>measurePersonCompleteness (PAGE UNDER CONSTRUCTION)</li>
+<li>measureConditionEraCompleteness (PAGE UNDER CONSTRUCTION)</li>
+<li>isStandardValidConcept (PAGE UNDER CONSTRUCTION)</li>
+<li>measureValueCompleteness (PAGE UNDER CONSTRUCTION)</li>
+<li>standardConceptRecordCompleteness (PAGE UNDER CONSTRUCTION)</li>
+<li>sourceConceptRecordCompleteness (PAGE UNDER CONSTRUCTION)</li>
+<li>sourceValueCompleteness (PAGE UNDER CONSTRUCTION)</li>
+<li>plausibleValueLow (PAGE UNDER CONSTRUCTION)</li>
+<li>plausibleValueHigh (PAGE UNDER CONSTRUCTION)</li>
+<li>plausibleTemporalAfter (PAGE UNDER CONSTRUCTION)</li>
+<li>plausibleDuringLife (PAGE UNDER CONSTRUCTION)</li>
+<li>withinVisitDates (PAGE UNDER CONSTRUCTION)</li>
+<li>plausibleAfterBirth (PAGE UNDER CONSTRUCTION)</li>
+<li>plausibleBeforeDeath (PAGE UNDER CONSTRUCTION)</li>
+<li>plausibleStartBeforeEnd (PAGE UNDER CONSTRUCTION)</li>
+<li>plausibleGender (PAGE UNDER CONSTRUCTION)</li>
+<li>plausibleUnitConceptIds (PAGE UNDER CONSTRUCTION)</li>
+</ul>
 </div>
   </div>
 

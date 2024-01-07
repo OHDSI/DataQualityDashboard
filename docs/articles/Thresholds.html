@@ -157,7 +157,7 @@ Blacketer</h4>
 <div class="section level2">
 <h2 id="dqd-failure-thresholds">DQD Failure Thresholds<a class="anchor" aria-label="anchor" href="#dqd-failure-thresholds"></a>
 </h2>
-<p>As described in the <a href="https://ohdsi.github.io/DataQualityDashboard/#introduction" class="external-link">introduction
+<p>As described in the <a href="https://ohdsi.github.io/DataQualityDashboard/#introduction">introduction
 to the tool</a>, the Data Quality Dashboard works by systematically
 applying 20 data quality check types to a database by leveraging the
 structure of the OMOP Common Data Model. This process results in over
@@ -201,7 +201,7 @@ should not need to be changed.</li>
 <strong>OMOP_CDMvx.x.x_Table_Level.csv</strong>: This file has a
 list of all tables in the CDM version and any checks to be performed at
 this level as well as the failure thresholds associated. Right now only
-the checktype <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#measurepersoncompleteness" class="external-link">measurePersonCompleteness</a>
+the checktype <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#measurepersoncompleteness">measurePersonCompleteness</a>
 is considered a table level check. If you would like to change the
 failure thresholds for the measurePersonCompleteness check copy this
 file to a location the R instance can access.</li>
@@ -209,7 +209,7 @@ file to a location the R instance can access.</li>
 <strong>OMOP_CDMvx.x.x_Field_Level.csv</strong>: This file has a
 list of all tables and fields in the CDM version and any checks to be
 performed at this level as well as the failure thresholds associated.
-The majority of the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html" class="external-link">check
+The majority of the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html">check
 types</a> run by the DQD are field level checks. If you would like to
 change the failure thresholds for any of these checks copy this file to
 a location the R instance can access. An example of this file is seen in
@@ -223,7 +223,7 @@ figure 1 below.</li>
 <strong>OMOP_CDMvx.x.x_Concept_Level.csv</strong>: This file has a
 list of all concepts and any checks to be performed on that concept. For
 example, there are checks that evaluate biologically plausible ranges
-for measurement values, like <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#plausiblevaluelow-1" class="external-link">plausibleValueLow</a>.
+for measurement values, like <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#plausiblevaluelow-1">plausibleValueLow</a>.
 If you would like to change the failure thresholds for any of these
 checks copy this file to a location the R instance can access.</li>
 </ul>
@@ -234,14 +234,14 @@ checks copy this file to a location the R instance can access.</li>
 <p>Using the field level file as an example, when you open it there will
 be two columns listing the tables and fields in the OMOP CDM, as seen in
 figure 1. Moving horizontally through the file there will be a column
-named for each of the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html" class="external-link">check
+named for each of the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html">check
 types</a> available to run at the field level. At the intersection of
 each check type and CDM field will be a cell with either a ‘Yes’ or ‘No’
 value. A ‘Yes’ indicates that the check type will be run for that
 specific table and field. For example in figure 1 there is a ‘Yes’ in
 the <strong>isRequired</strong> column for the field
 <strong>person_id</strong> in the <strong>PERSON</strong> table. This
-means that the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#isRequired" class="external-link"><strong>isRequired</strong></a>
+means that the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#isRequired"><strong>isRequired</strong></a>
 check will be run, substituting <strong>person_id</strong> for
 cdmFieldName and <strong>PERSON</strong> for cdmTableName.</p>
 <p>So instead of the generic check type: <em>The number and percent of
@@ -296,7 +296,7 @@ exposed in the shiny application.</p>
 <div class="section level4">
 <h4 id="step-3-run-the-dqd-using-the-updated-thresholds">Step 3: Run the DQD Using the Updated Thresholds<a class="anchor" aria-label="anchor" href="#step-3-run-the-dqd-using-the-updated-thresholds"></a>
 </h4>
-<p>Follow the instructions on the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html" class="external-link">Getting
+<p>Follow the instructions on the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html">Getting
 Started</a> page to set the parameters to run the Data Quality
 Dashboard. When running the execute function, point the package to the
 updated threshold files as shown in the example below. To do this, The

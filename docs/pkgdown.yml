@@ -18,5 +18,8 @@ articles:
   isForeignKey: isForeignKey.html
   isPrimaryKey: isPrimaryKey.html
   isRequired: isRequired.html
-last_built: 2024-01-07T21:57Z
+last_built: 2024-01-07T23:01Z
+urls:
+  reference: https://ohdsi.github.io/DataQualityDashboard/reference
+  article: https://ohdsi.github.io/DataQualityDashboard/articles
 

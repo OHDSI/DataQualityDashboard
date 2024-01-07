@@ -458,6 +458,10 @@ table.</p>
 <div class="section level3">
 <h3 id="plausibletemporalafter">plausibleTemporalAfter<a class="anchor" aria-label="anchor" href="#plausibletemporalafter"></a>
 </h3>
+<p><em>Warning: This check is reimplemented by the
+<code>plausibleStartBeforeEnd</code> and
+<code>plausibleAfterBirth</code> checks, and will be deprecated in the
+future.</em></p>
 <p><strong>Name</strong>: plausibleTemporalAfter
 <br><strong>Level</strong>: Field check <br><strong>Context</strong>:
 Verification <br><strong>Category</strong>: Plausibility
@@ -475,6 +479,9 @@ occur after the person’s birth.</p>
 <div class="section level3">
 <h3 id="plausibleduringlife">plausibleDuringLife<a class="anchor" aria-label="anchor" href="#plausibleduringlife"></a>
 </h3>
+<p><em>Warning: This check is reimplemented by the
+<code>plausibleBeforeDeath</code> check, and will be deprecated in the
+future.</em></p>
 <p><strong>Name</strong>: plausibleDuringLife
 <br><strong>Level</strong>: Field check <br><strong>Context</strong>:
 Verification <br><strong>Category</strong>: Plausibility
@@ -487,6 +494,57 @@ records that occur after a person’s death. This is called
 <em>plausibleDuringLife</em> because turning it on indicates that the
 specified dates should occur during a person’s lifetime, like drug
 exposures, etc.</p>
+</div>
+<div class="section level3">
+<h3 id="plausiblestartbeforeend">plausibleStartBeforeEnd<a class="anchor" aria-label="anchor" href="#plausiblestartbeforeend"></a>
+</h3>
+<p><strong>Name</strong>: plausibleStartBeforeEnd
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Temporal</p>
+<p><strong>Description</strong>: The number and percent of records with
+a value in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong> that occurs after the date in the
+<strong>plausibleStartBeforeEndFieldName</strong>.</p>
+<p><strong>Definition</strong>: This check is attempting to apply
+temporal rules within a table, specifically checking that all start
+dates are before the end dates. For example, in the VISIT_OCCURRENCE
+table it checks that the VISIT_OCCURRENCE_START_DATE is before
+VISIT_OCCURRENCE_END_DATE.</p>
+</div>
+<div class="section level3">
+<h3 id="plausibleafterbirth">plausibleAfterBirth<a class="anchor" aria-label="anchor" href="#plausibleafterbirth"></a>
+</h3>
+<p><strong>Name</strong>: plausibleAfterBirth
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Temporal</p>
+<p><strong>Description</strong>: The number and percent of records with
+a date value in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong> table that occurs prior to birth.</p>
+<p><strong>Definition</strong>: This check will calculate the number of
+records that occur before a person’s birth. If the
+<code>person.birth_datetime</code> is given this is used. If not, it is
+calculated from the <code>person.year_of_birth</code>,
+<code>person.month_of_birth</code>, and
+<code>person.day_of_birth</code>, taking the first month of the year,
+day of the month if the respective value is not given. For example, if
+only year of birth is given, the birth date is assumed to be January 1st
+of that year.</p>
+</div>
+<div class="section level3">
+<h3 id="plausiblebeforedeath">plausibleBeforeDeath<a class="anchor" aria-label="anchor" href="#plausiblebeforedeath"></a>
+</h3>
+<p><strong>Name</strong>: plausibleBeforeDeath
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Temporal</p>
+<p><strong>Description</strong>: The number and percent of records with
+a date value in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong> table that occurs after death.</p>
+<p><strong>Definition</strong>: This check will calculate the number of
+records that occur more than 60 days after a person’s death. The 60 day
+‘washout’ period is to allow for administrative records after death.</p>
 </div>
 <div class="section level3">
 <h3 id="plausiblevaluelow---for-concept-unit-combinations">plausibleValueLow - (for Concept + Unit combinations)<a class="anchor" aria-label="anchor" href="#plausiblevaluelow---for-concept-unit-combinations"></a>
