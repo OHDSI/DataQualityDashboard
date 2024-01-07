@@ -1,16 +1,7 @@
 ---
 title: "cdmField"
-author: "Katy Sadowski"
+author: "Heidi Schmidt, Katy Sadowski"
 date: "`r Sys.Date()`"
-header-includes:
-    - \usepackage{fancyhdr}
-    - \pagestyle{fancy}
-    - \fancyhead{}
-    - \fancyhead[CO,CE]{cdmField}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version `r    utils::packageVersion("DataQualityDashboard")`}
-    - \fancyfoot[LE,RO]{\thepage}
-    - \renewcommand{\headrulewidth}{0.4pt}
-    - \renewcommand{\footrulewidth}{0.4pt}
 output:
   html_document:
     number_sections: yes
@@ -32,6 +23,7 @@ output:
 - *Denominator*: The denominator is always a placeholder value of 1
 - *Related CDM Convention(s)*: Listed columns in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
 - *CDM Fields/Tables*: By default, this check runs on all tables & fields in the CDM
+- *Default Threshold Value*: 0
 
 **User Guidance**: This check failure must be resolved to avoid errors in downstream tools/analyses.  OHDSI tools assume a complete set of OMOP CDM tables and columns, as may anyone designing an analysis on OMOP data.  Even if you don’t intend to populate a column, it should still be present in the database.
 

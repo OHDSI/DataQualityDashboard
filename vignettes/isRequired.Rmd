@@ -2,15 +2,6 @@
 title: "isRequired"
 author: "Katy Sadowski"
 date: "`r Sys.Date()`"
-header-includes:
-    - \usepackage{fancyhdr}
-    - \pagestyle{fancy}
-    - \fancyhead{}
-    - \fancyhead[CO,CE]{isRequired}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version `r    utils::packageVersion("DataQualityDashboard")`}
-    - \fancyfoot[LE,RO]{\thepage}
-    - \renewcommand{\headrulewidth}{0.4pt}
-    - \renewcommand{\footrulewidth}{0.4pt}
 output:
   html_document:
     number_sections: yes
@@ -34,6 +25,7 @@ output:
 - *Denominator*: The total number of rows in the table
 - *Related CDM Convention(s)*: "Required" flag in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
 - *CDM Fields/Tables*: By default, this check runs on all Required fields in the CDM
+- *Default Threshold Value*: 0
 
 **User Guidance**: A failure in this check means that NULL values have ended up in a column which should not contain any NULL values.  There is a wide variety of potential causes for this issue depending on the column in question; your source data; and your ETL code.  Regardless of its cause, it is mandatory to fix the issue by ensuring there are no failures of this check – OHDSI tools/analyses expect required columns to be non-NULL in all rows. 
 

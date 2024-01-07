@@ -12,10 +12,11 @@ articles:
   cdmDatatype: cdmDatatype.html
   cdmField: cdmField.html
   cdmTable: cdmTable.html
+  checkIndex: checkIndex.html
   fkClass: fkClass.html
   fkDomain: fkDomain.html
   isForeignKey: isForeignKey.html
   isPrimaryKey: isPrimaryKey.html
   isRequired: isRequired.html
-last_built: 2024-01-03T01:47Z
+last_built: 2024-01-07T21:57Z
 

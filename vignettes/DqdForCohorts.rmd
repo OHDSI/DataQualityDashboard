@@ -2,25 +2,18 @@
 title: "Running the DQD on a Cohort"
 author: "Clair Blacketer"
 date: "`r Sys.Date()`"
-header-includes:
-    - \usepackage{fancyhdr}
-    - \pagestyle{fancy}
-    - \fancyhead{}
-    - \fancyhead[CO,CE]{Running the DQD on a Cohort}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version `r    utils::packageVersion("DataQualityDashboard")`}
-    - \fancyfoot[LE,RO]{\thepage}
-    - \renewcommand{\headrulewidth}{0.4pt}
-    - \renewcommand{\footrulewidth}{0.4pt}
 output:
+  pdf_document:
+    number_sections: yes
+    toc: yes
   html_document:
     number_sections: yes
     toc: yes
+vignette: >
+  %\VignetteIndexEntry{Running the DQD on a Cohort}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::knitr}
 ---
-
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Running the DQD on a Cohort}
--->
 
 # DQD Cohort Functionality
 

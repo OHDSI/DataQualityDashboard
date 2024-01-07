@@ -1,16 +1,7 @@
 ---
 title: "fkDomain"
-author: "Katy Sadowski"
+author: "Clair Blacketer, Katy Sadowski"
 date: "`r Sys.Date()`"
-header-includes:
-    - \usepackage{fancyhdr}
-    - \pagestyle{fancy}
-    - \fancyhead{}
-    - \fancyhead[CO,CE]{fkDomain}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version `r    utils::packageVersion("DataQualityDashboard")`}
-    - \fancyfoot[LE,RO]{\thepage}
-    - \renewcommand{\headrulewidth}{0.4pt}
-    - \renewcommand{\footrulewidth}{0.4pt}
 output:
   html_document:
     number_sections: yes
@@ -34,6 +25,7 @@ output:
 - *Denominator*: The total number of rows in the table. This denominator includes rows with concept_id 0
 - *Related CDM Convention(s)*: FK Domain flag in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
 - *CDM Fields/Tables*: This check runs on all standard concept ID fields (e.g. `condition_concept_id`; `gender_concept_id`; etc.)
+- *Default Threshold Value*: 0
 
 **User Guidance**: OHDSI tools and analyses assume that standard concepts in event tables and demographic data conform to the relevant domain.  If incorrect concepts are allowed to persist, a study package could run on this table but may not produce expected results.
 

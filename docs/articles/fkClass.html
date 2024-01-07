@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.0</span>
       </span>
     </div>
 
@@ -80,12 +80,15 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Data Quality Check Types
+    NEW! Data Quality Check Types
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/checkIndex.html">Index</a>
+    </li>
+    <li>
       <a href="../articles/cdmTable.html">cdmTable</a>
     </li>
     <li>
@@ -139,10 +142,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>fkClass</h1>
-                        <h4 data-toc-skip class="author">Katy
-Sadowski</h4>
+                        <h4 data-toc-skip class="author">Clair
+Blacketer, Katy Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-01-02</h4>
+            <h4 data-toc-skip class="date">2024-01-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/fkClass.Rmd" class="external-link"><code>vignettes/fkClass.Rmd</code></a></small>
       <div class="hidden name"><code>fkClass.Rmd</code></div>
@@ -189,6 +192,8 @@ ingredients, which are denoted by the concept class ‘ingredient’</li>
 <em>CDM Fields/Tables</em>: This check is designed to be run on the
 <code>drug_concept_id</code> field in the DRUG_ERA and DOSE_ERA
 tables</li>
+<li>
+<em>Default Threshold Value</em>: 0</li>
 </ul>
 <p><strong>User Guidance</strong>: This check identifies whether records
 with the correct concepts were written to the correct tables as derived

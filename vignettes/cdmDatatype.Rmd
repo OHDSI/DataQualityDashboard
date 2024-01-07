@@ -2,15 +2,6 @@
 title: "cdmDatatype"
 author: "Katy Sadowski"
 date: "`r Sys.Date()`"
-header-includes:
-    - \usepackage{fancyhdr}
-    - \pagestyle{fancy}
-    - \fancyhead{}
-    - \fancyhead[CO,CE]{cdmDatatype}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version `r    utils::packageVersion("DataQualityDashboard")`}
-    - \fancyfoot[LE,RO]{\thepage}
-    - \renewcommand{\headrulewidth}{0.4pt}
-    - \renewcommand{\footrulewidth}{0.4pt}
 output:
   html_document:
     number_sections: yes
@@ -32,6 +23,7 @@ output:
 - *Denominator*: The total number of records in the table
 - *Related CDM Convention(s)*: Column datatypes in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
 - *CDM Fields/Tables*: By default, this check runs on all tables & fields in the CDM
+- *Default Threshold Value*: 0
 
 **User Guidance**: This check failure must be resolved. OHDSI tools & analyses expect integer columns to be integers and will throw errors and/or suffer performance issues if these columns are of the wrong type.
 

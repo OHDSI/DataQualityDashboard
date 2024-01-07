@@ -2,25 +2,18 @@
 title: "Check Status Descriptions"
 author: "Dmitry Ilyn"
 date: "`r Sys.Date()`"
-header-includes:
-    - \usepackage{fancyhdr}
-    - \pagestyle{fancy}
-    - \fancyhead{}
-    - \fancyhead[CO,CE]{Data Quality Check Type Definitions}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version 1.4.1}
-    - \fancyfoot[LE,RO]{\thepage}
-    - \renewcommand{\headrulewidth}{0.4pt}
-    - \renewcommand{\footrulewidth}{0.4pt}
 output:
-  html_document:
-    number_sections: yes
-    toc: yes
+    pdf_document:
+        number_sections: yes
+        toc: yes
+    html_document:
+        number_sections: yes
+        toc: yes
+vignette: >
+    %\VignetteIndexEntry{Check Status Descriptions}
+    %\VignetteEncoding{UTF-8}
+    %\VignetteEngine{knitr::knitr}
 ---
-
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Check Status Descriptions}
--->
 
 # DQD check statuses
 

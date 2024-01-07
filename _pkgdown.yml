@@ -48,8 +48,10 @@ navbar:
       - text: SQL-only Mode
         href: articles/SqlOnly.html
     checks:
-      text: Data Quality Check Types
+      text: NEW! Data Quality Check Types
       menu:
+      - text: Index
+        href: articles/checkIndex.html
       - text: cdmTable
         href: articles/cdmTable.html
       - text: cdmField

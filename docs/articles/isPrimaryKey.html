@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.0</span>
       </span>
     </div>
 
@@ -80,12 +80,15 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Data Quality Check Types
+    NEW! Data Quality Check Types
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/checkIndex.html">Index</a>
+    </li>
+    <li>
       <a href="../articles/cdmTable.html">cdmTable</a>
     </li>
     <li>
@@ -139,10 +142,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>isPrimaryKey</h1>
-                        <h4 data-toc-skip class="author">Katy
-Sadowski</h4>
+                        <h4 data-toc-skip class="author">John Gresh,
+Katy Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-01-02</h4>
+            <h4 data-toc-skip class="date">2024-01-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/isPrimaryKey.Rmd" class="external-link"><code>vignettes/isPrimaryKey.Rmd</code></a></small>
       <div class="hidden name"><code>isPrimaryKey.Rmd</code></div>
@@ -177,6 +180,8 @@ specs</a>
 <li>
 <em>CDM Fields/Tables</em>: By default, this check runs on all
 primary key columns in the CDM</li>
+<li>
+<em>Default Threshold Value</em>: 0</li>
 </ul>
 <p><strong>User Guidance</strong>: Multiple values for a primary key
 must be corrected. Failure to have unique values for a primary key will
