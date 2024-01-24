@@ -1,0 +1,67 @@
+---
+title: "plausibleAfterBirth"
+author: "Maxim Moinat"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## Summary
+
+ - **Level**: Field check
+ - **Context**: Verification
+ - **Category**: Plausibility
+ - **Subcategory**: Temporal
+ - **Severity**: Characteristic &#x26A0;
+
+## Description
+The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs prior to birth.
+
+## Definition
+This check verifies that events happen after birth. This check is only run on fields where the **PLAUSIBLE_AFTER_BIRTH** parameter is set to **Yes**. The birthdate is taken from the `person table`, either the `birth_datetime` or composed from `year_of_birth`, `month_of_birth`, `day_of_birth` (taking 1st month/1st day if missing).
+
+- *Numerator*: The number of records with a non-null date value that happen prior to birth.
+- *Denominator*: The total number of records in the table with a non-null date value.
+- *Related CDM Convention(s)*: -Not linked to a convention-
+- *CDM Fields/Tables*: By default, this check runs on all date and datetime fields
+- *Default Threshold Value*: 1
+
+## User Guidance
+There might be valid reasons why a record has a date value that occurs prior to birth. For example, prenatal observations might be captured or procedures on the mother might be added to the file of the child. Therefore, some failing records are expected and the default threshold of 1% accounts for that.
+
+However, if more records violate this check, there might be an issue with incorrect birthdates or events with a default date. It is recommended to investigate the records that fail this check to determine the cause of the error.
+
+You may also use the “violated rows” SQL query to inspect the violating rows and help diagnose the potential root cause of the issue:
+
+```sql
+SELECT p.birth_datetime, cdmTable.*
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = p.person_id
+WHERE cdmTable.@cdmFieldName < p.birth_datetime, 
+```
+or, when birth_datetime is missing:
+```sql
+SELECT p.birth_datetime, cdmTable.*
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = p.person_id
+WHERE cdmTable.@cdmFieldName < CAST(CONCAT(
+        p.year_of_birth,
+        COALESCE(
+            RIGHT('0' + CAST(p.month_of_birth AS VARCHAR), 2),
+            '01'
+        ),
+        COALESCE(
+            RIGHT('0' + CAST(p.day_of_birth AS VARCHAR), 2),
+            '01'
+        )
+    ) AS DATE)
+```
+
+
+### ETL Developers
+As above, if the number of failing records is high, it is recommended to investigate the records that fail this check to determine the underlying cause of the error.
+
+### Data Users
+For most studies, violating records will have limited impact on data use. However, this check should be especially considered for studies involving neonatals and/or pregnancy.
