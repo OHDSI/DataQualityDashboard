@@ -68,6 +68,8 @@ navbar:
         href: articles/fkDomain.html
       - text: fkClass
         href: articles/fkClass.html
+      - text: plausibleAfterBirth
+        href: articles/plausibleAfterBirth.html
     hades:
       text: hadesLogo
       href: https://ohdsi.github.io/Hades

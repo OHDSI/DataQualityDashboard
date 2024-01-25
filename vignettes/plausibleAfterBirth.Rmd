@@ -10,11 +10,11 @@ output:
 
 ## Summary
 
- - **Level**: Field check
- - **Context**: Verification
- - **Category**: Plausibility
- - **Subcategory**: Temporal
- - **Severity**: Characteristic &#x26A0;
+**Level**: Field check\
+**Context**: Verification\
+**Category**: Plausibility\
+**Subcategory**: Temporal\
+**Severity**: Characteristic
 
 ## Description
 The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs prior to birth.
@@ -58,7 +58,6 @@ WHERE cdmTable.@cdmFieldName < CAST(CONCAT(
         )
     ) AS DATE)
 ```
-
 
 ### ETL Developers
 As above, if the number of failing records is high, it is recommended to investigate the records that fail this check to determine the underlying cause of the error.
