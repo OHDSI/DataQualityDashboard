@@ -8,19 +8,19 @@ output:
     toc: yes
 ---
 
-## isForeignKey
+## Summary
 
-**Check Name**: isForeignKey
-<br>**Level**: Field check
-<br>**Context**: Verification
-<br>**Category**: Conformance
-<br>**Subcategory**: Relational
-<br>**Severity**: Fatal &#x1F480;
+**Level**: Field check\
+**Context**: Verification\
+**Category**: Conformance\
+**Subcategory**: Relational\
+**Severity**: Fatal &#x1F480;\
 
+## Description
+The number and percent of records that have a value in the **cdmFieldName** field in the **cdmTableName** table that does not exist in the **fkTableName** table. 
 
-**Description**: The number and percent of records that have a value in the **cdmFieldName** field in the **cdmTableName** table that does not exist in the **fkTableName** table. 
-
-**Definition**: This check will make sure that all foreign keys as specified in the CDM version have a value in the related primary key field.  While this issue should generally be prevented by foreign key database constraints, some database management systems such as Redshift do not enforce such constraints.
+## Definition
+This check will make sure that all foreign keys as specified in the CDM version have a value in the related primary key field.  While this issue should generally be prevented by foreign key database constraints, some database management systems such as Redshift do not enforce such constraints.
 
 - *Numerator*: The number of non-null values in the foreign key column that do not exist in its corresponding primary key column 
 - *Denominator*: The total number of records in the table
@@ -28,7 +28,8 @@ output:
 - *CDM Fields/Tables*: By default, this check runs on foreign key columns in the CDM
 - *Default Threshold Value*: 0
 
-**User Guidance**: This check failure must be resolved. Failures in various fields could impact analysis in many different ways, for example:
+## User Guidance
+This check failure must be resolved. Failures in various fields could impact analysis in many different ways, for example:
 
 - If some important event or qualifier (for example, type concept) is encoded by a non-existent concept, it can’t be included in a concept set or be a part of cohort definition or feature
 - If an event is linked to a non-existent person, it can’t be included in any cohort definition or analysis
@@ -38,7 +39,8 @@ Many CDM columns are foreign keys to the `concept_id` column in the `CONCEPT` ta
 
 - An `x_concept_id` missing from the CONCEPT table might be the result of an error in `SOURCE_TO_CONCEPT_MAP`; you may check it this way:  
 
-```
+### Violated rows query
+```sql
 SELECT *
 FROM @vocabSchema.source_to_concept_map 
   LEFT JOIN @vocabSchema.concept ON concept.concept_id = source_to_concept_map.target_concept_id
@@ -47,7 +49,7 @@ WHERE concept.concept_id IS NULL;
 
 - Other types of concept-related errors can be investigated by inspecting the source values for impacted rows as follows:
 
-```
+```sql
 -- @cdmTableName.@cdmFieldName is the x_concept_id or x_source_concept_id field in a CDM table
 -- Inspect the contents of the x_source_value field to investigate the source of the error
 
@@ -66,8 +68,8 @@ ORDER BY num_violations_per_concept DESC;
 
 When an entry is missing from one of the other CDM tables (LOCATION, PERSON, PROVIDER, VISIT_DETAIL, VISIT_OCCURRENCE, PAYER_PLAN_PERIOD, NOTE, CARE_SITE, EPISODE), this likely originates from binding / key generation errors in the ETL.
 
-*ETL Developers*\
+### ETL Developers
 As above, mapping or binding logic needs to be amended in your ETL in order to resolve this error.
 
-*Data Users*\
+### Data Users
 Few options are available to correct this error without amending the ETL code that populated your OMOP CDM. If a limited proportion of rows are impacted, you could consider dropping them from your database; however, do so at your own risk and only if you are confident that doing so will not have a significant impact on the downstream use cases of your CDM. A less aggressive approach could be to retain the affected rows and document the scope of their impact (in order to resolve the check failure, nullable values can be set to NULL and non-nullable concept ID values to 0). However, it is strongly recommended to pursue resolution further upstream in the ETL.

@@ -8,16 +8,19 @@ output:
     toc: yes
 ---
 
-**Check Name**: isPrimaryKey
-<br>**Level**: Field check
-<br>**Context**: Verification
-<br>**Category**: Conformance
-<br>**Subcategory**: Relational
-<br>**Severity**: Fatal &#x1F480;
+## Summary
 
-**Description**: The number and percent of records that have a duplicate value in the **cdmFieldName** field of the **cdmTableName**. 
+**Level**: Field check\
+**Context**: Verification\
+**Category**: Conformance\
+**Subcategory**: Relational\
+**Severity**: Fatal &#x1F480;\
 
-**Definition**: This check will make sure that all primary keys as specified in the CDM version are truly unique keys. While this issue should generally be prevented by primary key database constraints, some database management systems such as Redshift do not enforce these constraints.
+## Description
+The number and percent of records that have a duplicate value in the **cdmFieldName** field of the **cdmTableName**. 
+
+## Definition
+This check will make sure that all primary keys as specified in the CDM version are truly unique keys. While this issue should generally be prevented by primary key database constraints, some database management systems such as Redshift do not enforce these constraints.
 
 - *Numerator*: The number of values in the column that appear in more than 1 row
 - *Denominator*: The total number of rows in the table
@@ -25,11 +28,12 @@ output:
 - *CDM Fields/Tables*: By default, this check runs on all primary key columns in the CDM
 - *Default Threshold Value*: 0
 
-**User Guidance**:  Multiple values for a primary key must be corrected. Failure to have unique values for a primary key will result in incorrect results being returned for queries that use these fields. This is especially true for joins - joins on columns where multiple records are found where a single record is assumed will result in inflation of the result set ("fanning"). Also, some analytic frameworks may raise errors if more than one record is found for an entity expected to be unique.
+## User Guidance
+ Multiple values for a primary key must be corrected. Failure to have unique values for a primary key will result in incorrect results being returned for queries that use these fields. This is especially true for joins - joins on columns where multiple records are found where a single record is assumed will result in inflation of the result set ("fanning"). Also, some analytic frameworks may raise errors if more than one record is found for an entity expected to be unique.
 
-Failing rows can be inspected as follows:
+### Violated rows query
 
-```
+```sql
 SELECT 
   '@cdmTableName.@cdmFieldName' AS violating_field,  
   cdmTable.*,
@@ -39,10 +43,10 @@ WHERE dupe_count > 1
 ORDER BY dupe_count DESC;
 ```
 
-*ETL Developers*\
+### ETL Developers
 In some cases, a primary key error could arise from a 1:1 relationship modeled in the CDM that is modeled as a 1:n relationship in the source system. For example, a single person could have multiple patient identifiers in a source system. In most cases the multiple records need to be collapsed into a single record.
 
 Deduplication and merging of duplicate patient datasets is a non-trivial process, and the intent of the multiple patient records needs be ascertained prior to making design decisions. For example, multiple records could exist for the same patient in a claims system who was covered by the insurer during one period as a member of a first group and then later re-entered the system as new member of a different group (e.g. new employer). In other cases multiple records could indicate updates to the original record and the latest record could be considered the “correct” information.
 
-*Data Users*\
+### Data Users
 Whenever possible, the ETL developer / data provider should be involved in resolving a primary key error as this represents a critical failure in the ETL process.  Depending on the nature of the error, you may be able to remove duplicate rows from a table to resolve the error; however, proceed at your own risk as these duplicates could be the sign of a deeper issue that needs to be resolved further upstream.

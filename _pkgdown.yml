@@ -67,7 +67,7 @@ navbar:
       - text: fkDomain
         href: articles/checks/fkDomain.html
       - text: fkClass
-        href: articles/fkClass.html
+        href: articles/checks/fkClass.html
       - text: plausibleAfterBirth
         href: articles/checks/plausibleAfterBirth.html
     hades:

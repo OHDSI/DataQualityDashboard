@@ -1,6 +1,6 @@
 ---
 title: "plausibleAfterBirth"
-author: "Maxim Moinat"
+author: "Maxim Moinat, Katy Sadowski"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -33,6 +33,7 @@ There might be valid reasons why a record has a date value that occurs prior to 
 
 However, if more records violate this check, there might be an issue with incorrect birthdates or events with a default date. It is recommended to investigate the records that fail this check to determine the cause of the error.
 
+### Violated rows query
 You may also use the “violated rows” SQL query to inspect the violating rows and help diagnose the potential root cause of the issue:
 
 ```sql

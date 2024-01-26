@@ -89,28 +89,31 @@
       <a href="../articles/checkIndex.html">Index</a>
     </li>
     <li>
-      <a href="../articles/cdmTable.html">cdmTable</a>
+      <a href="../articles/checks/cdmTable.html">cdmTable</a>
     </li>
     <li>
-      <a href="../articles/cdmField.html">cdmField</a>
+      <a href="../articles/checks/cdmField.html">cdmField</a>
     </li>
     <li>
-      <a href="../articles/cdmDatatype.html">cdmDatatype</a>
+      <a href="../articles/checks/cdmDatatype.html">cdmDatatype</a>
     </li>
     <li>
-      <a href="../articles/isPrimaryKey.html">isPrimaryKey</a>
+      <a href="../articles/checks/isPrimaryKey.html">isPrimaryKey</a>
     </li>
     <li>
-      <a href="../articles/isForeignKey.html">isForeignKey</a>
+      <a href="../articles/checks/isForeignKey.html">isForeignKey</a>
     </li>
     <li>
-      <a href="../articles/isRequired.html">isRequired</a>
+      <a href="../articles/checks/isRequired.html">isRequired</a>
     </li>
     <li>
-      <a href="../articles/fkDomain.html">fkDomain</a>
+      <a href="../articles/checks/fkDomain.html">fkDomain</a>
     </li>
     <li>
-      <a href="../articles/fkClass.html">fkClass</a>
+      <a href="../articles/checks/fkClass.html">fkClass</a>
+    </li>
+    <li>
+      <a href="../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
     </li>
   </ul>
 </li>
@@ -145,7 +148,7 @@
                         <h4 data-toc-skip class="author">Katy
 Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-01-07</h4>
+            <h4 data-toc-skip class="date">2024-01-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checkIndex.Rmd" class="external-link"><code>vignettes/checkIndex.Rmd</code></a></small>
       <div class="hidden name"><code>checkIndex.Rmd</code></div>
@@ -154,9 +157,6 @@ Sadowski</h4>
 
     
     
-<div class="section level2">
-<h2 id="index">Index<a class="anchor" aria-label="anchor" href="#index"></a>
-</h2>
 <p>This section contains detailed descriptions of the data quality
 checks included in the DataQualityDashboard package. Each check is
 described on its own page; click on the check name in the list below or
@@ -164,10 +164,12 @@ in the dropdown menu above to navigate to the check’s documentation
 page.<br></p>
 <p><em>N.B. This section is currently under development. A documentation
 page is not yet available for all checks. The links below will be
-updated as more pages are added. In the meantime, see the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions">Check
+updated as more pages are added. In the meantime, see the <a href="checks/https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions">Check
 Type Descriptions</a> page for a brief description of each
 check.</em></p>
-<p><strong>General guidance</strong>:</p>
+<div class="section level2">
+<h2 id="general-guidance">General guidance<a class="anchor" aria-label="anchor" href="#general-guidance"></a>
+</h2>
 <ul>
 <li>These documentation pages are intended to provide a detailed
 description of each check and guidance for users on how to interpret the
@@ -180,23 +182,26 @@ ETL design. However, guidance is also provided in case this is not
 possible</li>
 <li>In some cases, SQL snippets are provided to help investigate the
 cause of a check failure. These snippets are written in OHDSI SQL and
-can be rendered to run against your OMOP CDM using the <a href="https://ohdsi.github.io/SqlRender/" class="external-link">SQLRender</a> package. As
-always, it is also recommended to utilize the “violated rows” SQL
+can be rendered to run against your OMOP CDM using the <a href="checks/https://ohdsi.github.io/SqlRender/" class="external-link">SQLRender</a> package.
+As always, it is also recommended to utilize the “violated rows” SQL
 (indicated by the comment lines <code>/*violatedRowsBegin*/</code> and
 <code>/*violatedRowsEnd*/</code>) from the SQL query displayed in the
 DQD results viewer for a given check to inspect rows that failed the
 check</li>
 </ul>
-<p><strong>Checks</strong>:</p>
+</div>
+<div class="section level2">
+<h2 id="checks">Checks<a class="anchor" aria-label="anchor" href="#checks"></a>
+</h2>
 <ul>
-<li><a href="cdmTable.html">cdmTable</a></li>
-<li><a href="cdmField.html">cdmField</a></li>
-<li><a href="cdmDatatype.html">cdmDatatype</a></li>
-<li><a href="isPrimaryKey.html">isPrimaryKey</a></li>
-<li><a href="isForeignKey.html">isForeignKey</a></li>
-<li><a href="isRequired.html">isRequired</a></li>
-<li><a href="fkDomain.html">fkDomain</a></li>
-<li><a href="fkClass.html">fkClass</a></li>
+<li><a href="checks/cdmTable.html">cdmTable</a></li>
+<li><a href="checks/cdmField.html">cdmField</a></li>
+<li><a href="checks/cdmDatatype.html">cdmDatatype</a></li>
+<li><a href="checks/isPrimaryKey.html">isPrimaryKey</a></li>
+<li><a href="checks/isForeignKey.html">isForeignKey</a></li>
+<li><a href="checks/isRequired.html">isRequired</a></li>
+<li><a href="checks/fkDomain.html">fkDomain</a></li>
+<li><a href="checks/fkClass.html">fkClass</a></li>
 <li>measurePersonCompleteness (PAGE UNDER CONSTRUCTION)</li>
 <li>measureConditionEraCompleteness (PAGE UNDER CONSTRUCTION)</li>
 <li>isStandardValidConcept (PAGE UNDER CONSTRUCTION)</li>
@@ -209,7 +214,7 @@ check</li>
 <li>plausibleTemporalAfter (PAGE UNDER CONSTRUCTION)</li>
 <li>plausibleDuringLife (PAGE UNDER CONSTRUCTION)</li>
 <li>withinVisitDates (PAGE UNDER CONSTRUCTION)</li>
-<li>plausibleAfterBirth (PAGE UNDER CONSTRUCTION)</li>
+<li><a href="checks/plausibleAfterBirth.html">plausibleAfterBirth</a></li>
 <li>plausibleBeforeDeath (PAGE UNDER CONSTRUCTION)</li>
 <li>plausibleStartBeforeEnd (PAGE UNDER CONSTRUCTION)</li>
 <li>plausibleGender (PAGE UNDER CONSTRUCTION)</li>
