@@ -1,0 +1,46 @@
+---
+title: "plausibleGender"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## Summary
+
+**Level**: CONCEPT\
+**Context**: Validation\
+**Category**: Plausibility\
+**Subcategory**: Atemporal\
+**Severity**: 
+
+
+## Description
+For a CONCEPT_ID @conceptId (@conceptName), the number and percent of records associated with patients with an implausible gender (correct gender = @plausibleGender).
+
+
+## Definition
+
+- *Numerator*: 
+- *Denominator*:
+- *Related CDM Convention(s)*:
+- *CDM Fields/Tables*:
+- *Default Threshold Value*:
+
+
+## User Guidance
+
+
+### Violated rows query
+```sql
+
+```
+
+
+### ETL Developers
+
+
+### Data Users
+

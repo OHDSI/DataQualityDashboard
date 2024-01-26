@@ -1,0 +1,47 @@
+---
+title: "measureConditionEraCompleteness"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## Summary
+
+**Level**: TABLE\
+**Context**: Validation\
+**Category**: Completeness\
+**Subcategory**: \
+**Severity**: 
+
+
+## Description
+The number and Percent of persons that does not have condition_era built successfully,
+for all persons in condition_occurrence
+
+
+## Definition
+
+- *Numerator*: 
+- *Denominator*:
+- *Related CDM Convention(s)*:
+- *CDM Fields/Tables*:
+- *Default Threshold Value*:
+
+
+## User Guidance
+
+
+### Violated rows query
+```sql
+
+```
+
+
+### ETL Developers
+
+
+### Data Users
+

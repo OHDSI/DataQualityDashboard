@@ -8,30 +8,28 @@ output:
     toc: yes
 ---
 
-## Index
-
 This section contains detailed descriptions of the data quality checks included in the DataQualityDashboard package. 
 Each check is described on its own page; click on the check name in the list below or in the dropdown menu 
 above to navigate to the check's documentation page.\
 
-*N.B. This section is currently under development. A documentation page is not yet available for all checks. The links below will be updated as more pages are added. In the meantime, see the [Check Type Descriptions](https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions) page for a brief description of each check.*
+*N.B. This section is currently under development. A documentation page is not yet available for all checks. The links below will be updated as more pages are added. In the meantime, see the [Check Type Descriptions](checks/https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions) page for a brief description of each check.*
 
-**General guidance**:
+## General guidance
 
 - These documentation pages are intended to provide a detailed description of each check and guidance for users on how to interpret the results of each check
 - Guidance is provided for both *ETL developers* and *OMOP CDM users* (e.g. analysts, data managers, etc).  CDM users are strongly encouraged to work with their ETL development team, if possible, to understand and address any check failures attributable to ETL design.  However, guidance is also provided in case this is not possible
-- In some cases, SQL snippets are provided to help investigate the cause of a check failure. These snippets are written in OHDSI SQL and can be rendered to run against your OMOP CDM using the [SQLRender](https://ohdsi.github.io/SqlRender/) package.  As always, it is also recommended to utilize the "violated rows" SQL (indicated by the comment lines `/*violatedRowsBegin*/` and `/*violatedRowsEnd*/`) from the SQL query displayed in the DQD results viewer for a given check to inspect rows that failed the check
+- In some cases, SQL snippets are provided to help investigate the cause of a check failure. These snippets are written in OHDSI SQL and can be rendered to run against your OMOP CDM using the [SQLRender](checks/https://ohdsi.github.io/SqlRender/) package.  As always, it is also recommended to utilize the "violated rows" SQL (indicated by the comment lines `/*violatedRowsBegin*/` and `/*violatedRowsEnd*/`) from the SQL query displayed in the DQD results viewer for a given check to inspect rows that failed the check
 
-**Checks**:
+## Checks
 
-- [cdmTable](cdmTable.html)
-- [cdmField](cdmField.html)
-- [cdmDatatype](cdmDatatype.html)
-- [isPrimaryKey](isPrimaryKey.html)
-- [isForeignKey](isForeignKey.html)
-- [isRequired](isRequired.html)
-- [fkDomain](fkDomain.html)
-- [fkClass](fkClass.html)
+- [cdmTable](checks/cdmTable.html)
+- [cdmField](checks/cdmField.html)
+- [cdmDatatype](checks/cdmDatatype.html)
+- [isPrimaryKey](checks/isPrimaryKey.html)
+- [isForeignKey](checks/isForeignKey.html)
+- [isRequired](checks/isRequired.html)
+- [fkDomain](checks/fkDomain.html)
+- [fkClass](checks/fkClass.html)
 - measurePersonCompleteness (PAGE UNDER CONSTRUCTION)
 - measureConditionEraCompleteness (PAGE UNDER CONSTRUCTION)
 - isStandardValidConcept (PAGE UNDER CONSTRUCTION)

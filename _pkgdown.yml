@@ -53,23 +53,23 @@ navbar:
       - text: Index
         href: articles/checkIndex.html
       - text: cdmTable
-        href: articles/cdmTable.html
+        href: articles/checks/cdmTable.html
       - text: cdmField
-        href: articles/cdmField.html
+        href: articles/checks/cdmField.html
       - text: cdmDatatype
-        href: articles/cdmDatatype.html
+        href: articles/checks/cdmDatatype.html
       - text: isPrimaryKey
-        href: articles/isPrimaryKey.html
+        href: articles/checks/isPrimaryKey.html
       - text: isForeignKey
-        href: articles/isForeignKey.html
+        href: articles/checks/isForeignKey.html
       - text: isRequired
-        href: articles/isRequired.html
+        href: articles/checks/isRequired.html
       - text: fkDomain
-        href: articles/fkDomain.html
+        href: articles/checks/fkDomain.html
       - text: fkClass
         href: articles/fkClass.html
       - text: plausibleAfterBirth
-        href: articles/plausibleAfterBirth.html
+        href: articles/checks/plausibleAfterBirth.html
     hades:
       text: hadesLogo
       href: https://ohdsi.github.io/Hades
