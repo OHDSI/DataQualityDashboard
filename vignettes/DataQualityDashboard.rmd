@@ -15,9 +15,6 @@ vignette: >
   %\VignetteEngine{knitr::knitr}
 ---
 
-# Getting Started
-***
-
 R Installation
 ===============
 

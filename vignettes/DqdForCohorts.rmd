@@ -15,8 +15,6 @@ vignette: >
   %\VignetteEngine{knitr::knitr}
 ---
 
-# DQD Cohort Functionality
-
 Running the Data Quality Dashboard for a cohort is fairly straightforward. There are two options in the `executeDqChecks` function, `cohortDefinitionId` and `cohortDatabaseSchema`. These options will point the DQD to the schema where the cohort table is located and provide the id of the cohort on which the DQD will be run. By default, the tool assumes that the table being referenced is the standard OHDSI cohort table named **COHORT** with at least the columns **cohort_definition_id** and **subject_id**. For example, if I have a cohort number 123 and the cohort is in the *results* schema of the *IBM_CCAE* database, the `executeDqChecks` function would look like this:
 
   ```r

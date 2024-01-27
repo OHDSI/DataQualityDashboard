@@ -1,6 +1,6 @@
 ---
-title: "Check Status Descriptions"
-author: "Dmitry Ilyn"
+title: "Check Status Definitions"
+author: "Dmitry Ilyn, Maxim Moinat"
 date: "`r Sys.Date()`"
 output:
     pdf_document:
@@ -10,12 +10,10 @@ output:
         number_sections: yes
         toc: yes
 vignette: >
-    %\VignetteIndexEntry{Check Status Descriptions}
+    %\VignetteIndexEntry{Check Status Definitions}
     %\VignetteEncoding{UTF-8}
     %\VignetteEngine{knitr::knitr}
 ---
-
-# DQD check statuses
 
 ## Introduction
 In the DataQualityDashboard v2, new check statuses were introduced: `Error` and `Not Applicable`. These were introduced to more accurately reflect the quality of data contained in a CDM instance, addressing scenarios where pass/fail is not appropriate. The new set of mutually exclusive status states are listed below in priority order:
