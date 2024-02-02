@@ -83,7 +83,7 @@
           thresholdFilter <- sprintf(
             "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
-                                  conceptChecks$conceptId == %s]",
+                                  conceptChecks$conceptId == '%s']",
             thresholdField,
             checkResults[i, ]$cdmTableName,
             checkResults[i, ]$cdmFieldName,
@@ -100,7 +100,7 @@
           )
         }
         else if (is.na(checkResults[i, ]$unitConceptId) &
-            !grepl (",", checkResults[i, ]$plausibleGenderUseDescendants)) {
+            !grepl (",", checkResults[i, ]$conceptId)) {
           thresholdFilter <- sprintf(
             "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
@@ -113,7 +113,7 @@
           notesFilter <- sprintf(
             "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
-                                  conceptChecks$conceptId == '%s']",
+                                  conceptChecks$conceptId == %s]",
             notesField,
             checkResults[i, ]$cdmTableName,
             checkResults[i, ]$cdmFieldName,
