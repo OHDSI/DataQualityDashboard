@@ -78,7 +78,8 @@
           checkResults[i, ]$cdmFieldName
         )
       } else if (checkResults[i, ]$checkLevel == "CONCEPT") {
-        if (is.na(checkResults[i, ]$unitConceptId)) {
+        if (is.na(checkResults[i, ]$unitConceptId) &
+            grepl (",", checkResults[i, ]$conceptId)) {
           thresholdFilter <- sprintf(
             "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
@@ -91,13 +92,35 @@
           notesFilter <- sprintf(
             "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
-                                  conceptChecks$conceptId == %s]",
+                                  conceptChecks$conceptId == '%s']",
             notesField,
             checkResults[i, ]$cdmTableName,
             checkResults[i, ]$cdmFieldName,
             checkResults[i, ]$conceptId
           )
-        } else {
+        }
+        else if (is.na(checkResults[i, ]$unitConceptId) &
+            !grepl (",", checkResults[i, ]$plausibleGenderUseDescendants)) {
+          thresholdFilter <- sprintf(
+            "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                  conceptChecks$cdmFieldName == '%s' &
+                                  conceptChecks$conceptId == %s]",
+            thresholdField,
+            checkResults[i, ]$cdmTableName,
+            checkResults[i, ]$cdmFieldName,
+            checkResults[i, ]$conceptId
+          )
+          notesFilter <- sprintf(
+            "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                  conceptChecks$cdmFieldName == '%s' &
+                                  conceptChecks$conceptId == '%s']",
+            notesField,
+            checkResults[i, ]$cdmTableName,
+            checkResults[i, ]$cdmFieldName,
+            checkResults[i, ]$conceptId
+          )
+        }
+        else {
           thresholdFilter <- sprintf(
             "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
