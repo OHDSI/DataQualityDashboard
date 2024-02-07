@@ -148,7 +148,7 @@
                         <h4 data-toc-skip class="author">Maxim Moinat,
 Katy Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-01-26</h4>
+            <h4 data-toc-skip class="date">2024-02-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/plausibleAfterBirth.Rmd" class="external-link"><code>vignettes/checks/plausibleAfterBirth.Rmd</code></a></small>
       <div class="hidden name"><code>plausibleAfterBirth.Rmd</code></div>
@@ -160,7 +160,7 @@ Katy Sadowski</h4>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: Field check<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Plausibility<br><strong>Subcategory</strong>: Temporal<br><strong>Severity</strong>: Characteristic</p>
+<p><strong>Level</strong>: Field check<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Plausibility<br><strong>Subcategory</strong>: Temporal<br><strong>Severity</strong>: Characteristization ✔</p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
@@ -192,7 +192,7 @@ convention-</li>
 <em>CDM Fields/Tables</em>: By default, this check runs on all date
 and datetime fields</li>
 <li>
-<em>Default Threshold Value</em>: 1</li>
+<em>Default Threshold Value</em>: 1%</li>
 </ul>
 </div>
 <div class="section level2">
@@ -206,7 +206,19 @@ threshold of 1% accounts for that.</p>
 <p>However, if more records violate this check, there might be an issue
 with incorrect birthdates or events with a default date. It is
 recommended to investigate the records that fail this check to determine
-the cause of the error.</p>
+the cause of the error and set proper dates. If it is impossible to fix,
+then implement one of these:</p>
+<ul>
+<li>Aggressive: Remove all patients who have at least one record before
+birth (if the birthdate of this patient is unreliable).</li>
+<li>Less aggressive: Remove all rows that happen before birth. Probably
+this should be chosen as a conventional approach for data clean up (if
+the event dates are unreliable).</li>
+<li>Conservative: either keep the records as is (if the date is actually
+valid, for e.g. prenatal observations).</li>
+</ul>
+<p>Make sure to clearly document the choices in your ETL
+specification.</p>
 <div class="section level3">
 <h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
 </h3>
@@ -217,8 +229,9 @@ issue:</p>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="kw">JOIN</span> @cdmDatabaseSchema.person p <span class="kw">ON</span> cdmTable.person_id <span class="op">=</span> p.person_id</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="op">&lt;</span> p.birth_datetime, </span></code></pre></div>
-<p>or, when birth_datetime is missing:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="kw">SELECT</span> p.birth_datetime, cdmTable.<span class="op">*</span></span>
+<p>or, when birth_datetime is missing change to year, month, day
+columns:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="kw">SELECT</span> p.year_of_birth, p.month_of_birth, p.day_of_birth, cdmTable.<span class="op">*</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="kw">JOIN</span> @cdmDatabaseSchema.person p <span class="kw">ON</span> cdmTable.person_id <span class="op">=</span> p.person_id</span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="op">&lt;</span> <span class="fu">CAST</span>(<span class="fu">CONCAT</span>(</span>
@@ -232,6 +245,24 @@ issue:</p>
 <span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>            <span class="st">'01'</span></span>
 <span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>        )</span>
 <span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    ) <span class="kw">AS</span> <span class="dt">DATE</span>)</span></code></pre></div>
+<p>Also, the length of the time interval between these dates might give
+you a hint of why the problem appears.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="kw">select</span> date_difference, <span class="fu">count</span>(<span class="op">*</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="kw">from</span> (</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="kw">select</span> datediff(</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>        <span class="dt">day</span>, </span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>        @cdmFieldName, </span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>        <span class="fu">COALESCE</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>            <span class="fu">CAST</span>(p.birth_datetime <span class="kw">AS</span> <span class="dt">DATE</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>            <span class="fu">CAST</span>(<span class="fu">CONCAT</span>(p.year_of_birth,<span class="st">'-01-01'</span>) <span class="kw">AS</span> <span class="dt">DATE</span>))</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>        ) <span class="kw">as</span> date_difference</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="kw">from</span> @cdmTableName ct</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="kw">join</span> person p <span class="kw">on</span> ct.person_id <span class="op">=</span> p.person_id </span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>) cte</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="kw">where</span> date_difference <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="kw">group</span> <span class="kw">by</span> date_difference</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="kw">order</span> <span class="kw">by</span> <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">desc</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>;</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>

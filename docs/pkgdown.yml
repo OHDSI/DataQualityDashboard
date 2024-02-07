@@ -22,7 +22,6 @@ articles:
   measureConditionEraCompleteness: checks/measureConditionEraCompleteness.html
   measurePersonCompleteness: checks/measurePersonCompleteness.html
   measureValueCompleteness: checks/measureValueCompleteness.html
-  plausibleAfterBirth copy: checks/plausibleAfterBirth copy.html
   plausibleAfterBirth: checks/plausibleAfterBirth.html
   plausibleBeforeDeath: checks/plausibleBeforeDeath.html
   plausibleDuringLife: checks/plausibleDuringLife.html
@@ -36,7 +35,7 @@ articles:
   sourceValueCompleteness: checks/sourceValueCompleteness.html
   standardConceptRecordCompleteness: checks/standardConceptRecordCompleteness.html
   withinVisitDates: checks/withinVisitDates.html
-last_built: 2024-01-26T13:37Z
+last_built: 2024-02-07T16:38Z
 urls:
   reference: https://ohdsi.github.io/DataQualityDashboard/reference
   article: https://ohdsi.github.io/DataQualityDashboard/articles
