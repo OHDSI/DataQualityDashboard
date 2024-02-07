@@ -26,7 +26,7 @@ This check will make sure that all foreign keys as specified in the CDM version 
 - *Denominator*: The total number of records in the table
 - *Related CDM Convention(s)*: Foreign Key flag in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
 - *CDM Fields/Tables*: By default, this check runs on foreign key columns in the CDM
-- *Default Threshold Value*: 0
+- *Default Threshold Value*: 0%
 
 ## User Guidance
 This check failure must be resolved. Failures in various fields could impact analysis in many different ways, for example:

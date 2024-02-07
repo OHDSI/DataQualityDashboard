@@ -14,7 +14,7 @@ output:
 **Context**: Verification\
 **Category**: Plausibility\
 **Subcategory**: Temporal\
-**Severity**: Characteristic
+**Severity**: Characteristization &#10004;
 
 ## Description
 The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs prior to birth.
@@ -26,16 +26,16 @@ This check verifies that events happen after birth. This check is only run on fi
 - *Denominator*: The total number of records in the table with a non-null date value.
 - *Related CDM Convention(s)*: -Not linked to a convention-
 - *CDM Fields/Tables*: By default, this check runs on all date and datetime fields
-- *Default Threshold Value*: 1
+- *Default Threshold Value*: 1%
 
 ## User Guidance
 There might be valid reasons why a record has a date value that occurs prior to birth. For example, prenatal observations might be captured or procedures on the mother might be added to the file of the child. Therefore, some failing records are expected and the default threshold of 1% accounts for that.
 
 However, if more records violate this check, there might be an issue with incorrect birthdates or events with a default date. It is recommended to investigate the records that fail this check to determine the cause of the error and set proper dates. If it is impossible to fix, then implement one of these:
 
- - Aggressive: Remove all patients who have at least one record before birth (if the birthdate of this patient is unreliable)
- - Less aggressive: Remove all rows that happen before birth. Probably this should be chosen as a conventional approach for data clean up (if the event dates are unreliable)
- - Conservative: set event date to birth date.
+ - Aggressive: Remove all patients who have at least one record before birth (if the birthdate of this patient is unreliable).
+ - Less aggressive: Remove all rows that happen before birth. Probably this should be chosen as a conventional approach for data clean up (if the event dates are unreliable).
+ - Conservative: either keep the records as is (if the date is actually valid, for e.g. prenatal observations).
 
 Make sure to clearly document the choices in your ETL specification.
 
@@ -49,9 +49,9 @@ FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = p.person_id
 WHERE cdmTable.@cdmFieldName < p.birth_datetime, 
 ```
-or, when birth_datetime is missing:
+or, when birth_datetime is missing change to year, month, day columns:
 ```sql
-SELECT p.birth_datetime, cdmTable.*
+SELECT p.year_of_birth, p.month_of_birth, p.day_of_birth, cdmTable.*
 FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = p.person_id
 WHERE cdmTable.@cdmFieldName < CAST(CONCAT(
@@ -71,7 +71,7 @@ Also, the length of the time interval between these dates might give you a hint 
 ```sql
 select date_difference, count(*)
 from (
-    select daydiff(
+    select datediff(
         day, 
         @cdmFieldName, 
         COALESCE(
@@ -81,7 +81,7 @@ from (
     from @cdmTableName ct
     join person p on ct.person_id = p.person_id 
 ) cte
-where date_difference < 0
+where date_difference > 0
 group by date_difference
 order by count(*) desc
 ;

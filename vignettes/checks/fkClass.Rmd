@@ -26,7 +26,7 @@ There is the occasional field in the OMOP CDM that expects not only concepts of 
 - *Denominator*: The total number of rows in the specified cdm table. This denominator includes rows with concept_id 0
 - *Related CDM Convention(s)*: This check is specific to [DRUG_ERA](http://ohdsi.github.io/CommonDataModel/cdm54.html#DRUG_ERA) and [DOSE_ERA](http://ohdsi.github.io/CommonDataModel/cdm54.html#DOSE_ERA) as the `drug_concept_id`s in these tables must be ingredients, which are denoted by the concept class ‘ingredient’
 - *CDM Fields/Tables*: This check is designed to be run on the `drug_concept_id` field in the DRUG_ERA and DOSE_ERA tables 
-- *Default Threshold Value*: 0
+- *Default Threshold Value*: 0%
 
 ## User Guidance
 This check identifies whether records with the correct concepts were written to the correct tables as derived from drug_exposure. If incorrect concepts are allowed to persist, a study package could run on the DRUG_ERA and DOSE_ERA tables but may not produce expected results. 

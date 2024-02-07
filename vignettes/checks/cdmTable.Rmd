@@ -26,7 +26,7 @@ This check verifies if a table is present as specified in the CDM specification 
 - *Denominator*: The denominator is always a placeholder value of 1
 - *Related CDM Convention(s)*: Listed tables in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
 - *CDM Fields/Tables*: By default, this check runs on all tables in the CDM
-- *Default Threshold Value*: 0
+- *Default Threshold Value*: 0%
 
 ## User Guidance
 This check failure must be resolved to avoid errors in downstream tools/analyses.  OHDSI tools assume a complete set of OMOP CDM tables, as may anyone designing an analysis on OMOP data.  Even if you don’t intend to populate a table, it should still be present in the database.

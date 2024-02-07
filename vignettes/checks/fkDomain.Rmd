@@ -26,7 +26,7 @@ It is often the case that standard concept fields in the OMOP CDM should belong 
 - *Denominator*: The total number of rows in the table. This denominator includes rows with concept_id 0
 - *Related CDM Convention(s)*: FK Domain flag in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
 - *CDM Fields/Tables*: This check runs on all standard concept ID fields (e.g. `condition_concept_id`; `gender_concept_id`; etc.)
-- *Default Threshold Value*: 0
+- *Default Threshold Value*: 0%
 
 ## User Guidance
 OHDSI tools and analyses assume that standard concepts in event tables and demographic data conform to the relevant domain.  If incorrect concepts are allowed to persist, a study package could run on this table but may not produce expected results.

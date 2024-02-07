@@ -26,7 +26,7 @@ This check will make sure that all primary keys as specified in the CDM version 
 - *Denominator*: The total number of rows in the table
 - *Related CDM Convention(s)*: Primary Key flag in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
 - *CDM Fields/Tables*: By default, this check runs on all primary key columns in the CDM
-- *Default Threshold Value*: 0
+- *Default Threshold Value*: 0%
 
 ## User Guidance
  Multiple values for a primary key must be corrected. Failure to have unique values for a primary key will result in incorrect results being returned for queries that use these fields. This is especially true for joins - joins on columns where multiple records are found where a single record is assumed will result in inflation of the result set ("fanning"). Also, some analytic frameworks may raise errors if more than one record is found for an entity expected to be unique.
