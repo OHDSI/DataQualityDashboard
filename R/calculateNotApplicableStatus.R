@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Determines if check should be notApplicable
+#' Determines if check should be notApplicable and the notApplicableReason
 #'
 #' @param checkResults A dataframe containing the results of the data quality checks
 #'
@@ -93,8 +93,31 @@
       fieldIsEmpty = dplyr::coalesce(.data$fieldIsEmpty, !is.na(.data$cdmFieldName)),
     )
 
+  checkResults$notApplicable <- NA
+  checkResults$notApplicableReason <- NA
+
+  conditionOccurrenceIsEmpty <- emptyTables %>% dplyr::filter(.data$cdmTableName == "CONDITION_OCCURRENCE") %>% dplyr::pull(tableIsEmpty)
+  # drugExposureIsEmpty <- emptyTables %>% filter(.data$cdmTableName == "DRUG_EXPOSURE") %>% pull(tableIsEmpty)
   for (i in seq_len(nrow(checkResults))) {
-    checkResults$notApplicable[i] <- .applyNotApplicable(checkResults[i, ])
+    if (checkResults[i, "checkName"] == "measureConditionEraCompleteness") {
+      # Special rule for measureConditionEraCompleteness, which should be notApplicable if CONDITION_OCCURRENCE is empty
+      if (conditionOccurrenceIsEmpty) {
+        checkResults$notApplicable[i] <- 1
+        checkResults$notApplicableReason[i] <- "Table CONDITION_OCCURRENCE is empty."
+      } else {
+        checkResults$notApplicable[i] <- 0
+      }
+    # } else if (checkResult[i, "checkName"] == "measureDrugEraCompleteness") {
+    #   # Special rule for measureDrugEraCompleteness, which should be notApplicable if DRUG_EXPOSURE is empty
+    #   if (drugExposureIsEmpty) {
+    #     checkResults$notApplicable[i] <- 1
+    #     checkResults$notApplicableReason[i] <- "Table DRUG_EXPOSURE is empty."
+    #   } else {
+    #     checkResults$notApplicable[i] <- 0
+    #   }
+    } else {
+      checkResults$notApplicable[i] <- .applyNotApplicable(checkResults[i, ])
+    }
   }
 
   checkResults <- checkResults %>%
@@ -102,6 +125,7 @@
       notApplicableReason = ifelse(
         .data$notApplicable == 1,
         dplyr::case_when(
+          !is.na(.data$notApplicableReason) ~ .data$notApplicableReason,
           .data$tableIsMissing ~ sprintf("Table %s does not exist.", .data$cdmTableName),
           .data$fieldIsMissing ~ sprintf("Field %s.%s does not exist.", .data$cdmTableName, .data$cdmFieldName),
           .data$tableIsEmpty ~ sprintf("Table %s is empty.", .data$cdmTableName),
