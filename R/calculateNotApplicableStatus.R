@@ -96,12 +96,14 @@
   checkResults$notApplicable <- NA
   checkResults$notApplicableReason <- NA
 
+  conditionOccurrenceIsMissing <- missingTables %>% dplyr::filter(.data$cdmTableName == "CONDITION_OCCURRENCE") %>% dplyr::pull(tableIsMissing)
   conditionOccurrenceIsEmpty <- emptyTables %>% dplyr::filter(.data$cdmTableName == "CONDITION_OCCURRENCE") %>% dplyr::pull(tableIsEmpty)
+  # drugExposureIsMissing <- missingTables %>% filter(.data$cdmTableName == "DRUG_EXPOSURE") %>% pull(tableIsMissing)
   # drugExposureIsEmpty <- emptyTables %>% filter(.data$cdmTableName == "DRUG_EXPOSURE") %>% pull(tableIsEmpty)
   for (i in seq_len(nrow(checkResults))) {
     if (checkResults[i, "checkName"] == "measureConditionEraCompleteness") {
       # Special rule for measureConditionEraCompleteness, which should be notApplicable if CONDITION_OCCURRENCE is empty
-      if (conditionOccurrenceIsEmpty) {
+      if (conditionOccurrenceIsMissing || conditionOccurrenceIsEmpty) {
         checkResults$notApplicable[i] <- 1
         checkResults$notApplicableReason[i] <- "Table CONDITION_OCCURRENCE is empty."
       } else {
@@ -109,7 +111,7 @@
       }
     # } else if (checkResult[i, "checkName"] == "measureDrugEraCompleteness") {
     #   # Special rule for measureDrugEraCompleteness, which should be notApplicable if DRUG_EXPOSURE is empty
-    #   if (drugExposureIsEmpty) {
+    #   if (drugExposureIsMissing || drugExposureIsEmpty) {
     #     checkResults$notApplicable[i] <- 1
     #     checkResults$notApplicableReason[i] <- "Table DRUG_EXPOSURE is empty."
     #   } else {
