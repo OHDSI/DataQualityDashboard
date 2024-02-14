@@ -33,14 +33,14 @@ FROM
 		/*violatedRowsBegin*/
 		SELECT cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
-			INNER JOIN @cdmDatabaseSchema.person p
-			ON cdmTable.person_id = p.person_id
-			INNER JOIN @vocabDatabaseSchema.concept_ancestor ca
-			ON ca.descendant_concept_id = cdmTable.@cdmFieldName
+			JOIN @cdmDatabaseSchema.person p
+			  ON cdmTable.person_id = p.person_id
+			JOIN @vocabDatabaseSchema.concept_ancestor ca
+			  ON ca.descendant_concept_id = cdmTable.@cdmFieldName
 			{@cohort}?{
-      	JOIN @cohortDatabaseSchema.@cohortTableName c
-      	  ON cdmTable.person_id = c.subject_id
-      	  AND c.cohort_definition_id = @cohortDefinitionId
+      JOIN @cohortDatabaseSchema.@cohortTableName c
+      	ON cdmTable.person_id = c.subject_id
+      	AND c.cohort_definition_id = @cohortDefinitionId
     	}
 		WHERE ca.ancestor_concept_id in (@conceptId)
 		AND p.gender_concept_id <> {@plausibleGenderUseDescendants == 'Male'} ? {8507} : {8532} 
@@ -51,10 +51,10 @@ FROM
 	SELECT 
 	  COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
-	INNER JOIN @vocabDatabaseSchema.concept_ancestor ca
+	JOIN @vocabDatabaseSchema.concept_ancestor ca
 	ON ca.descendant_concept_id = cdmTable.@cdmFieldName
   	{@cohort}?{
-    	JOIN @cohortDatabaseSchema.@cohortTableName c
+  	JOIN @cohortDatabaseSchema.@cohortTableName c
       	ON cdmTable.person_id = c.subject_id
       	AND c.cohort_definition_id = @cohortDefinitionId
   	}

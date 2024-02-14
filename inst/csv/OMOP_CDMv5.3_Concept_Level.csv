@@ -335,6 +335,7 @@ CONDITION_OCCURRENCE,CONDITION_CONCEPT_ID,45772671,Nodular prostate without urin
 CONDITION_OCCURRENCE,CONDITION_CONCEPT_ID,"4090861, 4025213","Male genitalia finding, Male reproductive finding",,,,,,,,,,Male,,2,,,,,,,,,,,,,
 CONDITION_OCCURRENCE,CONDITION_CONCEPT_ID,"4095793 , 443343, 4024004 , 4172857, 444094 , 197810, 4158481","Female genitalia finding, Disorder of intrauterine contraceptive device, Menopause finding, Disorder of female genital system, Malignant neoplasm of uterine adnexa, Finding related to pregnancy, Female reproductive finding",,,,,,,,,,Female,,2,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,4041261,Procedure on female genital system,,,,,,,,,,Female,,2,,,,,,,,,,,,,
+PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,"4250917, 4077750, 4043199, 4040577","Operation on prostate, Operation on scrotum, Procedure on penis, Procedure on testis",,,,,,,,,,Male,,2,,,,,,,,,,,,,
 OBSERVATION,OBSERVATION_CONCEPT_ID,37393449,Plasma total cholesterol level,8840,milligram per deciliter,50,5,,500,5,,,,,,,,,,,,,,,,,,
 OBSERVATION,OBSERVATION_CONCEPT_ID,37393449,Plasma total cholesterol level,8753,millimole per liter,1,5,,15,5,,,,,,,,,,,,,,,,,,
 OBSERVATION,OBSERVATION_CONCEPT_ID,37397989,Serum total cholesterol level,8840,milligram per deciliter,50,5,,500,5,,,,,,,,,,,,,,,,,,
