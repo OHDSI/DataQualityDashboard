@@ -35,13 +35,13 @@ FROM
             cdmTable.*
         FROM @schema.@cdmTableName cdmTable
         {@cohort & '@runForCohort' == 'Yes'} ? {
-        JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
+        JOIN @cohortDatabaseSchema.@cohortTableName c 
+            ON cdmTable.person_id = c.subject_id
             AND c.cohort_definition_id = @cohortDefinitionId
         }
-        WHERE 
-            cdmTable.@cdmFieldName IS NOT NULL AND
-            cdmTable.@plausibleStartBeforeEndFieldName IS NOT NULL AND
-            CAST(cdmTable.@cdmFieldName AS DATE) > CAST(cdmTable.@plausibleStartBeforeEndFieldName AS DATE)
+        WHERE cdmTable.@cdmFieldName IS NOT NULL 
+            AND cdmTable.@plausibleStartBeforeEndFieldName IS NOT NULL 
+            AND CAST(cdmTable.@cdmFieldName AS DATE) > CAST(cdmTable.@plausibleStartBeforeEndFieldName AS DATE)
         /*violatedRowsEnd*/
     ) violated_rows
 ) violated_row_count,
@@ -50,11 +50,11 @@ FROM
         COUNT_BIG(*) AS num_rows
     FROM @schema.@cdmTableName cdmTable
     {@cohort & '@runForCohort' == 'Yes'} ? {
-    JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
+    JOIN @cohortDatabaseSchema.@cohortTableName c 
+        ON cdmTable.person_id = c.subject_id
         AND c.cohort_definition_id = @cohortDefinitionId 
     }
-    WHERE 
-        cdmTable.@cdmFieldName IS NOT NULL AND
-        cdmTable.@plausibleStartBeforeEndFieldName IS NOT NULL
+    WHERE cdmTable.@cdmFieldName IS NOT NULL 
+        AND cdmTable.@plausibleStartBeforeEndFieldName IS NOT NULL
 ) denominator
 ;

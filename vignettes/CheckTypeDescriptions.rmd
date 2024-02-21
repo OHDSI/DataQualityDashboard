@@ -297,6 +297,8 @@ This article will detail each check type, its name, check level, description, de
 
 ## plausibleGender
 
+*Warning: This check is reimplemented by the `plausibleGenderUseDescendants` check below, and will be deprecated in the future.*
+
 **Name**: plausibleGender
 <br>**Level**: Concept check
 <br>**Context**: Validation
@@ -306,6 +308,18 @@ This article will detail each check type, its name, check level, description, de
 **Description**: For a CONCEPT_ID **conceptId** (**conceptName**), the number and percent of records associated with patients with an implausible gender (correct gender = **plausibleGender**). 
 
 **Definition**: This check will count the number of records that have an incorrect gender associated with a gender-specific concept_id. This check is concept specific and therefore the denominator will only be the records with the specified concept. For example it will count the number of records of prostate cancer that are associated with female persons.
+
+## plausibleGenderUseDescendants
+
+**Name**: plausibleGenderUseDescendants
+<br>**Level**: Concept check
+<br>**Context**: Validation
+<br>**Category**: Plausibility
+<br>**Subcategory**: Atemporal
+
+**Description**: For descendants of CONCEPT_ID **conceptId** (**conceptName**), the number and percent of records associated with patients with an implausible gender (correct gender = **plausibleGenderUseDescendants**).
+
+**Definition**: This check will count the number of records that have an incorrect gender associated with a gender-specific concept_id. In this new implementation, the base concept_id is one or more broad ancestor concepts such as "Procedure on female genital system". Any record with a descendant of this concept_id will be checked for an associated person gender matching the gender-specific concept. 
 
 ## plausibleUnitConceptIds
 

@@ -123,7 +123,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -148,7 +148,7 @@
                         <h4 data-toc-skip class="author">Maxim Moinat,
 Katy Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-02-07</h4>
+            <h4 data-toc-skip class="date">2024-02-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/plausibleAfterBirth.Rmd" class="external-link"><code>vignettes/checks/plausibleAfterBirth.Rmd</code></a></small>
       <div class="hidden name"><code>plausibleAfterBirth.Rmd</code></div>
@@ -160,7 +160,7 @@ Katy Sadowski</h4>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: Field check<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Plausibility<br><strong>Subcategory</strong>: Temporal<br><strong>Severity</strong>: Characteristization ✔</p>
+<p><strong>Level</strong>: Field check<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Plausibility<br><strong>Subcategory</strong>: Temporal<br><strong>Severity</strong>: Characterization ✔</p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
@@ -175,16 +175,16 @@ table that occurs prior to birth.</p>
 <p>This check verifies that events happen after birth. This check is
 only run on fields where the <strong>PLAUSIBLE_AFTER_BIRTH</strong>
 parameter is set to <strong>Yes</strong>. The birthdate is taken from
-the <code>person table</code>, either the <code>birth_datetime</code> or
+the <code>person</code> table, either the <code>birth_datetime</code> or
 composed from <code>year_of_birth</code>, <code>month_of_birth</code>,
 <code>day_of_birth</code> (taking 1st month/1st day if missing).</p>
 <ul>
 <li>
 <em>Numerator</em>: The number of records with a non-null date value
-that happen prior to birth.</li>
+that happen prior to birth</li>
 <li>
 <em>Denominator</em>: The total number of records in the table with
-a non-null date value.</li>
+a non-null date value</li>
 <li>
 <em>Related CDM Convention(s)</em>: -Not linked to a
 convention-</li>
@@ -214,8 +214,8 @@ birth (if the birthdate of this patient is unreliable).</li>
 <li>Less aggressive: Remove all rows that happen before birth. Probably
 this should be chosen as a conventional approach for data clean up (if
 the event dates are unreliable).</li>
-<li>Conservative: either keep the records as is (if the date is actually
-valid, for e.g. prenatal observations).</li>
+<li>Conservative: Keep the records as is (if the date is actually valid,
+for e.g. prenatal observations).</li>
 </ul>
 <p>Make sure to clearly document the choices in your ETL
 specification.</p>
@@ -225,44 +225,52 @@ specification.</p>
 <p>You may also use the “violated rows” SQL query to inspect the
 violating rows and help diagnose the potential root cause of the
 issue:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span> p.birth_datetime, cdmTable.<span class="op">*</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="kw">JOIN</span> @cdmDatabaseSchema.person p <span class="kw">ON</span> cdmTable.person_id <span class="op">=</span> p.person_id</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="op">&lt;</span> p.birth_datetime, </span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    p.birth_datetime, </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    cdmTable.<span class="op">*</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="kw">JOIN</span> @cdmDatabaseSchema.person p <span class="kw">ON</span> cdmTable.person_id <span class="op">=</span> p.person_id</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="op">&lt;</span> p.birth_datetime, </span></code></pre></div>
 <p>or, when birth_datetime is missing change to year, month, day
 columns:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="kw">SELECT</span> p.year_of_birth, p.month_of_birth, p.day_of_birth, cdmTable.<span class="op">*</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="kw">JOIN</span> @cdmDatabaseSchema.person p <span class="kw">ON</span> cdmTable.person_id <span class="op">=</span> p.person_id</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="op">&lt;</span> <span class="fu">CAST</span>(<span class="fu">CONCAT</span>(</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>        p.year_of_birth,</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>        <span class="fu">COALESCE</span>(</span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>            <span class="kw">RIGHT</span>(<span class="st">'0'</span> <span class="op">+</span> <span class="fu">CAST</span>(p.month_of_birth <span class="kw">AS</span> <span class="dt">VARCHAR</span>), <span class="dv">2</span>),</span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>            <span class="st">'01'</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>        ),</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    p.year_of_birth, </span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    p.month_of_birth, </span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    p.day_of_birth, </span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    cdmTable.<span class="op">*</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    <span class="kw">JOIN</span> @cdmDatabaseSchema.person p <span class="kw">ON</span> cdmTable.person_id <span class="op">=</span> p.person_id</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="op">&lt;</span> <span class="fu">CAST</span>(<span class="fu">CONCAT</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>        p.year_of_birth,</span>
 <span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>        <span class="fu">COALESCE</span>(</span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>            <span class="kw">RIGHT</span>(<span class="st">'0'</span> <span class="op">+</span> <span class="fu">CAST</span>(p.day_of_birth <span class="kw">AS</span> <span class="dt">VARCHAR</span>), <span class="dv">2</span>),</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>            <span class="kw">RIGHT</span>(<span class="st">'0'</span> <span class="op">+</span> <span class="fu">CAST</span>(p.month_of_birth <span class="kw">AS</span> <span class="dt">VARCHAR</span>), <span class="dv">2</span>),</span>
 <span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>            <span class="st">'01'</span></span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>        )</span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    ) <span class="kw">AS</span> <span class="dt">DATE</span>)</span></code></pre></div>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>        ),</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>        <span class="fu">COALESCE</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>            <span class="kw">RIGHT</span>(<span class="st">'0'</span> <span class="op">+</span> <span class="fu">CAST</span>(p.day_of_birth <span class="kw">AS</span> <span class="dt">VARCHAR</span>), <span class="dv">2</span>),</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>            <span class="st">'01'</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>        )</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>    ) <span class="kw">AS</span> <span class="dt">DATE</span>)</span></code></pre></div>
 <p>Also, the length of the time interval between these dates might give
 you a hint of why the problem appears.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="kw">select</span> date_difference, <span class="fu">count</span>(<span class="op">*</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="kw">from</span> (</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="kw">select</span> datediff(</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>        <span class="dt">day</span>, </span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>        @cdmFieldName, </span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>        <span class="fu">COALESCE</span>(</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>            <span class="fu">CAST</span>(p.birth_datetime <span class="kw">AS</span> <span class="dt">DATE</span>),</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>            <span class="fu">CAST</span>(<span class="fu">CONCAT</span>(p.year_of_birth,<span class="st">'-01-01'</span>) <span class="kw">AS</span> <span class="dt">DATE</span>))</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>        ) <span class="kw">as</span> date_difference</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="kw">from</span> @cdmTableName ct</span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="kw">join</span> person p <span class="kw">on</span> ct.person_id <span class="op">=</span> p.person_id </span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>) cte</span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="kw">where</span> date_difference <span class="op">&gt;</span> <span class="dv">0</span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="kw">group</span> <span class="kw">by</span> date_difference</span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="kw">order</span> <span class="kw">by</span> <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">desc</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>;</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="kw">select</span> </span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    date_difference, </span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="fu">COUNT</span>(<span class="op">*</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="kw">FROM</span> (</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="kw">SELECT</span> DATEDIFF(</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>        <span class="dt">DAY</span>, </span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>        @cdmFieldName, </span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>        <span class="fu">COALESCE</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>            <span class="fu">CAST</span>(p.birth_datetime <span class="kw">AS</span> <span class="dt">DATE</span>),</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>            <span class="fu">CAST</span>(<span class="fu">CONCAT</span>(p.year_of_birth,<span class="st">'-01-01'</span>) <span class="kw">AS</span> <span class="dt">DATE</span>))</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>        ) <span class="kw">AS</span> date_difference</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="kw">FROM</span> @cdmTableName ct</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>        <span class="kw">JOIN</span> person p <span class="kw">ON</span> ct.person_id <span class="op">=</span> p.person_id </span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>) cte</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="kw">WHERE</span> date_difference <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> date_difference</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">DESC</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>;</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>

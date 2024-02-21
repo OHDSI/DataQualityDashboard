@@ -20,10 +20,10 @@ output:
 The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs prior to birth.
 
 ## Definition
-This check verifies that events happen after birth. This check is only run on fields where the **PLAUSIBLE_AFTER_BIRTH** parameter is set to **Yes**. The birthdate is taken from the `person table`, either the `birth_datetime` or composed from `year_of_birth`, `month_of_birth`, `day_of_birth` (taking 1st month/1st day if missing).
+This check verifies that events happen after birth. This check is only run on fields where the **PLAUSIBLE_AFTER_BIRTH** parameter is set to **Yes**. The birthdate is taken from the `person` table, either the `birth_datetime` or composed from `year_of_birth`, `month_of_birth`, `day_of_birth` (taking 1st month/1st day if missing).
 
-- *Numerator*: The number of records with a non-null date value that happen prior to birth.
-- *Denominator*: The total number of records in the table with a non-null date value.
+- *Numerator*: The number of records with a non-null date value that happen prior to birth
+- *Denominator*: The total number of records in the table with a non-null date value
 - *Related CDM Convention(s)*: -Not linked to a convention-
 - *CDM Fields/Tables*: By default, this check runs on all date and datetime fields
 - *Default Threshold Value*: 1%
@@ -44,16 +44,22 @@ Make sure to clearly document the choices in your ETL specification.
 You may also use the “violated rows” SQL query to inspect the violating rows and help diagnose the potential root cause of the issue:
 
 ```sql
-SELECT p.birth_datetime, cdmTable.*
+SELECT 
+    p.birth_datetime, 
+    cdmTable.*
 FROM @cdmDatabaseSchema.@cdmTableName cdmTable
-JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = p.person_id
+    JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = p.person_id
 WHERE cdmTable.@cdmFieldName < p.birth_datetime, 
 ```
 or, when birth_datetime is missing change to year, month, day columns:
 ```sql
-SELECT p.year_of_birth, p.month_of_birth, p.day_of_birth, cdmTable.*
+SELECT 
+    p.year_of_birth, 
+    p.month_of_birth, 
+    p.day_of_birth, 
+    cdmTable.*
 FROM @cdmDatabaseSchema.@cdmTableName cdmTable
-JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = p.person_id
+    JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = p.person_id
 WHERE cdmTable.@cdmFieldName < CAST(CONCAT(
         p.year_of_birth,
         COALESCE(
@@ -69,21 +75,23 @@ WHERE cdmTable.@cdmFieldName < CAST(CONCAT(
 
 Also, the length of the time interval between these dates might give you a hint of why the problem appears.
 ```sql
-select date_difference, count(*)
-from (
-    select datediff(
-        day, 
+select 
+    date_difference, 
+    COUNT(*)
+FROM (
+    SELECT DATEDIFF(
+        DAY, 
         @cdmFieldName, 
         COALESCE(
             CAST(p.birth_datetime AS DATE),
             CAST(CONCAT(p.year_of_birth,'-01-01') AS DATE))
-        ) as date_difference
-    from @cdmTableName ct
-    join person p on ct.person_id = p.person_id 
+        ) AS date_difference
+    FROM @cdmTableName ct
+        JOIN person p ON ct.person_id = p.person_id 
 ) cte
-where date_difference > 0
-group by date_difference
-order by count(*) desc
+WHERE date_difference > 0
+GROUP BY date_difference
+ORDER BY COUNT(*) DESC
 ;
 ```
 

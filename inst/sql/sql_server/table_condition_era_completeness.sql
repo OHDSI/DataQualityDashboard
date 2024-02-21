@@ -20,7 +20,7 @@ SELECT
 		WHEN denominator.num_rows = 0 THEN 0 
 		ELSE 1.0*num_violated_rows/denominator.num_rows 
 	END AS pct_violated_rows, 
-  denominator.num_rows AS num_denominator_rows
+    denominator.num_rows AS num_denominator_rows
 FROM
 (
 	SELECT 
@@ -28,26 +28,26 @@ FROM
 	FROM
 	(
 		SELECT DISTINCT 
-		co.person_id
+		    co.person_id
 		FROM @cdmDatabaseSchema.condition_occurrence co
-			{@cohort & '@runForCohort' == 'Yes'}?{
+		{@cohort & '@runForCohort' == 'Yes'}?{
     		JOIN @cohortDatabaseSchema.@cohortTableName c 
-    		ON co.person_id = c.subject_id
-    		AND c.cohort_definition_id = @cohortDefinitionId
+    		    ON co.person_id = c.subject_id
+    		    AND c.cohort_definition_id = @cohortDefinitionId
     	}
 		LEFT JOIN @cdmDatabaseSchema.@cdmTableName cdmTable 
-		ON co.person_id = cdmTable.person_id
-  	WHERE cdmTable.person_id IS NULL
+		    ON co.person_id = cdmTable.person_id
+  	    WHERE cdmTable.person_id IS NULL
 	) violated_rows
 ) violated_row_count,
 ( 
 	SELECT 
 		COUNT_BIG(DISTINCT person_id) AS num_rows
 	FROM @cdmDatabaseSchema.condition_occurrence co
-		{@cohort & '@runForCohort' == 'Yes'}?{
+	{@cohort & '@runForCohort' == 'Yes'}?{
     	JOIN @cohortDatabaseSchema.@cohortTableName c 
-    	ON co.person_id = c.subject_id
-    	AND c.cohort_definition_id = @cohortDefinitionId
+    	    ON co.person_id = c.subject_id
+    	    AND c.cohort_definition_id = @cohortDefinitionId
     }
 ) denominator
 ;

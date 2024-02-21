@@ -123,7 +123,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -148,7 +148,7 @@
                         <h4 data-toc-skip class="author">Clair
 Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2024-02-07</h4>
+            <h4 data-toc-skip class="date">2024-02-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/CheckTypeDescriptions.rmd" class="external-link"><code>vignettes/CheckTypeDescriptions.rmd</code></a></small>
       <div class="hidden name"><code>CheckTypeDescriptions.rmd</code></div>
@@ -602,6 +602,9 @@ value.</p>
 <div class="section level3">
 <h3 id="plausiblegender">plausibleGender<a class="anchor" aria-label="anchor" href="#plausiblegender"></a>
 </h3>
+<p><em>Warning: This check is reimplemented by the
+<code>plausibleGenderUseDescendants</code> check below, and will be
+deprecated in the future.</em></p>
 <p><strong>Name</strong>: plausibleGender <br><strong>Level</strong>:
 Concept check <br><strong>Context</strong>: Validation
 <br><strong>Category</strong>: Plausibility
@@ -616,6 +619,26 @@ concept_id. This check is concept specific and therefore the denominator
 will only be the records with the specified concept. For example it will
 count the number of records of prostate cancer that are associated with
 female persons.</p>
+</div>
+<div class="section level3">
+<h3 id="plausiblegenderusedescendants">plausibleGenderUseDescendants<a class="anchor" aria-label="anchor" href="#plausiblegenderusedescendants"></a>
+</h3>
+<p><strong>Name</strong>: plausibleGenderUseDescendants
+<br><strong>Level</strong>: Concept check <br><strong>Context</strong>:
+Validation <br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Atemporal</p>
+<p><strong>Description</strong>: For descendants of CONCEPT_ID
+<strong>conceptId</strong> (<strong>conceptName</strong>), the number
+and percent of records associated with patients with an implausible
+gender (correct gender =
+<strong>plausibleGenderUseDescendants</strong>).</p>
+<p><strong>Definition</strong>: This check will count the number of
+records that have an incorrect gender associated with a gender-specific
+concept_id. In this new implementation, the base concept_id is one or
+more broad ancestor concepts such as “Procedure on female genital
+system”. Any record with a descendant of this concept_id will be checked
+for an associated person gender matching the gender-specific
+concept.</p>
 </div>
 <div class="section level3">
 <h3 id="plausibleunitconceptids">plausibleUnitConceptIds<a class="anchor" aria-label="anchor" href="#plausibleunitconceptids"></a>

@@ -6,6 +6,10 @@ output:
   html_document:
     number_sections: yes
     toc: yes
+vignette: >
+    %\VignetteIndexEntry{Check Index}
+    %\VignetteEncoding{UTF-8}
+    %\VignetteEngine{knitr::knitr}
 ---
 
 This section contains detailed descriptions of the data quality checks included in the DataQualityDashboard package. 

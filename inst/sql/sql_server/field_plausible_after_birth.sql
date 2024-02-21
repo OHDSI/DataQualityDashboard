@@ -35,10 +35,12 @@ FROM
             cdmTable.*
         FROM @cdmDatabaseSchema.@cdmTableName cdmTable
         {@cohort & '@runForCohort' == 'Yes'} ? {
-        JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
+        JOIN @cohortDatabaseSchema.@cohortTableName c 
+            ON cdmTable.person_id = c.subject_id
             AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
         }
-        JOIN @cdmDatabaseSchema.person p ON cdmTable.person_id = p.person_id
+        JOIN @cdmDatabaseSchema.person p 
+            ON cdmTable.person_id = p.person_id
         WHERE cdmTable.@cdmFieldName IS NOT NULL AND 
             CAST(cdmTable.@cdmFieldName AS DATE) < COALESCE(
                 p.birth_datetime, 
@@ -62,7 +64,8 @@ FROM
         COUNT_BIG(*) AS num_rows
     FROM @cdmDatabaseSchema.@cdmTableName cdmTable
     {@cohort & '@runForCohort' == 'Yes'} ? {
-    JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
+    JOIN @cohortDatabaseSchema.@cohortTableName c 
+        ON cdmTable.person_id = c.subject_id
         AND c.cohort_definition_id = @cohortDefinitionId
     }
     WHERE cdmTable.@cdmFieldName IS NOT NULL

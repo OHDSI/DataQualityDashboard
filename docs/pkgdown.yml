@@ -1,4 +1,4 @@
-pandoc: 3.1.9
+pandoc: 3.1.1
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
@@ -35,7 +35,7 @@ articles:
   sourceValueCompleteness: checks/sourceValueCompleteness.html
   standardConceptRecordCompleteness: checks/standardConceptRecordCompleteness.html
   withinVisitDates: checks/withinVisitDates.html
-last_built: 2024-02-07T16:38Z
+last_built: 2024-02-21T03:44Z
 urls:
   reference: https://ohdsi.github.io/DataQualityDashboard/reference
   article: https://ohdsi.github.io/DataQualityDashboard/articles
