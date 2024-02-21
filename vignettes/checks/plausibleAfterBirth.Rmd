@@ -14,7 +14,7 @@ output:
 **Context**: Verification\
 **Category**: Plausibility\
 **Subcategory**: Temporal\
-**Severity**: Characteristization &#10004;
+**Severity**: Characterization &#10004;
 
 ## Description
 The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs prior to birth.
@@ -35,7 +35,7 @@ However, if more records violate this check, there might be an issue with incorr
 
  - Aggressive: Remove all patients who have at least one record before birth (if the birthdate of this patient is unreliable).
  - Less aggressive: Remove all rows that happen before birth. Probably this should be chosen as a conventional approach for data clean up (if the event dates are unreliable).
- - Conservative: either keep the records as is (if the date is actually valid, for e.g. prenatal observations).
+ - Conservative: Keep the records as is (if the date is actually valid, for e.g. prenatal observations).
 
 Make sure to clearly document the choices in your ETL specification.
 
