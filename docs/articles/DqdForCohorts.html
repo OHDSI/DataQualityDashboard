@@ -59,22 +59,61 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/AddNewCheck.html">Add a New Data Quality Check</a>
+      <a href="../articles/CheckTypeDescriptions.html">Check Type Definitions</a>
     </li>
     <li>
-      <a href="../articles/CheckStatusDefinitions.html">Check Status Descriptions</a>
+      <a href="../articles/Thresholds.html">DQ Check Failure Thresholds</a>
     </li>
     <li>
-      <a href="../articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
+      <a href="../articles/CheckStatusDefinitions.html">DQ Check Statuses</a>
     </li>
     <li>
-      <a href="../articles/DqdForCohorts.html">Running the DQD on a Cohort</a>
+      <a href="../articles/AddNewCheck.html">Adding a New Data Quality Check</a>
     </li>
     <li>
-      <a href="../articles/SqlOnly.html">SqlOnly</a>
+      <a href="../articles/DqdForCohorts.html">DQD for Cohorts</a>
     </li>
     <li>
-      <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
+      <a href="../articles/SqlOnly.html">SQL-only Mode</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    NEW! Data Quality Check Types
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/checkIndex.html">Index</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmTable.html">cdmTable</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmField.html">cdmField</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmDatatype.html">cdmDatatype</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isPrimaryKey.html">isPrimaryKey</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isForeignKey.html">isForeignKey</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isRequired.html">isRequired</a>
+    </li>
+    <li>
+      <a href="../articles/checks/fkDomain.html">fkDomain</a>
+    </li>
+    <li>
+      <a href="../articles/checks/fkClass.html">fkClass</a>
+    </li>
+    <li>
+      <a href="../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
     </li>
   </ul>
 </li>
@@ -84,7 +123,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -109,7 +148,7 @@
                         <h4 data-toc-skip class="author">Clair
 Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2023-11-04</h4>
+            <h4 data-toc-skip class="date">2024-02-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/DqdForCohorts.rmd" class="external-link"><code>vignettes/DqdForCohorts.rmd</code></a></small>
       <div class="hidden name"><code>DqdForCohorts.rmd</code></div>
@@ -118,13 +157,6 @@ Blacketer</h4>
 
     
     
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Running the DQD on a Cohort}
--->
-<div class="section level2">
-<h2 id="dqd-cohort-functionality">DQD Cohort Functionality<a class="anchor" aria-label="anchor" href="#dqd-cohort-functionality"></a>
-</h2>
 <p>Running the Data Quality Dashboard for a cohort is fairly
 straightforward. There are two options in the
 <code>executeDqChecks</code> function, <code>cohortDefinitionId</code>
@@ -160,14 +192,11 @@ For example, if I have a cohort number 123 and the cohort is in the
 option and the <code>writeTableName</code> option reflect the name of
 the cohort so that the results don’t get confused with those of the
 entire database.</p>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 

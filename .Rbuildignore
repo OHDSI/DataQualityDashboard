@@ -10,3 +10,4 @@ compare_versions
 docs
 ^LICENSE$
 ^inst/doc/.*\.pdf$
+.lintr

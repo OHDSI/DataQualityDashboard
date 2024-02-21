@@ -41,29 +41,66 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/AddNewCheck.html">Add a New Data Quality Check</a>
+      <a href="../articles/CheckTypeDescriptions.html">Check Type Definitions</a>
     </li>
     <li>
-      <a href="../articles/CheckStatusDefinitions.html">Check Status Descriptions</a>
+      <a href="../articles/Thresholds.html">DQ Check Failure Thresholds</a>
     </li>
     <li>
-      <a href="../articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
+      <a href="../articles/CheckStatusDefinitions.html">DQ Check Statuses</a>
     </li>
     <li>
-      <a href="../articles/DqdForCohorts.html">Running the DQD on a Cohort</a>
+      <a href="../articles/AddNewCheck.html">Adding a New Data Quality Check</a>
     </li>
     <li>
-      <a href="../articles/SqlOnly.html">SqlOnly</a>
+      <a href="../articles/DqdForCohorts.html">DQD for Cohorts</a>
     </li>
     <li>
-      <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
+      <a href="../articles/SqlOnly.html">SQL-only Mode</a>
+    </li>
+  </ul></li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    NEW! Data Quality Check Types
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/checkIndex.html">Index</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmTable.html">cdmTable</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmField.html">cdmField</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmDatatype.html">cdmDatatype</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isPrimaryKey.html">isPrimaryKey</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isForeignKey.html">isForeignKey</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isRequired.html">isRequired</a>
+    </li>
+    <li>
+      <a href="../articles/checks/fkDomain.html">fkDomain</a>
+    </li>
+    <li>
+      <a href="../articles/checks/fkClass.html">fkClass</a>
+    </li>
+    <li>
+      <a href="../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
     </li>
   </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -134,9 +171,9 @@
 <div class="section level4">
 <h4 id="new-features-2-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-2-3-0"></a></h4>
 <ul><li>
-<em>New SQL-only Mode:</em> Setting <code>sqlOnly</code> and <code>sqlOnlyIncrementalInsert</code> to TRUE in <code>executeDqChecks</code> will return (but not run) a set of SQL queries that, when executed, will calculate the results of the DQ checks and insert them into a database table. Additionally, <code>sqlOnlyUnionCount</code> can be used to specify a number of SQL queries to union for each check type, allowing for parallel execution of these queries and potentially large performance gains. See the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/SqlOnly.html" class="external-link">SqlOnly vignette</a> for details</li>
+<em>New SQL-only Mode:</em> Setting <code>sqlOnly</code> and <code>sqlOnlyIncrementalInsert</code> to TRUE in <code>executeDqChecks</code> will return (but not run) a set of SQL queries that, when executed, will calculate the results of the DQ checks and insert them into a database table. Additionally, <code>sqlOnlyUnionCount</code> can be used to specify a number of SQL queries to union for each check type, allowing for parallel execution of these queries and potentially large performance gains. See the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/SqlOnly.html">SqlOnly vignette</a> for details</li>
 <li>
-<em>Results File Case Converter:</em> The new function <code>convertJsonResultsFileCase</code> can be used to convert the keys in a DQD results JSON file between snakecase and camelcase. This allows reading of v2.1.0+ JSON files in older DQD versions, and other conversions which may be necessary for secondary use of the DQD results file. See <a href="https://ohdsi.github.io/DataQualityDashboard/reference/convertJsonResultsFileCase.html" class="external-link">function documentation</a> for details</li>
+<em>Results File Case Converter:</em> The new function <code>convertJsonResultsFileCase</code> can be used to convert the keys in a DQD results JSON file between snakecase and camelcase. This allows reading of v2.1.0+ JSON files in older DQD versions, and other conversions which may be necessary for secondary use of the DQD results file. See <a href="https://ohdsi.github.io/DataQualityDashboard/reference/convertJsonResultsFileCase.html">function documentation</a> for details</li>
 </ul></div>
 <div class="section level4">
 <h4 id="bugfixes-2-3-0">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-2-3-0"></a></h4>

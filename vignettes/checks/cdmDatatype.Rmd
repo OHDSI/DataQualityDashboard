@@ -1,0 +1,57 @@
+---
+title: "cdmDatatype"
+author: "Katy Sadowski"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## Summary
+
+**Level**: Field check\
+**Context**: Verification\
+**Category**: Conformance\
+**Subcategory**: Value\
+**Severity**: Fatal &#x1F480;\
+
+## Description
+The number and percent of **cdmFieldName** values in the **cdmTableName** that are not the expected data type based on the specification.
+
+## Definition
+At present this check only verifies that integer fields contain integers.
+
+- *Numerator*: In some SQL dialects, the numerator of the check will count non-null values that are non-numeric, or are numeric but contain a decimal point. In others, it will count non-null values that contain any non-digit character
+- *Denominator*: The total number of records in the table
+- *Related CDM Convention(s)*: Column datatypes in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
+- *CDM Fields/Tables*: By default, this check runs on all tables & fields in the CDM
+- *Default Threshold Value*: 0%
+
+## User Guidance
+This check failure must be resolved. OHDSI tools & analyses expect integer columns to be integers and will throw errors and/or suffer performance issues if these columns are of the wrong type.
+
+A failure in this check likely means that the column was created with the incorrect datatype (e.g., in an empty target table); that the data being loaded into the column is of the wrong type (e.g., in a “CREATE TABLE AS”); or that the wrong data was loaded into the column in error (e.g., mis-mapped in ETL).
+
+Check the datatype of the column in your database’s information/system tables. It should match the datatype listed for the column in the CDM specification.
+
+### Violated rows query
+You may also use the "violated rows” SQL query to inspect the violating rows and help diagnose the potential root cause of the issue:
+
+```sql
+SELECT  
+  '@cdmTableName.@cdmFieldName' AS violating_field,  
+  cdmTable.*  
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable 
+WHERE  
+  (ISNUMERIC(cdmTable.@cdmFieldName) = 0  
+    OR (ISNUMERIC(cdmTable.@cdmFieldName) = 1  
+      AND CHARINDEX('.', CAST(ABS(cdmTable.@cdmFieldName) AS varchar)) != 0)) 
+  AND cdmTable.@cdmFieldName IS NOT NULL 
+```
+
+### ETL Developer
+If the data does not look as expected (e.g., dates in an integer column), trace back to your ETL code to determine the appropriate fix. If the data looks as expected but the column is the wrong type (e.g., string integers in an integer column), update the part of your ETL that creates the table to reflect the correct datatype for the column. 
+
+### Data User
+If your data supplier is unwilling or unable to fix the issue, you should consider changing the type of the column yourself before using the dataset (though it’s probably a good idea to inspect the column contents first to make sure the data appear as expected - i.e., that this is not a case of the wrong source data being inserted into the column).

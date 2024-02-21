@@ -22,7 +22,7 @@ SELECT
 		WHEN denominator.num_rows = 0 THEN 0 
 		ELSE 1.0*num_violated_rows/denominator.num_rows 
 	END AS pct_violated_rows, 
-  denominator.num_rows AS num_denominator_rows
+    denominator.num_rows AS num_denominator_rows
 FROM
 (
 	SELECT 
@@ -36,11 +36,11 @@ FROM
 		FROM @schema.@cdmTableName cdmTable
 			{@cohort & '@runForCohort' == 'Yes'}?{
   			JOIN @cohortDatabaseSchema.@cohortTableName c 
-  			ON cdmTable.person_id = c.subject_id
-  			AND c.cohort_definition_id = @cohortDefinitionId
+  			    ON cdmTable.person_id = c.subject_id
+  			    AND c.cohort_definition_id = @cohortDefinitionId
     	}
 	  	JOIN @vocabDatabaseSchema.concept co 
-	  	ON cdmTable.@cdmFieldName = co.concept_id
+	  	    ON cdmTable.@cdmFieldName = co.concept_id
 		WHERE co.concept_id != 0 
 			AND (co.standard_concept != 'S' OR co.invalid_reason IS NOT NULL)
 		/*violatedRowsEnd*/
@@ -52,8 +52,8 @@ FROM
 	FROM @schema.@cdmTableName cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
   		JOIN @cohortDatabaseSchema.@cohortTableName c 
-  		ON cdmTable.person_id = c.subject_id
-  		AND c.cohort_definition_id = @cohortDefinitionId
+  		    ON cdmTable.person_id = c.subject_id
+  		    AND c.cohort_definition_id = @cohortDefinitionId
     }
 ) denominator
 ;

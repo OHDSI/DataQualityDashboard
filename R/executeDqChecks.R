@@ -267,6 +267,10 @@ executeDqChecks <- function(connectionDetails,
     warning("DEPRECATION WARNING - The plausibleTemporalAfter check has been reimplemented with the plausibleAfterBirth and plausibleStartBeforeEnd checks.")
   }
 
+  if ("plausibleGender" %in% checkDescriptionsDf$checkName) {
+    warning("DEPRECATION WARNING - The plausibleGender check has been reimplemented with the plausibleGenderUseDescendants check.")
+  }
+
   checkDescriptions <- split(checkDescriptionsDf, seq_len(nrow(checkDescriptionsDf)))
 
   connection <- NULL

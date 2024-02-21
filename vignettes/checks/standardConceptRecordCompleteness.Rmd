@@ -1,0 +1,46 @@
+---
+title: "standardConceptRecordCompleteness"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## Summary
+
+**Level**: FIELD\
+**Context**: Verification\
+**Category**: Completeness\
+**Subcategory**: \
+**Severity**: 
+
+
+## Description
+The number and percent of records with a value of 0 in the standard concept field @cdmFieldName in the @cdmTableName table.
+
+
+## Definition
+
+- *Numerator*: 
+- *Denominator*:
+- *Related CDM Convention(s)*:
+- *CDM Fields/Tables*:
+- *Default Threshold Value*:
+
+
+## User Guidance
+
+
+### Violated rows query
+```sql
+
+```
+
+
+### ETL Developers
+
+
+### Data Users
+

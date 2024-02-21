@@ -16,6 +16,7 @@ navbar:
     - intro
     - reference
     - articles
+    - checks
     - news
     right: [hades, github]
   components:
@@ -31,6 +32,44 @@ navbar:
     news:
       text: Changelog
       href: news/index.html
+    articles:
+      text: Articles
+      menu:
+      - text: Check Type Definitions
+        href: articles/CheckTypeDescriptions.html
+      - text: DQ Check Failure Thresholds
+        href: articles/Thresholds.html
+      - text: DQ Check Statuses
+        href: articles/CheckStatusDefinitions.html
+      - text: Adding a New Data Quality Check
+        href: articles/AddNewCheck.html
+      - text: DQD for Cohorts
+        href: articles/DqdForCohorts.html
+      - text: SQL-only Mode
+        href: articles/SqlOnly.html
+    checks:
+      text: NEW! Data Quality Check Types
+      menu:
+      - text: Index
+        href: articles/checkIndex.html
+      - text: cdmTable
+        href: articles/checks/cdmTable.html
+      - text: cdmField
+        href: articles/checks/cdmField.html
+      - text: cdmDatatype
+        href: articles/checks/cdmDatatype.html
+      - text: isPrimaryKey
+        href: articles/checks/isPrimaryKey.html
+      - text: isForeignKey
+        href: articles/checks/isForeignKey.html
+      - text: isRequired
+        href: articles/checks/isRequired.html
+      - text: fkDomain
+        href: articles/checks/fkDomain.html
+      - text: fkClass
+        href: articles/checks/fkClass.html
+      - text: plausibleAfterBirth
+        href: articles/checks/plausibleAfterBirth.html
     hades:
       text: hadesLogo
       href: https://ohdsi.github.io/Hades
@@ -67,3 +106,5 @@ reference:
     desc: > 
       Function to write DQD results from a database table into a JSON file
     contents: writeDBResultsToJson
+
+url: https://ohdsi.github.io/DataQualityDashboard/

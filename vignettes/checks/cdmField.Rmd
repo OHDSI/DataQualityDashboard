@@ -1,0 +1,47 @@
+---
+title: "cdmField"
+author: "Heidi Schmidt, Katy Sadowski"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## Summary
+
+**Level**: Field check\
+**Context**: Verification\
+**Category**: Conformance\
+**Subcategory**: Relational\
+**Severity**: Fatal &#x1F480;\
+
+## Description
+A yes or no value indicating if the **cdmFieldName** field is present in the **cdmTableName** table.
+
+## Definition
+This check verifies if a column is present as specified in the CDM specification for the relevant CDM version. 
+
+- *Numerator*: If the field is present, the numerator of the check result will be 0; if the field is absent the check will throw an error
+- *Denominator*: The denominator is always a placeholder value of 1
+- *Related CDM Convention(s)*: Listed columns in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
+- *CDM Fields/Tables*: By default, this check runs on all tables & fields in the CDM
+- *Default Threshold Value*: 0%
+
+## User Guidance
+This check failure must be resolved to avoid errors in downstream tools/analyses.  OHDSI tools assume a complete set of OMOP CDM tables and columns, as may anyone designing an analysis on OMOP data.  Even if you don’t intend to populate a column, it should still be present in the database.
+
+There are 3 possible causes for this check failure: 
+
+- The wrong CDM version was specified in `executeDqChecks` 
+- The column does not exist in the table 
+- The column has the wrong name 
+
+Before taking any action in your ETL code, make sure the CDM version you specified when running `executeDqChecks` matches the version of your CDM.  Some columns were renamed between CDM versions 5.3 and 5.4 so it’s important you’re running DQD with the correct configuration. If the versions *do* match, there is most likely an issue with the ETL.
+
+### ETL Developers
+To resolve the failure, you will need to amend the code/process that creates the table (e.g. DDL script).  Make sure you know whether the column is missing altogether or if it has the wrong name.  In the latter case, the column should be renamed or replaced with a correctly named column.  Reference the [CDM documentation](https://ohdsi.github.io/CommonDataModel/index.html) to confirm correct column naming.
+
+### Data Users
+Missing columns must be added to the CDM even if they are empty. If a column has the wrong name, rename it or create a new column with the correct name and migrate the other column's data there.
+

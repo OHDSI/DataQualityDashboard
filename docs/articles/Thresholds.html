@@ -59,22 +59,61 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/AddNewCheck.html">Add a New Data Quality Check</a>
+      <a href="../articles/CheckTypeDescriptions.html">Check Type Definitions</a>
     </li>
     <li>
-      <a href="../articles/CheckStatusDefinitions.html">Check Status Descriptions</a>
+      <a href="../articles/Thresholds.html">DQ Check Failure Thresholds</a>
     </li>
     <li>
-      <a href="../articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
+      <a href="../articles/CheckStatusDefinitions.html">DQ Check Statuses</a>
     </li>
     <li>
-      <a href="../articles/DqdForCohorts.html">Running the DQD on a Cohort</a>
+      <a href="../articles/AddNewCheck.html">Adding a New Data Quality Check</a>
     </li>
     <li>
-      <a href="../articles/SqlOnly.html">SqlOnly</a>
+      <a href="../articles/DqdForCohorts.html">DQD for Cohorts</a>
     </li>
     <li>
-      <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
+      <a href="../articles/SqlOnly.html">SQL-only Mode</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    NEW! Data Quality Check Types
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/checkIndex.html">Index</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmTable.html">cdmTable</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmField.html">cdmField</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmDatatype.html">cdmDatatype</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isPrimaryKey.html">isPrimaryKey</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isForeignKey.html">isForeignKey</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isRequired.html">isRequired</a>
+    </li>
+    <li>
+      <a href="../articles/checks/fkDomain.html">fkDomain</a>
+    </li>
+    <li>
+      <a href="../articles/checks/fkClass.html">fkClass</a>
+    </li>
+    <li>
+      <a href="../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
     </li>
   </ul>
 </li>
@@ -84,7 +123,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -109,7 +148,7 @@
                         <h4 data-toc-skip class="author">Clair
 Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2023-11-04</h4>
+            <h4 data-toc-skip class="date">2024-02-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/Thresholds.rmd" class="external-link"><code>vignettes/Thresholds.rmd</code></a></small>
       <div class="hidden name"><code>Thresholds.rmd</code></div>
@@ -118,14 +157,10 @@ Blacketer</h4>
 
     
     
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Failure Thresholds and How to Change Them}
--->
 <div class="section level2">
 <h2 id="dqd-failure-thresholds">DQD Failure Thresholds<a class="anchor" aria-label="anchor" href="#dqd-failure-thresholds"></a>
 </h2>
-<p>As described in the <a href="https://ohdsi.github.io/DataQualityDashboard/#introduction" class="external-link">introduction
+<p>As described in the <a href="https://ohdsi.github.io/DataQualityDashboard/#introduction">introduction
 to the tool</a>, the Data Quality Dashboard works by systematically
 applying 20 data quality check types to a database by leveraging the
 structure of the OMOP Common Data Model. This process results in over
@@ -169,7 +204,7 @@ should not need to be changed.</li>
 <strong>OMOP_CDMvx.x.x_Table_Level.csv</strong>: This file has a
 list of all tables in the CDM version and any checks to be performed at
 this level as well as the failure thresholds associated. Right now only
-the checktype <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#measurepersoncompleteness" class="external-link">measurePersonCompleteness</a>
+the checktype <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#measurepersoncompleteness">measurePersonCompleteness</a>
 is considered a table level check. If you would like to change the
 failure thresholds for the measurePersonCompleteness check copy this
 file to a location the R instance can access.</li>
@@ -177,7 +212,7 @@ file to a location the R instance can access.</li>
 <strong>OMOP_CDMvx.x.x_Field_Level.csv</strong>: This file has a
 list of all tables and fields in the CDM version and any checks to be
 performed at this level as well as the failure thresholds associated.
-The majority of the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html" class="external-link">check
+The majority of the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html">check
 types</a> run by the DQD are field level checks. If you would like to
 change the failure thresholds for any of these checks copy this file to
 a location the R instance can access. An example of this file is seen in
@@ -191,7 +226,7 @@ figure 1 below.</li>
 <strong>OMOP_CDMvx.x.x_Concept_Level.csv</strong>: This file has a
 list of all concepts and any checks to be performed on that concept. For
 example, there are checks that evaluate biologically plausible ranges
-for measurement values, like <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#plausiblevaluelow-1" class="external-link">plausibleValueLow</a>.
+for measurement values, like <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#plausiblevaluelow-1">plausibleValueLow</a>.
 If you would like to change the failure thresholds for any of these
 checks copy this file to a location the R instance can access.</li>
 </ul>
@@ -202,14 +237,14 @@ checks copy this file to a location the R instance can access.</li>
 <p>Using the field level file as an example, when you open it there will
 be two columns listing the tables and fields in the OMOP CDM, as seen in
 figure 1. Moving horizontally through the file there will be a column
-named for each of the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html" class="external-link">check
+named for each of the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html">check
 types</a> available to run at the field level. At the intersection of
 each check type and CDM field will be a cell with either a ‘Yes’ or ‘No’
 value. A ‘Yes’ indicates that the check type will be run for that
 specific table and field. For example in figure 1 there is a ‘Yes’ in
 the <strong>isRequired</strong> column for the field
 <strong>person_id</strong> in the <strong>PERSON</strong> table. This
-means that the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#isRequired" class="external-link"><strong>isRequired</strong></a>
+means that the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#isRequired"><strong>isRequired</strong></a>
 check will be run, substituting <strong>person_id</strong> for
 cdmFieldName and <strong>PERSON</strong> for cdmTableName.</p>
 <p>So instead of the generic check type: <em>The number and percent of
@@ -264,7 +299,7 @@ exposed in the shiny application.</p>
 <div class="section level4">
 <h4 id="step-3-run-the-dqd-using-the-updated-thresholds">Step 3: Run the DQD Using the Updated Thresholds<a class="anchor" aria-label="anchor" href="#step-3-run-the-dqd-using-the-updated-thresholds"></a>
 </h4>
-<p>Follow the instructions on the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html" class="external-link">Getting
+<p>Follow the instructions on the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html">Getting
 Started</a> page to set the parameters to run the Data Quality
 Dashboard. When running the execute function, point the package to the
 updated threshold files as shown in the example below. To do this, The
