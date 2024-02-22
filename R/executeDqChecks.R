@@ -114,15 +114,9 @@ executeDqChecks <- function(connectionDetails,
   stopifnot(is.character(cdmVersion))
 
   # Warning if check names for determining NA is missing
-  if (!length(checkNames) == 0) {
-    naCheckNames <- c("cdmTable", "cdmField", "measureValueCompleteness")
-    missingNAChecks <- !(naCheckNames %in% checkNames)
-    if (any(missingNAChecks)) {
-      missingNACheckNames <- paste(naCheckNames[missingNAChecks], collapse = ", ")
-      warning(sprintf("Missing check names to calculate the 'Not Applicable' status: %s", missingNACheckNames))
-    }
+  if (length(checkNames) > 0 && !.containsNAchecks(checkNames)) {
+    warning("Missing check names to calculate the 'Not Applicable' status.")
   }
-
 
   # temporary patch to work around vroom 1.6.4 bug
   readr::local_edition(1)
