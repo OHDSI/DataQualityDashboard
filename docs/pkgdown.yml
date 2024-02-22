@@ -35,7 +35,7 @@ articles:
   sourceValueCompleteness: checks/sourceValueCompleteness.html
   standardConceptRecordCompleteness: checks/standardConceptRecordCompleteness.html
   withinVisitDates: checks/withinVisitDates.html
-last_built: 2024-02-21T03:44Z
+last_built: 2024-02-22T02:19Z
 urls:
   reference: https://ohdsi.github.io/DataQualityDashboard/reference
   article: https://ohdsi.github.io/DataQualityDashboard/articles

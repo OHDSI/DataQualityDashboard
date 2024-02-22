@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
       </span>
     </div>
 
@@ -122,7 +122,30 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.5.0" id="dataqualitydashboard-250--251">DataQualityDashboard 2.5.0 / 2.5.1<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-250--251"></a></h2>
+<h2 class="page-header" data-toc-text="2.6.0" id="dataqualitydashboard-260">DataQualityDashboard 2.6.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-260"></a></h2>
+<p>This release includes:</p>
+<div class="section level4">
+<h4 id="new-checks-2-6-0">New Checks<a class="anchor" aria-label="anchor" href="#new-checks-2-6-0"></a></h4>
+<p>4 new data quality check types have been added in this release:</p>
+<ul><li>
+<code>plausibleStartBeforeEnd</code>: The number and percent of records with a value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> that occurs after the date in the <strong>plausibleStartBeforeEndFieldName</strong>.</li>
+<li>
+<code>plausibleAfterBirth</code>: The number and percent of records with a date value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> table that occurs prior to birth.</li>
+<li>
+<code>plausibleBeforeDeath</code>: The number and percent of records with a date value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> table that occurs after death.</li>
+<li>
+<code>plausibleGenderUseDescendants</code>: For descendants of CONCEPT_ID <strong>conceptId</strong> (<strong>conceptName</strong>), the number and percent of records associated with patients with an implausible gender (correct gender = <strong>plausibleGenderUseDescendants</strong>).</li>
+</ul><p>The 3 temporal plausibilty checks are intended to <strong>replace</strong> <code>plausibleTemporalAfter</code> and <code>plausibleDuringLife</code>, for a more comprehensive and clear approach to various temporality scenarios. <code>plausibleGenderUseDescendants</code> is intended to <strong>replace</strong> <code>plausibleGender</code>, to enhance readability of the DQD results and improve performance. The replaced checks are still available and enabled by default in DQD; however, in a future major release, these checks will be deprecated. Please plan accordingly.</p>
+<p>For more information on the new checks, please check the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html">Check Type Definitions</a> documentation page. If you’d like to disable the deprecated checks, please see the suggested check exclusion workflow in our Getting Started code <a href="https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html">here</a>.</p>
+</div>
+<div class="section level4">
+<h4 id="new-documentation-2-6-0">New Documentation<a class="anchor" aria-label="anchor" href="#new-documentation-2-6-0"></a></h4>
+<p>We have begun an initiative to add more comprehensive user documentation at the data quality check level. A dedicated documentation page is being created for each check type. Each check’s page will include detailed information about how its result is generated and what to do if it fails. Guidance is provided for both ETL developers and data users.</p>
+<p>9 pages have been added so far, and the rest will come in a future release. Check them out <a href="https://ohdsi.github.io/DataQualityDashboard/articles/checkIndex.html">here</a> and please reach out with feedback as we continue improving our documentation!</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.5.0" id="dataqualitydashboard-250">DataQualityDashboard 2.5.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-250"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
 <h4 id="new-feature-2-5-0">New Feature<a class="anchor" aria-label="anchor" href="#new-feature-2-5-0"></a></h4>
@@ -133,8 +156,7 @@
 <ul><li>DQD previously threw an error if the CDM_SOURCE table contained more than 1 row. It has now been updated to select a random row from CDM_SOURCE to use for its metadata and warn the user upon doing this. Whether or not CDM_SOURCE <em>should</em> ever contain more than 1 row is still an unresolved discussion in the community. Either way, DQD should be allowed to run if the table has been improperly populated - and perhaps check(s) should be added for its proper use once a convention is finalized</li>
 <li>Fixed additional field level checks (fkDomain, fkClass, plausibleTemporalAfter) to incorporate user-specified <code>vocabDatabaseSchema</code> where appropriate</li>
 <li>Additional minor bugfixes &amp; refactors</li>
-</ul><p><em>2.5.1 release was created to add this NEWS.md entry, which was missed in the 2.5.0 release.</em></p>
-</div>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.4.1" id="dataqualitydashboard-241">DataQualityDashboard 2.4.1<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-241"></a></h2>
