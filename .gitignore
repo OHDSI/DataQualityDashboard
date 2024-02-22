@@ -28,6 +28,10 @@ inst/results.json
 # Other
 .DS_Store
 
+# Visual Studio Code
+.vscode/
+.lintr
+
 errorReport.txt
 output/
 results/
@@ -35,7 +39,6 @@ thresholds/
 hs_err_pid*.log
 docs/Gemfile
 docs/Gemfile.lock
-sql
 vignettes/*.log
 /doc/
 /Meta/

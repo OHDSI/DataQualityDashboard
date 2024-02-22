@@ -1,3 +1,24 @@
+DataQualityDashboard 2.6.0
+==========================
+This release includes: 
+
+### New Checks
+4 new data quality check types have been added in this release:
+
+- `plausibleStartBeforeEnd`: The number and percent of records with a value in the **cdmFieldName** field of the **cdmTableName** that occurs after the date in the **plausibleStartBeforeEndFieldName**.
+- `plausibleAfterBirth`: The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs prior to birth.
+- `plausibleBeforeDeath`: The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs after death.
+- `plausibleGenderUseDescendants`: For descendants of CONCEPT_ID **conceptId** (**conceptName**), the number and percent of records associated with patients with an implausible gender (correct gender = **plausibleGenderUseDescendants**).
+
+The 3 temporal plausibilty checks are intended to **replace** `plausibleTemporalAfter` and `plausibleDuringLife`, for a more comprehensive and clear approach to various temporality scenarios.  `plausibleGenderUseDescendants` is intended to **replace** `plausibleGender`, to enhance readability of the DQD results and improve performance.  The replaced checks are still available and enabled by default in DQD; however, in a future major release, these checks will be deprecated.  Please plan accordingly.
+
+For more information on the new checks, please check the [Check Type Definitions](https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html) documentation page.  If you'd like to disable the deprecated checks, please see the suggested check exclusion workflow in our Getting Started code [here](https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html).
+
+### New Documentation
+We have begun an initiative to add more comprehensive user documentation at the data quality check level.  A dedicated documentation page is being created for each check type.  Each check's page will include detailed information about how its result is generated and what to do if it fails.  Guidance is provided for both ETL developers and data users.
+
+9 pages have been added so far, and the rest will come in a future release.  Check them out [here](https://ohdsi.github.io/DataQualityDashboard/articles/checkIndex.html) and please reach out with feedback as we continue improving our documentation!
+
 DataQualityDashboard 2.5.0
 ==========================
 This release includes: 

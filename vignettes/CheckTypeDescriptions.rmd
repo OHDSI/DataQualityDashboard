@@ -2,25 +2,18 @@
 title: "Data Quality Check Type Definitions"
 author: "Clair Blacketer"
 date: "`r Sys.Date()`"
-header-includes:
-    - \usepackage{fancyhdr}
-    - \pagestyle{fancy}
-    - \fancyhead{}
-    - \fancyhead[CO,CE]{Data Quality Check Type Definitions}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version `r    utils::packageVersion("DataQualityDashboard")`}
-    - \fancyfoot[LE,RO]{\thepage}
-    - \renewcommand{\headrulewidth}{0.4pt}
-    - \renewcommand{\footrulewidth}{0.4pt}
 output:
+  pdf_document:
+    number_sections: yes
+    toc: yes
   html_document:
     number_sections: yes
     toc: yes
+vignette: >
+  %\VignetteIndexEntry{Data Quality Check Type Definitions}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::knitr}
 ---
-
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Data Quality Check Type Definitions}
--->
 
 # Introduction
 
@@ -216,6 +209,8 @@ This article will detail each check type, its name, check level, description, de
 
 ## plausibleTemporalAfter
 
+*Warning: This check is reimplemented by the `plausibleStartBeforeEnd` and `plausibleAfterBirth` checks, and will be deprecated in the future.*
+
 **Name**: plausibleTemporalAfter
 <br>**Level**: Field check
 <br>**Context**: Verification
@@ -228,6 +223,8 @@ This article will detail each check type, its name, check level, description, de
 
 ## plausibleDuringLife
 
+*Warning: This check is reimplemented by the `plausibleBeforeDeath` check, and will be deprecated in the future.*
+
 **Name**: plausibleDuringLife
 <br>**Level**: Field check
 <br>**Context**: Verification
@@ -237,6 +234,42 @@ This article will detail each check type, its name, check level, description, de
 **Description**: If yes, the number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs after death. 
 
 **Definition**: This check will calculate the number of records that occur after a person's death. This is called *plausibleDuringLife* because turning it on indicates that the specified dates should occur during a person's lifetime, like drug exposures, etc.
+
+## plausibleStartBeforeEnd
+
+**Name**: plausibleStartBeforeEnd
+<br>**Level**: Field check
+<br>**Context**: Verification
+<br>**Category**: Plausibility
+<br>**Subcategory**: Temporal
+
+**Description**: The number and percent of records with a value in the **cdmFieldName** field of the **cdmTableName** that occurs after the date in the **plausibleStartBeforeEndFieldName**.
+
+**Definition**: This check is attempting to apply temporal rules within a table, specifically checking that all start dates are before the end dates. For example, in the VISIT_OCCURRENCE table it checks that the VISIT_OCCURRENCE_START_DATE is before VISIT_OCCURRENCE_END_DATE. 
+
+## plausibleAfterBirth
+
+**Name**: plausibleAfterBirth
+<br>**Level**: Field check
+<br>**Context**: Verification
+<br>**Category**: Plausibility
+<br>**Subcategory**: Temporal
+
+**Description**: The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs prior to birth.
+
+**Definition**: This check will calculate the number of records that occur before a person's birth. If the `person.birth_datetime` is given this is used. If not, it is calculated from the `person.year_of_birth`, `person.month_of_birth`, and `person.day_of_birth`, taking the first month of the year, day of the month if the respective value is not given. For example, if only year of birth is given, the birth date is assumed to be January 1st of that year.
+
+## plausibleBeforeDeath
+
+**Name**: plausibleBeforeDeath
+<br>**Level**: Field check
+<br>**Context**: Verification
+<br>**Category**: Plausibility
+<br>**Subcategory**: Temporal
+
+**Description**: The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs after death.
+
+**Definition**: This check will calculate the number of records that occur more than 60 days after a person's death. The 60 day 'washout' period is to allow for administrative records after death.
 
 ## plausibleValueLow - (for Concept + Unit combinations)
 
@@ -264,6 +297,8 @@ This article will detail each check type, its name, check level, description, de
 
 ## plausibleGender
 
+*Warning: This check is reimplemented by the `plausibleGenderUseDescendants` check below, and will be deprecated in the future.*
+
 **Name**: plausibleGender
 <br>**Level**: Concept check
 <br>**Context**: Validation
@@ -273,6 +308,18 @@ This article will detail each check type, its name, check level, description, de
 **Description**: For a CONCEPT_ID **conceptId** (**conceptName**), the number and percent of records associated with patients with an implausible gender (correct gender = **plausibleGender**). 
 
 **Definition**: This check will count the number of records that have an incorrect gender associated with a gender-specific concept_id. This check is concept specific and therefore the denominator will only be the records with the specified concept. For example it will count the number of records of prostate cancer that are associated with female persons.
+
+## plausibleGenderUseDescendants
+
+**Name**: plausibleGenderUseDescendants
+<br>**Level**: Concept check
+<br>**Context**: Validation
+<br>**Category**: Plausibility
+<br>**Subcategory**: Atemporal
+
+**Description**: For descendants of CONCEPT_ID **conceptId** (**conceptName**), the number and percent of records associated with patients with an implausible gender (correct gender = **plausibleGenderUseDescendants**).
+
+**Definition**: This check will count the number of records that have an incorrect gender associated with a gender-specific concept_id. In this new implementation, the base concept_id is one or more broad ancestor concepts such as "Procedure on female genital system". Any record with a descendant of this concept_id will be checked for an associated person gender matching the gender-specific concept. 
 
 ## plausibleUnitConceptIds
 

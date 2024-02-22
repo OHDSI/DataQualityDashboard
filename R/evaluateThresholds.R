@@ -1,4 +1,4 @@
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -78,7 +78,28 @@
           checkResults[i, ]$cdmFieldName
         )
       } else if (checkResults[i, ]$checkLevel == "CONCEPT") {
-        if (is.na(checkResults[i, ]$unitConceptId)) {
+        if (is.na(checkResults[i, ]$unitConceptId) &&
+          grepl(",", checkResults[i, ]$conceptId)) {
+          thresholdFilter <- sprintf(
+            "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                  conceptChecks$cdmFieldName == '%s' &
+                                  conceptChecks$conceptId == '%s']",
+            thresholdField,
+            checkResults[i, ]$cdmTableName,
+            checkResults[i, ]$cdmFieldName,
+            checkResults[i, ]$conceptId
+          )
+          notesFilter <- sprintf(
+            "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                  conceptChecks$cdmFieldName == '%s' &
+                                  conceptChecks$conceptId == '%s']",
+            notesField,
+            checkResults[i, ]$cdmTableName,
+            checkResults[i, ]$cdmFieldName,
+            checkResults[i, ]$conceptId
+          )
+        } else if (is.na(checkResults[i, ]$unitConceptId) &&
+          !grepl(",", checkResults[i, ]$conceptId)) {
           thresholdFilter <- sprintf(
             "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &

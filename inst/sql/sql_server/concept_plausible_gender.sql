@@ -18,7 +18,7 @@ cohortTableName = @cohortTableName
 
 
 SELECT 
-  num_violated_rows, 
+	num_violated_rows, 
 	CASE 
 		WHEN denominator.num_rows = 0 THEN 0 
 		ELSE 1.0*num_violated_rows/denominator.num_rows 
@@ -27,33 +27,33 @@ SELECT
 FROM
 (
 	SELECT 
-	  COUNT_BIG(*) AS num_violated_rows
+		COUNT_BIG(*) AS num_violated_rows
 	FROM
 	(
 		/*violatedRowsBegin*/
 		SELECT cdmTable.* 
 		FROM @cdmDatabaseSchema.@cdmTableName cdmTable
-			INNER JOIN @cdmDatabaseSchema.person p
-			ON cdmTable.person_id = p.person_id
+			JOIN @cdmDatabaseSchema.person p
+				ON cdmTable.person_id = p.person_id
 			{@cohort}?{
-      	JOIN @cohortDatabaseSchema.@cohortTableName c
-      	  ON cdmTable.person_id = c.subject_id
-      	  AND c.cohort_definition_id = @cohortDefinitionId
-    	}
+			JOIN @cohortDatabaseSchema.@cohortTableName c
+				ON cdmTable.person_id = c.subject_id
+				AND c.cohort_definition_id = @cohortDefinitionId
+			}
 		WHERE cdmTable.@cdmFieldName = @conceptId
-		  AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
+		  	AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
 		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
 ( 
 	SELECT 
-	  COUNT_BIG(*) AS num_rows
+		COUNT_BIG(*) AS num_rows
 	FROM @cdmDatabaseSchema.@cdmTableName cdmTable
-  	{@cohort}?{
-    	JOIN @cohortDatabaseSchema.@cohortTableName c
-      	ON cdmTable.person_id = c.subject_id
-      	AND c.cohort_definition_id = @cohortDefinitionId
-  	}
+	{@cohort}?{
+		JOIN @cohortDatabaseSchema.@cohortTableName c
+		  	ON cdmTable.person_id = c.subject_id
+		  	AND c.cohort_definition_id = @cohortDefinitionId
+	}
 	WHERE @cdmFieldName = @conceptId
 ) denominator
 ;

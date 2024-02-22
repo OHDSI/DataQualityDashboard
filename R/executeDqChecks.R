@@ -1,4 +1,4 @@
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -122,6 +122,7 @@ executeDqChecks <- function(connectionDetails,
       warning(sprintf("Missing check names to calculate the 'Not Applicable' status: %s", missingNACheckNames))
     }
   }
+
 
   # temporary patch to work around vroom 1.6.4 bug
   readr::local_edition(1)
@@ -256,6 +257,18 @@ executeDqChecks <- function(connectionDetails,
 
   if (nrow(checkDescriptionsDf) == 0) {
     stop("No checks are available based on excluded tables. Please review tablesToExclude.")
+  }
+
+  if ("plausibleDuringLife" %in% checkDescriptionsDf$checkName) {
+    warning("DEPRECATION WARNING - The plausibleDuringLife check has been reimplemented with the plausibleBeforeDeath check.")
+  }
+
+  if ("plausibleTemporalAfter" %in% checkDescriptionsDf$checkName) {
+    warning("DEPRECATION WARNING - The plausibleTemporalAfter check has been reimplemented with the plausibleAfterBirth and plausibleStartBeforeEnd checks.")
+  }
+
+  if ("plausibleGender" %in% checkDescriptionsDf$checkName) {
+    warning("DEPRECATION WARNING - The plausibleGender check has been reimplemented with the plausibleGenderUseDescendants check.")
   }
 
   checkDescriptions <- split(checkDescriptionsDf, seq_len(nrow(checkDescriptionsDf)))

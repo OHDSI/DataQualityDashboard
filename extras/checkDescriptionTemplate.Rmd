@@ -1,0 +1,48 @@
+---
+title: "%s"
+author: "<authors>"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## Summary
+
+**Level**: %s\
+**Context**: %s\
+**Category**: %s\
+**Subcategory**: %s\
+**Severity**: %s
+
+
+## Description
+%s
+
+
+## Definition
+
+- *Numerator*: 
+- *Denominator*:
+- *Related CDM Convention(s)*:
+- *CDM Fields/Tables*:
+- *Default Threshold Value*:
+
+
+## User Guidance
+
+
+### Violated rows query
+```sql
+SELECT *
+FROM @cdmTable
+WHERE violated IS TRUE
+```
+
+
+### ETL Developers
+
+
+### Data Users
+
