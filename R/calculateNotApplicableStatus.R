@@ -14,6 +14,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#' Determines if all checks are present expected to calculate the 'Not Applicable' status
+#'
+#' @param checkResults A dataframe containing the results of the data quality checks
+#'
+#' @keywords internal
+.hasNAchecks <- function(checkResults) {
+  checkNames <- unique(checkResults$checkName)
+  return(.containsNAchecks(checkNames))
+}
+
+#' Determines if all checks required for 'Not Applicable' status are in the checkNames
+#'
+#' @param checkNames A character vector of check names
+#'
+#' @keywords internal
+.containsNAchecks <- function(checkNames) {
+  naCheckNames <- c("cdmTable", "cdmField", "measureValueCompleteness")
+  missingNAChecks <- !(naCheckNames %in% checkNames)
+  if (any(missingNAChecks)) {
+    missingNACheckNames <- paste(naCheckNames[missingNAChecks], collapse = ", ")
+    return(FALSE)
+  }
+  return(TRUE)
+}
+
 #' Determines if check should be notApplicable and the notApplicableReason
 #'
 #' @param checkResults A dataframe containing the results of the data quality checks
@@ -98,25 +123,15 @@
 
   conditionOccurrenceIsMissing <- missingTables %>% dplyr::filter(.data$cdmTableName == "CONDITION_OCCURRENCE") %>% dplyr::pull(tableIsMissing)
   conditionOccurrenceIsEmpty <- emptyTables %>% dplyr::filter(.data$cdmTableName == "CONDITION_OCCURRENCE") %>% dplyr::pull(tableIsEmpty)
-  # drugExposureIsMissing <- missingTables %>% filter(.data$cdmTableName == "DRUG_EXPOSURE") %>% pull(tableIsMissing)
-  # drugExposureIsEmpty <- emptyTables %>% filter(.data$cdmTableName == "DRUG_EXPOSURE") %>% pull(tableIsEmpty)
   for (i in seq_len(nrow(checkResults))) {
+    # Special rule for measureConditionEraCompleteness, which should be notApplicable if CONDITION_OCCURRENCE is empty
     if (checkResults[i, "checkName"] == "measureConditionEraCompleteness") {
-      # Special rule for measureConditionEraCompleteness, which should be notApplicable if CONDITION_OCCURRENCE is empty
       if (conditionOccurrenceIsMissing || conditionOccurrenceIsEmpty) {
         checkResults$notApplicable[i] <- 1
         checkResults$notApplicableReason[i] <- "Table CONDITION_OCCURRENCE is empty."
       } else {
         checkResults$notApplicable[i] <- 0
       }
-    # } else if (checkResult[i, "checkName"] == "measureDrugEraCompleteness") {
-    #   # Special rule for measureDrugEraCompleteness, which should be notApplicable if DRUG_EXPOSURE is empty
-    #   if (drugExposureIsMissing || drugExposureIsEmpty) {
-    #     checkResults$notApplicable[i] <- 1
-    #     checkResults$notApplicableReason[i] <- "Table DRUG_EXPOSURE is empty."
-    #   } else {
-    #     checkResults$notApplicable[i] <- 0
-    #   }
     } else {
       checkResults$notApplicable[i] <- .applyNotApplicable(checkResults[i, ])
     }
@@ -156,7 +171,7 @@
     return(0)
   }
 
-  if (any(x$tableIsMissing, x$fieldIsMissing, x$tableIsEmpty)) {
+  if (any(x$tableIsMissing, x$fieldIsMissing, x$tableIsEmpty, na.rm = TRUE)) {
     return(1)
   }
 
@@ -165,7 +180,7 @@
     return(0)
   }
 
-  if (any(x$fieldIsEmpty, x$conceptIsMissing, x$conceptAndUnitAreMissing)) {
+  if (any(x$fieldIsEmpty, x$conceptIsMissing, x$conceptAndUnitAreMissing, na.rm = TRUE)) {
     return(1)
   }
 

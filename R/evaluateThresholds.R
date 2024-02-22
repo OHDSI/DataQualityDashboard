@@ -142,7 +142,9 @@
     }
   }
 
-  checkResults <- .calculateNotApplicableStatus(checkResults)
+  if (.hasNAchecks(checkResults)) {
+    checkResults <- .calculateNotApplicableStatus(checkResults)
+  }
 
   checkResults
 }
