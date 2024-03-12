@@ -355,3 +355,23 @@ test_that("Multiple cdm_source rows triggers warning.", {
 
   expect_true(nrow(results$CheckResults) > 1)
 })
+
+test_that("Execute checks on Synthea/Eunomia to test new variable executionTimeSeconds", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+  results <- executeDqChecks(
+    connectionDetails = connectionDetailsEunomia,
+    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+    cdmSourceName = "Eunomia",
+    checkLevels = "CONCEPT",
+    conceptCheckThresholdLoc = system.file(
+      "csv",
+      "unittest_OMOP_CDMv5.3_Concept_Level.csv",
+      package = "DataQualityDashboard"
+    ),
+    outputFolder = outputFolder,
+    writeToTable = F
+  )
+  expect_true(nrow(results$CheckResults) > 0)
+})
