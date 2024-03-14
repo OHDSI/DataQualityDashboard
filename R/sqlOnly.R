@@ -55,6 +55,7 @@
     conceptId = resultShell$conceptId,
     unitConceptId = resultShell$unitConceptId,
     contextModule = contextModule,
+    contextModuleConceptIds = resultShell$contextModuleConceptIds,
     tableChecks = tableChecks,
     fieldChecks = fieldChecks,
     conceptChecks = conceptChecks
@@ -81,6 +82,7 @@
     conceptId = resultShell$conceptId,
     unitConceptId = resultShell$unitConceptId,
     contextModule = contextModule,
+    contextModuleConceptIds = resultShell$contextModuleConceptIds,
     sqlFile = checkDescription$sqlFile,
     category = resultShell$category,
     subcategory = resultShell$subcategory,
@@ -206,6 +208,7 @@
     conceptId,
     unitConceptId,
     contextModule,
+    contextModuleConceptIds,
     tableChecks,
     fieldChecks,
     conceptChecks) {
@@ -224,7 +227,7 @@
     thresholdValue <- NA
   } else {
     if (checkLevel == "TABLE") {
-        if (contextModule == "none") {
+        if (is.na(contextModuleConceptIds)) {
           thresholdFilter <- sprintf(
             "tableChecks$%s[tableChecks$cdmTableName == '%s']",
             thresholdField,
@@ -240,7 +243,7 @@
           )
         }
     } else if (checkLevel == "FIELD") {
-      if (contextModule == "none") {
+      if (is.na(contextModuleConceptIds)) {
           thresholdFilter <- sprintf(
             "fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
                                     fieldChecks$cdmFieldName == '%s']",
@@ -260,43 +263,47 @@
           )
       }
     } else if (checkLevel == "CONCEPT") {
-      if (is.na(unitConceptId) & contextModule == "none" ) {
+      if (!is.na(unitConceptId)) {
         thresholdFilter <- sprintf(
-          "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
-                                  conceptChecks$cdmFieldName == '%s' &
-                                  conceptChecks$conceptId == %s]",
-          thresholdField,
-          cdmTableName,
-          cdmFieldName,
-          conceptId
+              "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                      conceptChecks$cdmFieldName == '%s' &
+                                      conceptChecks$conceptId == '%s' &
+                                      conceptChecks$unitConceptId == '%s']",
+              thresholdField,
+              cdmTableName,
+              cdmFieldName,
+              conceptId,
+              as.integer(unitConceptId)
         )
-      } else if (contextModule == "none") {
+
+      } else if (!is.na(contextModuleConceptIds)) {
         thresholdFilter <- sprintf(
           "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
-                                  conceptChecks$conceptId == %s &
-                                  conceptChecks$unitConceptId == '%s']",
+                                  conceptChecks$conceptId == '%s' &
+                                  conceptChecks$contextModuleConcept == '%s' &
+                                  conceptChecks$contextModuleConceptIds == '%s']",
           thresholdField,
           cdmTableName,
           cdmFieldName,
           conceptId,
-          as.integer(unitConceptId)
+          contextModule,
+          contextModuleConceptIds
         )
       } else {
         thresholdFilter <- sprintf(
-          "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
-                                  conceptChecks$cdmFieldName == '%s' &
-                                  conceptChecks$conceptId == %s &
-                                  conceptChecks$contextModuleConcept == '%s']",
-          thresholdField,
-          cdmTableName,
-          cdmFieldName,
-          conceptId,
-          contextModule
+        "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                              conceptChecks$cdmFieldName == '%s' &
+                              conceptChecks$conceptId == '%s']",
+        thresholdField,
+        cdmTableName,
+        cdmFieldName,
+        conceptId
         )
       }
     }
     thresholdValue <- eval(parse(text = thresholdFilter))
+
   }
 
   # Need value of 0 for NA in generated SQL
