@@ -33,6 +33,7 @@
 #' @param sqlOnlyUnionCount         (OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.
 #' @param sqlOnlyIncrementalInsert  (OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
+#' @param contextModule             Switch to add context-based checks using a modular approach
 #'
 #' @import magrittr
 #'
@@ -54,8 +55,8 @@
                       outputFolder,
                       sqlOnlyUnionCount,
                       sqlOnlyIncrementalInsert,
-                      sqlOnly) {
-  ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
+                      sqlOnly,
+                      contextModule) {
 
   filterExpression <- sprintf(
     "%sChecks %%>%% dplyr::filter(%s)",
@@ -71,6 +72,19 @@
   }
 
   if (nrow(checks) > 0) {
+    if (grepl("contextModule", checkDescription$checkName)) {
+        ParallelLogger::logInfo(sprintf(
+                                        "Processing check description: %s [%s]",
+                                        checkDescription$checkName,
+                                        contextModule
+                                )
+        )
+    } else {
+        ParallelLogger::logInfo(sprintf("Processing check description: %s",
+                                        checkDescription$checkName
+                                )
+        )
+    }
     dfs <- apply(X = checks, MARGIN = 1, function(check) {
       columns <- lapply(names(check), function(c) {
         setNames(check[c], c)
@@ -101,7 +115,8 @@
           conceptChecks,
           sql,
           connectionDetails,
-          checkDescription
+          checkDescription,
+          contextModule
         )
         data.frame(query = checkQuery)
       } else if (sqlOnly) {
@@ -133,7 +148,12 @@
       dfs
     }
   } else {
-    ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
+    ParallelLogger::logInfo(
+                            sprintf("Skipping check description: %s [condition not met -> %s]",
+                            checkDescription$checkName,
+                            checkDescription$evaluationFilter
+                            )
+    )
     data.frame()
   }
 }

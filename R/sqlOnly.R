@@ -24,6 +24,7 @@
 #' @param sql                       The rendered SQL for this check
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
 #' @param checkDescription          The description of the data quality check
+#' @param contextModule             Input argument (e.g. 'ICU')
 #'
 #' @return A rendered SQL query to add into the incremental insert sqlOnly query
 
@@ -38,7 +39,8 @@
     conceptChecks,
     sql,
     connectionDetails,
-    checkDescription) {
+    checkDescription,
+    contextModule) {
   resultShell <- .recordResult(check = check, checkDescription = checkDescription, sql = sql)
 
   resultShell$queryText <- gsub(";", "", resultShell$queryText)
@@ -52,6 +54,7 @@
     cdmFieldName = resultShell$cdmFieldName,
     conceptId = resultShell$conceptId,
     unitConceptId = resultShell$unitConceptId,
+    contextModule = contextModule,
     tableChecks = tableChecks,
     fieldChecks = fieldChecks,
     conceptChecks = conceptChecks
@@ -77,6 +80,7 @@
     cdmFieldName = resultShell$cdmFieldName,
     conceptId = resultShell$conceptId,
     unitConceptId = resultShell$unitConceptId,
+    contextModule = contextModule,
     sqlFile = checkDescription$sqlFile,
     category = resultShell$category,
     subcategory = resultShell$subcategory,
@@ -190,6 +194,7 @@
 #' @param tableChecks               A dataframe containing the table checks
 #' @param fieldChecks               A dataframe containing the field checks
 #' @param conceptChecks             A dataframe containing the concept checks
+#' @param contextModule             Input argument (e.g. 'ICU')
 
 #' @noRd
 #' @keywords internal
@@ -200,6 +205,7 @@
     cdmFieldName,
     conceptId,
     unitConceptId,
+    contextModule,
     tableChecks,
     fieldChecks,
     conceptChecks) {
@@ -218,20 +224,43 @@
     thresholdValue <- NA
   } else {
     if (checkLevel == "TABLE") {
-      thresholdFilter <- sprintf(
-        "tableChecks$%s[tableChecks$cdmTableName == '%s']",
-        thresholdField, cdmTableName
-      )
+        if (contextModule == "none") {
+          thresholdFilter <- sprintf(
+            "tableChecks$%s[tableChecks$cdmTableName == '%s']",
+            thresholdField,
+            cdmTableName
+          )
+        } else {
+          thresholdFilter <- sprintf(
+            "tableChecks$%s[tableChecks$cdmTableName == '%s' &
+                                tableChecks$contextModuleTable == '%s']",
+            thresholdField,
+            cdmTableName,
+            contextModule
+          )
+        }
     } else if (checkLevel == "FIELD") {
-      thresholdFilter <- sprintf(
-        "fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
-                                fieldChecks$cdmFieldName == '%s']",
-        thresholdField,
-        cdmTableName,
-        cdmFieldName
-      )
+      if (contextModule == "none") {
+          thresholdFilter <- sprintf(
+            "fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
+                                    fieldChecks$cdmFieldName == '%s']",
+            thresholdField,
+            cdmTableName,
+            cdmFieldName
+          )
+      } else {
+          thresholdFilter <- sprintf(
+            "fieldChecks$%s[fieldChecks$cdmTableName == '%s' &
+                                    fieldChecks$cdmFieldName == '%s' &
+                                    fieldChecks$contextModuleField == '%s']",
+            thresholdField,
+            cdmTableName,
+            cdmFieldName,
+            contextModule
+          )
+      }
     } else if (checkLevel == "CONCEPT") {
-      if (is.na(unitConceptId)) {
+      if (is.na(unitConceptId) & contextModule == "none" ) {
         thresholdFilter <- sprintf(
           "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
@@ -241,7 +270,7 @@
           cdmFieldName,
           conceptId
         )
-      } else {
+      } else if (contextModule == "none") {
         thresholdFilter <- sprintf(
           "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
@@ -252,6 +281,18 @@
           cdmFieldName,
           conceptId,
           as.integer(unitConceptId)
+        )
+      } else {
+        thresholdFilter <- sprintf(
+          "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
+                                  conceptChecks$cdmFieldName == '%s' &
+                                  conceptChecks$conceptId == %s &
+                                  conceptChecks$contextModuleConcept == '%s']",
+          thresholdField,
+          cdmTableName,
+          cdmFieldName,
+          conceptId,
+          contextModule
         )
       }
     }

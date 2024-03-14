@@ -21,7 +21,8 @@
   outputFolder,
   sqlOnlyUnionCount,
   sqlOnlyIncrementalInsert,
-  sqlOnly
+  sqlOnly,
+  contextModule
 )
 }
 \arguments{
@@ -56,6 +57,8 @@
 \item{sqlOnlyIncrementalInsert}{(OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)}
 
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
+
+\item{contextModule}{Switch to add context-based checks using a modular approach}
 
 \item{tablechecks}{A dataframe containing the table checks}
 }

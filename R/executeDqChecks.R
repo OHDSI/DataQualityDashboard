@@ -45,7 +45,7 @@
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
-#'
+#' @param contextModule             Switch to add context-based checks using a modular approach
 #' @return If sqlOnly = FALSE, a list object of results
 #'
 #' @importFrom magrittr %>%
@@ -84,7 +84,8 @@ executeDqChecks <- function(connectionDetails,
                             cdmVersion = "5.3",
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
-                            conceptCheckThresholdLoc = "default") {
+                            conceptCheckThresholdLoc = "default",
+                            contextModule = "none") {
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!any(class(connectionDetails) %in% c("connectionDetails", "ConnectionDetails"))) {
     stop("connectionDetails must be an object of class 'connectionDetails' or 'ConnectionDetails'.")
@@ -301,6 +302,7 @@ executeDqChecks <- function(connectionDetails,
     sqlOnlyUnionCount,
     sqlOnlyIncrementalInsert,
     sqlOnly,
+    contextModule,
     progressBar = TRUE
   )
   ParallelLogger::stopCluster(cluster = cluster)
