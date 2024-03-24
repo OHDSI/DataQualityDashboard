@@ -59,6 +59,7 @@
     cdmFieldName = check["cdmFieldName"],
     conceptId = check["conceptId"],
     unitConceptId = check["unitConceptId"],
+    contextModuleConceptIds = check["contextModuleConceptIds"],
     sqlFile = checkDescription$sqlFile,
     category = checkDescription$kahnCategory,
     subcategory = checkDescription$kahnSubcategory,

@@ -32,6 +32,11 @@
     colspec$cols$plausibleUnitConceptIds <- readr::col_character()
   }
 
+  # contextModuleConceptIds is a comma-separated list of concept ids, but it is being interpreted as col_double()
+  if ("contextModuleConceptIds" %in% names(colspec$cols)) {
+    colspec$cols$contextModuleConceptIds <- readr::col_character()
+  }
+
   result <- read_csv(
     file = thresholdFile,
     col_types = colspec,

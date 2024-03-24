@@ -1,7 +1,7 @@
 Package: DataQualityDashboard
 Type: Package
 Title: Execute and View Data Quality Checks on OMOP CDM Database
-Version: 2.6.0
+Version: 2.6.1
 Date: 2024-02-21
 Authors@R: c(
   person("Katy", "Sadowski", email = "sadowski@ohdsi.org", role = c("aut", "cre")),
@@ -46,5 +46,5 @@ Suggests:
     R.utils
 Remotes:
     ohdsi/Eunomia
-RoxygenNote: 7.2.2
+RoxygenNote: 7.3.1
 Encoding: UTF-8

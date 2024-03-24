@@ -14,6 +14,10 @@ The 3 temporal plausibilty checks are intended to **replace** `plausibleTemporal
 
 For more information on the new checks, please check the [Check Type Definitions](https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html) documentation page.  If you'd like to disable the deprecated checks, please see the suggested check exclusion workflow in our Getting Started code [here](https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html).
 
+### Check Updates
+- The number of measurements checked in `plausibleUnitConceptIds` has been reduced, and the lists of plausible units for those measurements have been re-reviewed and updated for accuracy.  This change is intended to improve performance and reliablility of this check.  Please file an issue if you would like to contribute additional measurements + plausible units to be checked in the future
+- Some erroneous `plausibleValueLow` thresholds have been corrected to prevent false positive failures from occurring
+
 ### New Documentation
 We have begun an initiative to add more comprehensive user documentation at the data quality check level.  A dedicated documentation page is being created for each check type.  Each check's page will include detailed information about how its result is generated and what to do if it fails.  Guidance is provided for both ETL developers and data users.
 
