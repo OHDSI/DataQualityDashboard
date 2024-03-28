@@ -373,5 +373,5 @@ test_that("Execute checks on Synthea/Eunomia to test new variable executionTimeS
     outputFolder = outputFolder,
     writeToTable = F
   )
-  expect_true(nrow(results$CheckResults) > 0)
+  expect_true(is.numeric(results$executionTimeSeconds))
 })
