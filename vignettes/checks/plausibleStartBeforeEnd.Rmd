@@ -14,33 +14,48 @@ output:
 **Context**: Verification\
 **Category**: Plausibility\
 **Subcategory**: Temporal\
-**Severity**: 
+**Severity**: CDM convention &#x26A0;\
 
 
 ## Description
-The number and percent of records with a value in the @cdmFieldName field of the @cdmTableName that occurs after the date in the @plausibleStartBeforeEndFieldName.
+The number and percent of records with a value in the **cdmFieldName** field of the **cdmTableName** that occurs after the date in the **plausibleStartBeforeEndFieldName**.
 
 
 ## Definition
+Most tables have a field for the start and a field for the end date for the event. This check verifies that the start date is not after the end date. The start date can be before the end date or equal to the end date. It is applied to the start date field and takes the end date field as a parameter. Both date and datetime fields are checked.
 
-- *Numerator*: 
-- *Denominator*:
-- *Related CDM Convention(s)*:
-- *CDM Fields/Tables*:
-- *Default Threshold Value*:
+- *Numerator*: The number of records where date in **cdmFieldName** is after the date in **plausibleStartBeforeEndFieldName**.
+- *Denominator*: The total number of records with a non-null start and non-null end date value
+- *Related CDM Convention(s)*: -Not linked to a convention-
+- *CDM Fields/Tables*: This check runs on all date and datetime fields that have a start and end date in the same table. It also runs on the `cdm_source` table, comparing `source_release_date` is before `cdm_release_date`.
+- *Default Threshold Value*: 1% (except for vocabulary and cdm_source tables, where it is 0%)
 
 
 ## User Guidance
-
+If the start date is after the end date, it is likely that the data is incorrect or the dates are unreliable.
 
 ### Violated rows query
 ```sql
-
+SELECT 
+  '@cdmTableName.@cdmFieldName' AS violating_field, 
+  cdmTable.*
+FROM @schema.@cdmTableName cdmTable
+WHERE cdmTable.@cdmFieldName IS NOT NULL 
+AND cdmTable.@plausibleStartBeforeEndFieldName IS NOT NULL 
+AND cdmTable.@cdmFieldName > cdmTable.@plausibleStartBeforeEndFieldName
 ```
 
-
 ### ETL Developers
+There main reason for this check to fail is often that the source data is incorrect. If the end date is derived from other data, the calculation might not take into account some edge cases. 
 
+Any violating checks should either be removed or corrected. In most cases this can be done by adjusting the end date:
+- With a few exceptions, the end date is not mandatory and can be left empty.
+- If the end date is mandatory (visit_occurrence and drug_exposure), the end date can be set to the start date if the event. Note tha
+- If this check fails for the observation_period, it might signify a bigger underlying issue. Please investigate all records for this person in the CDM and source.
+- If neither the start or end date can be trusted, pleaes remove the record from the CDM.
+
+Make sure to clearly document the choices in your ETL specification.
 
 ### Data Users
-
+An start date after the end date gives negative event durations, which might break analyses. 
+Especially take note if this check fails for the `observation_period` table. This means that there are persons with negative observation time. If these persons are included in a cohort, it will potentially skew e.g. survival analyses.
