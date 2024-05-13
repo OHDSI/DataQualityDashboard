@@ -33,10 +33,41 @@
   naCheckNames <- c("cdmTable", "cdmField", "measureValueCompleteness")
   missingNAChecks <- !(naCheckNames %in% checkNames)
   if (any(missingNAChecks)) {
-    missingNACheckNames <- paste(naCheckNames[missingNAChecks], collapse = ", ")
     return(FALSE)
   }
   return(TRUE)
+}
+
+#' Applies the 'Not Applicable' status to a single check
+#'
+#' @param x Results from a single check
+#'
+#' @keywords internal
+.applyNotApplicable <- function(x) {
+  # Errors precede all other statuses
+  if (x$isError == 1) {
+    return(0)
+  }
+
+  # No NA status for cdmTable and cdmField if missing
+  if (x$checkName == "cdmTable" || x$checkName == "cdmField") {
+    return(0)
+  }
+
+  if (any(x$tableIsMissing, x$fieldIsMissing, x$tableIsEmpty, na.rm = TRUE)) {
+    return(1)
+  }
+
+  # No NA status for measureValueCompleteness if empty
+  if (x$checkName == "measureValueCompleteness") {
+    return(0)
+  }
+
+  if (any(x$fieldIsEmpty, x$conceptIsMissing, x$conceptAndUnitAreMissing, na.rm = TRUE)) {
+    return(1)
+  }
+
+  return(0)
 }
 
 #' Determines if check should be notApplicable and the notApplicableReason
@@ -44,7 +75,6 @@
 #' @param checkResults A dataframe containing the results of the data quality checks
 #'
 #' @keywords internal
-
 .calculateNotApplicableStatus <- function(checkResults) {
   # Look up missing tables and add variable tableIsMissing to checkResults
   missingTables <- checkResults %>%
@@ -81,7 +111,7 @@
     ) %>%
     dplyr::distinct()
 
-  # Look up empty fields and add variable tableIsEmpty to checkResults
+  # Look up empty fields and add variable fieldIsEmpty to checkResults
   emptyFields <- checkResults %>%
     dplyr::filter(
       .data$checkName == "measureValueCompleteness"
@@ -148,7 +178,7 @@
           .data$tableIsEmpty ~ sprintf("Table %s is empty.", .data$cdmTableName),
           .data$fieldIsEmpty ~ sprintf("Field %s.%s is not populated.", .data$cdmTableName, .data$cdmFieldName),
           .data$conceptIsMissing ~ sprintf("%s=%s is missing from the %s table.", .data$cdmFieldName, .data$conceptId, .data$cdmTableName),
-          .data$conceptAndUnitAreMissing ~ sprintf("Combination of %s=%s, unitConceptId=%s and VALUE_AS_NUMBER IS NOT NULL is missing from the %s table.", .data$cdmFieldName, .data$conceptId, .data$unitConceptId, .data$cdmTableName)
+          .data$conceptAndUnitAreMissing ~ sprintf("Combination of %s=%s, unitConceptId=%s and VALUE_AS_NUMBER IS NOT NULL is missing from the %s table.", .data$cdmFieldName, .data$conceptId, .data$unitConceptId, .data$cdmTableName) #nolint
         ),
         NA
       ),
@@ -158,31 +188,4 @@
     dplyr::select(-c("tableIsMissing", "fieldIsMissing", "tableIsEmpty", "fieldIsEmpty", "conceptIsMissing", "conceptAndUnitAreMissing"))
 
   return(checkResults)
-}
-
-.applyNotApplicable <- function(x) {
-  # Errors precede all other statuses
-  if (x$isError == 1) {
-    return(0)
-  }
-
-  # No NA status for cdmTable and cdmField if missing
-  if (x$checkName == "cdmTable" || x$checkName == "cdmField") {
-    return(0)
-  }
-
-  if (any(x$tableIsMissing, x$fieldIsMissing, x$tableIsEmpty, na.rm = TRUE)) {
-    return(1)
-  }
-
-  # No NA status for measureValueCompleteness if empty
-  if (x$checkName == "measureValueCompleteness") {
-    return(0)
-  }
-
-  if (any(x$fieldIsEmpty, x$conceptIsMissing, x$conceptAndUnitAreMissing, na.rm = TRUE)) {
-    return(1)
-  }
-
-  return(0)
 }
