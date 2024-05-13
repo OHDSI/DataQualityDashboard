@@ -4,6 +4,11 @@ test_that("Not Applicable status Table Empty", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
+  # Make sure the device exposure table is empty
+  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
+  DatabaseConnector::executeSql(connection, "DELETE FROM DEVICE_EXPOSURE;")
+  DatabaseConnector::disconnect(connection)
+
   results <- executeDqChecks(
     connectionDetails = connectionDetailsEunomia,
     cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
@@ -13,10 +18,9 @@ test_that("Not Applicable status Table Empty", {
     # Eunomia COST table has misspelled 'REVEUE_CODE_SOURCE_VALUE'
     tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
     outputFolder = outputFolder,
-    writeToTable = F
+    writeToTable = FALSE
   )
 
-  # Assumption that Eunomia has empty device_exposure table
   r <- results$CheckResults[results$CheckResults$checkName == "measureValueCompleteness" &
                             results$CheckResults$tableName == "device_exposure", ]
   expect_true(all(r$notApplicable == 1))
@@ -41,7 +45,7 @@ test_that("measureConditionEraCompleteness Not Applicable if condition_occurrenc
     # Eunomia COST table has misspelled 'REVEUE_CODE_SOURCE_VALUE'
     tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
     outputFolder = outputFolder,
-    writeToTable = F
+    writeToTable = FALSE
   )
 
   # Reinstate Condition Occurrence
@@ -73,7 +77,7 @@ test_that("measureConditionEraCompleteness Fails if condition_era empty", {
     # Eunomia COST table has misspelled 'REVEUE_CODE_SOURCE_VALUE'
     tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
     outputFolder = outputFolder,
-    writeToTable = F
+    writeToTable = FALSE
   )
 
   # Reinstate the Condition Era
