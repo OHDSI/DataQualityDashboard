@@ -29,8 +29,10 @@ The start date can be before the end date or equal to the end date. It is applie
 - *Numerator*: The number of records where date in **cdmFieldName** is after the date in **plausibleStartBeforeEndFieldName**.
 - *Denominator*: The total number of records with a non-null start and non-null end date value
 - *Related CDM Convention(s)*: -Not linked to a convention-
-- *CDM Fields/Tables*: This check runs on all date and datetime fields that have a start and end date in the same table. It also runs on the `cdm_source` table, comparing `source_release_date` is before `cdm_release_date`.
-- *Default Threshold Value*: 1% (except for vocabulary and cdm_source tables, where it is 0%)
+- *CDM Fields/Tables*: This check runs on all start date/datetime fields with an end date/datetime in the same table. It also runs on the cdm_source table, comparing `source_release_date` is before `cdm_release_date`.
+- *Default Threshold Value*: 
+  - 0% for the observation_period, vocabulary (valid_start/end_date) and cdm_source tables.
+  - 1% for other tables with an end date.
 
 
 ## User Guidance
@@ -52,7 +54,7 @@ There main reason for this check to fail is often that the source data is incorr
 
 Any violating checks should either be removed or corrected. In most cases this can be done by adjusting the end date:
 - With a few exceptions, the end date is not mandatory and can be left empty.
-- If the end date is mandatory (visit_occurrence and drug_exposure), the end date can be set to the start date if the event. Note tha
+- If the end date is mandatory (notably visit_occurrence and drug_exposure), the end date can be set to the start date if the event. Make sure to document this as it leads to loss of duration information.
 - If this check fails for the observation_period, it might signify a bigger underlying issue. Please investigate all records for this person in the CDM and source.
 - If neither the start or end date can be trusted, pleaes remove the record from the CDM.
 
