@@ -100,7 +100,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -138,6 +138,11 @@
 </ul><p>The 3 temporal plausibilty checks are intended to <strong>replace</strong> <code>plausibleTemporalAfter</code> and <code>plausibleDuringLife</code>, for a more comprehensive and clear approach to various temporality scenarios. <code>plausibleGenderUseDescendants</code> is intended to <strong>replace</strong> <code>plausibleGender</code>, to enhance readability of the DQD results and improve performance. The replaced checks are still available and enabled by default in DQD; however, in a future major release, these checks will be deprecated. Please plan accordingly.</p>
 <p>For more information on the new checks, please check the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html">Check Type Definitions</a> documentation page. If you’d like to disable the deprecated checks, please see the suggested check exclusion workflow in our Getting Started code <a href="https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html">here</a>.</p>
 </div>
+<div class="section level4">
+<h4 id="check-updates-2-6-0">Check Updates<a class="anchor" aria-label="anchor" href="#check-updates-2-6-0"></a></h4>
+<ul><li>The number of measurements checked in <code>plausibleUnitConceptIds</code> has been reduced, and the lists of plausible units for those measurements have been re-reviewed and updated for accuracy. This change is intended to improve performance and reliablility of this check. Please file an issue if you would like to contribute additional measurements + plausible units to be checked in the future</li>
+<li>Some erroneous <code>plausibleValueLow</code> thresholds have been corrected to prevent false positive failures from occurring</li>
+</ul></div>
 <div class="section level4">
 <h4 id="new-documentation-2-6-0">New Documentation<a class="anchor" aria-label="anchor" href="#new-documentation-2-6-0"></a></h4>
 <p>We have begun an initiative to add more comprehensive user documentation at the data quality check level. A dedicated documentation page is being created for each check type. Each check’s page will include detailed information about how its result is generated and what to do if it fails. Guidance is provided for both ETL developers and data users.</p>
