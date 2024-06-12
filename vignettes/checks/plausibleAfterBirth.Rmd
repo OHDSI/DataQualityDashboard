@@ -18,9 +18,10 @@ output:
 
 ## Description
 The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs prior to birth.
+Note that this check replaces the previous `plausibleTemporalAfter` check.
 
 ## Definition
-This check verifies that events happen after birth. This check is only run on fields where the **PLAUSIBLE_AFTER_BIRTH** parameter is set to **Yes**. The birthdate is taken from the `person` table, either the `birth_datetime` or composed from `year_of_birth`, `month_of_birth`, `day_of_birth` (taking 1st month/1st day if missing).
+This check verifies that events happen after birth. The birthdate is taken from the `person` table, either the `birth_datetime` or composed from `year_of_birth`, `month_of_birth`, `day_of_birth` (taking 1st month/1st day if missing).
 
 - *Numerator*: The number of records with a non-null date value that happen prior to birth
 - *Denominator*: The total number of records in the table with a non-null date value
