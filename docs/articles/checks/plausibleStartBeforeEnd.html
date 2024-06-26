@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>plausibleStartBeforeEnd • DataQualityDashboard</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -113,7 +113,37 @@
       <a href="../../articles/checks/fkClass.html">fkClass</a>
     </li>
     <li>
+      <a href="../../articles/checks/measurePersonCompleteness.html">measurePersonCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/measureValueCompleteness.html">measureValueCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/isStandardValidConcept.html">isStandardValidConcept</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/standardConceptRecordCompleteness.html">standardConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceConceptRecordCompleteness.html">sourceConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceValueCompleteness.html">sourceValueCompleteness</a>
+    </li>
+    <li>
       <a href="../../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleBeforeDeath.html">plausibleBeforeDeath</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleStartBeforeEnd.html">plausibleStartBeforeEnd</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueHigh.html">plausibleValueHigh</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
     </li>
   </ul>
 </li>
@@ -145,9 +175,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>plausibleStartBeforeEnd</h1>
-                        <h4 data-toc-skip class="author"></h4>
+                        <h4 data-toc-skip class="author">Maxim
+Moinat</h4>
             
-            <h4 data-toc-skip class="date">2024-02-21</h4>
+            <h4 data-toc-skip class="date">2024-06-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/plausibleStartBeforeEnd.Rmd" class="external-link"><code>vignettes/checks/plausibleStartBeforeEnd.Rmd</code></a></small>
       <div class="hidden name"><code>plausibleStartBeforeEnd.Rmd</code></div>
@@ -159,45 +190,97 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Plausibility<br><strong>Subcategory</strong>: Temporal<br><strong>Severity</strong>:</p>
+<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Plausibility<br><strong>Subcategory</strong>: Temporal<br><strong>Severity</strong>: CDM convention ⚠<br></p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
 </h2>
-<p>The number and percent of records with a value in the <span class="citation">@cdmFieldName</span> field of the <span class="citation">@cdmTableName</span> that occurs after the date in the
-<span class="citation">@plausibleStartBeforeEndFieldName</span>.</p>
+<p>The number and percent of records with a value in the
+<strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong>
+that occurs after the date in the
+<strong>plausibleStartBeforeEndFieldName</strong>. Note that this check
+replaces the previous <code>plausibleTemporalAfter</code> check.</p>
 </div>
 <div class="section level2">
 <h2 id="definition">Definition<a class="anchor" aria-label="anchor" href="#definition"></a>
 </h2>
+<p>This check is attempting to apply temporal rules within a table,
+specifically checking that all start dates are before the end dates. For
+example, in the VISIT_OCCURRENCE table it checks that the
+VISIT_OCCURRENCE_START_DATE is before VISIT_OCCURRENCE_END_DATE. The
+start date can be before the end date or equal to the end date. It is
+applied to the start date field and takes the end date field as a
+parameter. Both date and datetime fields are checked.</p>
 <ul>
 <li>
-<em>Numerator</em>:</li>
+<em>Numerator</em>: The number of records where date in
+<strong>cdmFieldName</strong> is after the date in
+<strong>plausibleStartBeforeEndFieldName</strong>.</li>
 <li>
-<em>Denominator</em>:</li>
+<em>Denominator</em>: The total number of records with a non-null
+start and non-null end date value</li>
 <li>
-<em>Related CDM Convention(s)</em>:</li>
+<em>Related CDM Convention(s)</em>: -Not linked to a
+convention-</li>
 <li>
-<em>CDM Fields/Tables</em>:</li>
+<em>CDM Fields/Tables</em>: This check runs on all start
+date/datetime fields with an end date/datetime in the same table. It
+also runs on the cdm_source table, comparing
+<code>source_release_date</code> is before
+<code>cdm_release_date</code>.</li>
 <li>
-<em>Default Threshold Value</em>:</li>
+<em>Default Threshold Value</em>:
+<ul>
+<li>0% for the observation_period, vocabulary (valid_start/end_date) and
+cdm_source tables.</li>
+<li>1% for other tables with an end date.</li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="user-guidance">User Guidance<a class="anchor" aria-label="anchor" href="#user-guidance"></a>
 </h2>
+<p>If the start date is after the end date, it is likely that the data
+is incorrect or the dates are unreliable.</p>
 <div class="section level3">
 <h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="st">'@cdmTableName.@cdmFieldName'</span> <span class="kw">AS</span> violating_field, </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  cdmTable.<span class="op">*</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="kw">FROM</span> @schema.@cdmTableName cdmTable</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> </span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="kw">AND</span> cdmTable.@plausibleStartBeforeEndFieldName <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> </span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="kw">AND</span> cdmTable.@cdmFieldName <span class="op">&gt;</span> cdmTable.@plausibleStartBeforeEndFieldName</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>
 </h3>
+<p>There main reason for this check to fail is often that the source
+data is incorrect. If the end date is derived from other data, the
+calculation might not take into account some edge cases.</p>
+<p>Any violating checks should either be removed or corrected. In most
+cases this can be done by adjusting the end date: - With a few
+exceptions, the end date is not mandatory and can be left empty. - If
+the end date is mandatory (notably visit_occurrence and drug_exposure),
+the end date can be set to the start date if the event. Make sure to
+document this as it leads to loss of duration information. - If this
+check fails for the observation_period, it might signify a bigger
+underlying issue. Please investigate all records for this person in the
+CDM and source. - If neither the start or end date can be trusted,
+pleaes remove the record from the CDM.</p>
+<p>Make sure to clearly document the choices in your ETL
+specification.</p>
 </div>
 <div class="section level3">
 <h3 id="data-users">Data Users<a class="anchor" aria-label="anchor" href="#data-users"></a>
 </h3>
+<p>An start date after the end date gives negative event durations,
+which might break analyses. Especially take note if this check fails for
+the <code>observation_period</code> table. This means that there are
+persons with negative observation time. If these persons are included in
+a cohort, it will potentially skew e.g. survival analyses.</p>
 </div>
 </div>
   </div>
@@ -219,7 +302,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>

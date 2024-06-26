@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>sourceValueCompleteness • DataQualityDashboard</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -113,7 +113,37 @@
       <a href="../../articles/checks/fkClass.html">fkClass</a>
     </li>
     <li>
+      <a href="../../articles/checks/measurePersonCompleteness.html">measurePersonCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/measureValueCompleteness.html">measureValueCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/isStandardValidConcept.html">isStandardValidConcept</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/standardConceptRecordCompleteness.html">standardConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceConceptRecordCompleteness.html">sourceConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceValueCompleteness.html">sourceValueCompleteness</a>
+    </li>
+    <li>
       <a href="../../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleBeforeDeath.html">plausibleBeforeDeath</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleStartBeforeEnd.html">plausibleStartBeforeEnd</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueHigh.html">plausibleValueHigh</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
     </li>
   </ul>
 </li>
@@ -145,9 +175,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>sourceValueCompleteness</h1>
-                        <h4 data-toc-skip class="author"></h4>
+                        <h4 data-toc-skip class="author">Jared
+Houghtaling, Clair Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2024-02-21</h4>
+            <h4 data-toc-skip class="date">2024-06-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/sourceValueCompleteness.Rmd" class="external-link"><code>vignettes/checks/sourceValueCompleteness.Rmd</code></a></small>
       <div class="hidden name"><code>sourceValueCompleteness.Rmd</code></div>
@@ -159,7 +190,7 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Completeness<br><strong>Subcategory</strong>:<br><strong>Severity</strong>:</p>
+<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Completeness<br><strong>Subcategory</strong>:<br><strong>Severity</strong>: CDM convention ⚠</p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
@@ -171,32 +202,85 @@
 </h2>
 <ul>
 <li>
-<em>Numerator</em>:</li>
+<em>Numerator</em>: Distinct <code>X_source_value</code> entries
+where the corresponding standard x_concept_id field is 0.</li>
 <li>
-<em>Denominator</em>:</li>
+<em>Denominator</em>: Total distinct <code>X_source_value</code>
+entries, including NULL, in the respective event table.</li>
 <li>
-<em>Related CDM Convention(s)</em>:</li>
+<em>Related CDM Convention(s)</em>: The OMOP Common Data Model
+specifies that codes that are present in a native database should be
+mapped to standard concepts using either the intrinsic mappings defined
+in the standard vocabularies or extrinsic mappings defined by the data
+owner or ETL development team. Note also that variations of this check
+logic are also used in the <a href="https://github.com/EHDEN/CdmInspection" class="external-link">EHDEN CDM Inspection
+Report</a> package, as well as the <a href="https://github.com/OHDSI/AresIndexer" class="external-link">AresIndexer</a> package for
+generating indices of unmapped codes.<br>
+</li>
 <li>
-<em>CDM Fields/Tables</em>:</li>
+<em>CDM Fields/Tables</em>: Runs on all event tables that have
+<code>X_source_value</code> fields.</li>
 <li>
-<em>Default Threshold Value</em>:</li>
+<em>Default Threshold Value</em>:
+<ul>
+<li>10 for critical event tables’ <code>X_source_value</code> fields
+(condition, measurement, procedure, drug, visit)</li>
+<li>100 for all other fields - to be adjusted based on source-specific
+expectations</li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="user-guidance">User Guidance<a class="anchor" aria-label="anchor" href="#user-guidance"></a>
 </h2>
+<p>This check will look at all distinct source values in the specified
+field and calculate how many are mapped to a standard concept of 0. This
+check should be used in conjunction with the <a href="checks/standardConceptRecordCompleteness.html">standardConceptRecordCompleteness</a> check
+to identify potential mapping issues in the ETL.<br></p>
+<p>This check is a good measure of the overall mapping rate within each
+domain. For example, a table may have high
+standardConceptRecordCompleteness (that is, a large percentage of
+records with a non-zero standard concept) but a low score on this check.
+This would indicate that the “long tail” of rarer codes have not been
+mapped while more common codes have good mapping coverage. It is always
+important to interrogate the results of these two checks together to
+ensure complete understanding of vocabulary mapping in your CDM.</p>
+<p>The following SQL can be used to summarize unmapped source values by
+record count in a given CDM table:</p>
 <div class="section level3">
 <h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span> <span class="kw">DISTINCT</span> </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  cdmTable.@cdmFieldName,</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@standardConceptFieldName <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> <span class="dv">2</span> <span class="kw">DESC</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>
 </h3>
+<p>Fails of this check are (most often) related directly to semantic
+mapping. First, the ETL developer should investigate if a source
+vocabulary is present in the native data that was not accounted for in
+the ETL document and/or code. This is most likely if the unmapped source
+values are codes rather than text values. Second, the
+source-to-concept-map file or table should be updated to link the
+unmapped source values with domain-appropriate concepts.</p>
 </div>
 <div class="section level3">
 <h3 id="data-users">Data Users<a class="anchor" aria-label="anchor" href="#data-users"></a>
 </h3>
+<p>When this check fails, source data granularity is being lost; not all
+of the information related to a particular event or modifier is being
+captured in OMOP CDM format. Although the information about an event may
+exist in the source value field, it cannot easily be used in downstream
+analytics processes that rely on standard OMOP concepts.</p>
+<p><strong>Please see the <a href="standardConceptRecordCompleteness.html">standardConceptRecordCompleteness</a> page
+for a much more detailed overview of handling mapping quality issues in
+your OMOP CDM.</strong></p>
 </div>
 </div>
   </div>
@@ -218,7 +302,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>
