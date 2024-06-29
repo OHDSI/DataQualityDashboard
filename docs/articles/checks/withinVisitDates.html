@@ -145,6 +145,9 @@
     <li>
       <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
     </li>
+    <li>
+      <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -175,9 +178,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>withinVisitDates</h1>
-                        <h4 data-toc-skip class="author"></h4>
+                        <h4 data-toc-skip class="author">Clair
+Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2024-06-26</h4>
+            <h4 data-toc-skip class="date">2024-06-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/withinVisitDates.Rmd" class="external-link"><code>vignettes/checks/withinVisitDates.Rmd</code></a></small>
       <div class="hidden name"><code>withinVisitDates.Rmd</code></div>
@@ -189,45 +193,126 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Conformance<br><strong>Subcategory</strong>:<br><strong>Severity</strong>:</p>
+<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Conformance<br><strong>Subcategory</strong>:<br><strong>Severity</strong>: Characterization ✔</p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
 </h2>
-<p>The number and percent of records not within one week on either side
-of the corresponding visit occurrence start and end date</p>
+<p>The number and percent of records that occur one week before the
+corresponding <code>visit_start_date</code> or one week after the
+corresponding <code>visit_end_date</code></p>
 </div>
 <div class="section level2">
 <h2 id="definition">Definition<a class="anchor" aria-label="anchor" href="#definition"></a>
 </h2>
 <ul>
 <li>
-<em>Numerator</em>:</li>
+<em>Numerator</em>: The number of rows in a table where the event
+date occurs more than 7 days prior to the corresponding visit start date
+or more than 7 days after the corresponding visit end date.</li>
 <li>
-<em>Denominator</em>:</li>
+<em>Denominator</em>: The total number of rows in the table with a
+corresponding visit (linked through
+<code>visit_occurrence_id</code>)</li>
 <li>
-<em>Related CDM Convention(s)</em>:</li>
+<em>Related CDM Convention(s)</em>: There is no explicit convention
+tied to this check. However, the CDM documentation describes the
+<code>visit_occurrence_id</code> foreign key in the event tables as “The
+visit during which the <event> occurred.” The underlying assumption is
+that if a record is tied to a visit, then the date of the record should
+fall in some reasonable time period around the visit dates. This gives a
+week of leeway on either side for physician notes or other activities
+related to a visit to be recorded.<br></event>
+</li>
 <li>
-<em>CDM Fields/Tables</em>:</li>
+<em>CDM Fields/Tables</em>: This check runs on all event tables:
+<code>CONDITION_OCCURRENCE</code>, <code>PROCEDURE_OCCURRENCE</code>,
+<code>DRUG_EXPOSURE</code>, <code>DEVICE_EXPOSURE</code>,
+<code>MEASUREMENT</code>, <code>NOTE</code>, <code>OBSERVATION</code>,
+and <code>VISIT_DETAIL</code>. It will check either the
+<code>X_date</code> or <code>X_start_date</code> fields for alignment
+with corresponding <code>VISIT_OCCURRENCE</code> dates by linking on the
+<code>visit_occurrence_id</code>. (<strong>Note:</strong> For
+VISIT_DETAIL it will check both the visit_detail_start_date and
+visit_detail_end_date. The default threshold for these two checks is
+1%.)</li>
 <li>
-<em>Default Threshold Value</em>:</li>
+<em>Default Threshold Value</em>: 1% for <code>VISIT_DETAIL</code>,
+5% for all other tables</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="user-guidance">User Guidance<a class="anchor" aria-label="anchor" href="#user-guidance"></a>
 </h2>
+<p>There is no explicit convention that describes how events should
+align temporally with the visits they correspond to. This check is meant
+to identify egregious mismatches in dates that could signify an
+incorrect date field was used in the ETL or that the data should be used
+with caution if there is no reason for the mismatch (history of a
+condition, for example).</p>
+<p>If this check fails the first action should be to investigate the
+failing rows for any patterns. The main query to find failing rows is
+below:</p>
 <div class="section level3">
 <h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="st">'@cdmTableName.@cdmFieldName'</span> <span class="kw">AS</span> violating_field,  </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  vo.visit_start_date, vo.visit_end_date, vo.person_id, </span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  cdmTable.<span class="op">*</span> </span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable </span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="kw">JOIN</span> @cdmDatabaseSchema.visit_occurrence vo </span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="kw">ON</span> cdmTable.visit_occurrence_id <span class="op">=</span> vo.visit_occurrence_id </span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="op">&lt;</span> dateadd(<span class="dt">day</span>, <span class="op">-</span><span class="dv">7</span>, vo.visit_start_date) </span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="kw">OR</span> cdmTable.@cdmFieldName <span class="op">&gt;</span> dateadd(<span class="dt">day</span>, <span class="dv">7</span>, vo.visit_end_date) </span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>
 </h3>
+<p>The first step is to investigate whether visit and event indeed
+should be linked - e.g., do they belong to the same person; how far are
+the dates apart; is it possible the event was recorded during the visit.
+If they should be linked, then the next step is to investigate which of
+the event date and visit date is accurate.</p>
+<p>One suggestion would be to identify if all of the failures are due to
+many events all having the same date. In some institutions there is a
+default date given to events in the case where a date is not given.
+Should this be the problem, the first step should be to identify if
+there is a different date field in the native data that can be used. If
+not, considerations should be made to determine if the rows should be
+dropped. Without a correct date it is challenging to use such events in
+health outcomes research.</p>
+<p>Another reason for the discrepancy could be that the wrong date has
+been used for events. For instance, in some systems a diagnosis could
+have both an ‘observation date’ and an ‘administration date’. If the
+physician is updating records at a later date, the administration date
+can be later than the actual date the diagnosis was observed. In those
+cases, the observation date has to be used. If there is only an
+administration date, it is in some cases arguable to use the visit date
+for the diagnosis date.</p>
+<p>Another suggestion would be to investigate if the failures are
+related to ‘History of’ conditions. It is often the case that a
+patient’s history is recorded during a visit, in which case they may
+report a diagnosis date prior to the given visit. In some cases it may
+be appropriate to conserve these records; the decision to do so will
+depend on the reliability of the recorded date in your source data.</p>
 </div>
 <div class="section level3">
 <h3 id="data-users">Data Users<a class="anchor" aria-label="anchor" href="#data-users"></a>
 </h3>
+<p>If the failure percentage of withinVisitDates is high, a data user
+should be careful with using the data. This check might indicate a
+larger underlying conformance issue with either the event dates or
+linkage with visits. At the same time, there might be a valid reason why
+events do not happen within 7 days of the linked visit.</p>
+<p>Make sure to understand why this check fails. Specifically, be
+careful when using such data in outcomes research. Without specific
+dates for an event, it is challenging to determine if an adverse event
+occurred after a drug exposure, for example.</p>
+<p>Note that this check specifically compares event dates to
+<code>VISIT_OCCURRENCE</code> dates. There is no equivalent check for
+<code>VISIT_DETAIL</code> that verifies whether the event date is within
+(a week of) the visit detail start and end dates.</p>
 </div>
 </div>
   </div>

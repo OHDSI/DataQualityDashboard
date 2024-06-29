@@ -1,6 +1,6 @@
 ---
 title: "isStandardValidConcept"
-author: "Katy Sadowski"
+author: "Stephanie Hong, Katy Sadowski"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -23,9 +23,9 @@ The number and percent of records that do not have a standard, valid concept in 
 
 ## Definition
 
-- *Numerator*: The number of rows with an `X_concept_id` that exists in concept.concept_id but does not equal zero, and has a standard_concept != ‘S’ or a non-NULL invalid_reason. 
+- *Numerator*: The number of rows with an `X_concept_id` that exists in `CONCEPT.concept_id` but does not equal zero, and has `CONCEPT.standard_concept` != ‘S’ or non-NULL `CONCEPT.invalid_reason`. 
 - *Denominator*: The total number of rows in the table. 
-- *Related CDM Convention(s)*: All `X_concept_id` columns should contain a standard, valid concept, or 0: https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Mapping. In other words, all non-zero values in the `X_concept_id` column should exist in the concept_id column of the CONCEPT table and have CONCEPT.standard_concept = ‘S’ and CONCEPT.invalid_reason = NULL. 
+- *Related CDM Convention(s)*: All `X_concept_id` columns should contain a standard, valid concept, or 0: https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Mapping. 
 - *CDM Fields/Tables*: All tables with an `X_concept_id` column, and all `X_concept_id` columns in those tables. 
 - *Default Threshold Value*: 0
 
@@ -48,7 +48,8 @@ FROM @schema.@cdmTableName cdmTable
 WHERE co.concept_id != 0  
   AND (co.standard_concept != 'S' OR co.invalid_reason IS NOT NULL) 
 ```
-You may build upon this query by joining the relevant `X_concept_id` and `X_source_concept_id` columns to the concept table and inspecting their names and vocabularies.  If the `X_source_concept_id` correctly represents the source code in x_source_value, the fix will be a matter of ensuring your ETL is correctly using the concept_relationship table to map the source concept ID to a standard concept via the ‘Maps to’ relationship.  If you are not populating the `X_source_concept_id` column and/or are using an intermediate concept mapping table, you may need to inspect the mappings in your mapper table to ensure they’ve been generated correctly using the ‘Maps to’ relationship for your CDM’s vocabulary version. 
+
+You may build upon this query by joining the relevant `X_concept_id` and `X_source_concept_id` columns to the concept table and inspecting their names and vocabularies.  If the `X_source_concept_id` correctly represents the source code in `X_source_value`, the fix will be a matter of ensuring your ETL is correctly using the concept_relationship table to map the source concept ID to a standard concept via the ‘Maps to’ relationship.  If you are not populating the `X_source_concept_id` column and/or are using an intermediate concept mapping table, you may need to inspect the mappings in your mapper table to ensure they’ve been generated correctly using the ‘Maps to’ relationship for your CDM’s vocabulary version. 
 
 ### Data Users
 This check failure means that the failing rows will not be picked up in a standard OHDSI analysis. It is highly recommended to work with your ETL team or data provider, if possible, to resolve this issue. 

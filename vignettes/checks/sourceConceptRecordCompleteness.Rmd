@@ -23,11 +23,13 @@ The number and percent of records with a value of 0 in the source concept field 
 
 ## Definition
 
-- *Numerator*: The number of rows with a value of 0 in the `X_source_concept_id` source concept field.  In the case of `MEASUREMENT.unit_source_concept_id` and `OBSERVATION.unit_source_concept_id`, the number of rows with a value of 0 in the `X_source_concept_id` source concept field AND a non-NULL value_as_number. 
-- *Denominator*: The total number of rows in the table. In the case of `MEASUREMENT.unit_source_concept_id` and `OBSERVATION.unit_source_concept_id`, the number of rows with non-NULL value_as_number. 
+- *Numerator*: The number of rows with a value of 0 in the `X_source_concept_id` source concept field.  In the case of `MEASUREMENT.unit_source_concept_id` and `OBSERVATION.unit_source_concept_id`, the number of rows with a value of 0 in the `X_source_concept_id` source concept field AND a non-NULL `value_as_number`. 
+- *Denominator*: The total number of rows in the table. In the case of `MEASUREMENT.unit_source_concept_id` and `OBSERVATION.unit_source_concept_id`, the number of rows with non-NULL `value_as_number`. 
 - *Related CDM Convention(s)*: [Source concept mapping](https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Fields) 
 - *CDM Fields/Tables*: All source concept ID (`X_source_concept_id`) columns in all event tables. 
-- *Default Threshold Value*: 10 for primary source concept ID columns in condition, drug, measurement, procedure, device, and observation tables; 100 for all other source concept ID columns.
+- *Default Threshold Value*: 
+  - 10 for primary source concept ID columns in condition, drug, measurement, procedure, device, and observation tables
+  - 100 for all other source concept ID columns
 
 
 ## User Guidance
@@ -62,7 +64,7 @@ The query results will give you a summary of the source codes which failed to ma
 
 If source values return legitimate matches on concept_code, it’s possible that there is an error in the concept mapping step of your ETL.  Please note that while the `X_source_concept_id` fields are technically not required, it is highly recommended to populate them with OMOP concepts whenever possible.  This will greatly aid analysts in understanding the provenance of the data. 
 
-If source values do NOT return matches on concept_code and you are NOT handling concept mapping locally for a non-OMOP source vocabulary, then you likely have a malformed source code or one that does not exist in the OMOP vocabulary.  Please see the documentation in the standardConceptRecordCompleteness page for instructions on how to handle this scenario. 
+If source values do NOT return matches on concept_code and you are NOT handling concept mapping locally for a non-OMOP source vocabulary, then you likely have a malformed source code or one that does not exist in the OMOP vocabulary.  Please see the documentation in the [standardConceptRecordCompleteness](standardConceptRecordCompleteness.html) page for instructions on how to handle this scenario. 
 
 ### Data Users
 Since most standard OHDSI analytic workflows rely on the standard concept field and not the source concept field, failures of this check will not necessarily impact your analysis.  However, if your analysis depends on understanding source coding practices or on codes you know may not be fully mapped to OMOP standard concepts, then this will be a critical check failure to understand. 

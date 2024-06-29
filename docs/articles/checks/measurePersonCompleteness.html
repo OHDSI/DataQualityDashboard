@@ -145,6 +145,9 @@
     <li>
       <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
     </li>
+    <li>
+      <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -178,7 +181,7 @@
                         <h4 data-toc-skip class="author">Katy
 Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-06-26</h4>
+            <h4 data-toc-skip class="date">2024-06-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/measurePersonCompleteness.Rmd" class="external-link"><code>vignettes/checks/measurePersonCompleteness.Rmd</code></a></small>
       <div class="hidden name"><code>measurePersonCompleteness.Rmd</code></div>
@@ -208,17 +211,17 @@ table.</p>
 table.</li>
 <li>
 <em>Denominator</em>: The total number of persons in the
-<code>person</code> table.</li>
+<code>PERSON</code> table.</li>
 <li>
 <em>Related CDM Convention(s)</em>: Each Person needs to have at
-least one <code>observation_period</code> record. Otherwise, CDM
+least one <code>OBSERVATION_PERIOD</code> record. Otherwise, CDM
 conventions do not dictate any rules for person completeness.</li>
 <li>
 <em>CDM Fields/Tables</em>: By default, this check runs on all
-tables with a foreign key to the <code>person</code> table.</li>
+tables with a foreign key to the <code>PERSON</code> table.</li>
 <li>
 <em>Default Threshold Value</em>: Set to 95 or 100 for most tables
-but 0 for <code>observation_period</code>
+but 0 for <code>OBSERVATION_PERIOD</code>
 </li>
 </ul>
 </div>
@@ -227,11 +230,11 @@ but 0 for <code>observation_period</code>
 </h2>
 <p>For most tables, this check is a characterization of the completeness
 of various data types in the source data. However, in the case of
-<code>observation_period</code>, this check should actually be
+<code>OBSERVATION_PERIOD</code>, this check should actually be
 considered a CDM convention check as it is used to enforce the
 requirement that all persons have at least one observation period. A
-failure of this check on the <code>observation_period</code> table is a
-serious issue as persons without an <code>observation_period</code>
+failure of this check on the <code>OBSERVATION_PERIOD</code> table is a
+serious issue as persons without an <code>OBSERVATION_PERIOD</code>
 cannot be included in any standard OHDSI analysis.</p>
 <p>Run the following query to obtain a list of persons who had no data
 in a given table. From this list of person_ids you may join to other
@@ -268,17 +271,21 @@ CDM.</p>
 depend on the characteristics of the source database. In certain cases,
 missingness is expected – some persons may just not have a given type of
 data available in the source. In others, various ETL issues may result
-in persons missing records in a given event table: - Mis-mapping of
-domains, resulting in the placement of records in the incorrect
-table<br>
-- Incorrect parsing of source data, resulting in loss of valid records -
-Failure of an ETL step, resulting in an empty table</p>
+in persons missing records in a given event table:</p>
+<ul>
+<li>Mis-mapping of domains, resulting in the placement of records in the
+incorrect table<br>
+</li>
+<li>Incorrect parsing of source data, resulting in loss of valid
+records</li>
+<li>Failure of an ETL step, resulting in an empty table</li>
+</ul>
 <p>If more persons than expected are missing data in a given table, run
 the violated rows SQL snippet to retrieve these persons’ person_ids, and
 inspect these persons’ other clinical event data in the CDM for trends.
-You may also use person_source_value to trace back to these persons’
-source data to identify source data records potentially missed by the
-ETL.</p>
+You may also use <code>person_source_value</code> to trace back to these
+persons’ source data to identify source data records potentially missed
+by the ETL.</p>
 <p>Note that in some cases, the failure threshold for this check may
 need to be adjusted according to completeness expectations for a given
 data source.</p>
@@ -289,8 +296,8 @@ data source.</p>
 </h3>
 <p>Severe failures, such as unexpected nearly empty tables, must be
 fixed by the ETL team before a dataset can be used. Note as well that
-any person missing an <code>observation_period</code> will not be able
-to be included in any analysis using OHDSI tools.</p>
+any person missing an observation period will not be able to be included
+in any analysis using OHDSI tools.</p>
 <p>Failures with a result close to the specified failure threshold may
 be accepted, at your own risk and only if the result matches your
 understanding of the source data. The violated rows SQL may be used to

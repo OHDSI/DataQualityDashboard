@@ -23,8 +23,8 @@ The number and percent of records with a value of 0 in the standard concept fiel
 
 ## Definition
 
-- *Numerator*: The number of rows with a value of 0 in the `X_concept_id` standard concept field.  (**NOTE** in the case of `measurement.unit_concept_id` and `observation.unit_concept_id`, the number of rows with a value of 0 in the `X_concept_id` standard concept field AND a non-NULL value_as_number.) 
-- *Denominator*: The total number of rows in the table. (**NOTE** in the case of `measurement.unit_concept_id` and `observation.unit_concept_id`, the number of rows with non-NULL `value_as_number`.)
+- *Numerator*: The number of rows with a value of 0 in the `X_concept_id` standard concept field.  In the case of `MEASUREMENT.unit_concept_id` and `OBSERVATION.unit_concept_id`, the number of rows with a value of 0 in the `X_concept_id` standard concept field AND a non-NULL `value_as_number`. 
+- *Denominator*: The total number of rows in the table. In the case of `MEASUREMENT.unit_concept_id` and `OBSERVATION.unit_concept_id`, the number of rows with a non-NULL `value_as_number`. 
 - *Related CDM Convention(s)*: [Standard concept mapping](https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Fields)  
 - *CDM Fields/Tables*: All standard concept ID (`X_concept_id`) columns in all event tables. 
 - *Default Threshold Value*: 

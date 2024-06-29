@@ -145,6 +145,9 @@
     <li>
       <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
     </li>
+    <li>
+      <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -178,7 +181,7 @@
                         <h4 data-toc-skip class="author">Jared
 Houghtaling, Clair Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2024-06-26</h4>
+            <h4 data-toc-skip class="date">2024-06-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/sourceValueCompleteness.Rmd" class="external-link"><code>vignettes/checks/sourceValueCompleteness.Rmd</code></a></small>
       <div class="hidden name"><code>sourceValueCompleteness.Rmd</code></div>
@@ -203,7 +206,8 @@ Houghtaling, Clair Blacketer</h4>
 <ul>
 <li>
 <em>Numerator</em>: Distinct <code>X_source_value</code> entries
-where the corresponding standard x_concept_id field is 0.</li>
+where the corresponding standard <code>X_concept_id</code> field is
+0.</li>
 <li>
 <em>Denominator</em>: Total distinct <code>X_source_value</code>
 entries, including NULL, in the respective event table.</li>
@@ -236,7 +240,7 @@ expectations</li>
 </h2>
 <p>This check will look at all distinct source values in the specified
 field and calculate how many are mapped to a standard concept of 0. This
-check should be used in conjunction with the <a href="checks/standardConceptRecordCompleteness.html">standardConceptRecordCompleteness</a> check
+check should be used in conjunction with the <a href="standardConceptRecordCompleteness.html">standardConceptRecordCompleteness</a> check
 to identify potential mapping issues in the ETL.<br></p>
 <p>This check is a good measure of the overall mapping rate within each
 domain. For example, a table may have high

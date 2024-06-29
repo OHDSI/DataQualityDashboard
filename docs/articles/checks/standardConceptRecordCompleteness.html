@@ -145,6 +145,9 @@
     <li>
       <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
     </li>
+    <li>
+      <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -178,7 +181,7 @@
                         <h4 data-toc-skip class="author">Katy
 Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-06-26</h4>
+            <h4 data-toc-skip class="date">2024-06-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/standardConceptRecordCompleteness.Rmd" class="external-link"><code>vignettes/checks/standardConceptRecordCompleteness.Rmd</code></a></small>
       <div class="hidden name"><code>standardConceptRecordCompleteness.Rmd</code></div>
@@ -204,17 +207,16 @@ concept field <span class="citation">@cdmFieldName</span> in the <span class="ci
 <ul>
 <li>
 <em>Numerator</em>: The number of rows with a value of 0 in the
-<code>X_concept_id</code> standard concept field. (<strong>NOTE</strong>
-in the case of <code>measurement.unit_concept_id</code> and
-<code>observation.unit_concept_id</code>, the number of rows with a
+<code>X_concept_id</code> standard concept field. In the case of
+<code>MEASUREMENT.unit_concept_id</code> and
+<code>OBSERVATION.unit_concept_id</code>, the number of rows with a
 value of 0 in the <code>X_concept_id</code> standard concept field AND a
-non-NULL value_as_number.)</li>
+non-NULL <code>value_as_number</code>.</li>
 <li>
-<em>Denominator</em>: The total number of rows in the table.
-(<strong>NOTE</strong> in the case of
-<code>measurement.unit_concept_id</code> and
-<code>observation.unit_concept_id</code>, the number of rows with
-non-NULL <code>value_as_number</code>.)</li>
+<em>Denominator</em>: The total number of rows in the table. In the
+case of <code>MEASUREMENT.unit_concept_id</code> and
+<code>OBSERVATION.unit_concept_id</code>, the number of rows with a
+non-NULL <code>value_as_number</code>.</li>
 <li>
 <em>Related CDM Convention(s)</em>: <a href="https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Fields" class="external-link">Standard
 concept mapping</a><br>

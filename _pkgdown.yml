@@ -90,6 +90,8 @@ navbar:
         href: articles/checks/plausibleValueHigh.html
       - text: plausibleValueLow
         href: articles/checks/plausibleValueLow.html
+      - text: withinVisitDates
+        href: articles/checks/withinVisitDates.html
     hades:
       text: hadesLogo
       href: https://ohdsi.github.io/Hades

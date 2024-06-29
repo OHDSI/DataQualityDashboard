@@ -145,6 +145,9 @@
     <li>
       <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
     </li>
+    <li>
+      <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -178,7 +181,7 @@
                         <h4 data-toc-skip class="author">Katy
 Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-06-26</h4>
+            <h4 data-toc-skip class="date">2024-06-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/measureValueCompleteness.Rmd" class="external-link"><code>vignettes/checks/measureValueCompleteness.Rmd</code></a></small>
       <div class="hidden name"><code>measureValueCompleteness.Rmd</code></div>
@@ -237,14 +240,10 @@ fixing one failure will resolve the other!</p>
 <p>Use this SQL query to inspect rows with a missing value in a given
 field:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span>  </span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="st">'@cdmTableName.@cdmFieldName'</span> <span class="kw">AS</span> violating_field,  </span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>cdmTable.<span class="op">*</span>  </span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable       </span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="kw">IS</span> <span class="kw">NULL</span> </span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="st">'@cdmTableName.@cdmFieldName'</span> <span class="kw">AS</span> violating_field,  </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  cdmTable.<span class="op">*</span>  </span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable       </span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="kw">IS</span> <span class="kw">NULL</span> </span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>

@@ -145,6 +145,9 @@
     <li>
       <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
     </li>
+    <li>
+      <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -175,10 +178,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>isStandardValidConcept</h1>
-                        <h4 data-toc-skip class="author">Katy
-Sadowski</h4>
+                        <h4 data-toc-skip class="author">Stephanie Hong,
+Katy Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-06-26</h4>
+            <h4 data-toc-skip class="date">2024-06-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/isStandardValidConcept.Rmd" class="external-link"><code>vignettes/checks/isStandardValidConcept.Rmd</code></a></small>
       <div class="hidden name"><code>isStandardValidConcept.Rmd</code></div>
@@ -205,18 +208,14 @@ concept in the <span class="citation">@cdmFieldName</span> field in the
 <ul>
 <li>
 <em>Numerator</em>: The number of rows with an
-<code>X_concept_id</code> that exists in concept.concept_id but does not
-equal zero, and has a standard_concept != ‘S’ or a non-NULL
-invalid_reason.</li>
+<code>X_concept_id</code> that exists in <code>CONCEPT.concept_id</code>
+but does not equal zero, and has <code>CONCEPT.standard_concept</code>
+!= ‘S’ or non-NULL <code>CONCEPT.invalid_reason</code>.</li>
 <li>
 <em>Denominator</em>: The total number of rows in the table.</li>
 <li>
 <em>Related CDM Convention(s)</em>: All <code>X_concept_id</code>
-columns should contain a standard, valid concept, or 0: <a href="https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Mapping" class="external-link uri">https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Mapping</a>.
-In other words, all non-zero values in the <code>X_concept_id</code>
-column should exist in the concept_id column of the CONCEPT table and
-have CONCEPT.standard_concept = ‘S’ and CONCEPT.invalid_reason =
-NULL.</li>
+columns should contain a standard, valid concept, or 0: <a href="https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Mapping" class="external-link uri">https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Mapping</a>.</li>
 <li>
 <em>CDM Fields/Tables</em>: All tables with an
 <code>X_concept_id</code> column, and all <code>X_concept_id</code>
@@ -256,13 +255,14 @@ concept mapping process: <a href="https://ohdsi.github.io/TheBookOfOhdsi/Extract
 <code>X_concept_id</code> and <code>X_source_concept_id</code> columns
 to the concept table and inspecting their names and vocabularies. If the
 <code>X_source_concept_id</code> correctly represents the source code in
-x_source_value, the fix will be a matter of ensuring your ETL is
-correctly using the concept_relationship table to map the source concept
-ID to a standard concept via the ‘Maps to’ relationship. If you are not
-populating the <code>X_source_concept_id</code> column and/or are using
-an intermediate concept mapping table, you may need to inspect the
-mappings in your mapper table to ensure they’ve been generated correctly
-using the ‘Maps to’ relationship for your CDM’s vocabulary version.</p>
+<code>X_source_value</code>, the fix will be a matter of ensuring your
+ETL is correctly using the concept_relationship table to map the source
+concept ID to a standard concept via the ‘Maps to’ relationship. If you
+are not populating the <code>X_source_concept_id</code> column and/or
+are using an intermediate concept mapping table, you may need to inspect
+the mappings in your mapper table to ensure they’ve been generated
+correctly using the ‘Maps to’ relationship for your CDM’s vocabulary
+version.</p>
 </div>
 <div class="section level3">
 <h3 id="data-users">Data Users<a class="anchor" aria-label="anchor" href="#data-users"></a>

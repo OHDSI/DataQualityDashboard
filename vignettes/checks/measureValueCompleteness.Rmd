@@ -40,13 +40,9 @@ Use this SQL query to inspect rows with a missing value in a given field:
 
 ```sql
 SELECT  
-
-'@cdmTableName.@cdmFieldName' AS violating_field,  
-
-cdmTable.*  
-
+  '@cdmTableName.@cdmFieldName' AS violating_field,  
+  cdmTable.*  
 FROM @cdmDatabaseSchema.@cdmTableName cdmTable		 
-
 WHERE cdmTable.@cdmFieldName IS NULL 
 ```
 

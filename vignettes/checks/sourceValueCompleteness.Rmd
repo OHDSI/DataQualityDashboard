@@ -23,7 +23,7 @@ The number and percent of distinct source values in the @cdmFieldName field of t
 
 ## Definition
 
-- *Numerator*: Distinct `X_source_value` entries where the corresponding standard x_concept_id field is 0. 
+- *Numerator*: Distinct `X_source_value` entries where the corresponding standard `X_concept_id` field is 0. 
 - *Denominator*: Total distinct `X_source_value` entries, including NULL, in the respective event table. 
 - *Related CDM Convention(s)*: The OMOP Common Data Model specifies that codes that are present in a native database should be mapped to standard concepts using either the intrinsic mappings defined in the standard vocabularies or extrinsic mappings defined by the data owner or ETL development team.  Note also that variations of this check logic are also used in the [EHDEN CDM Inspection Report](https://github.com/EHDEN/CdmInspection) package, as well as the [AresIndexer](https://github.com/OHDSI/AresIndexer) package for generating indices of unmapped codes.  
 - *CDM Fields/Tables*: Runs on all event tables that have `X_source_value` fields.
@@ -33,7 +33,7 @@ The number and percent of distinct source values in the @cdmFieldName field of t
 
 
 ## User Guidance
-This check will look at all distinct source values in the specified field and calculate how many are mapped to a standard concept of 0. This check should be used in conjunction with the [standardConceptRecordCompleteness](checks/standardConceptRecordCompleteness.html) check to identify potential mapping issues in the ETL. \
+This check will look at all distinct source values in the specified field and calculate how many are mapped to a standard concept of 0. This check should be used in conjunction with the [standardConceptRecordCompleteness](standardConceptRecordCompleteness.html) check to identify potential mapping issues in the ETL. \
 
 This check is a good measure of the overall mapping rate within each domain.  For example, a table may have high standardConceptRecordCompleteness (that is, a large percentage of records with a non-zero standard concept) but a low score on this check.  This would indicate that the "long tail" of rarer codes have not been mapped while more common codes have good mapping coverage.  It is always important to interrogate the results of these two checks together to ensure complete understanding of vocabulary mapping in your CDM.
 
