@@ -10,7 +10,7 @@ test_that("Not Applicable status Table Empty", {
   DatabaseConnector::disconnect(connection)
 
   results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomia,
+    connectionDetails = connectionDetailsEunomiaNaChecks,
     cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     cdmSourceName = "Eunomia",
@@ -31,13 +31,13 @@ test_that("measureConditionEraCompleteness Not Applicable if condition_occurrenc
   on.exit(unlink(outputFolder, recursive = TRUE))
 
   # Remove records from Condition Occurrence
-  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
+  connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
   DatabaseConnector::executeSql(connection, "CREATE TABLE CONDITION_OCCURRENCE_BACK AS SELECT * FROM CONDITION_OCCURRENCE;")
   DatabaseConnector::executeSql(connection, "DELETE FROM CONDITION_OCCURRENCE;")
   DatabaseConnector::disconnect(connection)
 
   results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomia,
+    connectionDetails = connectionDetailsEunomiaNaChecks,
     cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     cdmSourceName = "Eunomia",
@@ -49,7 +49,7 @@ test_that("measureConditionEraCompleteness Not Applicable if condition_occurrenc
   )
 
   # Reinstate Condition Occurrence
-  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
+  connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
   DatabaseConnector::executeSql(connection, "INSERT INTO CONDITION_OCCURRENCE SELECT * FROM CONDITION_OCCURRENCE_BACK;")
   DatabaseConnector::executeSql(connection, "DROP TABLE CONDITION_OCCURRENCE_BACK;")
   disconnect(connection)
@@ -63,13 +63,13 @@ test_that("measureConditionEraCompleteness Fails if condition_era empty", {
   on.exit(unlink(outputFolder, recursive = TRUE))
 
   # Remove records from Condition Era
-  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
+  connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
   DatabaseConnector::executeSql(connection, "CREATE TABLE CONDITION_ERA_BACK AS SELECT * FROM CONDITION_ERA;")
   DatabaseConnector::executeSql(connection, "DELETE FROM CONDITION_ERA;")
   DatabaseConnector::disconnect(connection)
 
   results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomia,
+    connectionDetails = connectionDetailsEunomiaNaChecks,
     cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     cdmSourceName = "Eunomia",
@@ -81,7 +81,7 @@ test_that("measureConditionEraCompleteness Fails if condition_era empty", {
   )
 
   # Reinstate the Condition Era
-  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
+  connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
   DatabaseConnector::executeSql(connection, "INSERT INTO CONDITION_ERA SELECT * FROM CONDITION_ERA_BACK;")
   DatabaseConnector::executeSql(connection, "DROP TABLE CONDITION_ERA_BACK;")
   DatabaseConnector::disconnect(connection)

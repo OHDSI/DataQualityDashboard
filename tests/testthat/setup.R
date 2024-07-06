@@ -12,3 +12,6 @@ if (Sys.getenv("DONT_DOWNLOAD_JDBC_DRIVERS", "") == "TRUE") {
 connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
 cdmDatabaseSchemaEunomia <- "main"
 resultsDatabaseSchemaEunomia <- "main"
+
+# Separate connection details for NA tests, as this requires removing records
+connectionDetailsEunomiaNaChecks <- Eunomia::getEunomiaConnectionDetails()
