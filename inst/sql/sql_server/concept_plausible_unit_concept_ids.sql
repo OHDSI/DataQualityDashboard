@@ -39,13 +39,8 @@ FROM
     		AND c.cohort_definition_id = @cohortDefinitionId
     	}
 		WHERE m.@cdmFieldName = @conceptId
-		  AND {@plausibleUnitConceptIds == '' | @plausibleUnitConceptIds == 'NA'}?{
-		  m.unit_concept_id IS NOT NULL
-		  }:{
-		  m.unit_concept_id NOT IN (@plausibleUnitConceptIds)
-		  }
-		  AND m.value_as_number IS NOT NULL 
-		  AND (m.unit_source_value IS NOT NULL OR m.unit_source_value <> '')
+		  	AND COALESCE (m.unit_concept_id, -1) NOT IN (@plausibleUnitConceptIds) -- '-1' stands for the cases when unit_concept_id is null
+		  	AND m.value_as_number IS NOT NULL 
 		/*violatedRowsEnd*/
 	) violated_rows
 ) violated_row_count,
@@ -55,11 +50,10 @@ FROM
 	FROM @cdmDatabaseSchema.@cdmTableName m
   	{@cohort}?{
     	JOIN @cohortDatabaseSchema.@cohortTableName c
-    	ON m.person_id = c.subject_id
-    	AND c.cohort_definition_id = @cohortDefinitionId
+    		ON m.person_id = c.subject_id
+    		AND c.cohort_definition_id = @cohortDefinitionId
   	}
 	WHERE m.@cdmFieldName = @conceptId
-	  AND value_as_number IS NOT NULL
-	  AND (m.unit_source_value IS NOT NULL OR m.unit_source_value <> '')
+	  	AND value_as_number IS NOT NULL
 ) denominator
 ;

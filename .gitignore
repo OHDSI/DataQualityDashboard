@@ -30,6 +30,7 @@ inst/results.json
 
 # Visual Studio Code
 .vscode/
+.lintr
 
 errorReport.txt
 output/

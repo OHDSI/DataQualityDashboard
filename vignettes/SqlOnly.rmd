@@ -1,26 +1,19 @@
 ---
-title: "SqlOnly"
+title: "Running the DQD in SqlOnly mode"
 author: "Maxim Moinat"
 date: "`r Sys.Date()`"
-header-includes:
-    - \usepackage{fancyhdr}
-    - \pagestyle{fancy}
-    - \fancyhead{}
-    - \fancyhead[CO,CE]{Data Quality Check Type Definitions}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version `r    utils::packageVersion("DataQualityDashboard")`}
-    - \fancyfoot[LE,RO]{\thepage}
-    - \renewcommand{\headrulewidth}{0.4pt}
-    - \renewcommand{\footrulewidth}{0.4pt}
 output:
+  pdf_document:
+    number_sections: yes
+    toc: yes
   html_document:
     number_sections: yes
     toc: yes
+vignette: >
+  %\VignetteIndexEntry{Running the DQD in SqlOnly mode}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::knitr}
 ---
-
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Running the DQD in SqlOnly mode}
--->
 
 # Description
 

@@ -1,4 +1,4 @@
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -17,7 +17,7 @@
 #' Internal function to run and process each data quality check.
 #'
 #' @param checkDescription          The description of the data quality check
-#' @param tablechecks               A dataframe containing the table checks
+#' @param tableChecks               A dataframe containing the table checks
 #' @param fieldChecks               A dataframe containing the field checks
 #' @param conceptChecks             A dataframe containing the concept checks
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database

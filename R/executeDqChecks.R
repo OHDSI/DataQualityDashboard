@@ -1,4 +1,4 @@
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -261,6 +261,10 @@ executeDqChecks <- function(connectionDetails,
     warning("DEPRECATION WARNING - The plausibleTemporalAfter check has been reimplemented with the plausibleAfterBirth and plausibleStartBeforeEnd checks.")
   }
 
+  if ("plausibleGender" %in% checkDescriptionsDf$checkName) {
+    warning("DEPRECATION WARNING - The plausibleGender check has been reimplemented with the plausibleGenderUseDescendants check.")
+  }
+
   checkDescriptions <- split(checkDescriptionsDf, seq_len(nrow(checkDescriptionsDf)))
 
   connection <- NULL
@@ -323,6 +327,8 @@ executeDqChecks <- function(connectionDetails,
       startTimestamp = startTime,
       endTimestamp = endTime,
       executionTime = sprintf("%.0f %s", delta, attr(delta, "units")),
+      #new variable executionTimeSeconds added to store execution time in seconds
+      executionTimeSeconds = as.numeric(delta),
       CheckResults = checkResults,
       Metadata = metadata,
       Overview = overview

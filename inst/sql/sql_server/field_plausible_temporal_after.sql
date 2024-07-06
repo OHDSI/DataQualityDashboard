@@ -35,16 +35,18 @@ FROM
 			cdmTable.*
     	FROM @schema.@cdmTableName cdmTable
     		{@schema.@cdmTableName != @schema.@plausibleTemporalAfterTableName}?{
-				JOIN @schema.@plausibleTemporalAfterTableName plausibleTable ON cdmTable.person_id = plausibleTable.person_id}
+				JOIN @schema.@plausibleTemporalAfterTableName plausibleTable 
+                    ON cdmTable.person_id = plausibleTable.person_id}
 			{@cohort & '@runForCohort' == 'Yes'}?{
-    			JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
+    			JOIN @cohortDatabaseSchema.@cohortTableName c 
+                    ON cdmTable.person_id = c.subject_id
     				AND c.cohort_definition_id = @cohortDefinitionId
 			}
     WHERE 
     	{'@plausibleTemporalAfterTableName' == 'PERSON'}?{
 			COALESCE(
 				CAST(plausibleTable.@plausibleTemporalAfterFieldName AS DATE),
-				CAST(CONCAT(plausibleTable.year_of_birth,'-06-01') AS DATE)
+				CAST(CONCAT(plausibleTable.year_of_birth,'0601') AS DATE)
 			) 
 		}:{
 			CAST(cdmTable.@plausibleTemporalAfterFieldName AS DATE)
@@ -57,7 +59,8 @@ FROM
 		COUNT_BIG(*) AS num_rows
 	FROM @schema.@cdmTableName cdmTable
 		{@cohort & '@runForCohort' == 'Yes'}?{
-  			JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
+  			JOIN @cohortDatabaseSchema.@cohortTableName c 
+                ON cdmTable.person_id = c.subject_id
     			AND c.cohort_definition_id = @cohortDefinitionId 
 		}
 ) denominator

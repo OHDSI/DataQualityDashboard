@@ -1,0 +1,46 @@
+---
+title: "measureValueCompleteness"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## Summary
+
+**Level**: FIELD\
+**Context**: Verification\
+**Category**: Completeness\
+**Subcategory**: \
+**Severity**: 
+
+
+## Description
+The number and percent of records with a NULL value in the @cdmFieldName of the @cdmTableName.
+
+
+## Definition
+
+- *Numerator*: 
+- *Denominator*:
+- *Related CDM Convention(s)*:
+- *CDM Fields/Tables*:
+- *Default Threshold Value*:
+
+
+## User Guidance
+
+
+### Violated rows query
+```sql
+
+```
+
+
+### ETL Developers
+
+
+### Data Users
+

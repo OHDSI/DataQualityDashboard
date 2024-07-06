@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
       </span>
     </div>
 
@@ -59,22 +59,61 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/AddNewCheck.html">Add a New Data Quality Check</a>
+      <a href="../articles/CheckTypeDescriptions.html">Check Type Definitions</a>
     </li>
     <li>
-      <a href="../articles/CheckStatusDefinitions.html">Check Status Descriptions</a>
+      <a href="../articles/Thresholds.html">DQ Check Failure Thresholds</a>
     </li>
     <li>
-      <a href="../articles/CheckTypeDescriptions.html">Data Quality Check Type Definitions</a>
+      <a href="../articles/CheckStatusDefinitions.html">DQ Check Statuses</a>
     </li>
     <li>
-      <a href="../articles/DqdForCohorts.html">Running the DQD on a Cohort</a>
+      <a href="../articles/AddNewCheck.html">Adding a New Data Quality Check</a>
     </li>
     <li>
-      <a href="../articles/SqlOnly.html">SqlOnly</a>
+      <a href="../articles/DqdForCohorts.html">DQD for Cohorts</a>
     </li>
     <li>
-      <a href="../articles/Thresholds.html">Failure Thresholds and How to Change Them</a>
+      <a href="../articles/SqlOnly.html">SQL-only Mode</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    NEW! Data Quality Check Types
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/checkIndex.html">Index</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmTable.html">cdmTable</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmField.html">cdmField</a>
+    </li>
+    <li>
+      <a href="../articles/checks/cdmDatatype.html">cdmDatatype</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isPrimaryKey.html">isPrimaryKey</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isForeignKey.html">isForeignKey</a>
+    </li>
+    <li>
+      <a href="../articles/checks/isRequired.html">isRequired</a>
+    </li>
+    <li>
+      <a href="../articles/checks/fkDomain.html">fkDomain</a>
+    </li>
+    <li>
+      <a href="../articles/checks/fkClass.html">fkClass</a>
+    </li>
+    <li>
+      <a href="../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
     </li>
   </ul>
 </li>
@@ -109,7 +148,7 @@
                         <h4 data-toc-skip class="author">Clair
 Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2023-11-04</h4>
+            <h4 data-toc-skip class="date">2024-02-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/CheckTypeDescriptions.rmd" class="external-link"><code>vignettes/CheckTypeDescriptions.rmd</code></a></small>
       <div class="hidden name"><code>CheckTypeDescriptions.rmd</code></div>
@@ -118,10 +157,6 @@ Blacketer</h4>
 
     
     
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Data Quality Check Type Definitions}
--->
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -426,6 +461,10 @@ table.</p>
 <div class="section level3">
 <h3 id="plausibletemporalafter">plausibleTemporalAfter<a class="anchor" aria-label="anchor" href="#plausibletemporalafter"></a>
 </h3>
+<p><em>Warning: This check is reimplemented by the
+<code>plausibleStartBeforeEnd</code> and
+<code>plausibleAfterBirth</code> checks, and will be deprecated in the
+future.</em></p>
 <p><strong>Name</strong>: plausibleTemporalAfter
 <br><strong>Level</strong>: Field check <br><strong>Context</strong>:
 Verification <br><strong>Category</strong>: Plausibility
@@ -443,6 +482,9 @@ occur after the person’s birth.</p>
 <div class="section level3">
 <h3 id="plausibleduringlife">plausibleDuringLife<a class="anchor" aria-label="anchor" href="#plausibleduringlife"></a>
 </h3>
+<p><em>Warning: This check is reimplemented by the
+<code>plausibleBeforeDeath</code> check, and will be deprecated in the
+future.</em></p>
 <p><strong>Name</strong>: plausibleDuringLife
 <br><strong>Level</strong>: Field check <br><strong>Context</strong>:
 Verification <br><strong>Category</strong>: Plausibility
@@ -455,6 +497,57 @@ records that occur after a person’s death. This is called
 <em>plausibleDuringLife</em> because turning it on indicates that the
 specified dates should occur during a person’s lifetime, like drug
 exposures, etc.</p>
+</div>
+<div class="section level3">
+<h3 id="plausiblestartbeforeend">plausibleStartBeforeEnd<a class="anchor" aria-label="anchor" href="#plausiblestartbeforeend"></a>
+</h3>
+<p><strong>Name</strong>: plausibleStartBeforeEnd
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Temporal</p>
+<p><strong>Description</strong>: The number and percent of records with
+a value in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong> that occurs after the date in the
+<strong>plausibleStartBeforeEndFieldName</strong>.</p>
+<p><strong>Definition</strong>: This check is attempting to apply
+temporal rules within a table, specifically checking that all start
+dates are before the end dates. For example, in the VISIT_OCCURRENCE
+table it checks that the VISIT_OCCURRENCE_START_DATE is before
+VISIT_OCCURRENCE_END_DATE.</p>
+</div>
+<div class="section level3">
+<h3 id="plausibleafterbirth">plausibleAfterBirth<a class="anchor" aria-label="anchor" href="#plausibleafterbirth"></a>
+</h3>
+<p><strong>Name</strong>: plausibleAfterBirth
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Temporal</p>
+<p><strong>Description</strong>: The number and percent of records with
+a date value in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong> table that occurs prior to birth.</p>
+<p><strong>Definition</strong>: This check will calculate the number of
+records that occur before a person’s birth. If the
+<code>person.birth_datetime</code> is given this is used. If not, it is
+calculated from the <code>person.year_of_birth</code>,
+<code>person.month_of_birth</code>, and
+<code>person.day_of_birth</code>, taking the first month of the year,
+day of the month if the respective value is not given. For example, if
+only year of birth is given, the birth date is assumed to be January 1st
+of that year.</p>
+</div>
+<div class="section level3">
+<h3 id="plausiblebeforedeath">plausibleBeforeDeath<a class="anchor" aria-label="anchor" href="#plausiblebeforedeath"></a>
+</h3>
+<p><strong>Name</strong>: plausibleBeforeDeath
+<br><strong>Level</strong>: Field check <br><strong>Context</strong>:
+Verification <br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Temporal</p>
+<p><strong>Description</strong>: The number and percent of records with
+a date value in the <strong>cdmFieldName</strong> field of the
+<strong>cdmTableName</strong> table that occurs after death.</p>
+<p><strong>Definition</strong>: This check will calculate the number of
+records that occur more than 60 days after a person’s death. The 60 day
+‘washout’ period is to allow for administrative records after death.</p>
 </div>
 <div class="section level3">
 <h3 id="plausiblevaluelow---for-concept-unit-combinations">plausibleValueLow - (for Concept + Unit combinations)<a class="anchor" aria-label="anchor" href="#plausiblevaluelow---for-concept-unit-combinations"></a>
@@ -509,6 +602,9 @@ value.</p>
 <div class="section level3">
 <h3 id="plausiblegender">plausibleGender<a class="anchor" aria-label="anchor" href="#plausiblegender"></a>
 </h3>
+<p><em>Warning: This check is reimplemented by the
+<code>plausibleGenderUseDescendants</code> check below, and will be
+deprecated in the future.</em></p>
 <p><strong>Name</strong>: plausibleGender <br><strong>Level</strong>:
 Concept check <br><strong>Context</strong>: Validation
 <br><strong>Category</strong>: Plausibility
@@ -523,6 +619,26 @@ concept_id. This check is concept specific and therefore the denominator
 will only be the records with the specified concept. For example it will
 count the number of records of prostate cancer that are associated with
 female persons.</p>
+</div>
+<div class="section level3">
+<h3 id="plausiblegenderusedescendants">plausibleGenderUseDescendants<a class="anchor" aria-label="anchor" href="#plausiblegenderusedescendants"></a>
+</h3>
+<p><strong>Name</strong>: plausibleGenderUseDescendants
+<br><strong>Level</strong>: Concept check <br><strong>Context</strong>:
+Validation <br><strong>Category</strong>: Plausibility
+<br><strong>Subcategory</strong>: Atemporal</p>
+<p><strong>Description</strong>: For descendants of CONCEPT_ID
+<strong>conceptId</strong> (<strong>conceptName</strong>), the number
+and percent of records associated with patients with an implausible
+gender (correct gender =
+<strong>plausibleGenderUseDescendants</strong>).</p>
+<p><strong>Definition</strong>: This check will count the number of
+records that have an incorrect gender associated with a gender-specific
+concept_id. In this new implementation, the base concept_id is one or
+more broad ancestor concepts such as “Procedure on female genital
+system”. Any record with a descendant of this concept_id will be checked
+for an associated person gender matching the gender-specific
+concept.</p>
 </div>
 <div class="section level3">
 <h3 id="plausibleunitconceptids">plausibleUnitConceptIds<a class="anchor" aria-label="anchor" href="#plausibleunitconceptids"></a>

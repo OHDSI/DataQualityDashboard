@@ -2,28 +2,18 @@
 title: "Getting Started"
 author: "Clair Blacketer"
 date: "`r Sys.Date()`"
-header-includes:
-    - \usepackage{fancyhdr}
-    - \pagestyle{fancy}
-    - \fancyhead{}
-    - \fancyhead[CO,CE]{Getting Started}
-    - \fancyfoot[CO,CE]{DataQualityDashboard Package Version `r    utils::packageVersion("DataQualityDashboard")`}
-    - \fancyfoot[LE,RO]{\thepage}
-    - \renewcommand{\headrulewidth}{0.4pt}
-    - \renewcommand{\footrulewidth}{0.4pt}
 output:
+  pdf_document:
+    number_sections: yes
+    toc: yes
   html_document:
     number_sections: yes
     toc: yes
+vignette: >
+  %\VignetteIndexEntry{Getting Started}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::knitr}
 ---
-
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Getting Started}
--->
-
-# Getting Started
-***
 
 R Installation
 ===============

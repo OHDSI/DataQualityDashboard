@@ -29,17 +29,19 @@ FROM
 	FROM
 	(
 		/*violatedRowsBegin*/
-		SELECT '@cdmTableName.@cdmFieldName' AS violating_field, 
-		cdmTable.*
+		SELECT 
+            '@cdmTableName.@cdmFieldName' AS violating_field, 
+		    cdmTable.*
     	FROM @schema.@cdmTableName cdmTable
-    		{@cohort & '@runForCohort' == 'Yes'}?{
-    			JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
-    				AND c.cohort_definition_id = @cohortDefinitionId
-    		}
-    		{@cdmDatatype == "datetime" | @cdmDatatype == "date"}?{
-      	WHERE cast(cdmTable.@cdmFieldName as date) > cast(@plausibleValueHigh as date)
+        {@cohort & '@runForCohort' == 'Yes'}?{
+            JOIN @cohortDatabaseSchema.@cohortTableName c 
+                ON cdmTable.person_id = c.subject_id
+                AND c.cohort_definition_id = @cohortDefinitionId
+        }
+    	{@cdmDatatype == "datetime" | @cdmDatatype == "date"}?{
+      	    WHERE cast(cdmTable.@cdmFieldName as date) > cast(@plausibleValueHigh as date)
     	}:{
-      		WHERE cdmTable.@cdmFieldName > @plausibleValueHigh
+      	    WHERE cdmTable.@cdmFieldName > @plausibleValueHigh
 		}
 		/*violatedRowsEnd*/
 	) violated_rows
@@ -48,10 +50,11 @@ FROM
 	SELECT 
 		COUNT_BIG(*) AS num_rows
 	FROM @schema.@cdmTableName cdmTable
-		{@cohort & '@runForCohort' == 'Yes'}?{
-    		JOIN @cohortDatabaseSchema.@cohortTableName c ON cdmTable.person_id = c.subject_id
-    			AND c.cohort_definition_id = @cohortDefinitionId
-    	}
+    {@cohort & '@runForCohort' == 'Yes'}?{
+        JOIN @cohortDatabaseSchema.@cohortTableName c 
+            ON cdmTable.person_id = c.subject_id
+            AND c.cohort_definition_id = @cohortDefinitionId
+    }
   	WHERE @cdmFieldName IS NOT NULL
 ) denominator
 ;
