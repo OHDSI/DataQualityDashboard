@@ -28,8 +28,8 @@ The number and percent of records with a value of 0 in the source concept field 
 - *Related CDM Convention(s)*: [Source concept mapping](https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Fields) 
 - *CDM Fields/Tables*: All source concept ID (`X_source_concept_id`) columns in all event tables. 
 - *Default Threshold Value*: 
-  - 10 for primary source concept ID columns in condition, drug, measurement, procedure, device, and observation tables
-  - 100 for all other source concept ID columns
+  - 10% for source concept ID columns in condition, drug, measurement, procedure, device, and observation tables
+  - 100% for all other source concept ID columns
 
 
 ## User Guidance

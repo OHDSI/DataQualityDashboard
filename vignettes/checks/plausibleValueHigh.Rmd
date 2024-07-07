@@ -34,7 +34,7 @@ The number and percent of records with a value in the @cdmFieldName field of the
   - `DRUG_EXPOSURE.refills` (compared to 24)
   - `DRUG_EXPOSURE.days_supply` (compared to 365)
   - `DRUG_EXPOSURE.quantity` (compared to 1095)
-- *Default Threshold Value*: 1
+- *Default Threshold Value*: 1%
 
 
 ## User Guidance
