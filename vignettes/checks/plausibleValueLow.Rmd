@@ -39,7 +39,7 @@ The number and percent of records with a value in the @cdmFieldName field of the
   - `DEVICE_EXPOSURE.quantity`, `SPECIMEN.quantity`, `PROCEDURE_OCCURRENCE.quantity` (compared to 1)
   - `DRUG_ERA.dose_value`, `DRUG_ERA.gap_days` (compared to 0)
   - `DRUG_ERA.drug_exposure_count` (compared to 1)
-- *Default Threshold Value*: 1
+- *Default Threshold Value*: 1%
 
 
 ## User Guidance

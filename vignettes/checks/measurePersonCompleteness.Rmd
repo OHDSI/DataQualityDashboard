@@ -27,7 +27,9 @@ The number and percent of persons in the CDM that do not have at least one recor
 - *Denominator*: The total number of persons in the `PERSON` table. 
 - *Related CDM Convention(s)*: Each Person needs to have at least one `OBSERVATION_PERIOD` record. Otherwise, CDM conventions do not dictate any rules for person completeness.
 - *CDM Fields/Tables*: By default, this check runs on all tables with a foreign key to the `PERSON` table.
-- *Default Threshold Value*: Set to 95 or 100 for most tables but 0 for `OBSERVATION_PERIOD`
+- *Default Threshold Value*: 
+  - 0% for `OBSERVATION_PERIOD`
+  - 95% or 100% for other tables
 
 
 ## User Guidance

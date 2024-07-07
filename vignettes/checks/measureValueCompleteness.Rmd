@@ -27,7 +27,9 @@ The number and percent of records with a NULL value in the @cdmFieldName of the 
 - *Denominator*: The total number of rows in the table. 
 - *Related CDM Convention(s)*: None. This check should be used to check local expectations about completeness of a field given characteristics of the source data. 
 - *CDM Fields/Tables*: All fields in all event tables. 
-- *Default Threshold Value*: 0 for required fields; 100 for all others
+- *Default Threshold Value*:
+  - 0% for required fields
+  - 100% for all others
 
 
 ## User Guidance
@@ -57,7 +59,7 @@ ETL developers have 2 main options for the use of this check on non-required fie
 Unexpectedly missing values should be investigated for a potential root cause in the ETL.  For expected missingness, rows that violate this check in non-required fields are acceptable but should be clearly communicated to data users so that they can know when and when not to expect data to be present in each field.  To avoid confusion for users, however, thresholds should be modified to avoid check failures at expected levels. 
 
 ### Data Users
-This check informs you of the level of missing data in each column of the CDM.  If data is missing in a required column, see the isRequired documentation for more information. 
+This check informs you of the level of missing data in each column of the CDM.  If data is missing in a required column, see the `isRequired` documentation for more information. 
 
 The interpretation of a check failure on a non-required column will depend on the context.  In some cases, the threshold for this check will have been very deliberately set, and any failure should be cause for concern unless justified and explained by your ETL provider.  In other cases, even if the check fails it may not be worrisome if the check result is in line with your expectations given the source of the data.  When in doubt, utilize the inspection query above to ensure you can explain the missing values. 
 

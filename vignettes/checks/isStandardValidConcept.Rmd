@@ -27,7 +27,7 @@ The number and percent of records that do not have a standard, valid concept in 
 - *Denominator*: The total number of rows in the table. 
 - *Related CDM Convention(s)*: All `X_concept_id` columns should contain a standard, valid concept, or 0: https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Mapping. 
 - *CDM Fields/Tables*: All tables with an `X_concept_id` column, and all `X_concept_id` columns in those tables. 
-- *Default Threshold Value*: 0
+- *Default Threshold Value*: 0%
 
 
 ## User Guidance

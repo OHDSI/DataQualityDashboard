@@ -27,7 +27,9 @@ The number and percent of records that occur one week before the corresponding `
 - *Denominator*: The total number of rows in the table with a corresponding visit (linked through `visit_occurrence_id`)
 - *Related CDM Convention(s)*: There is no explicit convention tied to this check. However, the CDM documentation describes the `visit_occurrence_id` foreign key in the event tables as “The visit during which the <event> occurred.” The underlying assumption is that if a record is tied to a visit, then the date of the record should fall in some reasonable time period around the visit dates. This gives a week of leeway on either side for physician notes or other activities related to a visit to be recorded.  
 - *CDM Fields/Tables*: This check runs on all event tables: `CONDITION_OCCURRENCE`, `PROCEDURE_OCCURRENCE`, `DRUG_EXPOSURE`, `DEVICE_EXPOSURE`, `MEASUREMENT`, `NOTE`, `OBSERVATION`, and `VISIT_DETAIL`.  It will check either the `X_date` or `X_start_date` fields for alignment with corresponding `VISIT_OCCURRENCE` dates by linking on the `visit_occurrence_id`. (**Note:** For VISIT_DETAIL it will check both the visit_detail_start_date and visit_detail_end_date. The default threshold for these two checks is 1%.) 
-- *Default Threshold Value*: 1% for `VISIT_DETAIL`, 5% for all other tables
+- *Default Threshold Value*:
+  - 1% for `VISIT_DETAIL`
+  - 5% for all other tables
 
 
 ## User Guidance
