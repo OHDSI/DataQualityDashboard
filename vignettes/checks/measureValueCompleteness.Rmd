@@ -49,11 +49,11 @@ WHERE cdmTable.@cdmFieldName IS NULL
 ```
 
 ### ETL Developers
-Failures of this check on fields required in the CDM specification are redundant with failures of `isRequired`.  See [isRequired documentation](isRequired.html) for more information. 
+Failures of this check on required fields are redundant with failures of `isRequired`.  See [isRequired documentation](isRequired.html) for more information. 
 
 ETL developers have 2 main options for the use of this check on non-required fields: 
 
-- The check threshold may be set to 100% for non-required fields such that the check will never fail.  The check result can be used simply to understand completeness for these fields 
+- The check threshold may be left on 100% for non-required fields such that the check will never fail.  The check result can be used simply to understand completeness for these fields 
 - The check threshold may be set to an appropriate value corresponding to completeness expectations for each field given what’s available in the source data.  The check may be disabled for fields known not to exist in the source data.  Other fields may be set to whichever threshold is deemed worthy of investigation 
 
 Unexpectedly missing values should be investigated for a potential root cause in the ETL.  For expected missingness, rows that violate this check in non-required fields are acceptable but should be clearly communicated to data users so that they can know when and when not to expect data to be present in each field.  To avoid confusion for users, however, thresholds should be modified to avoid check failures at expected levels. 

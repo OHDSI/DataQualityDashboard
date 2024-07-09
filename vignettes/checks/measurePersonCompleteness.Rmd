@@ -14,7 +14,7 @@ output:
 **Context**: Validation\
 **Category**: Completeness\
 **Subcategory**: \
-**Severity**: CDM convention &#x26A0; Characterization &#10004; \
+**Severity**: CDM convention &#x26A0; (for observation period), Characterization &#10004; \ (for all other tables)
 
 
 ## Description
@@ -64,7 +64,6 @@ Action on persons missing records in other clinical event tables will depend on 
 
 If more persons than expected are missing data in a given table, run the violated rows SQL snippet to retrieve these persons’ person_ids, and inspect these persons’ other clinical event data in the CDM for trends.  You may also use `person_source_value` to trace back to these persons’ source data to identify source data records potentially missed by the ETL. 
 
-Note that in some cases, the failure threshold for this check may need to be adjusted according to completeness expectations for a given data source. 
 
 
 ### Data Users
