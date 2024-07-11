@@ -5,7 +5,7 @@ test_that("Not Applicable status Table Empty", {
   on.exit(unlink(outputFolder, recursive = TRUE))
 
   # Make sure the device exposure table is empty
-  connection <- DatabaseConnector::connect(connectionDetailsEunomia)
+  connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
   DatabaseConnector::executeSql(connection, "DELETE FROM DEVICE_EXPOSURE;")
   DatabaseConnector::disconnect(connection)
 
