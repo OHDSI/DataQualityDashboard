@@ -37,7 +37,7 @@ This check failure must be resolved. Failures in various fields could impact ana
 
 Many CDM columns are foreign keys to the `concept_id` column in the `CONCEPT` table.  See below for suggested investigation steps for concept ID-related foreign key check failures:
 
-- An `x_concept_id` missing from the CONCEPT table might be the result of an error in `SOURCE_TO_CONCEPT_MAP`; you may check it this way:  
+- An `_concept_id` missing from the CONCEPT table might be the result of an error in `SOURCE_TO_CONCEPT_MAP`; you may check it this way:  
 
 ### Violated rows query
 ```sql
@@ -50,8 +50,8 @@ WHERE concept.concept_id IS NULL;
 - Other types of concept-related errors can be investigated by inspecting the source values for impacted rows as follows:
 
 ```sql
--- @cdmTableName.@cdmFieldName is the x_concept_id or x_source_concept_id field in a CDM table
--- Inspect the contents of the x_source_value field to investigate the source of the error
+-- @cdmTableName.@cdmFieldName is the _concept_id or _source_concept_id field in a CDM table
+-- Inspect the contents of the _source_value field to investigate the source of the error
 
 SELECT 
   '@cdmTableName.@cdmFieldName' AS violating_field,  

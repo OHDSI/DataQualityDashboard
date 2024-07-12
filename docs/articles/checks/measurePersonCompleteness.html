@@ -181,7 +181,7 @@
                         <h4 data-toc-skip class="author">Katy
 Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-06-29</h4>
+            <h4 data-toc-skip class="date">2024-07-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/measurePersonCompleteness.Rmd" class="external-link"><code>vignettes/checks/measurePersonCompleteness.Rmd</code></a></small>
       <div class="hidden name"><code>measurePersonCompleteness.Rmd</code></div>
@@ -193,7 +193,8 @@ Sadowski</h4>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: TABLE<br><strong>Context</strong>: Validation<br><strong>Category</strong>: Completeness<br><strong>Subcategory</strong>:<br><strong>Severity</strong>: CDM convention ⚠ Characterization ✔<br></p>
+<p><strong>Level</strong>: TABLE<br><strong>Context</strong>: Validation<br><strong>Category</strong>: Completeness<br><strong>Subcategory</strong>:<br><strong>Severity</strong>: CDM convention ⚠ (for observation period),
+Characterization ✔  (for all other tables)</p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
@@ -220,8 +221,12 @@ conventions do not dictate any rules for person completeness.</li>
 <em>CDM Fields/Tables</em>: By default, this check runs on all
 tables with a foreign key to the <code>PERSON</code> table.</li>
 <li>
-<em>Default Threshold Value</em>: Set to 95 or 100 for most tables
-but 0 for <code>OBSERVATION_PERIOD</code>
+<em>Default Threshold Value</em>:
+<ul>
+<li>0% for <code>OBSERVATION_PERIOD</code>
+</li>
+<li>95% or 100% for other tables</li>
+</ul>
 </li>
 </ul>
 </div>
@@ -270,8 +275,12 @@ CDM.</p>
 <p>Action on persons missing records in other clinical event tables will
 depend on the characteristics of the source database. In certain cases,
 missingness is expected – some persons may just not have a given type of
-data available in the source. In others, various ETL issues may result
-in persons missing records in a given event table:</p>
+data available in the source. For instance, in most data sources, one
+would expect most patients to have at least one visit, diagnosis, and
+drug, while one would <em>not</em> expect every single patient to have
+had a medical device.</p>
+<p>Various ETL issues may result in persons missing records in a given
+event table:</p>
 <ul>
 <li>Mis-mapping of domains, resulting in the placement of records in the
 incorrect table<br>
@@ -286,9 +295,6 @@ inspect these persons’ other clinical event data in the CDM for trends.
 You may also use <code>person_source_value</code> to trace back to these
 persons’ source data to identify source data records potentially missed
 by the ETL.</p>
-<p>Note that in some cases, the failure threshold for this check may
-need to be adjusted according to completeness expectations for a given
-data source.</p>
 </div>
 </div>
 <div class="section level3">

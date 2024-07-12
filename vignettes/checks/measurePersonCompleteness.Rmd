@@ -56,7 +56,9 @@ WHERE cdmTable2.person_id IS NULL
 All persons in the CDM must have an observation period; OHDSI analytics tools only operate on persons with observable time, as represented by one or more observation periods.  Persons missing observation periods may represent a bug in the ETL code which generates observation periods. Alternatively, some persons may have no observable time in the source data. These persons should be removed from the CDM. 
 
 #### All other tables
-Action on persons missing records in other clinical event tables will depend on the characteristics of the source database.  In certain cases, missingness is expected – some persons may just not have a given type of data available in the source.  In others, various ETL issues may result in persons missing records in a given event table: 
+Action on persons missing records in other clinical event tables will depend on the characteristics of the source database.  In certain cases, missingness is expected – some persons may just not have a given type of data available in the source.  For instance, in most data sources, one would expect most patients to have at least one visit, diagnosis, and drug, while one would *not* expect every single patient to have had a medical device.
+
+Various ETL issues may result in persons missing records in a given event table: 
 
 - Mis-mapping of domains, resulting in the placement of records in the incorrect table  
 - Incorrect parsing of source data, resulting in loss of valid records 

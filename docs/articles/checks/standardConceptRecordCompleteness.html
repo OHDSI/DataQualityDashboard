@@ -181,7 +181,7 @@
                         <h4 data-toc-skip class="author">Katy
 Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-06-29</h4>
+            <h4 data-toc-skip class="date">2024-07-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/standardConceptRecordCompleteness.Rmd" class="external-link"><code>vignettes/checks/standardConceptRecordCompleteness.Rmd</code></a></small>
       <div class="hidden name"><code>standardConceptRecordCompleteness.Rmd</code></div>
@@ -207,10 +207,10 @@ concept field <span class="citation">@cdmFieldName</span> in the <span class="ci
 <ul>
 <li>
 <em>Numerator</em>: The number of rows with a value of 0 in the
-<code>X_concept_id</code> standard concept field. In the case of
+<code>_concept_id</code> standard concept field. In the case of
 <code>MEASUREMENT.unit_concept_id</code> and
 <code>OBSERVATION.unit_concept_id</code>, the number of rows with a
-value of 0 in the <code>X_concept_id</code> standard concept field AND a
+value of 0 in the <code>_concept_id</code> standard concept field AND a
 non-NULL <code>value_as_number</code>.</li>
 <li>
 <em>Denominator</em>: The total number of rows in the table. In the
@@ -223,15 +223,16 @@ concept mapping</a><br>
 </li>
 <li>
 <em>CDM Fields/Tables</em>: All standard concept ID
-(<code>X_concept_id</code>) columns in all event tables.</li>
+(<code>_concept_id</code>) columns in all event tables.</li>
 <li>
 <em>Default Threshold Value</em>:
 <ul>
-<li>0 for type concept fields and standard concept fields in era
+<li>0% for type concept fields and standard concept fields in era
 tables</li>
-<li>5 for most standard concept fields in clinical event tables</li>
-<li>100 for fields more susceptible to specific ETL implementation
-context</li>
+<li>5% for most standard concept fields in clinical event tables</li>
+<li>100% for fields more susceptible to specific ETL implementation
+context (e.g. <code>place_of_service_concept_id</code>,
+<code>modifier_concept_id</code>)</li>
 </ul>
 </li>
 </ul>
@@ -258,11 +259,11 @@ implement.</p>
 <p>To investigate the failure, run the following query:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span>  </span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  concept_name, </span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  cdmTable.X_source_concept_id, <span class="co">-- source concept ID field for the table </span></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  cdmTable.X_source_value, <span class="co">-- source value field for the table </span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  cdmTable._source_concept_id, <span class="co">-- source concept ID field for the table </span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  cdmTable._source_value, <span class="co">-- source value field for the table </span></span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) </span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable </span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> @vocabDatabaseSchema.concept <span class="kw">ON</span> concept.concept_id <span class="op">=</span> cdmTable.X_source_concept_id </span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> @vocabDatabaseSchema.concept <span class="kw">ON</span> concept.concept_id <span class="op">=</span> cdmTable._source_concept_id </span>
 <span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="op">=</span> <span class="dv">0</span>  </span>
 <span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">-- AND cdmTable.value_as_number IS NOT NULL -- uncomment for unit_concept_id checks </span></span>
 <span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span> </span>
@@ -327,11 +328,12 @@ recommended above</li>
 </li>
 <li>Finally, if the investigation query returns no source value, you
 must trace the relevant record(s) back to their source and confirm if
-the missing value is expected. If not, identify and fix the related
-issue in your ETL. If the record legitimately has no value/code in the
-source data, then the standard concept ID may be left as 0. However, in
-some cases these “code-less” records represent junk data which should be
-filtered out in the ETL. The proper approach will be context-dependent
+the missing source value is expected. If not, identify and fix the
+related issue in your ETL. If the record legitimately has no value/code
+in the source data, then the standard concept ID may be left as 0.
+However, in some cases these “code-less” records represent junk data
+which should be filtered out in the ETL. The proper approach will be
+context-dependent
 <ul>
 <li>Note in the special case of unitless measurements/observations, the
 unit_concept_id field should NOT be coded as 0 and rather should be left
