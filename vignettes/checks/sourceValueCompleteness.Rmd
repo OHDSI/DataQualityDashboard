@@ -23,10 +23,10 @@ The number and percent of distinct source values in the @cdmFieldName field of t
 
 ## Definition
 
-- *Numerator*: Distinct `X_source_value` entries where the corresponding standard `X_concept_id` field is 0. 
-- *Denominator*: Total distinct `X_source_value` entries, including NULL, in the respective event table. 
+- *Numerator*: Distinct `_source_value` entries where the corresponding standard `_concept_id` field is 0. 
+- *Denominator*: Total distinct `_source_value` entries, including NULL, in the respective event table. 
 - *Related CDM Convention(s)*: The OMOP Common Data Model specifies that codes that are present in a native database should be mapped to standard concepts using either the intrinsic mappings defined in the standard vocabularies or extrinsic mappings defined by the data owner or ETL development team.  Note also that variations of this check logic are also used in the [EHDEN CDM Inspection Report](https://github.com/EHDEN/CdmInspection) package, as well as the [AresIndexer](https://github.com/OHDSI/AresIndexer) package for generating indices of unmapped codes.  
-- *CDM Fields/Tables*: Runs on all event tables that have `X_source_value` fields.
+- *CDM Fields/Tables*: Runs on all event tables that have `_source_value` fields.
 - *Default Threshold Value*: 
   - 10% for `_source_value` fields in condition, measurement, procedure, drug, visit.
   - 100% for all other fields

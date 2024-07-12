@@ -181,7 +181,7 @@
                         <h4 data-toc-skip class="author">Dmytry
 Dymshyts, Katy Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-06-29</h4>
+            <h4 data-toc-skip class="date">2024-07-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/isForeignKey.Rmd" class="external-link"><code>vignettes/checks/isForeignKey.Rmd</code></a></small>
       <div class="hidden name"><code>isForeignKey.Rmd</code></div>
@@ -246,7 +246,7 @@ column in the <code>CONCEPT</code> table. See below for suggested
 investigation steps for concept ID-related foreign key check
 failures:</p>
 <ul>
-<li>An <code>x_concept_id</code> missing from the CONCEPT table might be
+<li>An <code>_concept_id</code> missing from the CONCEPT table might be
 the result of an error in <code>SOURCE_TO_CONCEPT_MAP</code>; you may
 check it this way:</li>
 </ul>
@@ -261,8 +261,8 @@ check it this way:</li>
 <li>Other types of concept-related errors can be investigated by
 inspecting the source values for impacted rows as follows:</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co">-- @cdmTableName.@cdmFieldName is the x_concept_id or x_source_concept_id field in a CDM table</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">-- Inspect the contents of the x_source_value field to investigate the source of the error</span></span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co">-- @cdmTableName.@cdmFieldName is the _concept_id or _source_concept_id field in a CDM table</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">-- Inspect the contents of the _source_value field to investigate the source of the error</span></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="kw">SELECT</span> </span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="st">'@cdmTableName.@cdmFieldName'</span> <span class="kw">AS</span> violating_field,  </span>
