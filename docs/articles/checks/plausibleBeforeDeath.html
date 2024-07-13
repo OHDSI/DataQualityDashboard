@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>plausibleBeforeDeath • DataQualityDashboard</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.1</span>
       </span>
     </div>
 
@@ -113,7 +113,43 @@
       <a href="../../articles/checks/fkClass.html">fkClass</a>
     </li>
     <li>
+      <a href="../../articles/checks/measurePersonCompleteness.html">measurePersonCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/measureValueCompleteness.html">measureValueCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/isStandardValidConcept.html">isStandardValidConcept</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/standardConceptRecordCompleteness.html">standardConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceConceptRecordCompleteness.html">sourceConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceValueCompleteness.html">sourceValueCompleteness</a>
+    </li>
+    <li>
       <a href="../../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleBeforeDeath.html">plausibleBeforeDeath</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleStartBeforeEnd.html">plausibleStartBeforeEnd</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueHigh.html">plausibleValueHigh</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/measureConditionEraCompleteness.html">measureConditionEraCompleteness</a>
     </li>
   </ul>
 </li>
@@ -145,9 +181,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>plausibleBeforeDeath</h1>
-                        <h4 data-toc-skip class="author"></h4>
+                        <h4 data-toc-skip class="author">Maxim
+Moinat</h4>
             
-            <h4 data-toc-skip class="date">2024-02-21</h4>
+            <h4 data-toc-skip class="date">2024-07-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/plausibleBeforeDeath.Rmd" class="external-link"><code>vignettes/checks/plausibleBeforeDeath.Rmd</code></a></small>
       <div class="hidden name"><code>plausibleBeforeDeath.Rmd</code></div>
@@ -159,44 +196,79 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Plausibility<br><strong>Subcategory</strong>: Temporal<br><strong>Severity</strong>:</p>
+<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Plausibility<br><strong>Subcategory</strong>: Temporal<br><strong>Severity</strong>: Characterization ✔</p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
 </h2>
-<p>The number and percent of records with a date value in the <span class="citation">@cdmFieldName</span> field of the <span class="citation">@cdmTableName</span> table that occurs after death.</p>
+<p>The number and percent of records with a date value in the
+<strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong>
+table that occurs more than 60 days after death. Note that this check
+replaces the previous <code>plausibleDuringLife</code> check.</p>
 </div>
 <div class="section level2">
 <h2 id="definition">Definition<a class="anchor" aria-label="anchor" href="#definition"></a>
 </h2>
+<p>A record violates this check if the date is more than 60 days after
+the death date of the person, allowing administrative records directly
+after death.</p>
 <ul>
 <li>
-<em>Numerator</em>:</li>
+<em>Numerator</em>: The number of records where date in
+<strong>cdmFieldName</strong> is more than 60 days after the persons’
+death date.</li>
 <li>
-<em>Denominator</em>:</li>
+<em>Denominator</em>: Total number of records of persons with a
+death date, in the <strong>cdmTableName</strong>.</li>
 <li>
-<em>Related CDM Convention(s)</em>:</li>
+<em>Related CDM Convention(s)</em>: -Not linked to a
+convention-</li>
 <li>
-<em>CDM Fields/Tables</em>:</li>
+<em>CDM Fields/Tables</em>: This check runs on all date and datetime
+fields.</li>
 <li>
-<em>Default Threshold Value</em>:</li>
+<em>Default Threshold Value</em>: 1%</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="user-guidance">User Guidance<a class="anchor" aria-label="anchor" href="#user-guidance"></a>
 </h2>
+<p>Events are expected to occur between birth and death. The check
+<code>plausibleAfterbirth</code> checks for the former, this check for
+the latter. The 60-day period is a conservative estimate of the time it
+takes for administrative records to be updated after a person’s death.
+By default, both start and end dates are checked.</p>
 <div class="section level3">
 <h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    <span class="st">'@cdmTableName.@cdmFieldName'</span> <span class="kw">AS</span> violating_field, </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    cdmTable.<span class="op">*</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="kw">JOIN</span> @cdmDatabaseSchema.death de </span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    <span class="kw">ON</span> cdmTable.person_id <span class="op">=</span> de.person_id</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> </span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="kw">AND</span> <span class="fu">CAST</span>(cdmTable.@cdmFieldName <span class="kw">AS</span> <span class="dt">DATE</span>) <span class="op">&gt;</span> DATEADD(<span class="dt">day</span>, <span class="dv">60</span>, de.death_date)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>
 </h3>
+<p>Start dates after death are likely to be source data issues, and
+failing this check should trigger investigation of the source data
+quality. End dates after death can occur due to derivation logic. For
+example, a drug exposure can be prescribed as being continued long after
+death. In such cases, it is recommended to update the logic to end the
+prescription at death.</p>
 </div>
 <div class="section level3">
 <h3 id="data-users">Data Users<a class="anchor" aria-label="anchor" href="#data-users"></a>
 </h3>
+<p>For most studies, a low number of violating records will have limited
+impact on data use as it could be caused by lagging administrative
+records. However, it might signify a larger data quality issue. Note
+that the percentage violating records reported is among records from
+death persons and such might be slightly inflated if comparing to the
+overall population.</p>
 </div>
 </div>
   </div>
@@ -218,7 +290,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>

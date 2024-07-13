@@ -27,6 +27,8 @@
 \arguments{
 \item{checkDescription}{The description of the data quality check}
 
+\item{tableChecks}{A dataframe containing the table checks}
+
 \item{fieldChecks}{A dataframe containing the field checks}
 
 \item{conceptChecks}{A dataframe containing the concept checks}
@@ -56,8 +58,6 @@
 \item{sqlOnlyIncrementalInsert}{(OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)}
 
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
-
-\item{tablechecks}{A dataframe containing the table checks}
 }
 \description{
 Internal function to run and process each data quality check.

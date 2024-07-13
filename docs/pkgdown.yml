@@ -1,18 +1,16 @@
-pandoc: 3.1.1
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   AddNewCheck: AddNewCheck.html
+  cdmDatatype: checks/cdmDatatype.html
+  cdmField: checks/cdmField.html
+  cdmTable: checks/cdmTable.html
+  checkIndex: checkIndex.html
   CheckStatusDefinitions: CheckStatusDefinitions.html
   CheckTypeDescriptions: CheckTypeDescriptions.html
   DataQualityDashboard: DataQualityDashboard.html
   DqdForCohorts: DqdForCohorts.html
-  SqlOnly: SqlOnly.html
-  Thresholds: Thresholds.html
-  checkIndex: checkIndex.html
-  cdmDatatype: checks/cdmDatatype.html
-  cdmField: checks/cdmField.html
-  cdmTable: checks/cdmTable.html
   fkClass: checks/fkClass.html
   fkDomain: checks/fkDomain.html
   isForeignKey: checks/isForeignKey.html
@@ -24,8 +22,7 @@ articles:
   measureValueCompleteness: checks/measureValueCompleteness.html
   plausibleAfterBirth: checks/plausibleAfterBirth.html
   plausibleBeforeDeath: checks/plausibleBeforeDeath.html
-  plausibleDuringLife: checks/plausibleDuringLife.html
-  plausibleGender: checks/plausibleGender.html
+  plausibleGenderUseDescendants: checks/plausibleGenderUseDescendants.html
   plausibleStartBeforeEnd: checks/plausibleStartBeforeEnd.html
   plausibleTemporalAfter: checks/plausibleTemporalAfter.html
   plausibleUnitConceptIds: checks/plausibleUnitConceptIds.html
@@ -33,9 +30,11 @@ articles:
   plausibleValueLow: checks/plausibleValueLow.html
   sourceConceptRecordCompleteness: checks/sourceConceptRecordCompleteness.html
   sourceValueCompleteness: checks/sourceValueCompleteness.html
+  SqlOnly: SqlOnly.html
   standardConceptRecordCompleteness: checks/standardConceptRecordCompleteness.html
+  Thresholds: Thresholds.html
   withinVisitDates: checks/withinVisitDates.html
-last_built: 2024-02-22T03:55Z
+last_built: 2024-07-13T02:25Z
 urls:
   reference: https://ohdsi.github.io/DataQualityDashboard/reference
   article: https://ohdsi.github.io/DataQualityDashboard/articles

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>isStandardValidConcept • DataQualityDashboard</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.1</span>
       </span>
     </div>
 
@@ -113,7 +113,43 @@
       <a href="../../articles/checks/fkClass.html">fkClass</a>
     </li>
     <li>
+      <a href="../../articles/checks/measurePersonCompleteness.html">measurePersonCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/measureValueCompleteness.html">measureValueCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/isStandardValidConcept.html">isStandardValidConcept</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/standardConceptRecordCompleteness.html">standardConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceConceptRecordCompleteness.html">sourceConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceValueCompleteness.html">sourceValueCompleteness</a>
+    </li>
+    <li>
       <a href="../../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleBeforeDeath.html">plausibleBeforeDeath</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleStartBeforeEnd.html">plausibleStartBeforeEnd</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueHigh.html">plausibleValueHigh</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/measureConditionEraCompleteness.html">measureConditionEraCompleteness</a>
     </li>
   </ul>
 </li>
@@ -145,9 +181,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>isStandardValidConcept</h1>
-                        <h4 data-toc-skip class="author"></h4>
+                        <h4 data-toc-skip class="author">Stephanie Hong,
+Katy Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-02-21</h4>
+            <h4 data-toc-skip class="date">2024-07-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/isStandardValidConcept.Rmd" class="external-link"><code>vignettes/checks/isStandardValidConcept.Rmd</code></a></small>
       <div class="hidden name"><code>isStandardValidConcept.Rmd</code></div>
@@ -159,7 +196,7 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Conformance<br><strong>Subcategory</strong>: Value<br><strong>Severity</strong>:</p>
+<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Conformance<br><strong>Subcategory</strong>: Value<br><strong>Severity</strong>: CDM convention ⚠<br></p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
@@ -173,32 +210,100 @@ concept in the <span class="citation">@cdmFieldName</span> field in the
 </h2>
 <ul>
 <li>
-<em>Numerator</em>:</li>
+<em>Numerator</em>: The number of rows with an
+<code>_concept_id</code> that exists in <code>CONCEPT.concept_id</code>
+but does not equal zero, and has <code>CONCEPT.standard_concept</code>
+!= ‘S’ or non-NULL <code>CONCEPT.invalid_reason</code>.</li>
 <li>
-<em>Denominator</em>:</li>
+<em>Denominator</em>: The total number of rows in the table.</li>
 <li>
-<em>Related CDM Convention(s)</em>:</li>
+<em>Related CDM Convention(s)</em>: All <code>_concept_id</code>
+columns should contain a standard, valid concept, or 0: <a href="https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Mapping" class="external-link uri">https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Mapping</a>.</li>
 <li>
-<em>CDM Fields/Tables</em>:</li>
+<em>CDM Fields/Tables</em>: All standard concept ID
+(<code>_concept_id</code>) columns in all event tables.</li>
 <li>
-<em>Default Threshold Value</em>:</li>
+<em>Default Threshold Value</em>: 0%</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="user-guidance">User Guidance<a class="anchor" aria-label="anchor" href="#user-guidance"></a>
 </h2>
-<div class="section level3">
-<h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
-</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"></code></pre></div>
-</div>
+<p>Failures of this check represent a violation of the fundamental CDM
+convention requiring all concept IDs to belong to the OMOP standard
+vocabulary. This is an essential convention in enabling standard
+analytics. If source codes have not been properly mapped to OMOP
+standard concepts in a CDM, studies designed using the OMOP standard
+vocabulary will return inaccurate results for that database.</p>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>
 </h3>
+<p>A failure of this check indicates an issue with the concept mapping
+portion of your ETL, and must be resolved. Ensure that your ETL is only
+mapping source codes to standard, valid concepts (via the ‘Maps to’
+relationship). Note as well that if no standard concept mapping exists
+for a source code, you MUST populate its <code>_concept_id</code> column
+with 0. See the Book of OHDSI for additional guidance on the concept
+mapping process: <a href="https://ohdsi.github.io/TheBookOfOhdsi/ExtractTransformLoad.html#step-2-create-the-code-mappings" class="external-link uri">https://ohdsi.github.io/TheBookOfOhdsi/ExtractTransformLoad.html#step-2-create-the-code-mappings</a></p>
+<p>You may inspect the failing rows using the following SQL:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span>  </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="st">'@cdmTableName.@cdmFieldName'</span> <span class="kw">AS</span> violating_field,  </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  cdmTable.<span class="op">*</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  co.<span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="kw">FROM</span> @schema.@cdmTableName cdmTable </span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="kw">JOIN</span> @vocabDatabaseSchema.concept co <span class="kw">ON</span> cdmTable.@cdmFieldName <span class="op">=</span> co.concept_id </span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="kw">WHERE</span> co.concept_id <span class="op">!=</span> <span class="dv">0</span>  </span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="kw">AND</span> (co.standard_concept <span class="op">!=</span> <span class="st">'S'</span> <span class="kw">OR</span> co.invalid_reason <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span>) </span></code></pre></div>
+<p>You may build upon this query by joining the
+<code>_source_concept_id</code> column to the concept table and
+inspecting the source concepts from which the failing non-standard
+concepts were mapped. If the <code>_source_concept_id</code> correctly
+represents the source code in <code>_source_value</code>, the fix will
+be a matter of ensuring your ETL is correctly using the
+concept_relationship table to map the source concept ID to a standard
+concept via the ‘Maps to’ relationship. If you are not populating the
+<code>_source_concept_id</code> column and/or are using an intermediate
+concept mapping table, you may need to inspect the mappings in your
+mapper table to ensure they’ve been generated correctly using the ‘Maps
+to’ relationship for your CDM’s vocabulary version.</p>
+<p>Also note that when updating the OMOP vocabularies, previously
+standard concepts could have been become non-standard and need
+remapping. Often this remapping can be done programmatically, by
+following the ‘Maps to’ relationship to the new standard concept.</p>
 </div>
 <div class="section level3">
 <h3 id="data-users">Data Users<a class="anchor" aria-label="anchor" href="#data-users"></a>
 </h3>
+<p>This check failure means that the failing rows will not be picked up
+in a standard OHDSI analysis. Especially when participating in network
+research, where only standard concepts are used, this might result in
+invalid results. It is highly recommended to work with your ETL team or
+data provider, if possible, to resolve this issue.</p>
+<p>However, you may work around it at your own risk by determining
+whether or not the affected rows are relevant for your analysis. Here’s
+an example query you could run to inspect failing rows in the
+condition_occurrence table:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="kw">SELECT</span>  </span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  condition_concept_id <span class="kw">AS</span> violating_concept, </span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  c1.concept_name <span class="kw">AS</span> violating_concept_name, </span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  condition_source_concept_id <span class="kw">AS</span> source_concept, </span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  c2.concept_name <span class="kw">AS</span> source_concept_name, </span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  c2.vocabulary_id <span class="kw">AS</span> source_vocab, </span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  condition_source_value, </span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) </span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.condition_occurrence </span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>  <span class="kw">JOIN</span> @vocabDatabaseSchema.concept c1 <span class="kw">ON</span> condition_occurrence.condition_concept_id <span class="op">=</span> c1.concept_id </span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  <span class="kw">LEFT</span> <span class="kw">JOIN</span> @vocabDatabaseSchema.concept c2 <span class="kw">ON</span> condition_occurrence.condition_source_concept_id <span class="op">=</span> c2.concept_id </span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="kw">WHERE</span> c1.concept_id <span class="op">!=</span> <span class="dv">0</span>  </span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="kw">AND</span> (c1.standard_concept <span class="op">!=</span> <span class="st">'S'</span> <span class="kw">OR</span> c1.invalid_reason <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span>) </span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span> </span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> <span class="dv">7</span> <span class="kw">DESC</span> </span></code></pre></div>
+<p>If you can confirm by inspecting the source concept and/or source
+value that the affected rows are not relevant for your analysis, you can
+proceed with your work and ignore the issue. However, especially if a
+large number of rows are impacted it’s recommended to act upon these
+failures as there could potentially be deeper issues with the ETL
+concept mapping process that need to be fixed.</p>
 </div>
 </div>
   </div>
@@ -220,7 +325,7 @@ concept in the <span class="citation">@cdmFieldName</span> field in the
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>

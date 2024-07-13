@@ -46,7 +46,7 @@ FROM
     	{'@plausibleTemporalAfterTableName' == 'PERSON'}?{
 			COALESCE(
 				CAST(plausibleTable.@plausibleTemporalAfterFieldName AS DATE),
-				CAST(CONCAT(plausibleTable.year_of_birth,'-06-01') AS DATE)
+				CAST(CONCAT(plausibleTable.year_of_birth,'0601') AS DATE)
 			) 
 		}:{
 			CAST(cdmTable.@plausibleTemporalAfterFieldName AS DATE)

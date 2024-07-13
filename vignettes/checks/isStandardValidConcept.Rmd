@@ -1,6 +1,6 @@
 ---
 title: "isStandardValidConcept"
-author: ""
+author: "Stephanie Hong, Katy Sadowski"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -14,7 +14,7 @@ output:
 **Context**: Verification\
 **Category**: Conformance\
 **Subcategory**: Value\
-**Severity**: 
+**Severity**: CDM convention &#x26A0;\
 
 
 ## Description
@@ -23,24 +23,58 @@ The number and percent of records that do not have a standard, valid concept in 
 
 ## Definition
 
-- *Numerator*: 
-- *Denominator*:
-- *Related CDM Convention(s)*:
-- *CDM Fields/Tables*:
-- *Default Threshold Value*:
+- *Numerator*: The number of rows with an `_concept_id` that exists in `CONCEPT.concept_id` but does not equal zero, and has `CONCEPT.standard_concept` != ‘S’ or non-NULL `CONCEPT.invalid_reason`. 
+- *Denominator*: The total number of rows in the table. 
+- *Related CDM Convention(s)*: All `_concept_id` columns should contain a standard, valid concept, or 0: https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Mapping. 
+- *CDM Fields/Tables*: All standard concept ID (`_concept_id`) columns in all event tables.
+- *Default Threshold Value*: 0%
 
 
 ## User Guidance
-
-
-### Violated rows query
-```sql
-
-```
-
+Failures of this check represent a violation of the fundamental CDM convention requiring all concept IDs to belong to the OMOP standard vocabulary.  This is an essential convention in enabling standard analytics.  If source codes have not been properly mapped to OMOP standard concepts in a CDM, studies designed using the OMOP standard vocabulary will return inaccurate results for that database. 
 
 ### ETL Developers
 
+A failure of this check indicates an issue with the concept mapping portion of your ETL, and must be resolved.  Ensure that your ETL is only mapping source codes to standard, valid concepts (via the ‘Maps to’ relationship).  Note as well that if no standard concept mapping exists for a source code, you MUST populate its `_concept_id` column with 0.  See the Book of OHDSI for additional guidance on the concept mapping process: https://ohdsi.github.io/TheBookOfOhdsi/ExtractTransformLoad.html#step-2-create-the-code-mappings  
+
+You may inspect the failing rows using the following SQL: 
+
+```sql
+SELECT  
+  '@cdmTableName.@cdmFieldName' AS violating_field,  
+  cdmTable.*,
+  co.*
+FROM @schema.@cdmTableName cdmTable 
+  JOIN @vocabDatabaseSchema.concept co ON cdmTable.@cdmFieldName = co.concept_id 
+WHERE co.concept_id != 0  
+  AND (co.standard_concept != 'S' OR co.invalid_reason IS NOT NULL) 
+```
+
+You may build upon this query by joining the `_source_concept_id` column to the concept table and inspecting the source concepts from which the failing non-standard concepts were mapped.  If the `_source_concept_id` correctly represents the source code in `_source_value`, the fix will be a matter of ensuring your ETL is correctly using the concept_relationship table to map the source concept ID to a standard concept via the ‘Maps to’ relationship.  If you are not populating the `_source_concept_id` column and/or are using an intermediate concept mapping table, you may need to inspect the mappings in your mapper table to ensure they’ve been generated correctly using the ‘Maps to’ relationship for your CDM’s vocabulary version. 
+
+Also note that when updating the OMOP vocabularies, previously standard concepts could have been become non-standard and need remapping. Often this remapping can be done programmatically, by following the 'Maps to' relationship to the new standard concept. 
 
 ### Data Users
+This check failure means that the failing rows will not be picked up in a standard OHDSI analysis. Especially when participating in network research, where only standard concepts are used, this might result in invalid results. It is highly recommended to work with your ETL team or data provider, if possible, to resolve this issue. 
 
+However, you may work around it at your own risk by determining whether or not the affected rows are relevant for your analysis.  Here’s an example query you could run to inspect failing rows in the condition_occurrence table: 
+
+```sql
+SELECT  
+  condition_concept_id AS violating_concept, 
+  c1.concept_name AS violating_concept_name, 
+  condition_source_concept_id AS source_concept, 
+  c2.concept_name AS source_concept_name, 
+  c2.vocabulary_id AS source_vocab, 
+  condition_source_value, 
+  COUNT(*) 
+FROM @cdmDatabaseSchema.condition_occurrence 
+  JOIN @vocabDatabaseSchema.concept c1 ON condition_occurrence.condition_concept_id = c1.concept_id 
+  LEFT JOIN @vocabDatabaseSchema.concept c2 ON condition_occurrence.condition_source_concept_id = c2.concept_id 
+WHERE c1.concept_id != 0  
+  AND (c1.standard_concept != 'S' OR c1.invalid_reason IS NOT NULL) 
+GROUP BY 1,2,3,4,5,6 
+ORDER BY 7 DESC 
+```
+
+If you can confirm by inspecting the source concept and/or source value that the affected rows are not relevant for your analysis, you can proceed with your work and ignore the issue.  However, especially if a large number of rows are impacted it’s recommended to act upon these failures as there could potentially be deeper issues with the ETL concept mapping process that need to be fixed. 

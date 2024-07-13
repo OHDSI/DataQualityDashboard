@@ -73,10 +73,7 @@
     <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleBeforeDeath.html</loc>
   </url>
   <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleDuringLife.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleGender.html</loc>
+    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleGenderUseDescendants.html</loc>
   </url>
   <url>
     <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleStartBeforeEnd.html</loc>
@@ -124,10 +121,22 @@
     <loc>https://ohdsi.github.io/DataQualityDashboard/reference/convertJsonResultsFileCase.html</loc>
   </url>
   <url>
+    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-applyNotApplicable.html</loc>
+  </url>
+  <url>
+    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-calculateNotApplicableStatus.html</loc>
+  </url>
+  <url>
+    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-containsNAchecks.html</loc>
+  </url>
+  <url>
     <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-evaluateThresholds.html</loc>
   </url>
   <url>
     <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-getCheckId.html</loc>
+  </url>
+  <url>
+    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-hasNAchecks.html</loc>
   </url>
   <url>
     <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-processCheck.html</loc>

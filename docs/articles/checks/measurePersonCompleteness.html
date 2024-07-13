@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>measurePersonCompleteness • DataQualityDashboard</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.1</span>
       </span>
     </div>
 
@@ -113,7 +113,43 @@
       <a href="../../articles/checks/fkClass.html">fkClass</a>
     </li>
     <li>
+      <a href="../../articles/checks/measurePersonCompleteness.html">measurePersonCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/measureValueCompleteness.html">measureValueCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/isStandardValidConcept.html">isStandardValidConcept</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/standardConceptRecordCompleteness.html">standardConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceConceptRecordCompleteness.html">sourceConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceValueCompleteness.html">sourceValueCompleteness</a>
+    </li>
+    <li>
       <a href="../../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleBeforeDeath.html">plausibleBeforeDeath</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleStartBeforeEnd.html">plausibleStartBeforeEnd</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueHigh.html">plausibleValueHigh</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/measureConditionEraCompleteness.html">measureConditionEraCompleteness</a>
     </li>
   </ul>
 </li>
@@ -145,9 +181,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>measurePersonCompleteness</h1>
-                        <h4 data-toc-skip class="author"></h4>
+                        <h4 data-toc-skip class="author">Katy
+Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-02-21</h4>
+            <h4 data-toc-skip class="date">2024-07-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/measurePersonCompleteness.Rmd" class="external-link"><code>vignettes/checks/measurePersonCompleteness.Rmd</code></a></small>
       <div class="hidden name"><code>measurePersonCompleteness.Rmd</code></div>
@@ -159,46 +196,123 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: TABLE<br><strong>Context</strong>: Validation<br><strong>Category</strong>: Completeness<br><strong>Subcategory</strong>:<br><strong>Severity</strong>:</p>
+<p><strong>Level</strong>: TABLE<br><strong>Context</strong>: Validation<br><strong>Category</strong>: Completeness<br><strong>Subcategory</strong>:<br><strong>Severity</strong>: CDM convention ⚠ (for observation period),
+Characterization ✔  (for all other tables)</p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
 </h2>
 <p>The number and percent of persons in the CDM that do not have at
 least one record in the <span class="citation">@cdmTableName</span>
-table</p>
+table.</p>
 </div>
 <div class="section level2">
 <h2 id="definition">Definition<a class="anchor" aria-label="anchor" href="#definition"></a>
 </h2>
 <ul>
 <li>
-<em>Numerator</em>:</li>
+<em>Numerator</em>: The number of persons with 0 rows in a given CDM
+table.</li>
 <li>
-<em>Denominator</em>:</li>
+<em>Denominator</em>: The total number of persons in the
+<code>PERSON</code> table.</li>
 <li>
-<em>Related CDM Convention(s)</em>:</li>
+<em>Related CDM Convention(s)</em>: Each Person needs to have at
+least one <code>OBSERVATION_PERIOD</code> record. Otherwise, CDM
+conventions do not dictate any rules for person completeness.</li>
 <li>
-<em>CDM Fields/Tables</em>:</li>
+<em>CDM Fields/Tables</em>: By default, this check runs on all
+tables with a foreign key to the <code>PERSON</code> table.</li>
 <li>
-<em>Default Threshold Value</em>:</li>
+<em>Default Threshold Value</em>:
+<ul>
+<li>0% for <code>OBSERVATION_PERIOD</code>
+</li>
+<li>95% or 100% for other tables</li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="user-guidance">User Guidance<a class="anchor" aria-label="anchor" href="#user-guidance"></a>
 </h2>
+<p>For most tables, this check is a characterization of the completeness
+of various data types in the source data. However, in the case of
+<code>OBSERVATION_PERIOD</code>, this check should actually be
+considered a CDM convention check as it is used to enforce the
+requirement that all persons have at least one observation period. A
+failure of this check on the <code>OBSERVATION_PERIOD</code> table is a
+serious issue as persons without an <code>OBSERVATION_PERIOD</code>
+cannot be included in any standard OHDSI analysis.</p>
+<p>Run the following query to obtain a list of persons who had no data
+in a given table. From this list of person_ids you may join to other
+tables in the CDM to understand trends in these individuals’ data which
+may provide clues as to the root cause of the issue.</p>
 <div class="section level3">
 <h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    cdmTable.<span class="op">*</span> </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.person cdmTable</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    <span class="kw">LEFT</span> <span class="kw">JOIN</span> @schema.@cdmTableName cdmTable2 </span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>        <span class="kw">ON</span> cdmTable.person_id <span class="op">=</span> cdmTable2.person_id</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable2.person_id <span class="kw">IS</span> <span class="kw">NULL</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>
 </h3>
+<div class="section level4">
+<h4 id="observation-period">Observation period<a class="anchor" aria-label="anchor" href="#observation-period"></a>
+</h4>
+<p>All persons in the CDM must have an observation period; OHDSI
+analytics tools only operate on persons with observable time, as
+represented by one or more observation periods. Persons missing
+observation periods may represent a bug in the ETL code which generates
+observation periods. Alternatively, some persons may have no observable
+time in the source data. These persons should be removed from the
+CDM.</p>
+</div>
+<div class="section level4">
+<h4 id="all-other-tables">All other tables<a class="anchor" aria-label="anchor" href="#all-other-tables"></a>
+</h4>
+<p>Action on persons missing records in other clinical event tables will
+depend on the characteristics of the source database. In certain cases,
+missingness is expected – some persons may just not have a given type of
+data available in the source. For instance, in most data sources, one
+would expect most patients to have at least one visit, diagnosis, and
+drug, while one would <em>not</em> expect every single patient to have
+had a medical device.</p>
+<p>Various ETL issues may result in persons missing records in a given
+event table:</p>
+<ul>
+<li>Mis-mapping of domains, resulting in the placement of records in the
+incorrect table<br>
+</li>
+<li>Incorrect parsing of source data, resulting in loss of valid
+records</li>
+<li>Failure of an ETL step, resulting in an empty table</li>
+</ul>
+<p>If more persons than expected are missing data in a given table, run
+the violated rows SQL snippet to retrieve these persons’ person_ids, and
+inspect these persons’ other clinical event data in the CDM for trends.
+You may also use <code>person_source_value</code> to trace back to these
+persons’ source data to identify source data records potentially missed
+by the ETL.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="data-users">Data Users<a class="anchor" aria-label="anchor" href="#data-users"></a>
 </h3>
+<p>Severe failures, such as unexpected nearly empty tables, must be
+fixed by the ETL team before a dataset can be used. Note as well that
+any person missing an observation period will not be able to be included
+in any analysis using OHDSI tools.</p>
+<p>Failures with a result close to the specified failure threshold may
+be accepted, at your own risk and only if the result matches your
+understanding of the source data. The violated rows SQL may be used to
+inspect the full records for persons missing data in a given table in
+order to validate your expectations or point to potential issues in the
+ETL which need to be resolved.</p>
 </div>
 </div>
   </div>
@@ -220,7 +334,7 @@ table</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>

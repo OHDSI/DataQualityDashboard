@@ -1,6 +1,6 @@
 ---
 title: "measurePersonCompleteness"
-author: ""
+author: "Katy Sadowski"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -14,33 +14,63 @@ output:
 **Context**: Validation\
 **Category**: Completeness\
 **Subcategory**: \
-**Severity**: 
+**Severity**: CDM convention &#x26A0; (for observation period), Characterization &#10004; \ (for all other tables)
 
 
 ## Description
-The number and percent of persons in the CDM that do not have at least one record in the @cdmTableName table
+The number and percent of persons in the CDM that do not have at least one record in the @cdmTableName table.
 
 
 ## Definition
 
-- *Numerator*: 
-- *Denominator*:
-- *Related CDM Convention(s)*:
-- *CDM Fields/Tables*:
-- *Default Threshold Value*:
+- *Numerator*: The number of persons with 0 rows in a given CDM table. 
+- *Denominator*: The total number of persons in the `PERSON` table. 
+- *Related CDM Convention(s)*: Each Person needs to have at least one `OBSERVATION_PERIOD` record. Otherwise, CDM conventions do not dictate any rules for person completeness.
+- *CDM Fields/Tables*: By default, this check runs on all tables with a foreign key to the `PERSON` table.
+- *Default Threshold Value*: 
+  - 0% for `OBSERVATION_PERIOD`
+  - 95% or 100% for other tables
 
 
 ## User Guidance
 
+For most tables, this check is a characterization of the completeness of various data types in the source data.  However, in the case of `OBSERVATION_PERIOD`, this check should actually be considered a CDM convention check as it is used to enforce the requirement that all persons have at least one observation period. 
+A failure of this check on the `OBSERVATION_PERIOD` table is a serious issue as persons without an `OBSERVATION_PERIOD` cannot be included in any standard OHDSI analysis.
+
+Run the following query to obtain a list of persons who had no data in a given table.  From this list of person_ids you may join to other tables in the CDM to understand trends in these individuals' data which may provide clues as to the root cause of the issue.
 
 ### Violated rows query
 ```sql
-
+SELECT 
+	cdmTable.* 
+FROM @cdmDatabaseSchema.person cdmTable
+	LEFT JOIN @schema.@cdmTableName cdmTable2 
+		ON cdmTable.person_id = cdmTable2.person_id
+WHERE cdmTable2.person_id IS NULL
 ```
 
 
 ### ETL Developers
 
+#### Observation period
+All persons in the CDM must have an observation period; OHDSI analytics tools only operate on persons with observable time, as represented by one or more observation periods.  Persons missing observation periods may represent a bug in the ETL code which generates observation periods. Alternatively, some persons may have no observable time in the source data. These persons should be removed from the CDM. 
+
+#### All other tables
+Action on persons missing records in other clinical event tables will depend on the characteristics of the source database.  In certain cases, missingness is expected – some persons may just not have a given type of data available in the source.  For instance, in most data sources, one would expect most patients to have at least one visit, diagnosis, and drug, while one would *not* expect every single patient to have had a medical device.
+
+Various ETL issues may result in persons missing records in a given event table: 
+
+- Mis-mapping of domains, resulting in the placement of records in the incorrect table  
+- Incorrect parsing of source data, resulting in loss of valid records 
+- Failure of an ETL step, resulting in an empty table 
+
+If more persons than expected are missing data in a given table, run the violated rows SQL snippet to retrieve these persons’ person_ids, and inspect these persons’ other clinical event data in the CDM for trends.  You may also use `person_source_value` to trace back to these persons’ source data to identify source data records potentially missed by the ETL. 
+
+
 
 ### Data Users
+
+Severe failures, such as unexpected nearly empty tables, must be fixed by the ETL team before a dataset can be used.  Note as well that any person missing an observation period will not be able to be included in any analysis using OHDSI tools.   
+
+Failures with a result close to the specified failure threshold may be accepted, at your own risk and only if the result matches your understanding of the source data.  The violated rows SQL may be used to inspect the full records for persons missing data in a given table in order to validate your expectations or point to potential issues in the ETL which need to be resolved. 
 

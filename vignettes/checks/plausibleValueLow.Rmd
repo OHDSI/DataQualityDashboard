@@ -1,6 +1,6 @@
 ---
 title: "plausibleValueLow"
-author: ""
+author: "Dymytry Dymshyts"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -14,7 +14,7 @@ output:
 **Context**: Verification\
 **Category**: Plausibility\
 **Subcategory**: Atemporal\
-**Severity**: 
+**Severity**: Characterization &#10004;
 
 
 ## Description
@@ -23,24 +23,36 @@ The number and percent of records with a value in the @cdmFieldName field of the
 
 ## Definition
 
-- *Numerator*: 
-- *Denominator*:
-- *Related CDM Convention(s)*:
+- *Numerator*: The number of rows in a table where the checked field value is lower than some expected value. 
+- *Denominator*: The number of rows in a table where the checked field is not null. 
+- *Related CDM Convention(s)*: None. This check evaluates plausibility of values against common sense and known healthcare industry conventions.
 - *CDM Fields/Tables*:
-- *Default Threshold Value*:
+  - All date and datetime fields (compared to 1/1/1950)
+  - `PERSON.day_of_birth` (compared to 1)
+  - `PERSON.month_of_birth` (compared to 1)
+  - `PERSON.year_of_birth` (compared to 1850)
+  - `PERSON.birth_datetime` (compared to 1/1/1850)
+  - `CDM_SOURCE.cdm_release_date`, `CDM_SOURCE.source_release_date` (compared to 1/1/2000)
+  - `DRUG_EXPOSURE.days_supply` (compared to 1)
+  - `DRUG_EXPOSURE.quantity` (compared to 0.0000001)
+  - `DRUG_EXPOSURE.refills` (compared to 0)
+  - `DEVICE_EXPOSURE.quantity`, `SPECIMEN.quantity`, `PROCEDURE_OCCURRENCE.quantity` (compared to 1)
+  - `DRUG_ERA.dose_value`, `DRUG_ERA.gap_days` (compared to 0)
+  - `DRUG_ERA.drug_exposure_count` (compared to 1)
+- *Default Threshold Value*: 1%
 
 
 ## User Guidance
+This check counts the number of records that have a value in the specified field that is lower than some expected value.  Failures of this check might represent true data anomalies, but especially in the case when the failure percentage is high, something may be afoot in the ETL pipeline.
 
+Use this query to inspect rows with an implausibly high value:
 
 ### Violated rows query
 ```sql
-
+SELECT 
+  '@cdmTableName.@cdmFieldName' AS violating_field,  
+  cdmTable.* 
+FROM @schema.@cdmTableName cdmTable 
+WHERE cdmTable.@cdmFieldName < @plausibleValueHigh 
 ```
-
-
-### ETL Developers
-
-
-### Data Users
-
+*See guidance for [plausibleValueHigh](plausibleValueHigh.html) for detailed investigation instructions (swapping out "high" for "low" and ">" for "<" where appropriate).*

@@ -1,6 +1,6 @@
 ---
 title: "plausibleBeforeDeath"
-author: ""
+author: "Maxim Moinat"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -14,33 +14,48 @@ output:
 **Context**: Verification\
 **Category**: Plausibility\
 **Subcategory**: Temporal\
-**Severity**: 
+**Severity**:  Characterization &#10004;
 
 
 ## Description
-The number and percent of records with a date value in the @cdmFieldName field of the @cdmTableName table that occurs after death.
+The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that occurs more than 60 days after death.
+Note that this check replaces the previous `plausibleDuringLife` check.
 
 
 ## Definition
+A record violates this check if the date is more than 60 days after the death date of the person, allowing administrative records directly after death.
 
-- *Numerator*: 
-- *Denominator*:
-- *Related CDM Convention(s)*:
-- *CDM Fields/Tables*:
-- *Default Threshold Value*:
+- *Numerator*: The number of records where date in **cdmFieldName** is more than 60 days after the persons' death date.
+- *Denominator*: Total number of records of persons with a death date, in the **cdmTableName**.
+- *Related CDM Convention(s)*: -Not linked to a convention-
+- *CDM Fields/Tables*: This check runs on all date and datetime fields.
+- *Default Threshold Value*: 1%
 
 
 ## User Guidance
-
+Events are expected to occur between birth and death. The check `plausibleAfterbirth` checks for the former, this check for the latter. 
+The 60-day period is a conservative estimate of the time it takes for administrative records to be updated after a person's death.
+By default, both start and end dates are checked.
 
 ### Violated rows query
 ```sql
-
+SELECT 
+    '@cdmTableName.@cdmFieldName' AS violating_field, 
+    cdmTable.*
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+JOIN @cdmDatabaseSchema.death de 
+    ON cdmTable.person_id = de.person_id
+WHERE cdmTable.@cdmFieldName IS NOT NULL 
+    AND CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(day, 60, de.death_date)
 ```
 
-
 ### ETL Developers
+Start dates after death are likely to be source data issues, and failing this check should trigger investigation of the source data quality.
+End dates after death can occur due to derivation logic. For example, a drug exposure can be prescribed as being continued long after death.
+In such cases, it is recommended to update the logic to end the prescription at death.
 
 
 ### Data Users
-
+For most studies, a low number of violating records will have limited impact on data use as it could be caused by lagging administrative records.
+However, it might signify a larger data quality issue.
+Note that the percentage violating records reported is among records from death persons and such might be slightly inflated if comparing to the overall population.
