@@ -232,7 +232,7 @@
       )
     } else if (checkLevel == "CONCEPT") {
       if (is.na(unitConceptId) &&
-          grepl(",", conceptId)) {
+        grepl(",", conceptId)) {
         thresholdFilter <- sprintf(
           "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &
@@ -243,7 +243,7 @@
           conceptId
         )
       } else if (is.na(unitConceptId) &&
-                 !grepl(",", conceptId)) {
+        !grepl(",", conceptId)) {
         thresholdFilter <- sprintf(
           "conceptChecks$%s[conceptChecks$cdmTableName == '%s' &
                                   conceptChecks$cdmFieldName == '%s' &

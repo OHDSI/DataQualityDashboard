@@ -52,7 +52,7 @@ WHERE co.concept_id != 0
 
 You may build upon this query by joining the `_source_concept_id` column to the concept table and inspecting the source concepts from which the failing non-standard concepts were mapped.  If the `_source_concept_id` correctly represents the source code in `_source_value`, the fix will be a matter of ensuring your ETL is correctly using the concept_relationship table to map the source concept ID to a standard concept via the ‘Maps to’ relationship.  If you are not populating the `_source_concept_id` column and/or are using an intermediate concept mapping table, you may need to inspect the mappings in your mapper table to ensure they’ve been generated correctly using the ‘Maps to’ relationship for your CDM’s vocabulary version. 
 
-Also note that when updating the OMOP vocabularies, previously standard concepts could have been become non-standard and need remapping. Often this remapping can be done programatically, by following the 'Maps to' relationship to the new standard concept. 
+Also note that when updating the OMOP vocabularies, previously standard concepts could have been become non-standard and need remapping. Often this remapping can be done programmatically, by following the 'Maps to' relationship to the new standard concept. 
 
 ### Data Users
 This check failure means that the failing rows will not be picked up in a standard OHDSI analysis. Especially when participating in network research, where only standard concepts are used, this might result in invalid results. It is highly recommended to work with your ETL team or data provider, if possible, to resolve this issue. 

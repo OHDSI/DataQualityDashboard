@@ -22,7 +22,7 @@ test_that("Not Applicable status Table Empty", {
   )
 
   r <- results$CheckResults[results$CheckResults$checkName == "measureValueCompleteness" &
-                            results$CheckResults$tableName == "device_exposure", ]
+    results$CheckResults$tableName == "device_exposure", ]
   expect_true(all(r$notApplicable == 1))
 })
 

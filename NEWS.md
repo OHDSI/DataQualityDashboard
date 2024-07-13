@@ -1,3 +1,35 @@
+DataQualityDashboard 2.6.1
+==========================
+This release includes: 
+
+### Bugfixes
+
+- Checks
+  - `plausibleStartBeforeEnd` was failing if SOURCE_RELEASE_DATE was before CDM_RELEASE_DATE in the CDM_SOURCE table. This is the opposite of the correct logic!  The check is now updated to fail if the CDM_RELEASE_DATE is before the SOURCE_RELEASE_DATE
+  - `plausibleTemporalAfter` was throwing a syntax error in BigQuery due to the format of a hardcoded date in the SQL query.  This query has now been updated to be compliant with SqlRender and the issue has been resolved
+- A dependency issue was causing `viewDqDashboard` to error out in newer versions of R.  This has now been resolved
+- `SqlOnly` mode was failing due to the format of the new check `plausibleGenderUseDescendants`, which takes multiple concepts as an input.  This has now been fixed
+
+### New Results Field
+
+- A new field has been added to the DQD results output - `executionTimeSeconds`.  This field stores the execution time in seconds of each check in numeric format.  (The existing `executionTime` field stores execution time as a string, making it difficult to use in analysis.)
+
+### Check Threshold Updates
+
+The default thresholds for 2 checks were discovered to be inconsistently populated and occasionally set to illogical levels.  These have now been fixed as detailed below.
+
+- The default thresholds for `sourceValueCompleteness` have been updated as follows:
+  - 10% for `_source_value` columns in condition_occurrence, measurement, procedure_occurrence, drug_exposure, and visit_occurrence tables
+  - 100% for all other `_source_value` columns
+- The default thresholds for `sourceConceptRecordCompleteness` have been updated as follows:
+  - 10% for `_source_concept_id` columns in condition_occurrence, drug_exposure, measurement, procedure_occurrence, device_exposure, and observation tables
+  - 100% for all other `_source_concept_id` columns
+
+### New Documentation
+We have continued (and nearly completed) our initiative to add more comprehensive user documentation at the data quality check level.  A dedicated documentation page is being created for each check type.  Each check's page includes detailed information about how its result is generated and what to do if it fails.  Guidance is provided for both ETL developers and data users.
+
+Check out the newly added pages [here](https://ohdsi.github.io/DataQualityDashboard/articles/checkIndex.html) and please reach out with feedback as we continue improving our documentation!
+
 DataQualityDashboard 2.6.0
 ==========================
 This release includes: 

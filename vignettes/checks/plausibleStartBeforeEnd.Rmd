@@ -56,7 +56,7 @@ Any violating checks should either be removed or corrected. In most cases this c
 - With a few exceptions, the end date is not mandatory and can be left empty.
 - If the end date is mandatory (notably visit_occurrence and drug_exposure), the end date can be set to the start date if the event. Make sure to document this as it leads to loss of duration information.
 - If this check fails for the observation_period, it might signify a bigger underlying issue. Please investigate all records for this person in the CDM and source.
-- If neither the start or end date can be trusted, pleaes remove the record from the CDM.
+- If neither the start or end date can be trusted, please remove the record from the CDM.
 
 Make sure to clearly document the choices in your ETL specification.
 

@@ -1,4 +1,4 @@
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -151,8 +151,12 @@
   checkResults$notApplicable <- NA
   checkResults$notApplicableReason <- NA
 
-  conditionOccurrenceIsMissing <- missingTables %>% dplyr::filter(.data$cdmTableName == "CONDITION_OCCURRENCE") %>% dplyr::pull(tableIsMissing)
-  conditionOccurrenceIsEmpty <- emptyTables %>% dplyr::filter(.data$cdmTableName == "CONDITION_OCCURRENCE") %>% dplyr::pull(tableIsEmpty)
+  conditionOccurrenceIsMissing <- missingTables %>%
+    dplyr::filter(.data$cdmTableName == "CONDITION_OCCURRENCE") %>%
+    dplyr::pull(.data$tableIsMissing)
+  conditionOccurrenceIsEmpty <- emptyTables %>%
+    dplyr::filter(.data$cdmTableName == "CONDITION_OCCURRENCE") %>%
+    dplyr::pull(.data$tableIsEmpty)
   for (i in seq_len(nrow(checkResults))) {
     # Special rule for measureConditionEraCompleteness, which should be notApplicable if CONDITION_OCCURRENCE is empty
     if (checkResults[i, "checkName"] == "measureConditionEraCompleteness") {
@@ -178,7 +182,7 @@
           .data$tableIsEmpty ~ sprintf("Table %s is empty.", .data$cdmTableName),
           .data$fieldIsEmpty ~ sprintf("Field %s.%s is not populated.", .data$cdmTableName, .data$cdmFieldName),
           .data$conceptIsMissing ~ sprintf("%s=%s is missing from the %s table.", .data$cdmFieldName, .data$conceptId, .data$cdmTableName),
-          .data$conceptAndUnitAreMissing ~ sprintf("Combination of %s=%s, unitConceptId=%s and VALUE_AS_NUMBER IS NOT NULL is missing from the %s table.", .data$cdmFieldName, .data$conceptId, .data$unitConceptId, .data$cdmTableName) #nolint
+          .data$conceptAndUnitAreMissing ~ sprintf("Combination of %s=%s, unitConceptId=%s and VALUE_AS_NUMBER IS NOT NULL is missing from the %s table.", .data$cdmFieldName, .data$conceptId, .data$unitConceptId, .data$cdmTableName) # nolint
         ),
         NA
       ),
