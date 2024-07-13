@@ -46,7 +46,7 @@ Recommended actions:
 
 - To catch this issue further upstream, consider adding a not-null constraint on the column in your database (if possible) 
 - Fill in the missing values: 
-  - In some columns, placeholder values are acceptable to replace missing values. For example, in rows for which there is no x_source_value or no standard concept mapping, the value 0 should be placed in the x_concept_id column 
+  - In some columns, placeholder values are acceptable to replace missing values. For example, in rows for which there is no _source_value or no standard concept mapping, the value 0 should be placed in the _concept_id column 
   - Similarly, the CDM documentation suggests derivation/imputation strategies for certain columns.  For example, the visit_end_date column is required but several options for deriving a placeholder are provided: https://ohdsi.github.io/CommonDataModel/cdm54.html#VISIT_OCCURRENCE.  Consult the documentation for similar conventions on other columns 
   - For missing values in columns in which it is not acceptable to add a placeholder or derived value (i.e. primary & foreign keys other than concept IDs), there is likely a corresponding ETL error which needs to be fixed 
 - If you are unable to fill in the missing value for a record according to the CDM conventions, it is best to remove the record from your database.  It is recommended to document this action for data users, especially if you need to do this for more than a handful of records and/or if there is a pattern to the missing data 

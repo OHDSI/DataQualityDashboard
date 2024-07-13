@@ -79,6 +79,9 @@
     <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleGender.html</loc>
   </url>
   <url>
+    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleGenderUseDescendants.html</loc>
+  </url>
+  <url>
     <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleStartBeforeEnd.html</loc>
   </url>
   <url>

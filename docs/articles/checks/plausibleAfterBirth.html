@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>plausibleAfterBirth • DataQualityDashboard</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -113,7 +113,40 @@
       <a href="../../articles/checks/fkClass.html">fkClass</a>
     </li>
     <li>
+      <a href="../../articles/checks/measurePersonCompleteness.html">measurePersonCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/measureValueCompleteness.html">measureValueCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/isStandardValidConcept.html">isStandardValidConcept</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/standardConceptRecordCompleteness.html">standardConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceConceptRecordCompleteness.html">sourceConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceValueCompleteness.html">sourceValueCompleteness</a>
+    </li>
+    <li>
       <a href="../../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleBeforeDeath.html">plausibleBeforeDeath</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleStartBeforeEnd.html">plausibleStartBeforeEnd</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueHigh.html">plausibleValueHigh</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
     </li>
   </ul>
 </li>
@@ -148,7 +181,7 @@
                         <h4 data-toc-skip class="author">Maxim Moinat,
 Katy Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-02-21</h4>
+            <h4 data-toc-skip class="date">2024-07-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/plausibleAfterBirth.Rmd" class="external-link"><code>vignettes/checks/plausibleAfterBirth.Rmd</code></a></small>
       <div class="hidden name"><code>plausibleAfterBirth.Rmd</code></div>
@@ -167,17 +200,17 @@ Katy Sadowski</h4>
 </h2>
 <p>The number and percent of records with a date value in the
 <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong>
-table that occurs prior to birth.</p>
+table that occurs prior to birth. Note that this check replaces the
+previous <code>plausibleTemporalAfter</code> check.</p>
 </div>
 <div class="section level2">
 <h2 id="definition">Definition<a class="anchor" aria-label="anchor" href="#definition"></a>
 </h2>
-<p>This check verifies that events happen after birth. This check is
-only run on fields where the <strong>PLAUSIBLE_AFTER_BIRTH</strong>
-parameter is set to <strong>Yes</strong>. The birthdate is taken from
-the <code>person</code> table, either the <code>birth_datetime</code> or
-composed from <code>year_of_birth</code>, <code>month_of_birth</code>,
-<code>day_of_birth</code> (taking 1st month/1st day if missing).</p>
+<p>This check verifies that events happen after birth. The birthdate is
+taken from the <code>person</code> table, either the
+<code>birth_datetime</code> or composed from <code>year_of_birth</code>,
+<code>month_of_birth</code>, <code>day_of_birth</code> (taking 1st
+month/1st day if missing).</p>
 <ul>
 <li>
 <em>Numerator</em>: The number of records with a non-null date value
@@ -306,7 +339,7 @@ involving neonatals and/or pregnancy.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>

@@ -1,6 +1,6 @@
 ---
 title: "sourceConceptRecordCompleteness"
-author: ""
+author: "Katy Sadowski"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -14,7 +14,7 @@ output:
 **Context**: Verification\
 **Category**: Completeness\
 **Subcategory**: \
-**Severity**: 
+**Severity**: CDM convention &#x26A0;\
 
 
 ## Description
@@ -23,24 +23,49 @@ The number and percent of records with a value of 0 in the source concept field 
 
 ## Definition
 
-- *Numerator*: 
-- *Denominator*:
-- *Related CDM Convention(s)*:
-- *CDM Fields/Tables*:
-- *Default Threshold Value*:
+- *Numerator*: The number of rows with a value of 0 in the `_source_concept_id` source concept field.  
+- *Denominator*: The total number of rows in the table. 
+- *Related CDM Convention(s)*: [Source concept mapping](https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Fields) 
+- *CDM Fields/Tables*: All source concept ID (`_source_concept_id`) columns in all event tables. 
+- *Default Threshold Value*: 
+  - 10% for source concept ID columns in condition, drug, measurement, procedure, device, and observation tables
+  - 100% for all other source concept ID columns
 
 
 ## User Guidance
-
-
-### Violated rows query
-```sql
-
-```
-
+Source concept mapping is an important part of the OMOP concept mapping process which allows data users insight into the provenance of the data they are analyzing.  It’s important to populate the source concept ID field for all source values that exist in the OMOP vocabulary.  Failures of this check should be well-understood and documented so that data users can plan accordingly in the case missing data might impact their analysis. 
 
 ### ETL Developers
+Recall that the `_source_concept_id` columns should contain the OMOP concept representing the exact code used in the source data for a given record: “If the <_source_value> is coded in the source data using an OMOP supported vocabulary put the concept id representing the source value here.” 
 
+A failure of this check usually indicates a failure to map a source value to an OMOP concept.  In some cases, such a failure can and should be remediated in the concept-mapping step of the ETL.  In other cases, it may represent a mapping that currently is not possible to implement. 
+
+To investigate the failure, run the following query: 
+
+```sql
+SELECT  
+  concept.concept_name AS standard_concept_name, 
+  cdmTable._concept_id, -- standard concept ID field for the table 
+  c2.concept_name AS source_value_concept_name, 
+  cdmTable._source_value, -- source value field for the table 
+  COUNT(*) 
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable 
+LEFT JOIN @vocabDatabaseSchema.concept ON concept.concept_id = cdmTable._concept_id 
+-- WARNING this join may cause fanning if a source value exists in multiple vocabularies 
+LEFT JOIN @vocabDatabaseSchema.concept c2 ON concept.concept_code = cdmTable._source_value 
+AND c2.domain_id = <Domain of cdmTable> 
+WHERE cdmTable.@cdmFieldName = 0  
+GROUP BY 1,2,3 
+ORDER BY 4 DESC 
+```
+
+The query results will give you a summary of the source codes which failed to map to an OMOP concept.  Inspecting this data should give you an initial idea of what might be going on. 
+
+If source values return legitimate matches on concept_code, it’s possible that there is an error in the concept mapping step of your ETL.  Please note that while the `_source_concept_id` fields are technically not required, it is highly recommended to populate them with OMOP concepts whenever possible.  This will greatly aid analysts in understanding the provenance of the data. 
+
+If source values do NOT return matches on concept_code and you are NOT handling concept mapping locally for a non-OMOP source vocabulary, then you likely have a malformed source code or one that does not exist in the OMOP vocabulary.  Please see the documentation in the [standardConceptRecordCompleteness](standardConceptRecordCompleteness.html) page for instructions on how to handle this scenario. 
 
 ### Data Users
+Since most standard OHDSI analytic workflows rely on the standard concept field and not the source concept field, failures of this check will not necessarily impact your analysis.  However, having the source concept will give you a better understanding of the provenance of the code and highlight potential issues where meaning is lost due to mapping to a standard concept.
 
+Utilize the investigation queries above to understand the scope and impact of the mapping failures on your specific analytic use case.  If none of the affected codes seem to be relevant for your analysis, it may be acceptable to ignore the failure.  However, since it is not always possible to understand exactly what a given source value represents, you should proceed with caution and confirm any findings with your ETL provider if possible. 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>standardConceptRecordCompleteness • DataQualityDashboard</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -113,7 +113,40 @@
       <a href="../../articles/checks/fkClass.html">fkClass</a>
     </li>
     <li>
+      <a href="../../articles/checks/measurePersonCompleteness.html">measurePersonCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/measureValueCompleteness.html">measureValueCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/isStandardValidConcept.html">isStandardValidConcept</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/standardConceptRecordCompleteness.html">standardConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceConceptRecordCompleteness.html">sourceConceptRecordCompleteness</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/sourceValueCompleteness.html">sourceValueCompleteness</a>
+    </li>
+    <li>
       <a href="../../articles/checks/plausibleAfterBirth.html">plausibleAfterBirth</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleBeforeDeath.html">plausibleBeforeDeath</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleStartBeforeEnd.html">plausibleStartBeforeEnd</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueHigh.html">plausibleValueHigh</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleValueLow.html">plausibleValueLow</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
     </li>
   </ul>
 </li>
@@ -145,9 +178,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>standardConceptRecordCompleteness</h1>
-                        <h4 data-toc-skip class="author"></h4>
+                        <h4 data-toc-skip class="author">Katy
+Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-02-21</h4>
+            <h4 data-toc-skip class="date">2024-07-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/standardConceptRecordCompleteness.Rmd" class="external-link"><code>vignettes/checks/standardConceptRecordCompleteness.Rmd</code></a></small>
       <div class="hidden name"><code>standardConceptRecordCompleteness.Rmd</code></div>
@@ -159,7 +193,7 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Completeness<br><strong>Subcategory</strong>:<br><strong>Severity</strong>:</p>
+<p><strong>Level</strong>: FIELD<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Completeness<br><strong>Subcategory</strong>:<br><strong>Severity</strong>: CDM convention ⚠<br></p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
@@ -172,32 +206,169 @@ concept field <span class="citation">@cdmFieldName</span> in the <span class="ci
 </h2>
 <ul>
 <li>
-<em>Numerator</em>:</li>
+<em>Numerator</em>: The number of rows with a value of 0 in the
+<code>_concept_id</code> standard concept field. In the case of
+<code>MEASUREMENT.unit_concept_id</code> and
+<code>OBSERVATION.unit_concept_id</code>, the number of rows with a
+value of 0 in the <code>_concept_id</code> standard concept field AND a
+non-NULL <code>value_as_number</code>.</li>
 <li>
-<em>Denominator</em>:</li>
+<em>Denominator</em>: The total number of rows in the table. In the
+case of <code>MEASUREMENT.unit_concept_id</code> and
+<code>OBSERVATION.unit_concept_id</code>, the number of rows with a
+non-NULL <code>value_as_number</code>.</li>
 <li>
-<em>Related CDM Convention(s)</em>:</li>
+<em>Related CDM Convention(s)</em>: <a href="https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Fields" class="external-link">Standard
+concept mapping</a><br>
+</li>
 <li>
-<em>CDM Fields/Tables</em>:</li>
+<em>CDM Fields/Tables</em>: All standard concept ID
+(<code>_concept_id</code>) columns in all event tables.</li>
 <li>
-<em>Default Threshold Value</em>:</li>
+<em>Default Threshold Value</em>:
+<ul>
+<li>0% for type concept fields and standard concept fields in era
+tables</li>
+<li>5% for most standard concept fields in clinical event tables</li>
+<li>100% for fields more susceptible to specific ETL implementation
+context (e.g. <code>place_of_service_concept_id</code>,
+<code>modifier_concept_id</code>)</li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="user-guidance">User Guidance<a class="anchor" aria-label="anchor" href="#user-guidance"></a>
 </h2>
-<div class="section level3">
-<h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
-</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"></code></pre></div>
-</div>
+<p>Standard concept mapping is one of the most fundamental conventions
+of the OMOP CDM. It enables standardized analysis across diverse data
+sources and allows users to abstract away the tedium of traversing
+source vocabularies when building phenotypes. As such, it is highly
+recommended to map as many concepts in your source as possible. Failures
+of this check should be well-understood and documented so that data
+users can plan accordingly in the case missing data might impact their
+analysis.</p>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>
 </h3>
+<p>A failure of this check usually indicates a failure to map a source
+value to a standard OMOP concept. In some cases, such a failure can and
+should be remediated in the concept-mapping step of the ETL. In other
+cases, it may represent a mapping that currently is not possible to
+implement.</p>
+<p>To investigate the failure, run the following query:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span>  </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  concept_name, </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  cdmTable._source_concept_id, <span class="co">-- source concept ID field for the table </span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  cdmTable._source_value, <span class="co">-- source value field for the table </span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) </span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName cdmTable </span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> @vocabDatabaseSchema.concept <span class="kw">ON</span> concept.concept_id <span class="op">=</span> cdmTable._source_concept_id </span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="op">=</span> <span class="dv">0</span>  </span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">-- AND cdmTable.value_as_number IS NOT NULL -- uncomment for unit_concept_id checks </span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span> </span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> <span class="dv">4</span> <span class="kw">DESC</span></span></code></pre></div>
+<p>This will give you a summary of the source codes which failed to map
+to an OMOP standard concept. Inspecting this data should give you an
+initial idea of what might be going on.</p>
+<ul>
+<li>If the query returns a source value, source concept ID, and concept
+name for a given code, run the following query to confirm that a
+standard concept mapping exists for the source concept ID:</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="kw">SELECT</span>  </span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  concept_id <span class="kw">AS</span> standard_concept_mapping </span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="kw">FROM</span> @vocabDatabaseSchema.concept_relationship </span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="kw">JOIN</span> @vocabDatabaseSchema.concept <span class="kw">ON</span> concept.concept_id <span class="op">=</span> c oncept_relationship.concept_id_2 </span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="kw">AND</span> relationship_id <span class="op">=</span> ‘Maps to’ </span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="kw">WHERE</span> concept_relationship.concept_id_1 <span class="op">=</span> <span class="op">&lt;</span><span class="kw">source</span> concept <span class="kw">ID</span><span class="op">&gt;</span> </span></code></pre></div>
+<ul>
+<li><p>If no results are returned, consider whether the source concept
+ID is part of the OMOP vocabularies. If it is, then there is likely a
+vocabulary issue which should be reported. If it is not (i.e., it is a
+local concept), then there is likely an issue with your local
+source-to-concept mapping</p></li>
+<li><p>If the investigation query returns a source value and source
+concept ID but no concept name, this indicates the source concept ID
+does not exist in your concept table. This may be expected if your ETL
+includes local source-to-concept mappings. If not, then your ETL has
+assigned a malformed source concept ID and will need to be
+debugged</p></li>
+<li><p>If the investigation query returns a source value but no source
+concept ID (or a source concept ID of 0), run the following query to
+search for the source value in the OMOP vocabulary (note that if your
+ETL includes local mappings and the code in question is known not to
+exist in OMOP, you should search your local mapping table/config
+instead):</p></li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co">-- may return false positives if the same value exists in multiple vocabularies </span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">-- only applicable in the case where the source value column is populated only with a vocabulary code </span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="kw">SELECT</span>  </span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="op">*</span> </span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="kw">FROM</span> @vocabDatabaseSchema.concept </span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="kw">WHERE</span> concept_code <span class="op">=</span> <span class="op">&lt;</span><span class="kw">source</span> <span class="fu">value</span><span class="op">&gt;</span> </span></code></pre></div>
+<ul>
+<li>If no result is returned, consider whether the source value may be a
+malformed version of a legitimate code (for example, sometimes ICD10-CM
+codes do not contain a “.” in source data). If you can confirm that the
+code is properly formatted, then you have a source code which does not
+exist in the OMOP vocabulary. If you believe the code was omitted from
+the vocabulary in error, please report this issue to the vocabulary
+team. Otherwise, the short-term course of action will be to generate a
+mapping for the code locally and implement the mapping in your ETL. For
+the longer term, the vocabulary team provides a workflow to submit new
+vocabularies for inclusion in the OMOP vocabularies
+<ul>
+<li>Note that in some cases, you will find that no standard concept
+exists to which to map your source code. In this case, the standard
+concept ID field should be left as 0 in the short term; in the longer
+term please work with the vocabulary team to address this gap as
+recommended above</li>
+</ul>
+</li>
+<li>Finally, if the investigation query returns no source value, you
+must trace the relevant record(s) back to their source and confirm if
+the missing source value is expected. If not, identify and fix the
+related issue in your ETL. If the record legitimately has no value/code
+in the source data, then the standard concept ID may be left as 0.
+However, in some cases these “code-less” records represent junk data
+which should be filtered out in the ETL. The proper approach will be
+context-dependent
+<ul>
+<li>Note in the special case of unitless measurements/observations, the
+unit_concept_id field should NOT be coded as 0 and rather should be left
+NULL (the unit_concept_id fields are optional in the CDM spec)</li>
+</ul>
+</li>
+</ul>
+<p>It is important to note that records with a 0 standard concept ID
+field will be unusable in standard OHDSI analyses and thus should only
+be preserved if there is truly no standard concept ID for a given
+record. Depending on the significance of the records in question, one
+should consider removing them from the dataset; however, this choice
+will depend on a variety of context-specific factors and should be made
+carefully. Either way, the presence/absence of these unmappable records
+and an explanation for why they could not be mapped should be clearly
+documented in the ETL documentation.</p>
 </div>
 <div class="section level3">
 <h3 id="data-users">Data Users<a class="anchor" aria-label="anchor" href="#data-users"></a>
 </h3>
+<p>Since unmapped records will not be picked up in standard OHDSI
+analytic workflows, this is an important check failure to understand.
+Utilize the investigation queries above to understand the scope and
+impact of the mapping failures on your specific analytic use case. If
+none of the affected codes seem to be relevant for your analysis, it may
+be acceptable to ignore the failure. However, since it is not always
+possible to understand exactly what a given source value represents, you
+should proceed with caution and confirm any findings with your ETL
+provider if possible.</p>
+<p>In the case where the source concept ID column is populated with a
+legitimate OMOP concept, it will be possible to query this column
+instead of the standard concept column in your analyses. However, doing
+so will require building source concept sets and as such losing the
+power of the OMOP standard vocabularies in defining comprehensive,
+generalizable cohort definitions.</p>
 </div>
 </div>
   </div>
@@ -219,7 +390,7 @@ concept field <span class="citation">@cdmFieldName</span> in the <span class="ci
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>

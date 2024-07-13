@@ -1,6 +1,6 @@
 ---
 title: "standardConceptRecordCompleteness"
-author: ""
+author: "Katy Sadowski"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -14,7 +14,7 @@ output:
 **Context**: Verification\
 **Category**: Completeness\
 **Subcategory**: \
-**Severity**: 
+**Severity**: CDM convention &#x26A0;\
 
 
 ## Description
@@ -23,24 +23,78 @@ The number and percent of records with a value of 0 in the standard concept fiel
 
 ## Definition
 
-- *Numerator*: 
-- *Denominator*:
-- *Related CDM Convention(s)*:
-- *CDM Fields/Tables*:
-- *Default Threshold Value*:
+- *Numerator*: The number of rows with a value of 0 in the `_concept_id` standard concept field.  In the case of `MEASUREMENT.unit_concept_id` and `OBSERVATION.unit_concept_id`, the number of rows with a value of 0 in the `_concept_id` standard concept field AND a non-NULL `value_as_number`. 
+- *Denominator*: The total number of rows in the table. In the case of `MEASUREMENT.unit_concept_id` and `OBSERVATION.unit_concept_id`, the number of rows with a non-NULL `value_as_number`. 
+- *Related CDM Convention(s)*: [Standard concept mapping](https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Fields)  
+- *CDM Fields/Tables*: All standard concept ID (`_concept_id`) columns in all event tables. 
+- *Default Threshold Value*: 
+  - 0% for type concept fields and standard concept fields in era tables
+  - 5% for most standard concept fields in clinical event tables
+  - 100% for fields more susceptible to specific ETL implementation context (e.g. `place_of_service_concept_id`, `modifier_concept_id`)
 
 
 ## User Guidance
-
-
-### Violated rows query
-```sql
-
-```
+Standard concept mapping is one of the most fundamental conventions of the OMOP CDM.  It enables standardized analysis across diverse data sources and allows users to abstract away the tedium of traversing source vocabularies when building phenotypes.  As such, it is highly recommended to map as many concepts in your source as possible.  Failures of this check should be well-understood and documented so that data users can plan accordingly in the case missing data might impact their analysis. 
 
 
 ### ETL Developers
+A failure of this check usually indicates a failure to map a source value to a standard OMOP concept.  In some cases, such a failure can and should be remediated in the concept-mapping step of the ETL.  In other cases, it may represent a mapping that currently is not possible to implement. 
+
+To investigate the failure, run the following query: 
+
+```sql
+SELECT  
+  concept_name, 
+  cdmTable._source_concept_id, -- source concept ID field for the table 
+  cdmTable._source_value, -- source value field for the table 
+  COUNT(*) 
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable 
+LEFT JOIN @vocabDatabaseSchema.concept ON concept.concept_id = cdmTable._source_concept_id 
+WHERE cdmTable.@cdmFieldName = 0  
+-- AND cdmTable.value_as_number IS NOT NULL -- uncomment for unit_concept_id checks 
+GROUP BY 1,2,3 
+ORDER BY 4 DESC
+``` 
+
+This will give you a summary of the source codes which failed to map to an OMOP standard concept.  Inspecting this data should give you an initial idea of what might be going on. 
+
+  - If the query returns a source value, source concept ID, and concept name for a given code, run the following query to confirm that a standard concept mapping exists for the source concept ID: 
+
+```sql
+SELECT  
+  concept_id AS standard_concept_mapping 
+FROM @vocabDatabaseSchema.concept_relationship 
+JOIN @vocabDatabaseSchema.concept ON concept.concept_id = c oncept_relationship.concept_id_2 
+  AND relationship_id = ‘Maps to’ 
+WHERE concept_relationship.concept_id_1 = <source concept ID> 
+```
+
+  - If no results are returned, consider whether the source concept ID is part of the OMOP vocabularies.  If it is, then there is likely a vocabulary issue which should be reported.  If it is not (i.e., it is a local concept), then there is likely an issue with your local source-to-concept mapping 
+
+  - If the investigation query returns a source value and source concept ID but no concept name, this indicates the source concept ID does not exist in your concept table.  This may be expected if your ETL includes local source-to-concept mappings.  If not, then your ETL has assigned a malformed source concept ID and will need to be debugged 
+
+  - If the investigation query returns a source value but no source concept ID (or a source concept ID of 0), run the following query to search for the source value in the OMOP vocabulary (note that if your ETL includes local mappings and the code in question is known not to exist in OMOP, you should search your local mapping table/config instead): 
+
+```sql
+-- may return false positives if the same value exists in multiple vocabularies 
+-- only applicable in the case where the source value column is populated only with a vocabulary code 
+SELECT  
+  * 
+FROM @vocabDatabaseSchema.concept 
+WHERE concept_code = <source value> 
+```
+
+  - If no result is returned, consider whether the source value may be a malformed version of a legitimate code (for example, sometimes ICD10-CM codes do not contain a “.” in source data).  If you can confirm that the code is properly formatted, then you have a source code which does not exist in the OMOP vocabulary.  If you believe the code was omitted from the vocabulary in error, please report this issue to the vocabulary team.  Otherwise, the short-term course of action will be to generate a mapping for the code locally and implement the mapping in your ETL.  For the longer term, the vocabulary team provides a workflow to submit new vocabularies for inclusion in the OMOP vocabularies 
+    - Note that in some cases, you will find that no standard concept exists to which to map your source code.  In this case, the standard concept ID field should be left as 0 in the short term; in the longer term please work with the vocabulary team to address this gap as recommended above  
+  
+  - Finally, if the investigation query returns no source value, you must trace the relevant record(s) back to their source and confirm if the missing source value is expected.  If not, identify and fix the related issue in your ETL.  If the record legitimately has no value/code in the source data, then the standard concept ID may be left as 0.  However, in some cases these “code-less” records represent junk data which should be filtered out in the ETL.  The proper approach will be context-dependent 
+    - Note in the special case of unitless measurements/observations, the unit_concept_id field should NOT be coded as 0 and rather should be left NULL (the unit_concept_id fields are optional in the CDM spec) 
+
+It is important to note that records with a 0 standard concept ID field will be unusable in standard OHDSI analyses and thus should only be preserved if there is truly no standard concept ID for a given record.  Depending on the significance of the records in question, one should consider removing them from the dataset; however, this choice will depend on a variety of context-specific factors and should be made carefully.  Either way, the presence/absence of these unmappable records and an explanation for why they could not be mapped should be clearly documented in the ETL documentation. 
 
 
 ### Data Users
+Since unmapped records will not be picked up in standard OHDSI analytic workflows, this is an important check failure to understand.  Utilize the investigation queries above to understand the scope and impact of the mapping failures on your specific analytic use case.  If none of the affected codes seem to be relevant for your analysis, it may be acceptable to ignore the failure.  However, since it is not always possible to understand exactly what a given source value represents, you should proceed with caution and confirm any findings with your ETL provider if possible. 
+
+In the case where the source concept ID column is populated with a legitimate OMOP concept, it will be possible to query this column instead of the standard concept column in your analyses.  However, doing so will require building source concept sets and as such losing the power of the OMOP standard vocabularies in defining comprehensive, generalizable cohort definitions.   
 

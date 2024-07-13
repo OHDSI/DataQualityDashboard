@@ -68,8 +68,30 @@ navbar:
         href: articles/checks/fkDomain.html
       - text: fkClass
         href: articles/checks/fkClass.html
+      - text: measurePersonCompleteness
+        href: articles/checks/measurePersonCompleteness.html
+      - text: measureValueCompleteness
+        href: articles/checks/measureValueCompleteness.html
+      - text: isStandardValidConcept
+        href: articles/checks/isStandardValidConcept.html
+      - text: standardConceptRecordCompleteness
+        href: articles/checks/standardConceptRecordCompleteness.html
+      - text: sourceConceptRecordCompleteness
+        href: articles/checks/sourceConceptRecordCompleteness.html
+      - text: sourceValueCompleteness
+        href: articles/checks/sourceValueCompleteness.html
       - text: plausibleAfterBirth
         href: articles/checks/plausibleAfterBirth.html
+      - text: plausibleBeforeDeath
+        href: articles/checks/plausibleBeforeDeath.html
+      - text: plausibleStartBeforeEnd
+        href: articles/checks/plausibleStartBeforeEnd.html
+      - text: plausibleValueHigh
+        href: articles/checks/plausibleValueHigh.html
+      - text: plausibleValueLow
+        href: articles/checks/plausibleValueLow.html
+      - text: withinVisitDates
+        href: articles/checks/withinVisitDates.html
     hades:
       text: hadesLogo
       href: https://ohdsi.github.io/Hades
