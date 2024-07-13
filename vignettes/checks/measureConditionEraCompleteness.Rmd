@@ -1,6 +1,6 @@
 ---
 title: "measureConditionEraCompleteness"
-author: ""
+author: "Maxim Moinat"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -14,34 +14,44 @@ output:
 **Context**: Validation\
 **Category**: Completeness\
 **Subcategory**: \
-**Severity**: 
+**Severity**: CDM convention &#x26A0;
 
 
 ## Description
-The number and Percent of persons that does not have condition_era built successfully,
-for all persons in condition_occurrence
+The number and percent of persons that does not have condition_era built successfully,
+for all persons in `CONDITION_OCCURRENCE`.
 
 
 ## Definition
 
-- *Numerator*: 
-- *Denominator*:
-- *Related CDM Convention(s)*:
-- *CDM Fields/Tables*:
-- *Default Threshold Value*:
+- *Numerator*: Number of unique person_ids that exist in the `CONDITION_OCCURRENCE` table but not in the `CONDITION_ERA` table.
+- *Denominator*: Number of unique person_ids in the `CONDITION_OCCURRENCE` table.
+- *Related CDM Convention(s)*: Condition Era's are directly derived from Condition Occurrence.
+- *CDM Fields/Tables*: `CONDITION_ERA`
+- *Default Threshold Value*: 0%
 
 
 ## User Guidance
+The [Condition Era CDM documentation](https://ohdsi.github.io/CommonDataModel/cdm54.html#condition_era) states that the condition era's should be derived by combining condition occurrences. This implies that each person with a condition occurrence should have at least a condition era. 
+It does NOT clearly state that the `CONDITION_ERA` table is required when there are condition occurrences. Still, it is has always been a common convention in the OHDSI community to derive condition era.
+There is currently no THEMIS convention on condition eras.
 
 
 ### Violated rows query
 ```sql
-
+SELECT DISTINCT 
+  co.person_id
+FROM @cdmDatabaseSchema.condition_occurrence co
+  LEFT JOIN @cdmDatabaseSchema.condition_era cdmTable 
+    ON co.person_id = cdmTable.person_id
+WHERE cdmTable.person_id IS NULL
 ```
 
-
 ### ETL Developers
+If this check fails, it is likely that there is an issue with the condition era derivation script. Please review the ETL execution log. It might be that this script was not executed and the condition era table is empty, or it had issues running and the condition era table has been partially populated. 
+If no issues with the ETL run found, the condition era derivation script might have bugs. Please review the code. An example script can be found on [the CDM Documentation page](https://ohdsi.github.io/CommonDataModel/sqlScripts.html#Condition_Eras). 
+In both cases it is advised to truncate the `CONDITION_ERA` table and rerun the derivation script.
 
 
 ### Data Users
-
+The `CONDITION_ERA` table might seem to contain redundant information, as for most uses the `CONDITION_OCCURRENCE` table can be used. However, tools like FeatureExtraction use condition eras to build some covariates and network studies might use cohorts that are based on condition eras. It is therefore important that the `CONDITION_ERA` table is fully populated and captures the same persons as in condition occurrence. 

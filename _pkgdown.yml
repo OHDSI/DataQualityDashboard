@@ -92,6 +92,8 @@ navbar:
         href: articles/checks/plausibleValueLow.html
       - text: withinVisitDates
         href: articles/checks/withinVisitDates.html
+      - text: measureConditionEraCompleteness
+        href: articles/checks/measureConditionEraCompleteness.html
     hades:
       text: hadesLogo
       href: https://ohdsi.github.io/Hades
