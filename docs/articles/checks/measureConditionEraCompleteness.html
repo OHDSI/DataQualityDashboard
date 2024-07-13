@@ -148,6 +148,9 @@
     <li>
       <a href="../../articles/checks/withinVisitDates.html">withinVisitDates</a>
     </li>
+    <li>
+      <a href="../../articles/checks/measureConditionEraCompleteness.html">measureConditionEraCompleteness</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -178,9 +181,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>measureConditionEraCompleteness</h1>
-                        <h4 data-toc-skip class="author"></h4>
+                        <h4 data-toc-skip class="author">Maxim
+Moinat</h4>
             
-            <h4 data-toc-skip class="date">2024-07-11</h4>
+            <h4 data-toc-skip class="date">2024-07-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/measureConditionEraCompleteness.Rmd" class="external-link"><code>vignettes/checks/measureConditionEraCompleteness.Rmd</code></a></small>
       <div class="hidden name"><code>measureConditionEraCompleteness.Rmd</code></div>
@@ -192,45 +196,80 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: TABLE<br><strong>Context</strong>: Validation<br><strong>Category</strong>: Completeness<br><strong>Subcategory</strong>:<br><strong>Severity</strong>:</p>
+<p><strong>Level</strong>: TABLE<br><strong>Context</strong>: Validation<br><strong>Category</strong>: Completeness<br><strong>Subcategory</strong>:<br><strong>Severity</strong>: CDM convention ⚠</p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
 </h2>
-<p>The number and Percent of persons that does not have condition_era
-built successfully, for all persons in condition_occurrence</p>
+<p>The number and percent of persons that does not have condition_era
+built successfully, for all persons in
+<code>CONDITION_OCCURRENCE</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="definition">Definition<a class="anchor" aria-label="anchor" href="#definition"></a>
 </h2>
 <ul>
 <li>
-<em>Numerator</em>:</li>
+<em>Numerator</em>: Number of unique person_ids that exist in the
+<code>CONDITION_OCCURRENCE</code> table but not in the
+<code>CONDITION_ERA</code> table.</li>
 <li>
-<em>Denominator</em>:</li>
+<em>Denominator</em>: Number of unique person_ids in the
+<code>CONDITION_OCCURRENCE</code> table.</li>
 <li>
-<em>Related CDM Convention(s)</em>:</li>
+<em>Related CDM Convention(s)</em>: Condition Era’s are directly
+derived from Condition Occurrence.</li>
 <li>
-<em>CDM Fields/Tables</em>:</li>
+<em>CDM Fields/Tables</em>: <code>CONDITION_ERA</code>
+</li>
 <li>
-<em>Default Threshold Value</em>:</li>
+<em>Default Threshold Value</em>: 0%</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="user-guidance">User Guidance<a class="anchor" aria-label="anchor" href="#user-guidance"></a>
 </h2>
+<p>The <a href="https://ohdsi.github.io/CommonDataModel/cdm54.html#condition_era" class="external-link">Condition
+Era CDM documentation</a> states that the condition era’s should be
+derived by combining condition occurrences. This implies that each
+person with a condition occurrence should have at least a condition era.
+It does NOT clearly state that the <code>CONDITION_ERA</code> table is
+required when there are condition occurrences. Still, it is has always
+been a common convention in the OHDSI community to derive condition era.
+There is currently no THEMIS convention on condition eras.</p>
 <div class="section level3">
 <h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span> <span class="kw">DISTINCT</span> </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  co.person_id</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.condition_occurrence co</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="kw">LEFT</span> <span class="kw">JOIN</span> @cdmDatabaseSchema.condition_era cdmTable </span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="kw">ON</span> co.person_id <span class="op">=</span> cdmTable.person_id</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.person_id <span class="kw">IS</span> <span class="kw">NULL</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>
 </h3>
+<p>If this check fails, it is likely that there is an issue with the
+condition era derivation script. Please review the ETL execution log. It
+might be that this script was not executed and the condition era table
+is empty, or it had issues running and the condition era table has been
+partially populated. If no issues with the ETL run found, the condition
+era derivation script might have bugs. Please review the code. An
+example script can be found on <a href="https://ohdsi.github.io/CommonDataModel/sqlScripts.html#Condition_Eras" class="external-link">the
+CDM Documentation page</a>. In both cases it is advised to truncate the
+<code>CONDITION_ERA</code> table and rerun the derivation script.</p>
 </div>
 <div class="section level3">
 <h3 id="data-users">Data Users<a class="anchor" aria-label="anchor" href="#data-users"></a>
 </h3>
+<p>The <code>CONDITION_ERA</code> table might seem to contain redundant
+information, as for most uses the <code>CONDITION_OCCURRENCE</code>
+table can be used. However, tools like FeatureExtraction use condition
+eras to build some covariates and network studies might use cohorts that
+are based on condition eras. It is therefore important that the
+<code>CONDITION_ERA</code> table is fully populated and captures the
+same persons as in condition occurrence.</p>
 </div>
 </div>
   </div>

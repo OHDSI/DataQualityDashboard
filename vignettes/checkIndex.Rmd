@@ -35,7 +35,7 @@ above to navigate to the check's documentation page.\
 - [fkDomain](checks/fkDomain.html)
 - [fkClass](checks/fkClass.html)
 - [measurePersonCompleteness](checks/measurePersonCompleteness.html)
-- measureConditionEraCompleteness (PAGE UNDER CONSTRUCTION)
+- [measureConditionEraCompleteness](checks/measureConditionEraCompleteness.html)
 - [isStandardValidConcept](checks/isStandardValidConcept.html)
 - [measureValueCompleteness](checks/measureValueCompleteness.html)
 - [standardConceptRecordCompleteness](checks/standardConceptRecordCompleteness.html)
