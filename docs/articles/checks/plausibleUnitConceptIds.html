@@ -151,6 +151,12 @@
     <li>
       <a href="../../articles/checks/measureConditionEraCompleteness.html">measureConditionEraCompleteness</a>
     </li>
+    <li>
+      <a href="../../articles/checks/plausibleUnitConceptIds.html">plausibleUnitConceptIds</a>
+    </li>
+    <li>
+      <a href="../../articles/checks/plausibleGenderUseDescendants.html">plausibleGenderUseDescendants</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -181,9 +187,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>plausibleUnitConceptIds</h1>
-                        <h4 data-toc-skip class="author"></h4>
+                        <h4 data-toc-skip class="author">Katy
+Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2024-07-12</h4>
+            <h4 data-toc-skip class="date">2024-10-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/plausibleUnitConceptIds.Rmd" class="external-link"><code>vignettes/checks/plausibleUnitConceptIds.Rmd</code></a></small>
       <div class="hidden name"><code>plausibleUnitConceptIds.Rmd</code></div>
@@ -195,7 +202,7 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: CONCEPT<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Plausibility<br><strong>Subcategory</strong>: Atemporal<br><strong>Severity</strong>:</p>
+<p><strong>Level</strong>: CONCEPT<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Plausibility<br><strong>Subcategory</strong>: Atemporal<br><strong>Severity</strong>: Characterization ✔</p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
@@ -208,32 +215,88 @@ UNIT_CONCEPT_ID NOT IN (<span class="citation">@plausibleUnitConceptIds</span>))
 </h2>
 <ul>
 <li>
-<em>Numerator</em>:</li>
+<em>Numerator</em>: The number of rows in the measurement table with
+a non-null <code>value_as_number</code> and a
+<code>unit_concept_id</code> that is not in the list of plausible unit
+concept ids. If the list of plausible unit concept ids includes -1, then
+a NULL <code>unit_concept_id</code> is accepted as a plausible
+unit.</li>
 <li>
-<em>Denominator</em>:</li>
+<em>Denominator</em>: The total number of rows in the measurement
+table with a non-null <code>value_as_number</code>.</li>
 <li>
-<em>Related CDM Convention(s)</em>:</li>
+<em>Related CDM Convention(s)</em>: N/A</li>
 <li>
-<em>CDM Fields/Tables</em>:</li>
+<em>CDM Fields/Tables</em>: <code>MEASUREMENT</code>
+</li>
 <li>
-<em>Default Threshold Value</em>:</li>
+<em>Default Threshold Value</em>: 5%</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="user-guidance">User Guidance<a class="anchor" aria-label="anchor" href="#user-guidance"></a>
 </h2>
+<p>A failure of this check indicates one of the following:</p>
+<ul>
+<li>A measurement record has the incorrect unit</li>
+<li>A measurement record has no unit when it should have one</li>
+<li>A measurement record has a unit when it should not have one</li>
+<li>The list of plausible unit concept IDs in the threshold file is
+incomplete (please report this as a DataQualityDashboard bug!)</li>
+</ul>
+<p>The above issues could either be due to incorrect data in the source
+system or incorrect mapping of the unit concept IDs in the ETL
+process.</p>
 <div class="section level3">
 <h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    m.unit_concept_id,</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  m.unit_source_concept_id,</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  m.unit_source_value,</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.@cdmTableName m</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="kw">WHERE</span> m.@cdmFieldName <span class="op">=</span> @conceptId</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="kw">AND</span> <span class="fu">COALESCE</span> (m.unit_concept_id, <span class="op">-</span><span class="dv">1</span>) <span class="kw">NOT</span> <span class="kw">IN</span> (@plausibleUnitConceptIds) <span class="co">-- '-1' stands for the cases when unit_concept_id is null</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    <span class="kw">AND</span> m.value_as_number <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> </span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span></span></code></pre></div>
+<p>Inspect the output of the violated rows query to identify the root
+cause of the issue. If the <code>unit_source_value</code> and/or
+<code>unit_source_concept_id</code> are populated, check them against
+the list of plausible unit concept IDs to understand if they should have
+been mapped to one of the plausible standard concepts. If the
+<code>unit_source_value</code> is NULL but the list of plausible unit
+concept IDs includes -1, then you may need to check your source data to
+undersand whether or not a unit is available in the source.</p>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>
 </h3>
+<p>Ensure that all units available in the source data are being pulled
+into the CDM and mapped correctly to a standard concept ID. If a unit is
+available in the source and is being correctly populated &amp; mapped in
+your ETL but is <em>not</em> present on the list of plausible unit
+concept IDs, you should verify whether or not the unit is actually
+plausible - you may need to consult a clinician to do so. If the unit is
+plausible for the given measurement, please report this as a
+DataQualityDashboard bug here: <a href="https://github.com/OHDSI/DataQualityDashboard/issues" class="external-link uri">https://github.com/OHDSI/DataQualityDashboard/issues</a>. If
+the unit is not plausible, do not change it! Instead, you should
+document the issue for users of the CDM and discuss with your data
+provider how to handle the data.</p>
 </div>
 <div class="section level3">
 <h3 id="data-users">Data Users<a class="anchor" aria-label="anchor" href="#data-users"></a>
 </h3>
+<p>It is generally recommended not to use measurements with implausible
+units in analyses as it is impossible to determine whether the unit is
+wrong; the value is wrong; and/or the measurement code is wrong in the
+source data. If a measurement is missing a <code>unit_concept_id</code>
+due to an ETL issue, and the <code>unit_source_value</code> or
+<code>unit_source_concept_id</code> is available, you can utilize these
+values to perform your analysis. If <code>unit_source_value</code> and
+<code>unit_source_concept_id</code> are missing, you may consider
+consulting with your data provider as to if and when you may be able to
+infer what the missing unit should be.</p>
 </div>
 </div>
   </div>
