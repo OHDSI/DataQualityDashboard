@@ -1,5 +1,5 @@
 ---
-title: "plausibleGender"
+title: "plausibleGenderUseDescendants"
 author: "Katy Sadowski and Dmytry Dymshyts"
 date: "`r Sys.Date()`"
 output:
@@ -54,9 +54,9 @@ GROUP BY 1,2,3
 ```
 The above query should help to identify if a mapping issue is the cause of the failure.  If the source value and source concept ID are correctly mapped to a standard concept, then the issue may be that the person has the incorrect gender, or that the finding is a true data anomaly.  Examples of true anomalies include:
 
-- Occasional stray code (e.g., due to typo in EHR). This gives an idea how noisy the data is. 
+- Occasional stray code (e.g., due to typo in EHR). 
 - Newborn codes recorded in the mother’s record (e.g., circumcision). 
-- Gender reassignment procedures (e.g., penectomy and prostatectomy in patients with acquired (female) gender). **NOTE** that this is technically a violation of the OMOP CDM specification, since the CDM actually requires that the `gender_concept_id` represents the person's sex at birth. For more information on this convention, see https://ohdsi.github.io/Themis/populate_gender_concept_id.html
+- Gender reassignment procedures (e.g., penectomy and prostatectomy in patients with acquired female gender). **NOTE** that this scenario is technically a violation of the OMOP CDM specification, since the CDM requires that the `gender_concept_id` represents a person's sex at birth. For more information on this convention, see https://ohdsi.github.io/Themis/populate_gender_concept_id.html
 
 ### ETL Developers
 

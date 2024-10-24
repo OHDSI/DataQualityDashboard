@@ -11,7 +11,7 @@ output:
 ## Summary
 
 **Level**: CONCEPT\
-**Context**: Verification\
+**Context**: Validation\
 **Category**: Plausibility\
 **Subcategory**: Atemporal\
 **Severity**: Characterization &#10004;
@@ -43,7 +43,7 @@ The above issues could either be due to incorrect data in the source system or i
 ### Violated rows query
 ```sql
 SELECT 
-	m.unit_concept_id,
+  m.unit_concept_id,
   m.unit_source_concept_id,
   m.unit_source_value,
   COUNT(*)
@@ -54,7 +54,7 @@ WHERE m.@cdmFieldName = @conceptId
 GROUP BY 1,2,3
 ```
 
-Inspect the output of the violated rows query to identify the root cause of the issue.  If the `unit_source_value` and/or `unit_source_concept_id` are populated, check them against the list of plausible unit concept IDs to understand if they should have been mapped to one of the plausible standard concepts.  If the `unit_source_value` is NULL but the list of plausible unit concept IDs includes -1, then you may need to check your source data to undersand whether or not a unit is available in the source. 
+Inspect the output of the violated rows query to identify the root cause of the issue.  If the `unit_source_value` and/or `unit_source_concept_id` are populated, check them against the list of plausible unit concept IDs to understand if they should have been mapped to one of the plausible standard concepts.  If the `unit_source_value` is NULL and the list of plausible unit concept IDs does not include -1, then you may need to check your source data to undersand whether or not a unit is available in the source. 
 
 ### ETL Developers
 
@@ -62,4 +62,4 @@ Ensure that all units available in the source data are being pulled into the CDM
 
 ### Data Users
 
-It is generally recommended not to use measurements with implausible units in analyses as it is impossible to determine whether the unit is wrong; the value is wrong; and/or the measurement code is wrong in the source data.  If a measurement is missing a `unit_concept_id` due to an ETL issue, and the `unit_source_value` or `unit_source_concept_id` is available, you can utilize these values to perform your analysis.  If `unit_source_value` and `unit_source_concept_id` are missing, you may consider consulting with your data provider as to if and when you may be able to infer what the missing unit should be. 
+It is generally not recommended to use measurements with implausible units in analyses as it is impossible to determine whether the unit is wrong; the value is wrong; and/or the measurement code is wrong in the source data.  If a measurement is missing a `unit_concept_id` due to an ETL issue, and the `unit_source_value` or `unit_source_concept_id` is available, you can utilize these values to perform your analysis.  If `unit_source_value` and `unit_source_concept_id` are missing, you may consider consulting with your data provider as to if and when you may be able to infer what the missing unit should be. 
