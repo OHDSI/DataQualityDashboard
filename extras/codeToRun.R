@@ -88,11 +88,12 @@ checkNames <- c() # Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descripti
 
 # want to EXCLUDE a pre-specified list of checks? run the following code:
 #
+# library(dplyr)
 # checksToExclude <- c() # Names of check types to exclude from your DQD run
 # allChecks <- DataQualityDashboard::listDqChecks()
 # checkNames <- allChecks$checkDescriptions %>%
 #   subset(!(checkName %in% checksToExclude)) %>%
-#   select(checkName)
+#   dplyr::pull(checkName)
 
 # which CDM tables to exclude? ------------------------------------
 tablesToExclude <- c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN") # list of CDM table names to skip evaluating checks against; by default DQD excludes the vocab tables
@@ -118,7 +119,7 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                                       checkNames = checkNames)
 
 # inspect logs ----------------------------------------------------------------------------
-ParallelLogger::launchLogViewer(logFileName = file.path(outputFolder, cdmSourceName, 
+ParallelLogger::launchLogViewer(logFileName = file.path(outputFolder,  
                                                         sprintf("log_DqDashboard_%s.txt", cdmSourceName)))
 
 # (OPTIONAL) if you want to write the JSON file to the results table separately -----------------------------
