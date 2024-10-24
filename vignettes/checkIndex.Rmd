@@ -47,5 +47,5 @@ above to navigate to the check's documentation page.\
 - [plausibleAfterBirth](checks/plausibleAfterBirth.html)
 - [plausibleBeforeDeath](checks/plausibleBeforeDeath.html)
 - [plausibleStartBeforeEnd](checks/plausibleStartBeforeEnd.html)
-- plausibleGenderUseDescendants (PAGE UNDER CONSTRUCTION)
-- plausibleUnitConceptIds (PAGE UNDER CONSTRUCTION)
+- [plausibleGenderUseDescendants](checks/plausibleGenderUseDescendants.html)
+- [plausibleUnitConceptIds](checks/plausibleUnitConceptIds.html)
