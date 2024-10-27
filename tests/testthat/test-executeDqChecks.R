@@ -375,3 +375,24 @@ test_that("Execute checks on Synthea/Eunomia to test new variable executionTimeS
   )
   expect_true(is.numeric(results$executionTimeSeconds))
 })
+
+
+test_that("checkNames are filtered by checkSeverity", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+  
+  results <- executeDqChecks(
+    connectionDetails = connectionDetailsEunomia,
+    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+    cdmSourceName = "Eunomia",
+    checkSeverity = "fatal",
+    outputFolder = outputFolder,
+    writeToTable = F
+  )
+  
+  expectedCheckNames <- c("cdmTable", "cdmField", "isRequired", "cdmDatatype", 
+                          "isPrimaryKey", "isForeignKey") 
+  expect_true(all(results$CheckResults$checkName %in% expectedCheckNames)) 
+})
+
