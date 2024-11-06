@@ -34,7 +34,7 @@ articles:
   standardConceptRecordCompleteness: checks/standardConceptRecordCompleteness.html
   Thresholds: Thresholds.html
   withinVisitDates: checks/withinVisitDates.html
-last_built: 2024-07-13T02:25Z
+last_built: 2024-10-24T14:34Z
 urls:
   reference: https://ohdsi.github.io/DataQualityDashboard/reference
   article: https://ohdsi.github.io/DataQualityDashboard/articles
