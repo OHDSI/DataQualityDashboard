@@ -101,6 +101,9 @@ checkLevels <- c("TABLE", "FIELD", "CONCEPT")
 # which DQ checks to run? ------------------------------------
 checkNames <- c() # Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descriptions.csv
 
+# which DQ severity levels to run? ----------------------------
+checkSeverity <- c("fatal", "convention", "characterization") 
+
 # want to EXCLUDE a pre-specified list of checks? run the following code:
 #
 # checksToExclude <- c() # Names of check types to exclude from your DQD run
@@ -129,6 +132,7 @@ DataQualityDashboard::executeDqChecks(connectionDetails = connectionDetails,
                               writeToCsv = writeToCsv,
                               csvFile = csvFile,
                               checkLevels = checkLevels,
+			      checkSeverity = checkSeverity,
                               tablesToExclude = tablesToExclude,
                               checkNames = checkNames)
 
