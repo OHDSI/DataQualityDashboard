@@ -12,7 +12,7 @@ output:
 
 **Level**: FIELD\
 **Context**: Verification\
-**Category**: Conformance\
+**Category**: Plausibility\
 **Subcategory**: \
 **Severity**: Characterization &#10004;
 
