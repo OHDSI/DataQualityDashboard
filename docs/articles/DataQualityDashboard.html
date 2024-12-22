@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.2</span>
       </span>
     </div>
 
@@ -165,7 +165,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -190,7 +190,7 @@
                         <h4 data-toc-skip class="author">Clair
 Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2024-10-24</h4>
+            <h4 data-toc-skip class="date">2024-12-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/DataQualityDashboard.rmd" class="external-link"><code>vignettes/DataQualityDashboard.rmd</code></a></small>
       <div class="hidden name"><code>DataQualityDashboard.rmd</code></div>
@@ -290,6 +290,9 @@ prior to running the DQD.</p>
 <span><span class="co"># which DQ checks to run? ------------------------------------</span></span>
 <span><span class="va">checkNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descriptions.csv</span></span>
 <span></span>
+<span><span class="co"># which DQ severity levels to run? ----------------------------</span></span>
+<span><span class="va">checkSeverity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fatal"</span>, <span class="st">"convention"</span>, <span class="st">"characterization"</span><span class="op">)</span> </span>
+<span></span>
 <span><span class="co"># want to EXCLUDE a pre-specified list of checks? run the following code:</span></span>
 <span><span class="co">#</span></span>
 <span><span class="co"># checksToExclude &lt;- c() # Names of check types to exclude from your DQD run</span></span>
@@ -318,6 +321,7 @@ prior to running the DQD.</p>
 <span>                            writeToCsv <span class="op">=</span> <span class="va">writeToCsv</span>,</span>
 <span>                            csvFile <span class="op">=</span> <span class="va">csvFile</span>,</span>
 <span>                            checkLevels <span class="op">=</span> <span class="va">checkLevels</span>,</span>
+<span>                checkSeverity <span class="op">=</span> <span class="va">checkSeverity</span>,</span>
 <span>                            tablesToExclude <span class="op">=</span> <span class="va">tablesToExclude</span>,</span>
 <span>                            checkNames <span class="op">=</span> <span class="va">checkNames</span><span class="op">)</span></span>
 <span></span>
