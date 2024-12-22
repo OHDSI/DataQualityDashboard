@@ -197,7 +197,7 @@ PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2109833,"Laser vaporization of prostat
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2109900,"Destruction of lesion(s), penis (eg, condyloma, papilloma, molluscum contagiosum, herpetic vesicle), simple; chemical",,,,,,,,,Male,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2109902,"Destruction of lesion(s), penis (eg, condyloma, papilloma, molluscum contagiosum, herpetic vesicle), simple; cryosurgery",,,,,,,,,Male,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2109905,"Destruction of lesion(s), penis (eg, condyloma, papilloma, molluscum contagiosum, herpetic vesicle), extensive (eg, laser surgery, electrosurgery, cryosurgery, chemosurgery)",,,,,,,,,Male,,5,,,,,,,,,,,,,,
-PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2109906,Biopsy of penis (separate procedure),,,,,,,,,Male,,5,,,,,,,,,,,,,,
+PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2109906,"Biopsy of penis, (separate procedure)",,,,,,,,,Male,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2109916,"Circumcision, using clamp or other device with regional dorsal penile or ring block",,,,,,,,,Male,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2109968,Foreskin manipulation including lysis of preputial adhesions and stretching,,,,,,,,,Male,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2109973,"Orchiectomy, simple (including subcapsular), with or without testicular prosthesis, scrotal or inguinal approach",,,,,,,,,Male,,5,,,,,,,,,,,,,,
@@ -210,7 +210,7 @@ PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110044,"Laparoscopy, surgical prostat
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110078,Colposcopy of the vulva,,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110116,"Colpopexy, vaginal; extra-peritoneal approach (sacrospinous, iliococcygeus)",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110142,"Laparoscopy, surgical, colpopexy (suspension of vaginal apex)",,,,,,,,,Female,,5,,,,,,,,,,,,,,
-PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110144,Colposcopy of the cervix including upper/adjacent vagina with biopsy(s) of the cervix and endocervical curettage,,,,,,,,,Female,,5,,,,,,,,,,,,,,
+PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110144,"Colposcopy of the cervix including upper/adjacent vagina, with biopsy(s) of the cervix and endocervical curettage",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110169,"Endometrial sampling (biopsy) with or without endocervical sampling (biopsy), without cervical dilation, any method (separate procedure)",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110175,"Total abdominal hysterectomy (corpus and cervix), with or without removal of tube(s), with or without removal of ovary(s)",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110194,Insertion of intrauterine device (IUD),,,,,,,,,Female,,5,,,,,,,,,,,,,,
@@ -222,7 +222,7 @@ PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110230,"Laparoscopy, surgical, with t
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110307,"Routine obstetric care including antepartum care, vaginal delivery (with or without episiotomy, and/or forceps) and postpartum care",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110315,"Routine obstetric care including antepartum care, cesarean delivery, and postpartum care",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110316,Cesarean delivery only,,,,,,,,,Female,,5,,,,,,,,,,,,,,
-PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110317,Cesarean delivery only including postpartum care,,,,,,,,,Female,,5,,,,,,,,,,,,,,
+PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110317,"Cesarean delivery only, including postpartum care",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2110326,"Treatment of missed abortion, completed surgically; first trimester",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2211747,"Ultrasound, pregnant uterus, real time with image documentation, fetal and maternal evaluation, first trimester (< 14 weeks 0 days), transabdominal approach; single or first gestation",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2211749,"Ultrasound, pregnant uterus, real time with image documentation, fetal and maternal evaluation, after first trimester (> or = 14 weeks 0 days), transabdominal approach; single or first gestation",,,,,,,,,Female,,5,,,,,,,,,,,,,,
@@ -233,7 +233,7 @@ PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2211756,"Ultrasound, pregnant uterus, 
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2211757,"Ultrasound, pregnant uterus, real time with image documentation, transvaginal",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2211765,"Ultrasound, transvaginal",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2211769,"Ultrasound, scrotum and contents",,,,,,,,,Male,,5,,,,,,,,,,,,,,
-PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2617204,Cervical or vaginal cancer screening pelvic and clinical breast examination,,,,,,,,,Female,,5,,,,,,,,,,,,,,
+PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2617204,"Cervical or vaginal cancer screening, pelvic and clinical breast examination",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2721063,"Annual gynecological examination, new patient",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2721064,"Annual gynecological examination, established patient",,,,,,,,,Female,,5,,,,,,,,,,,,,,
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,2780478,"Resection of Prostate, Percutaneous Endoscopic Approach",,,,,,,,,Male,,5,,,,,,,,,,,,,,
@@ -338,7 +338,7 @@ PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,4041261,Procedure on female genital sy
 PROCEDURE_OCCURRENCE,PROCEDURE_CONCEPT_ID,"4250917, 4077750, 4043199, 4040577","Operation on prostate, Operation on scrotum, Procedure on penis, Procedure on testis",,,,,,,,,,Male,,2,,,,,,,,,,,,,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3006315,Basophils [#/volume] in Blood,,,,,,,,,,,,,,,,,,,,,,,"8784,8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3004410,Hemoglobin A1c/Hemoglobin.total in Blood,,,,,,,,,,,,,,,,,,,,,,,"8554,8737,9225,9579",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,40487382,Total lymphocyte count,,,,,,,,,,,,,,,,,,,,,,,"8784,8848,8961",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,40487382,Total lymphocyte count,,,,,,,,,,,,,,,,,,,,,,,"8784,8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3013721,Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8645,8923",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3019198,Lymphocytes [#/volume] in Blood,,,,,,,,,,,,,,,,,,,,,,,"8784,8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3034426,Prothrombin time (PT),,,,,,,,,,,,,,,,,,,,,,,8555,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
@@ -357,7 +357,7 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,3001604,Monocytes [#/volume] in Blood,,,,,,,,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3019069,Monocytes/100 leukocytes in Blood,,,,,,,,,,,,,,,,,,,,,,,8554,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3022509,Hyaline casts [#/area] in Urine sediment by Microscopy low power field,,,,,,,,,,,,,,,,,,,,,,,8765,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3028288,Cholesterol in LDL [Mass/volume] in Serum or Plasma by calculation,,,,,,,,,,,,,,,,,,,,,,,"8840,9028",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,4148615,Neutrophil count,,,,,,,,,,,,,,,,,,,,,,,"8784,8848,8961",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,4148615,Neutrophil count,,,,,,,,,,,,,,,,,,,,,,,"8784,8848,8961,8848,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,44806420,Estimation of glomerular filtration rate,,,,,,,,,,,,,,,,,,,,,,,"720870,8795",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3028437,Cholesterol in LDL [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8840,9028",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3016991,Thyroxine (T4) [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8837,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
@@ -387,13 +387,13 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,35610320,Diastolic arterial pressure,,,,,,,,,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3001490,Nucleated erythrocytes [#/volume] in Blood,,,,,,,,,,,,,,,,,,,,,,,"8784,8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4195214,Cholesterol/HDL ratio measurement,,,,,,,,,,,,,,,,,,,,,,,"8523,8554,8596,-1",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,36306178,"Glomerular filtration rate/1.73 sq M.predicted among blacks [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (CKD-EPI)",,,,,,,,,,,,,,,,,,,,,,,"720870,8795",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,37393850,MCHC - Mean corpuscular haemoglobin concentration,,,,,,,,,,,,,,,,,,,,,,,"8636,8713",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3004501,Glucose [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8840,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,37393850,MCHC - Mean corpuscular haemoglobin concentration,,,,,,,,,,,,,,,,,,,,,,,"8636,8713,8554,8753",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3004501,Glucose [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8840,8753",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3008598,Thyroxine (T4) free [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8817,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3018010,Neutrophils/100 leukocytes in Blood,,,,,,,,,,,,,,,,,,,,,,,"8554,-1",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3022192,Triglyceride [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8840,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3022192,Triglyceride [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8840,8753",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4151768,Pack years,,,,,,,,,,,,,,,,,,,,,,,"9448,-1",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,4197602,Serum TSH measurement,,,,,,,,,,,,,,,,,,,,,,,"8719,9040,9093",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,4197602,Serum TSH measurement,,,,,,,,,,,,,,,,,,,,,,,"8719,9040,9093,44777578,8750,8923,44777583",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,46236952,"Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)",,,,,,,,,,,,,,,,,,,,,,,"720870,8795",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3006906,Calcium [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8840,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3007070,Cholesterol in HDL [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8840,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
@@ -401,7 +401,7 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,3020460,C reactive protein [Mass/volume] in S
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3023314,Hematocrit [Volume Fraction] of Blood by Automated count,,,,,,,,,,,,,,,,,,,,,,,"44777604,8554",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3035941,MCH [Entitic mass],,,,,,,,,,,,,,,,,,,,,,,"8564,9655",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3037072,Urobilinogen [Mass/volume] in Urine by Test strip,,,,,,,,,,,,,,,,,,,,,,,8840,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,4151358,Hematocrit determination,,,,,,,,,,,,,,,,,,,,,,,"44777604,8554",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,4151358,Hematocrit determination,,,,,,,,,,,,,,,,,,,,,,,"44777604,8554,8523",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4194332,Monocyte count,,,,,,,,,,,,,,,,,,,,,,,"8784,8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3001123,Platelet mean volume [Entitic volume] in Blood,,,,,,,,,,,,,,,,,,,,,,,8583,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3012888,Diastolic blood pressure,,,,,,,,,,,,,,,,,,,,,,,8876,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
@@ -417,7 +417,7 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,4301868,Pulse rate,,,,,,,,,,,,,,,,,,,,,,,"848
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,40762636,Body mass index (BMI) [Percentile],,,,,,,,,,,,,,,,,,,,,,,8554,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,40765040,25-Hydroxyvitamin D3+25-Hydroxyvitamin D2 [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8842,8845",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3024386,Platelet mean volume [Entitic volume] in Blood by Rees-Ecker,,,,,,,,,,,,,,,,,,,,,,,8583,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3009201,Thyrotropin [Units/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"44777578,8719,9040,9093",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3009201,Thyrotropin [Units/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"44777578,8719,9040,9093,8860",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3024731,MCV [Entitic volume],,,,,,,,,,,,,,,,,,,,,,,8583,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3050479,Immature granulocytes/100 leukocytes in Blood,,,,,,,,,,,,,,,,,,,,,,,"8554,-1",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4012479,Low density lipoprotein cholesterol measurement,,,,,,,,,,,,,,,,,,,,,,,"8636,8753,8840",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
@@ -429,9 +429,9 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,3010910,Erythrocytes [#/volume] in Body fluid
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3013290,Carbon dioxide [Partial pressure] in Blood,,,,,,,,,,,,,,,,,,,,,,,8876,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3027970,Globulin [Mass/volume] in Serum by calculation,,,,,,,,,,,,,,,,,,,,,,,"8636,8713,8950",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4239408,Heart rate,,,,,,,,,,,,,,,,,,,,,,,"8483,8541,8581",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3010813,Leukocytes [#/volume] in Blood,,,,,,,,,,,,,,,,,,,,,,,"44777588,8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3010813,Leukocytes [#/volume] in Blood,,,,,,,,,,,,,,,,,,,,,,,"44777588,8848,8961,9444,8647",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3023103,Potassium [Moles/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8753,9557",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,4030871,Red blood cell count,,,,,,,,,,,,,,,,,,,,,,,"8734,8815,8931,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,4030871,Red blood cell count,,,,,,,,,,,,,,,,,,,,,,,"8734,8815,8931,9444,9445",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4154790,Diastolic blood pressure,,,,,,,,,,,,,,,,,,,,,,,8876,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4217013,Systolic arterial pressure,,,,,,,,,,,,,,,,,,,,,,,8876,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3001318,Cholesterol.total/Cholesterol in HDL [Percentile],,,,,,,,,,,,,,,,,,,,,,,"8554,8596,-1",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
@@ -449,23 +449,23 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,4013965,"Oxygen saturation measurement, arter
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3013429,Basophils [#/volume] in Blood by Automated count,,,,,,,,,,,,,,,,,,,,,,,"8784,8816,8848,8961,9436,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3023599,MCV [Entitic volume] by Automated count,,,,,,,,,,,,,,,,,,,,,,,8583,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3036588,Neutrophil cytoplasmic Ab.perinuclear [Presence] in Serum,,,,,,,,,,,,,,,,,,,,,,,"8525,-1",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,4298431,White blood cell count,,,,,,,,,,,,,,,,,,,,,,,"8848,8961",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,4298431,White blood cell count,,,,,,,,,,,,,,,,,,,,,,,"8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3017732,Neutrophils [#/volume] in Blood,,,,,,,,,,,,,,,,,,,,,,,"8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3024561,Albumin [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8636,8713",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3034639,Hemoglobin A1c [Mass/volume] in Blood,,,,,,,,,,,,,,,,,,,,,,,"8713,8840",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3034639,Hemoglobin A1c [Mass/volume] in Blood,,,,,,,,,,,,,,,,,,,,,,,"8713,8840,9579,8923",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3013650,Neutrophils [#/volume] in Blood by Automated count,,,,,,,,,,,,,,,,,,,,,,,"8784,8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3021886,Globulin [Mass/volume] in Serum,,,,,,,,,,,,,,,,,,,,,,,"8636,8713,8950",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,4254663,Lymphocyte count,,,,,,,,,,,,,,,,,,,,,,,8848,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,4254663,Lymphocyte count,,,,,,,,,,,,,,,,,,,,,,,"8848,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3001420,Magnesium [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8840,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3007461,Platelets [#/volume] in Blood,,,,,,,,,,,,,,,,,,,,,,,"8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3007461,Platelets [#/volume] in Blood,,,,,,,,,,,,,,,,,,,,,,,"8848,8961,9444,32706",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3012030,MCH [Entitic mass] by Automated count,,,,,,,,,,,,,,,,,,,,,,,8564,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,40764999,"Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (CKD-EPI)",,,,,,,,,,,,,,,,,,,,,,,"720870,8795",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3008893,Testosterone [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8817,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3016723,Creatinine [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8840,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3016723,Creatinine [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8840,8749",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3026910,Gamma glutamyl transferase [Enzymatic activity/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8645,8923",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3033575,Monocytes [#/volume] in Blood by Automated count,,,,,,,,,,,,,,,,,,,,,,,"8784,8816,8848,8961,9436,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3041084,Immature granulocytes [#/volume] in Blood by Automated count,,,,,,,,,,,,,,,,,,,,,,,"8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,4184637,Hemoglobin A1c measurement,,,,,,,,,,,,,,,,,,,,,,,"8554,8632,8737",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,4184637,Hemoglobin A1c measurement,,,,,,,,,,,,,,,,,,,,,,,"8554,8632,8737,9579",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4313591,Respiratory rate,,,,,,,,,,,,,,,,,,,,,,,"8483,8541",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,37393851,MCV - Mean corpuscular volume,,,,,,,,,,,,,,,,,,,,,,,8583,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,1619025,"Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (CKD-EPI 2021)",,,,,,,,,,,,,,,,,,,,,,,"720870,8795",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
@@ -488,10 +488,10 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,3010189,Epithelial cells [#/area] in Urine se
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3010457,Eosinophils/100 leukocytes in Blood by Automated count,,,,,,,,,,,,,,,,,,,,,,,8554,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4192368,Platelet mean volume determination,,,,,,,,,,,,,,,,,,,,,,,8583,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3014576,Chloride [Moles/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8753,9557",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3024128,Bilirubin.total [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8840,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3024128,Bilirubin.total [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8840,8749",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3018311,Urea nitrogen/Creatinine [Mass Ratio] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8523,8554,8596,-1",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3020891,Body temperature,,,,,,,,,,,,,,,,,,,,,,,"586323,9289",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3037556,Urate [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8840,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3037556,Urate [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8840,8923",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,37399332,Serum TSH (thyroid stimulating hormone) level,,,,,,,,,,,,,,,,,,,,,,,"44777578,9040",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3011904,Phosphate [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,8840,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3019897,Erythrocyte distribution width [Ratio] by Automated count,,,,,,,,,,,,,,,,,,,,,,,"8554,-1",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
@@ -500,7 +500,7 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,4076704,High density lipoprotein measurement,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4172647,Basophil count,,,,,,,,,,,,,,,,,,,,,,,"8848,8961,9444",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,37393531,Serum alanine aminotransferase level,,,,,,,,,,,,,,,,,,,,,,,"32995,8645,8923",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,40771529,Immature granulocytes/100 leukocytes in Body fluid,,,,,,,,,,,,,,,,,,,,,,,"8554,-1",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3000034,Microalbumin [Mass/volume] in Urine,,,,,,,,,,,,,,,,,,,,,,,"8576,8723,8751,8840,8859",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3000034,Microalbumin [Mass/volume] in Urine,,,,,,,,,,,,,,,,,,,,,,,"8576,8723,8751,8840,8859,8636",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3035124,Erythrocytes [#/area] in Urine sediment by Microscopy high power field,,,,,,,,,,,,,,,,,,,,,,,"8786,8889",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3002030,Lymphocytes/100 leukocytes in Blood,,,,,,,,,,,,,,,,,,,,,,,"8554,8848",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3019170,Thyrotropin [Units/volume] in Serum or Plasma by Detection limit <= 0.005 mIU/L,,,,,,,,,,,,,,,,,,,,,,,"44777578,8719,8860,9040,9093,9550",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
@@ -511,9 +511,9 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,3049187,"Glomerular filtration rate/1.73 sq M
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,37398676,Basophil count,,,,,,,,,,,,,,,,,,,,,,,8848,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4112223,BUN/Creatinine ratio,,,,,,,,,,,,,,,,,,,,,,,"8523,8596,-1",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3017250,Creatinine [Mass/volume] in Urine,,,,,,,,,,,,,,,,,,,,,,,"8576,8840",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,4191837,Calculated LDL cholesterol level,,,,,,,,,,,,,,,,,,,,,,,8840,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,4191837,Calculated LDL cholesterol level,,,,,,,,,,,,,,,,,,,,,,,"8840,8753",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3022096,Basophils/100 leukocytes in Blood,,,,,,,,,,,,,,,,,,,,,,,8554,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3034485,Albumin/Creatinine [Mass Ratio] in Urine,,,,,,,,,,,,,,,,,,,,,,,"8523,8723,8838,9017,9072",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,44790183,Glomerular filtration rate testing,,,,,,,,,,,,,,,,,,,,,,,"720870,8795",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3002400,Iron [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8749,8837",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3003338,MCHC [Mass/volume],,,,,,,,,,,,,,,,,,,,,,,8713,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3003338,MCHC [Mass/volume],,,,,,,,,,,,,,,,,,,,,,,"8713,8753",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID

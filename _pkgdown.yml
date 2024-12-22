@@ -94,6 +94,10 @@ navbar:
         href: articles/checks/withinVisitDates.html
       - text: measureConditionEraCompleteness
         href: articles/checks/measureConditionEraCompleteness.html
+      - text: plausibleUnitConceptIds
+        href: articles/checks/plausibleUnitConceptIds.html
+      - text: plausibleGenderUseDescendants
+        href: articles/checks/plausibleGenderUseDescendants.html
     hades:
       text: hadesLogo
       href: https://ohdsi.github.io/Hades

@@ -35,6 +35,7 @@
 #' @param writeToCsv                Boolean to indicate if the check results will be written to a csv file. Default is FALSE
 #' @param csvFile                   (OPTIONAL) CSV file to write results
 #' @param checkLevels               Choose which DQ check levels to execute. Default is all 3 (TABLE, FIELD, CONCEPT)
+#' @param checkSeverity             Choose which DQ check severity levels to execute. Default is all 3 (fatal, convention, characterization)
 #' @param checkNames                (OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Descriptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.
 #' @param cohortDefinitionId        The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table
 #'                                  with the fields cohort_definition_id and subject_id.
@@ -77,6 +78,7 @@ executeDqChecks <- function(connectionDetails,
                             csvFile = "",
                             checkLevels = c("TABLE", "FIELD", "CONCEPT"),
                             checkNames = c(),
+                            checkSeverity = c("fatal", "convention", "characterization"),
                             cohortDefinitionId = c(),
                             cohortDatabaseSchema = resultsDatabaseSchema,
                             cohortTableName = "cohort",
@@ -110,7 +112,16 @@ executeDqChecks <- function(connectionDetails,
          You passed in ', paste(checkLevels, collapse = ", "))
   }
 
-  stopifnot(is.null(checkNames) | is.character(checkNames), is.null(tablesToExclude) | is.character(tablesToExclude))
+  if (!all(checkSeverity %in% c("fatal", "convention", "characterization"))) {
+    stop('checkSeverity argument must be a subset of c("fatal", "convention", "characterization").
+         You passed in ', paste(checkSeverity, collapse = ", "))
+  }
+
+  stopifnot(
+    is.null(checkNames) | is.character(checkNames),
+    is.character(checkSeverity),
+    is.null(tablesToExclude) | is.character(tablesToExclude)
+  )
   stopifnot(is.character(cdmVersion))
 
   # Warning if check names for determining NA is missing
@@ -241,6 +252,7 @@ executeDqChecks <- function(connectionDetails,
   })]
 
   checkDescriptionsDf <- checkDescriptionsDf[checkDescriptionsDf$checkLevel %in% checkLevels &
+    checkDescriptionsDf$severity %in% checkSeverity &
     checkDescriptionsDf$evaluationFilter != "" &
     checkDescriptionsDf$sqlFile != "" &
     checkDescriptionsDf$checkName %in% checksToInclude, ]

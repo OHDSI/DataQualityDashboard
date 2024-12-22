@@ -1,3 +1,24 @@
+DataQualityDashboard 2.6.2
+==========================
+This release includes: 
+
+### Bugfixes
+
+- Some fields were missing a standardConceptFieldName for the sourceValueCompleteness check, causing those checks to fail with an error. The missing field names have now been added
+- Many unit plausibility checks were missing legitimate units from the list of plausible units - these have now been updated
+- Sample results files in the shinyApps folder which had been causing issues for some users in rendering the Shiny app have now been removed
+- The fkDomain check has been disabled for the episode.episode_object_concept_id and measurement.value_as_concept_id fields, as these fields have multiple acceptable domains. The check can only currently support a single accepted domain
+- The withinVisitDates check was previously incorrectly categorized as a Conformance check; it has been recategorized as Plausibility
+
+### New executeDqChecks Parameter
+
+There is now a parameter, `checkSeverity`, which can be used to limit the execution of DQD to `fatal`, `convention`, and/or `characterization` checks.  Fatal checks are checks that should never fail, under any circumstance, as they relate to the relational integrity of the CDM.  Convention checks are checks on critical OMOP CDM conventions for which failures should be resolved whenever possible; however, some level of failure is unavoidable (i.e., standard concept mapping for source concepts with no suitable standard concept).  Characterization checks provide users with an understanding of the quality of the underlying data and generally will need their thresholds modified to match expectations of the source.
+
+### Documentation
+
+- We added 2 more check documentation pages - all DQ checks now have documentation!  Check out the newly added pages [here](https://ohdsi.github.io/DataQualityDashboard/articles/checkIndex.html) and please reach out with feedback as we continue improving our documentation!
+- We fixed a bug in the exclude checks sample code in CodeToRun.R
+
 DataQualityDashboard 2.6.1
 ==========================
 This release includes: 
@@ -47,7 +68,7 @@ The 3 temporal plausibilty checks are intended to **replace** `plausibleTemporal
 For more information on the new checks, please check the [Check Type Definitions](https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html) documentation page.  If you'd like to disable the deprecated checks, please see the suggested check exclusion workflow in our Getting Started code [here](https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html).
 
 ### Check Updates
-- The number of measurements checked in `plausibleUnitConceptIds` has been reduced, and the lists of plausible units for those measurements have been re-reviewed and updated for accuracy.  This change is intended to improve performance and reliablility of this check.  Please file an issue if you would like to contribute additional measurements + plausible units to be checked in the future
+- The number of measurements checked in `plausibleUnitConceptIds` has been reduced, and the lists of plausible units for those measurements have been re-reviewed and updated for accuracy.  This change is intended to improve performance and reliability of this check.  Please file an issue if you would like to contribute additional measurements + plausible units to be checked in the future
 - Some erroneous `plausibleValueLow` thresholds have been corrected to prevent false positive failures from occurring
 
 ### New Documentation

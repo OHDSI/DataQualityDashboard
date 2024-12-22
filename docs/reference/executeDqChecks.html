@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.2</span>
       </span>
     </div>
 
@@ -131,12 +131,18 @@
     <li>
       <a href="../articles/checks/measureConditionEraCompleteness.html">measureConditionEraCompleteness</a>
     </li>
+    <li>
+      <a href="../articles/checks/plausibleUnitConceptIds.html">plausibleUnitConceptIds</a>
+    </li>
+    <li>
+      <a href="../articles/checks/plausibleGenderUseDescendants.html">plausibleGenderUseDescendants</a>
+    </li>
   </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -182,6 +188,7 @@
 <span>  csvFile <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  checkLevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TABLE"</span>, <span class="st">"FIELD"</span>, <span class="st">"CONCEPT"</span><span class="op">)</span>,</span>
 <span>  checkNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  checkSeverity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fatal"</span>, <span class="st">"convention"</span>, <span class="st">"characterization"</span><span class="op">)</span>,</span>
 <span>  cohortDefinitionId <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
 <span>  cohortTableName <span class="op">=</span> <span class="st">"cohort"</span>,</span>
@@ -266,6 +273,10 @@
 
 <dt>checkNames</dt>
 <dd><p>(OPTIONAL) Choose which check names to execute. Names can be found in inst/csv/OMOP_CDM_v[cdmVersion]_Check_Descriptions.csv. Note that "cdmTable", "cdmField" and "measureValueCompleteness" are always executed.</p></dd>
+
+
+<dt>checkSeverity</dt>
+<dd><p>Choose which DQ check severity levels to execute. Default is all 3 (fatal, convention, characterization)</p></dd>
 
 
 <dt>cohortDefinitionId</dt>

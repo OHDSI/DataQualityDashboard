@@ -1,6 +1,6 @@
 ---
 title: "plausibleUnitConceptIds"
-author: ""
+author: "Katy Sadowski"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -11,10 +11,10 @@ output:
 ## Summary
 
 **Level**: CONCEPT\
-**Context**: Verification\
+**Context**: Validation\
 **Category**: Plausibility\
 **Subcategory**: Atemporal\
-**Severity**: 
+**Severity**: Characterization &#10004;
 
 
 ## Description
@@ -23,24 +23,43 @@ The number and percent of records for a given CONCEPT_ID @conceptId (@conceptNam
 
 ## Definition
 
-- *Numerator*: 
-- *Denominator*:
-- *Related CDM Convention(s)*:
-- *CDM Fields/Tables*:
-- *Default Threshold Value*:
+- *Numerator*: The number of rows in the measurement table with a non-null `value_as_number` and a `unit_concept_id` that is not in the list of plausible unit concept ids. If the list of plausible unit concept ids includes -1, then a NULL `unit_concept_id` is accepted as a plausible unit.
+- *Denominator*: The total number of rows in the measurement table with a non-null `value_as_number`.
+- *Related CDM Convention(s)*: N/A
+- *CDM Fields/Tables*: `MEASUREMENT`
+- *Default Threshold Value*: 5%
 
 
 ## User Guidance
+A failure of this check indicates one of the following:
 
+- A measurement record has the incorrect unit
+- A measurement record has no unit when it should have one
+- A measurement record has a unit when it should not have one
+- The list of plausible unit concept IDs in the threshold file is incomplete (please report this as a DataQualityDashboard bug!)
+
+The above issues could either be due to incorrect data in the source system or incorrect mapping of the unit concept IDs in the ETL process.
 
 ### Violated rows query
 ```sql
-
+SELECT 
+  m.unit_concept_id,
+  m.unit_source_concept_id,
+  m.unit_source_value,
+  COUNT(*)
+FROM @cdmDatabaseSchema.@cdmTableName m
+WHERE m.@cdmFieldName = @conceptId
+    AND COALESCE (m.unit_concept_id, -1) NOT IN (@plausibleUnitConceptIds) -- '-1' stands for the cases when unit_concept_id is null
+    AND m.value_as_number IS NOT NULL 
+GROUP BY 1,2,3
 ```
 
+Inspect the output of the violated rows query to identify the root cause of the issue.  If the `unit_source_value` and/or `unit_source_concept_id` are populated, check them against the list of plausible unit concept IDs to understand if they should have been mapped to one of the plausible standard concepts.  If the `unit_source_value` is NULL and the list of plausible unit concept IDs does not include -1, then you may need to check your source data to understand whether or not a unit is available in the source. 
 
 ### ETL Developers
 
+Ensure that all units available in the source data are being pulled into the CDM and mapped correctly to a standard concept ID.  If a unit is available in the source and is being correctly populated & mapped in your ETL but is *not* present on the list of plausible unit concept IDs, you should verify whether or not the unit is actually plausible - you may need to consult a clinician to do so.  If the unit is plausible for the given measurement, please report this as a DataQualityDashboard bug here: https://github.com/OHDSI/DataQualityDashboard/issues.  If the unit is not plausible, do not change it!  Instead, you should document the issue for users of the CDM and discuss with your data provider how to handle the data.
 
 ### Data Users
 
+It is generally not recommended to use measurements with implausible units in analyses as it is impossible to determine whether the unit is wrong; the value is wrong; and/or the measurement code is wrong in the source data.  If a measurement is missing a `unit_concept_id` due to an ETL issue, and the `unit_source_value` or `unit_source_concept_id` is available, you can utilize these values to perform your analysis.  If `unit_source_value` and `unit_source_concept_id` are missing, you may consider consulting with your data provider as to if and when you may be able to infer what the missing unit should be. 
