@@ -54,7 +54,7 @@ WHERE m.@cdmFieldName = @conceptId
 GROUP BY 1,2,3
 ```
 
-Inspect the output of the violated rows query to identify the root cause of the issue.  If the `unit_source_value` and/or `unit_source_concept_id` are populated, check them against the list of plausible unit concept IDs to understand if they should have been mapped to one of the plausible standard concepts.  If the `unit_source_value` is NULL and the list of plausible unit concept IDs does not include -1, then you may need to check your source data to undersand whether or not a unit is available in the source. 
+Inspect the output of the violated rows query to identify the root cause of the issue.  If the `unit_source_value` and/or `unit_source_concept_id` are populated, check them against the list of plausible unit concept IDs to understand if they should have been mapped to one of the plausible standard concepts.  If the `unit_source_value` is NULL and the list of plausible unit concept IDs does not include -1, then you may need to check your source data to understand whether or not a unit is available in the source. 
 
 ### ETL Developers
 

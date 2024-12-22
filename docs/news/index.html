@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.2</span>
       </span>
     </div>
 
@@ -142,7 +142,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
@@ -163,6 +163,27 @@
       <small>Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.6.2" id="dataqualitydashboard-262">DataQualityDashboard 2.6.2<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-262"></a></h2>
+<p>This release includes:</p>
+<div class="section level4">
+<h4 id="bugfixes-2-6-2">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-2-6-2"></a></h4>
+<ul><li>Some fields were missing a standardConceptFieldName for the sourceValueCompleteness check, causing those checks to fail with an error. The missing field names have now been added</li>
+<li>Many unit plausibility checks were missing legitimate units from the list of plausible units - these have now been updated</li>
+<li>Sample results files in the shinyApps folder which had been causing issues for some users in rendering the Shiny app have now been removed</li>
+<li>The fkDomain check has been disabled for the episode.episode_object_concept_id and measurement.value_as_concept_id fields, as these fields have multiple acceptable domains. The check can only currently support a single accepted domain</li>
+<li>The withinVisitDates check was previously incorrectly categorized as a Conformance check; it has been recategorized as Plausibility</li>
+</ul></div>
+<div class="section level4">
+<h4 id="new-executedqchecks-parameter-2-6-2">New executeDqChecks Parameter<a class="anchor" aria-label="anchor" href="#new-executedqchecks-parameter-2-6-2"></a></h4>
+<p>There is now a parameter, <code>checkSeverity</code>, which can be used to limit the execution of DQD to <code>fatal</code>, <code>convention</code>, and/or <code>characterization</code> checks. Fatal checks are checks that should never fail, under any circumstance, as they relate to the relational integrity of the CDM. Convention checks are checks on critical OMOP CDM conventions for which failures should be resolved whenever possible; however, some level of failure is unavoidable (i.e., standard concept mapping for source concepts with no suitable standard concept). Characterization checks provide users with an understanding of the quality of the underlying data and generally will need their thresholds modified to match expectations of the source.</p>
+</div>
+<div class="section level4">
+<h4 id="documentation-2-6-2">Documentation<a class="anchor" aria-label="anchor" href="#documentation-2-6-2"></a></h4>
+<ul><li>We added 2 more check documentation pages - all DQ checks now have documentation! Check out the newly added pages <a href="https://ohdsi.github.io/DataQualityDashboard/articles/checkIndex.html">here</a> and please reach out with feedback as we continue improving our documentation!</li>
+<li>We fixed a bug in the exclude checks sample code in CodeToRun.R</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.6.1" id="dataqualitydashboard-261">DataQualityDashboard 2.6.1<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-261"></a></h2>
 <p>This release includes:</p>
@@ -219,7 +240,7 @@
 </div>
 <div class="section level4">
 <h4 id="check-updates-2-6-0">Check Updates<a class="anchor" aria-label="anchor" href="#check-updates-2-6-0"></a></h4>
-<ul><li>The number of measurements checked in <code>plausibleUnitConceptIds</code> has been reduced, and the lists of plausible units for those measurements have been re-reviewed and updated for accuracy. This change is intended to improve performance and reliablility of this check. Please file an issue if you would like to contribute additional measurements + plausible units to be checked in the future</li>
+<ul><li>The number of measurements checked in <code>plausibleUnitConceptIds</code> has been reduced, and the lists of plausible units for those measurements have been re-reviewed and updated for accuracy. This change is intended to improve performance and reliability of this check. Please file an issue if you would like to contribute additional measurements + plausible units to be checked in the future</li>
 <li>Some erroneous <code>plausibleValueLow</code> thresholds have been corrected to prevent false positive failures from occurring</li>
 </ul></div>
 <div class="section level4">
