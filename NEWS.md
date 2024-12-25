@@ -1,3 +1,7 @@
+DataQualityDashboard 2.6.3
+==========================
+This release includes a patch bugfix for the `standardConceptFieldName` update described below. The added field names had previously been added in the wrong column of the threshold file; this has now been fixed.
+
 DataQualityDashboard 2.6.2
 ==========================
 This release includes: 
