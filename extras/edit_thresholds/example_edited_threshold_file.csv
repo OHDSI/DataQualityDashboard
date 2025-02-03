@@ -1,0 +1,13 @@
+Level,cdmTableName,cdmFieldName,Check_name,fkTableName,fkDomain,New Threshold,Note,
+Field,PERSON,race_concept_id,fkDomain,0%,97.07%,100%,Mapping to UKB values from observation domain,
+Field,OBSERVATION_PERIOD,observation_period_end_date,plausibleValueHigh,1%,4.20%,0%,Observation period should take the max of these dates as the end date.,
+Field,VISIT_OCCURRENCE,visit_concept_id,fkDomain,0%,0.53%,1%,Some mapped to 0 in hesin to visit_occurrence.,
+Field,VISIT_OCCURRENCE,visit_start_date,plausibleValueHigh,1%,0.02%,0%,Investigate why dates are in the future.,
+Field,VISIT_OCCURRENCE,visit_end_date,plausibleValueHigh,1%,0.02%,0%,Investigate why dates are in the future.,
+Field,CONDITION_OCCURRENCE,condition_concept_id,fkDomain,0%,20.24%,0%,Unchanged,To be investigated
+Field,DRUG_EXPOSURE,drug_concept_id,standardConceptRecordCompleteness,10%,14.04%,15%,We expect non-existing source dm+d codes,
+Field,DRUG_EXPOSURE,drug_exposure_start_date,plausibleValueHigh,1%,0.03%,0%,Investigate why dates are in the future.,
+Field,PROCEDURE_OCCURRENCE,procedure_concept_id,fkDomain,0%,2.85%,3%,Expected,
+Field,MEASUREMENT,measurement_concept_id,fkDomain,0%,53.40%,0%,Unchanged,
+Field,CONDITION_ERA,condition_concept_id,fkDomain,0%,17.69%,0%,Unchanged,
+Field,CONDITION_ERA,condition_concept_id,standardConceptRecordCompleteness,0%,0.06%,0%,Unchanged,
