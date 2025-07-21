@@ -54,6 +54,12 @@
     return(0)
   }
 
+  # measurePersonCompleteness should be marked as not applicable if table is missing,
+  # but NOT if table is empty (it should run and potentially fail)
+  if (x$checkName == "measurePersonCompleteness" && !(x$tableIsMissing)) {
+    return(0)
+  }
+
   if (any(x$tableIsMissing, x$fieldIsMissing, x$tableIsEmpty, na.rm = TRUE)) {
     return(1)
   }

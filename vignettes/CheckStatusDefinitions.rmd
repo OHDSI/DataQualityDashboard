@@ -4,11 +4,11 @@ author: "Dmitry Ilyn, Maxim Moinat"
 date: "`r Sys.Date()`"
 output:
     pdf_document:
-        number_sections: yes
-        toc: yes
+        number_sections: true
+        toc: true
     html_document:
-        number_sections: yes
-        toc: yes
+        number_sections: true
+        toc: true
 vignette: >
     %\VignetteIndexEntry{Check Status Definitions}
     %\VignetteEncoding{UTF-8}

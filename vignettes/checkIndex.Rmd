@@ -4,8 +4,8 @@ author: "Katy Sadowski"
 date: "`r Sys.Date()`"
 output:
   html_document:
-    number_sections: yes
-    toc: yes
+    number_sections: true
+    toc: true
 vignette: >
     %\VignetteIndexEntry{Check Index}
     %\VignetteEncoding{UTF-8}

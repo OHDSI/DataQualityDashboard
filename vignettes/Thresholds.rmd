@@ -4,11 +4,11 @@ author: "Clair Blacketer"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
-    number_sections: yes
-    toc: yes
+    number_sections: true
+    toc: true
   html_document:
-    number_sections: yes
-    toc: yes
+    number_sections: true
+    toc: true
 vignette: >
   %\VignetteIndexEntry{Failure Thresholds and How to Change Them}
   %\VignetteEncoding{UTF-8}
