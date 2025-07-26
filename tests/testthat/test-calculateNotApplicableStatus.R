@@ -166,3 +166,71 @@ test_that("measurePersonCompleteness NOT marked as Not Applicable when table is 
   # It should fail because the threshold is 100% and all persons have 0 records in empty table
   expect_true(r$failed == 1)
 })
+
+test_that("NA applied correctly when table or field is missing", {
+  # measurePersonCompleteness with isError=1 and tableIsMissing=TRUE should be NA
+  mockCheckResult <- data.frame(
+    checkName = "measurePersonCompleteness",
+    cdmTableName = "FOO",
+    cdmFieldName = NA,
+    isError = 1,
+    tableIsMissing = TRUE,
+    fieldIsMissing = FALSE,
+    tableIsEmpty = FALSE,
+    fieldIsEmpty = FALSE,
+    conceptIsMissing = FALSE,
+    conceptAndUnitAreMissing = FALSE
+  )
+  result <- DataQualityDashboard:::.applyNotApplicable(mockCheckResult)
+  expect_equal(result, 1)
+
+  # measureValueCompleteness with isError=1 and fieldIsMissing=TRUE should be NA
+  mockCheckResult <- data.frame(
+    checkName = "measureValueCompleteness",
+    cdmTableName = "OBSERVATION",
+    cdmFieldName = "bar",
+    isError = 1,
+    tableIsMissing = FALSE,
+    fieldIsMissing = TRUE,
+    tableIsEmpty = FALSE,
+    fieldIsEmpty = FALSE,
+    conceptIsMissing = FALSE,
+    conceptAndUnitAreMissing = FALSE
+  )
+  result <- DataQualityDashboard:::.applyNotApplicable(mockCheckResult)
+  expect_equal(result, 1)
+})
+
+test_that(".applyNotApplicable handles tableIsMissing and fieldIsMissing correctly for cdmTable and cdmField", {
+  # cdmTable check with missing table should NOT be NA (special case)
+  mockCheckResult <- data.frame(
+    checkName = "cdmTable",
+    cdmTableName = "FOO",
+    cdmFieldName = NA,
+    isError = 0,
+    tableIsMissing = TRUE,
+    fieldIsMissing = FALSE,
+    tableIsEmpty = FALSE,
+    fieldIsEmpty = FALSE,
+    conceptIsMissing = FALSE,
+    conceptAndUnitAreMissing = FALSE
+  )
+  result <- DataQualityDashboard:::.applyNotApplicable(mockCheckResult)
+  expect_equal(result, 0)
+
+  # cdmField check with missing field should NOT be NA (special case)
+  mockCheckResult <- data.frame(
+    checkName = "cdmField",
+    cdmTableName = "OBSERVATION",
+    cdmFieldName = "bar",
+    isError = 0,
+    tableIsMissing = FALSE,
+    fieldIsMissing = TRUE,
+    tableIsEmpty = FALSE,
+    fieldIsEmpty = FALSE,
+    conceptIsMissing = FALSE,
+    conceptAndUnitAreMissing = FALSE
+  )
+  result <- DataQualityDashboard:::.applyNotApplicable(mockCheckResult)
+  expect_equal(result, 0)
+})
