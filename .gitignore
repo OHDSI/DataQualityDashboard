@@ -42,3 +42,4 @@ docs/Gemfile.lock
 vignettes/*.log
 /doc/
 /Meta/
+*.log
