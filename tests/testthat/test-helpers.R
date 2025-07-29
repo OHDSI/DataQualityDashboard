@@ -12,7 +12,12 @@ if (Sys.getenv("DEVTOOLS_LOAD") == "true") {
   print("setting sql folder symbolic link")
   packageRoot <- normalizePath(system.file("..", package = "DataQualityDashboard"))
   # Create symbolic link so code can be used in devtools::test()
-  R.utils::createLink(link = file.path(packageRoot, "sql"), system.file("sql", package = "DataQualityDashboard"))
-  options("use.devtools.sql_shim" = TRUE)
+  tryCatch({
+    R.utils::createLink(link = file.path(packageRoot, "sql"), system.file("sql", package = "DataQualityDashboard"))
+    options("use.devtools.sql_shim" = TRUE)
+  }, error = function(e) {
+    warning("Failed to create symbolic link for SQL directory: ", e$message)
+    # Continue without the symbolic link - the package should still work
+  })
 }
 options(connectionObserver = NULL)

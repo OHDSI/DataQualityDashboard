@@ -15,8 +15,13 @@ if (!isRcmdCheck && requireNamespace("devtools", quietly = TRUE)) {
   if (!file.exists(sqlLinkPath) && sqlPackagePath != "") {
     print("setting sql folder symbolic link")
     # Create symbolic link so code can be used in devtools::test()
-    R.utils::createLink(link = sqlLinkPath, sqlPackagePath)
-    options("use.devtools.sql_shim" = TRUE)
+    tryCatch({
+      R.utils::createLink(link = sqlLinkPath, sqlPackagePath)
+      options("use.devtools.sql_shim" = TRUE)
+    }, error = function(e) {
+      warning("Failed to create symbolic link for SQL directory: ", e$message)
+      # Continue without the symbolic link - the package should still work
+    })
   }
 }
 
