@@ -43,6 +43,7 @@ Suggests:
     shiny,
     ggplot2,
     Eunomia,
-    R.utils
+    R.utils,
+    devtools
 RoxygenNote: 7.3.2
 Encoding: UTF-8
