@@ -42,10 +42,10 @@ if (Sys.getenv("DONT_DOWNLOAD_JDBC_DRIVERS", "") == "TRUE") {
 } else {
   jdbcDriverFolder <- tempfile("jdbcDrivers")
   dir.create(jdbcDriverFolder)
-  downloadJdbcDrivers("postgresql", jdbcDriverFolder)
-  downloadJdbcDrivers("sql server", jdbcDriverFolder)
-  downloadJdbcDrivers("oracle", jdbcDriverFolder)
-  downloadJdbcDrivers("redshift", jdbcDriverFolder)
+  DatabaseConnector::downloadJdbcDrivers("postgresql", jdbcDriverFolder)
+  DatabaseConnector::downloadJdbcDrivers("sql server", jdbcDriverFolder)
+  DatabaseConnector::downloadJdbcDrivers("oracle", jdbcDriverFolder)
+  DatabaseConnector::downloadJdbcDrivers("redshift", jdbcDriverFolder)
 }
 
 connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
