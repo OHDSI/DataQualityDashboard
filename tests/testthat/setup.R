@@ -1,41 +1,41 @@
-# Only use devtools::load_all() when running tests directly with devtools
-# R CMD check loads the package automatically, so we don't need this
-# Check if we're in an R CMD check environment by looking at the current directory
-isRcmdCheck <- grepl("\\.Rcheck", getwd())
+# # Only use devtools::load_all() when running tests directly with devtools
+# # R CMD check loads the package automatically, so we don't need this
+# # Check if we're in an R CMD check environment by looking at the current directory
+# isRcmdCheck <- grepl("\\.Rcheck", getwd())
 
-if (!isRcmdCheck && requireNamespace("devtools", quietly = TRUE)) {
-  devtools::load_all()
+# if (!isRcmdCheck && requireNamespace("devtools", quietly = TRUE)) {
+#   devtools::load_all()
   
-  # Create symbolic link for sql directory if it doesn't exist
-  # This allows testing with devtools::test
-  packageRoot <- normalizePath(system.file("..", package = "DataQualityDashboard"))
-  sqlLinkPath <- file.path(packageRoot, "sql")
-  sqlPackagePath <- system.file("sql", package = "DataQualityDashboard")
+#   # Create symbolic link for sql directory if it doesn't exist
+#   # This allows testing with devtools::test
+#   packageRoot <- normalizePath(system.file("..", package = "DataQualityDashboard"))
+#   sqlLinkPath <- file.path(packageRoot, "sql")
+#   sqlPackagePath <- system.file("sql", package = "DataQualityDashboard")
   
-  if (!file.exists(sqlLinkPath) && sqlPackagePath != "") {
-    print("setting sql folder symbolic link")
-    # Create symbolic link so code can be used in devtools::test()
-    tryCatch({
-      R.utils::createLink(link = sqlLinkPath, sqlPackagePath)
-      options("use.devtools.sql_shim" = TRUE)
-    }, error = function(e) {
-      warning("Failed to create symbolic link for SQL directory: ", e$message)
-      # Continue without the symbolic link - the package should still work
-    })
-  }
-}
+#   if (!file.exists(sqlLinkPath) && sqlPackagePath != "") {
+#     print("setting sql folder symbolic link")
+#     # Create symbolic link so code can be used in devtools::test()
+#     tryCatch({
+#       R.utils::createLink(link = sqlLinkPath, sqlPackagePath)
+#       options("use.devtools.sql_shim" = TRUE)
+#     }, error = function(e) {
+#       warning("Failed to create symbolic link for SQL directory: ", e$message)
+#       # Continue without the symbolic link - the package should still work
+#     })
+#   }
+# }
 
-# Ensure the package is properly loaded and SQL files are accessible
-if (!requireNamespace("DataQualityDashboard", quietly = TRUE)) {
-  # Try to load the package if it's not already loaded
-  library(DataQualityDashboard)
-}
+# # Ensure the package is properly loaded and SQL files are accessible
+# if (!requireNamespace("DataQualityDashboard", quietly = TRUE)) {
+#   # Try to load the package if it's not already loaded
+#   library(DataQualityDashboard)
+# }
 
-# Verify SQL files are accessible
-sqlFile <- system.file("sql", "sql_server", "field_plausible_after_birth.sql", package = "DataQualityDashboard")
-if (sqlFile == "") {
-  stop("Cannot find SQL files. Make sure the package is properly loaded.")
-}
+# # Verify SQL files are accessible
+# sqlFile <- system.file("sql", "sql_server", "field_plausible_after_birth.sql", package = "DataQualityDashboard")
+# if (sqlFile == "") {
+#   stop("Cannot find SQL files. Make sure the package is properly loaded.")
+# }
 
 if (Sys.getenv("DONT_DOWNLOAD_JDBC_DRIVERS", "") == "TRUE") {
   jdbcDriverFolder <- Sys.getenv("DATABASECONNECTOR_JAR_FOLDER")
