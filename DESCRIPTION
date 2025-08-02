@@ -43,6 +43,7 @@ Suggests:
     shiny,
     ggplot2,
     Eunomia,
+    duckdb,
     R.utils,
     devtools
 RoxygenNote: 7.3.2
