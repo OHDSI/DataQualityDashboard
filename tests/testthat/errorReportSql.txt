@@ -1,0 +1,33 @@
+DBMS:
+duckdb
+
+Error:
+rapi_prepare: Failed to prepare query select * from main.cdm_source
+Error: Catalog Error: Table with name cdm_source does not exist!
+Did you mean "duckdb_schemas"?
+
+LINE 1: select * from main.cdm_source
+                      ^
+
+SQL:
+select * from main.cdm_source;
+
+R version:
+R version 4.4.1 (2024-06-14)
+
+Platform:
+aarch64-apple-darwin20
+
+Attached base packages:
+- stats
+- graphics
+- grDevices
+- utils
+- datasets
+- methods
+- base
+
+Other attached packages:
+- DataQualityDashboard (2.6.3)
+- testthat (3.2.3)
+- DatabaseConnector (6.4.0)

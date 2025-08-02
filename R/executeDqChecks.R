@@ -383,11 +383,7 @@ executeDqChecks <- function(connectionDetails,
     )
   }
 
-  if (sqlOnly) {
-    invisible(allResults)
-  } else {
-    return(allResults)
-  }
+  invisible(allResults)
 }
 
 .needsAutoCommit <- function(connectionDetails, connection) {
