@@ -36,48 +36,12 @@ writeJsonResultsToTable <- function(connectionDetails,
   })
   df <- do.call(plyr::rbind.fill, checkResults)
 
-  connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
-  on.exit(DatabaseConnector::disconnect(connection = connection))
-
-  if (length(cohortDefinitionId > 0)) {
-    tableName <- sprintf("%s.%s_%s", resultsDatabaseSchema, writeTableName, cohortDefinitionId)
-  } else {
-    tableName <- sprintf("%s.%s", resultsDatabaseSchema, writeTableName)
-  }
-
-  ParallelLogger::logInfo(sprintf("Writing results to table %s", tableName))
-
-  ddl <- SqlRender::loadRenderTranslateSql(
-    sqlFilename = "result_dataframe_ddl.sql",
-    packageName = "DataQualityDashboard",
-    tableName = tableName,
-    dbms = connectionDetails$dbms
-  )
-
-  DatabaseConnector::executeSql(connection = connection, sql = ddl, progressBar = TRUE)
-
-  # convert column names to snake case, omitting the checkId column,
-  # which has no underscore in the results table DDL
-  for (i in 1:ncol(df)) {
-    if (colnames(df)[i] == "checkId") {
-      colnames(df)[i] <- tolower(colnames(df)[i])
-    } else {
-      colnames(df)[i] <- SqlRender::camelCaseToSnakeCase(colnames(df)[i])
-    }
-  }
-
-  tryCatch(
-    expr = {
-      DatabaseConnector::insertTable(
-        connection = connection, tableName = tableName, data = df,
-        dropTableIfExists = FALSE, createTable = FALSE, tempTable = FALSE,
-        progressBar = TRUE
-      )
-      ParallelLogger::logInfo("Finished writing table")
-    },
-    error = function(e) {
-      ParallelLogger::logError(sprintf("Writing table failed: %s", e$message))
-    }
+  .writeResultsToTable(
+    connectionDetails = connectionDetails,
+    resultsDatabaseSchema = resultsDatabaseSchema,
+    checkResults = df,
+    writeTableName = writeTableName,
+    cohortDefinitionId = cohortDefinitionId
   )
 }
 

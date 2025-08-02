@@ -16,6 +16,7 @@
 # SqlRender
 statement_*.sql
 errorReport.txt
+errorReportSql.txt
 
 # output files
 inst/results.json
