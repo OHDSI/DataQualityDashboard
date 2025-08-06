@@ -36,7 +36,7 @@ FROM (
                 AND c.cohort_definition_id = @cohortDefinitionId
         }
         WHERE cdmTable.@cdmFieldName = 0
-        {@cdmFieldName == 'UNIT_CONCEPT_ID' | @cdmFieldName == 'UNIT_SOURCE_CONCEPT_ID'}?{OR (cdmTable.@cdmFieldName IS NULL AND cdmTable.unit_source_value IS NOT NULL)}
+        {@cdmTableName != 'DOSE_ERA' & (@cdmFieldName == 'UNIT_CONCEPT_ID' | @cdmFieldName == 'UNIT_SOURCE_CONCEPT_ID')}?{OR (cdmTable.@cdmFieldName IS NULL AND cdmTable.unit_source_value IS NOT NULL)}
         {@cdmFieldName == 'ADMITTED_FROM_CONCEPT_ID'}?{OR (cdmTable.@cdmFieldName IS NULL AND cdmTable.admitted_from_source_value IS NOT NULL)}
         {@cdmFieldName == 'ADMITTING_SOURCE_CONCEPT_ID'}?{OR (cdmTable.@cdmFieldName IS NULL AND cdmTable.admitting_source_value IS NOT NULL)}
         {@cdmFieldName == 'DISCHARGED_TO_CONCEPT_ID'}?{OR (cdmTable.@cdmFieldName IS NULL AND cdmTable.discharged_to_source_value IS NOT NULL)}
@@ -69,7 +69,7 @@ FROM (
     }
     -- for non-required fields, only include records with non-null source values or non-null concept IDs 
     WHERE (cdmTable.@cdmFieldName IS NOT NULL
-    {@cdmFieldName == 'UNIT_CONCEPT_ID' | @cdmFieldName == 'UNIT_SOURCE_CONCEPT_ID'}?{OR cdmTable.unit_source_value IS NOT NULL}
+    {@cdmTableName != 'DOSE_ERA' & (@cdmFieldName == 'UNIT_CONCEPT_ID' | @cdmFieldName == 'UNIT_SOURCE_CONCEPT_ID')}?{OR cdmTable.unit_source_value IS NOT NULL}
     {@cdmFieldName == 'ADMITTED_FROM_CONCEPT_ID'}?{OR cdmTable.admitted_from_source_value IS NOT NULL}
     {@cdmFieldName == 'ADMITTING_SOURCE_CONCEPT_ID'}?{OR cdmTable.admitting_source_value IS NOT NULL}
     {@cdmFieldName == 'DISCHARGED_TO_CONCEPT_ID'}?{OR cdmTable.discharged_to_source_value IS NOT NULL}
