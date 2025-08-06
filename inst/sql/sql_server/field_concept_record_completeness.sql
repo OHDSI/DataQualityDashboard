@@ -67,7 +67,6 @@ FROM (
             ON cdmTable.person_id = c.subject_id
             AND c.cohort_definition_id = @cohortDefinitionId
     }
-    -- for non-required fields, only include records with non-null source values or non-null concept IDs 
     WHERE (cdmTable.@cdmFieldName IS NOT NULL
     {@cdmTableName != 'DOSE_ERA' & (@cdmFieldName == 'UNIT_CONCEPT_ID' | @cdmFieldName == 'UNIT_SOURCE_CONCEPT_ID')}?{OR cdmTable.unit_source_value IS NOT NULL}
     {@cdmFieldName == 'ADMITTED_FROM_CONCEPT_ID'}?{OR cdmTable.admitted_from_source_value IS NOT NULL}

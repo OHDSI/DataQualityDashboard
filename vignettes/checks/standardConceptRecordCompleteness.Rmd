@@ -43,7 +43,7 @@ Standard concept mapping is one of the most fundamental conventions of the OMOP 
 ### ETL Developers
 A failure of this check usually indicates a failure to map a source value to a standard OMOP concept.  In some cases, such a failure can and should be remediated in the concept-mapping step of the ETL.  In other cases, it may represent a mapping that currently is not possible to implement. 
 
-Note that in the case of a non-required concept ID field (e.g. `unit_concept_id`), even though the field is not required by default, it still must be populated if a source value is available.  If no standard concept mapping exists for the source value, the field should be poplated with a value of 0.
+Note that in the case of a non-required concept ID field (e.g. `unit_concept_id`), even though the field is not required by default, it still must be populated if a source value is available.  If no standard concept mapping exists for the source value, the field should be poplated with a value of 0.  If there is no source value, the field should be left NULL.
 
 To investigate the failure, run the following query: 
 
