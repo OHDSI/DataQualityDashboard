@@ -44,4 +44,4 @@ vignettes/*.log
 /doc/
 /Meta/
 *.log
-sql
+/sql

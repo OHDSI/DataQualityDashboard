@@ -72,3 +72,6 @@ connectionDetailsEunomiaNaChecks <- Eunomia::getEunomiaConnectionDetails()
 
 # Separate connection details for plausibleAfterBirth test
 connectionDetailsPlausibleAfterBirth <- Eunomia::getEunomiaConnectionDetails()
+
+# Separate connection details for observation period overlap test
+connectionDetailsEunomiaOverlap <- Eunomia::getEunomiaConnectionDetails()

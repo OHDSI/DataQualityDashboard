@@ -74,6 +74,116 @@ test_that("Execute CONCEPT checks on Synthea/Eunomia", {
   expect_true(nrow(results$CheckResults) > 0)
 })
 
+test_that("Execute observation period overlap check", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+  
+  # First, run the check on clean data (should pass)
+  results_clean <- executeDqChecks(
+    connectionDetails = connectionDetailsEunomiaOverlap,
+    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+    cdmSourceName = "Eunomia",
+    checkNames = c("measureObservationPeriodOverlap"),
+    outputFolder = outputFolder,
+    writeToTable = F
+  )
+  
+  expect_true(nrow(results_clean$CheckResults) > 0)
+  
+  # Get the result for the observation period overlap check
+  overlap_result_clean <- results_clean$CheckResults[
+    results_clean$CheckResults$checkName == "measureObservationPeriodOverlap", ]
+  
+  expect_true(nrow(overlap_result_clean) == 1)
+  
+  # Now create overlapping observation periods to test the failure scenario
+  connection <- DatabaseConnector::connect(connectionDetailsEunomiaOverlap)
+  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
+  
+  # Insert overlapping observation periods for a test person
+  # First, get an existing person_id
+  person_id <- DatabaseConnector::querySql(connection, "SELECT person_id FROM observation_period LIMIT 1;")$PERSON_ID[1]
+  
+  # Insert overlapping observation periods
+  DatabaseConnector::renderTranslateExecuteSql(connection,
+    "INSERT INTO observation_period (observation_period_id, person_id, observation_period_start_date, observation_period_end_date, period_type_concept_id)
+     VALUES 
+     (999999, @person_id, strftime('%s', '2020-01-01'), strftime('%s', '2020-06-30'), 44814724),
+     (999998, @person_id, strftime('%s', '2020-04-01'), strftime('%s', '2020-12-31'), 44814724);",
+    person_id = person_id
+  )
+  
+  # Run the check again with overlapping data (should fail)
+  results_overlap <- executeDqChecks(
+    connectionDetails = connectionDetailsEunomiaOverlap,
+    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+    cdmSourceName = "Eunomia",
+    checkNames = c("measureObservationPeriodOverlap"),
+    outputFolder = outputFolder,
+    writeToTable = F
+  )
+  
+  expect_true(nrow(results_overlap$CheckResults) > 0)
+  
+  # Get the result for the observation period overlap check with overlapping data
+  overlap_result_overlap <- results_overlap$CheckResults[
+    results_overlap$CheckResults$checkName == "measureObservationPeriodOverlap", ]
+  
+  expect_true(nrow(overlap_result_overlap) == 1)
+  
+  # Verify that the check detected the overlap (should have violated rows)
+  expect_true(overlap_result_overlap$numViolatedRows > 0)
+  expect_true(overlap_result_overlap$pctViolatedRows > 0)
+  
+  # Verify that the clean data had no violations
+  expect_true(overlap_result_clean$numViolatedRows == 0)
+  expect_true(overlap_result_clean$pctViolatedRows == 0)
+  
+  # Clean up the overlapping data
+  DatabaseConnector::renderTranslateExecuteSql(connection,
+    "DELETE FROM observation_period WHERE observation_period_id IN (999999, 999998);"
+  )
+  
+  # Now test back-to-back observation periods
+  DatabaseConnector::renderTranslateExecuteSql(connection,
+    "INSERT INTO observation_period (observation_period_id, person_id, observation_period_start_date, observation_period_end_date, period_type_concept_id)
+     VALUES 
+     (999997, @person_id, strftime('%s', '2020-01-01'), strftime('%s', '2020-06-30'), 44814724),
+     (999996, @person_id, strftime('%s', '2020-07-01'), strftime('%s', '2020-12-31'), 44814724);",
+    person_id = person_id
+  )
+  
+  # Run the check again with back-to-back data (should fail)
+  results_backtoback <- executeDqChecks(
+    connectionDetails = connectionDetailsEunomiaOverlap,
+    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+    cdmSourceName = "Eunomia",
+    checkNames = c("measureObservationPeriodOverlap"),
+    outputFolder = outputFolder,
+    writeToTable = F
+  )
+  
+  expect_true(nrow(results_backtoback$CheckResults) > 0)
+  
+  # Get the result for the observation period overlap check with back-to-back data
+  overlap_result_backtoback <- results_backtoback$CheckResults[
+    results_backtoback$CheckResults$checkName == "measureObservationPeriodOverlap", ]
+  
+  expect_true(nrow(overlap_result_backtoback) == 1)
+  
+  # Verify that the check detected the back-to-back periods (should have violated rows)
+  expect_true(overlap_result_backtoback$numViolatedRows > 0)
+  expect_true(overlap_result_backtoback$pctViolatedRows > 0)
+  
+  # Clean up the back-to-back data
+  DatabaseConnector::renderTranslateExecuteSql(connection,
+    "DELETE FROM observation_period WHERE observation_period_id IN (999997, 999996);"
+  )
+})
+
 test_that("Execute a single DQ check on a cohort in Synthea/Eunomia", {
   # simulating cohort table entries using observation period data
   connection <- DatabaseConnector::connect(connectionDetailsEunomia)
@@ -394,7 +504,7 @@ test_that("checkNames are filtered by checkSeverity", {
 
   expectedCheckNames <- c(
     "cdmTable", "cdmField", "isRequired", "cdmDatatype",
-    "isPrimaryKey", "isForeignKey"
+    "isPrimaryKey", "isForeignKey", "measureObservationPeriodOverlap"
   )
   expect_true(all(results$CheckResults$checkName %in% expectedCheckNames))
 })
