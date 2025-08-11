@@ -39,9 +39,9 @@ FROM
     		AND c.cohort_definition_id = @cohortDefinitionId
     	}
 		WHERE m.@cdmFieldName = @conceptId
-		  	AND /* '-1' stands for the cases when the only plausible unit_concept_id is null; 0 prevents flagging rows with a unit_concept_id of 0, which are checked in standardConceptRecordCompleteness */
+		  	AND /* '-1' stands for the cases when the only plausible unit_concept_id is no unit; 0 prevents flagging rows with a unit_concept_id of 0, which are checked in standardConceptRecordCompleteness */
 				CASE 
-					WHEN '@plausibleUnitConceptIds' = '-1' THEN COALESCE(m.unit_concept_id, -1) NOT IN (@plausibleUnitConceptIds, 0) 
+					WHEN '@plausibleUnitConceptIds' = '-1' THEN COALESCE(m.unit_concept_id, -1) NOT IN (@plausibleUnitConceptIds) 
 					ELSE m.unit_concept_id NOT IN (@plausibleUnitConceptIds, 0) 
 				END
 		/*violatedRowsEnd*/
