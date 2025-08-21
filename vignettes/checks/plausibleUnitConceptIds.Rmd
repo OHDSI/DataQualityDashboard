@@ -25,7 +25,7 @@ The number and percent of records for a given CONCEPT_ID @conceptId (@conceptNam
 
 - *Numerator*: For a given `concept_id`, the number of rows in the measurement table with a non-zero `unit_concept_id` that is not in the list of plausible unit concept ids.
   - NB, in some cases the only plausible unit is no unit (represented by "-1" in the threshold file) - in this case, a non-null, non-zero `unit_concept_id` will fail this check.
-- *Denominator*: The total number of rows in the measurement table with a given `concept_id`.
+- *Denominator*: The total number of rows in the measurement table with a given `concept_id` and a NULL or non-zero `unit_concept_id`.
 - *Related CDM Convention(s)*: N/A
 - *CDM Fields/Tables*: `MEASUREMENT`
 - *Default Threshold Value*: 5%
@@ -49,11 +49,12 @@ SELECT
   COUNT(*)
 FROM @cdmDatabaseSchema.@cdmTableName m
 WHERE m.@cdmFieldName = @conceptId
-  AND /* '-1' stands for the cases when the only plausible unit_concept_id is null; 0 prevents flagging rows with a unit_concept_id of 0, which are checked in standardConceptRecordCompleteness */
-    CASE 
-      WHEN '@plausibleUnitConceptIds' = '-1' THEN COALESCE(m.unit_concept_id, -1) NOT IN (@plausibleUnitConceptIds) 
-      ELSE m.unit_concept_id NOT IN (@plausibleUnitConceptIds, 0) 
-    END
+  AND m.unit_concept_id IS NOT NULL
+  /* '-1' stands for the cases when the only plausible unit_concept_id is no unit; 0 prevents flagging rows with a unit_concept_id of 0, which are checked in standardConceptRecordCompleteness */
+  AND (
+    (-1 IN (@plausibleUnitConceptIds) AND m.unit_concept_id != 0) 
+    OR m.unit_concept_id NOT IN (@plausibleUnitConceptIds, 0)
+  )
 GROUP BY 1,2,3
 ```
 

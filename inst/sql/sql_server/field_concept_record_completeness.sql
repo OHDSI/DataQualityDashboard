@@ -35,6 +35,9 @@ FROM (
                 ON cdmTable.person_id = c.subject_id
                 AND c.cohort_definition_id = @cohortDefinitionId
         }
+        /* Violates if 0, or, for non-required fields, if empty and respective source value non-empty. For example, this resolves to the following for death.cause_concept_id:
+        WHERE death.cause_concept_id = 0 OR (death.cause_concept_id IS NULL AND death.cause_source_value IS NOT NULL)
+        */
         WHERE cdmTable.@cdmFieldName = 0
         {@cdmTableName != 'DOSE_ERA' & (@cdmFieldName == 'UNIT_CONCEPT_ID' | @cdmFieldName == 'UNIT_SOURCE_CONCEPT_ID')}?{OR (cdmTable.@cdmFieldName IS NULL AND cdmTable.unit_source_value IS NOT NULL)}
         {@cdmFieldName == 'ADMITTED_FROM_CONCEPT_ID'}?{OR (cdmTable.@cdmFieldName IS NULL AND cdmTable.admitted_from_source_value IS NOT NULL)}
