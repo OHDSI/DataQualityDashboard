@@ -42,7 +42,7 @@ Suggests:
     markdown,
     shiny,
     ggplot2,
-    Eunomia (>= 2.1.0),
+    Eunomia (>= 2.0.0),
     duckdb,
     R.utils,
     devtools
