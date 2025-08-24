@@ -154,6 +154,7 @@ Viewing Results
 
 **Launching Dashboard as Shiny App**
 ```r
+# Use the fully-qualified path to the JSON results file
 DataQualityDashboard::viewDqDashboard(jsonFilePath)
 ```
 

@@ -35,8 +35,6 @@ navbar:
     articles:
       text: Articles
       menu:
-      - text: Check Type Definitions
-        href: articles/CheckTypeDescriptions.html
       - text: DQ Check Failure Thresholds
         href: articles/Thresholds.html
       - text: DQ Check Statuses
@@ -48,7 +46,7 @@ navbar:
       - text: SQL-only Mode
         href: articles/SqlOnly.html
     checks:
-      text: NEW! Data Quality Check Types
+      text: Data Quality Check Types
       menu:
       - text: Index
         href: articles/checkIndex.html
