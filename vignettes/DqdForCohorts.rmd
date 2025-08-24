@@ -4,11 +4,11 @@ author: "Clair Blacketer"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
-    number_sections: yes
-    toc: yes
+    number_sections: true
+    toc: true
   html_document:
-    number_sections: yes
-    toc: yes
+    number_sections: true
+    toc: true
 vignette: >
   %\VignetteIndexEntry{Running the DQD on a Cohort}
   %\VignetteEncoding{UTF-8}

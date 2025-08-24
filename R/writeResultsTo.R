@@ -92,6 +92,7 @@
       ParallelLogger::logInfo("Finished writing table")
     },
     error = function(e) {
+      warning(sprintf("Writing table failed: %s", e$message))
       ParallelLogger::logError(sprintf("Writing table failed: %s", e$message))
     }
   )

@@ -4,11 +4,11 @@ author: "Don Torok"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
-    number_sections: yes
-    toc: yes
+    number_sections: true
+    toc: true
   html_document:
-    number_sections: yes
-    toc: yes
+    number_sections: true
+    toc: true
 vignette: >
   %\VignetteIndexEntry{Add a New Data Quality Check}
   %\VignetteEncoding{UTF-8}

@@ -43,7 +43,7 @@ FROM
             ON cdmTable.person_id = p.person_id
         WHERE cdmTable.@cdmFieldName IS NOT NULL AND 
             CAST(cdmTable.@cdmFieldName AS DATE) < COALESCE(
-                p.birth_datetime, 
+                CAST(p.birth_datetime AS DATE), 
                 CAST(CONCAT(
                     p.year_of_birth,
                     COALESCE(

@@ -44,21 +44,36 @@
 #'
 #' @keywords internal
 .applyNotApplicable <- function(x) {
-  # Errors precede all other statuses
+  # Special rule for measurePersonCompleteness
+  if (x$checkName == "measurePersonCompleteness") {
+    if (x$tableIsMissing) {
+      return(1)
+    } else {
+      return(0)
+    }
+  }
+
+  # Special case: cdmTable and cdmField should never be marked as NA for missing tables/fields
+  if ((x$checkName == "cdmTable" && x$tableIsMissing) || 
+      (x$checkName == "cdmField" && x$fieldIsMissing)) {
+    return(0)
+  }
+
+  # Not applicable if table or field is missing (for regular checks)
+  if (x$tableIsMissing || x$fieldIsMissing) {
+    return(1)
+  }
+
+  # Errors not related to a missing table or field should not be marked NA
   if (x$isError == 1) {
     return(0)
   }
 
-  # No NA status for cdmTable and cdmField if missing
-  if (x$checkName == "cdmTable" || x$checkName == "cdmField") {
-    return(0)
-  }
-
-  if (any(x$tableIsMissing, x$fieldIsMissing, x$tableIsEmpty, na.rm = TRUE)) {
+  if (x$tableIsEmpty) {
     return(1)
   }
 
-  # No NA status for measureValueCompleteness if empty
+  # No NA status for measureValueCompleteness if field is empty
   if (x$checkName == "measureValueCompleteness") {
     return(0)
   }
@@ -142,10 +157,12 @@
       by = c("cdmTableName", "cdmFieldName")
     ) %>%
     dplyr::mutate(
-      conceptIsMissing = .data$checkLevel == "CONCEPT" & is.na(.data$unitConceptId) & .data$numDenominatorRows == 0,
-      conceptAndUnitAreMissing = .data$checkLevel == "CONCEPT" & !is.na(.data$unitConceptId) & .data$numDenominatorRows == 0,
-      fieldIsMissing = dplyr::coalesce(.data$fieldIsMissing, !is.na(.data$cdmFieldName)),
-      fieldIsEmpty = dplyr::coalesce(.data$fieldIsEmpty, !is.na(.data$cdmFieldName)),
+      tableIsMissing = dplyr::coalesce(.data$tableIsMissing, FALSE),
+      tableIsEmpty = dplyr::coalesce(.data$tableIsEmpty, FALSE),
+      conceptIsMissing = dplyr::coalesce(.data$checkLevel == "CONCEPT" & is.na(.data$unitConceptId) & .data$numDenominatorRows == 0, FALSE),
+      conceptAndUnitAreMissing = dplyr::coalesce(.data$checkLevel == "CONCEPT" & !is.na(.data$unitConceptId) & .data$numDenominatorRows == 0, FALSE),
+      fieldIsMissing = dplyr::coalesce(.data$fieldIsMissing, FALSE),
+      fieldIsEmpty = dplyr::coalesce(.data$fieldIsEmpty, FALSE)
     )
 
   checkResults$notApplicable <- NA
