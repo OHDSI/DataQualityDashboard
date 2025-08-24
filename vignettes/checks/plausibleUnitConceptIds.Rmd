@@ -18,13 +18,14 @@ output:
 
 
 ## Description
-The number and percent of records for a given CONCEPT_ID @conceptId (@conceptName) with implausible units (i.e., UNIT_CONCEPT_ID NOT IN  (@plausibleUnitConceptIds)).
+The number and percent of records for a given CONCEPT_ID @conceptId (@conceptName) with implausible units (i.e., UNIT_CONCEPT_ID NOT IN (@plausibleUnitConceptIds)).
 
 
 ## Definition
 
-- *Numerator*: The number of rows in the measurement table with a non-null `value_as_number` and a `unit_concept_id` that is not in the list of plausible unit concept ids. If the list of plausible unit concept ids includes -1, then a NULL `unit_concept_id` is accepted as a plausible unit.
-- *Denominator*: The total number of rows in the measurement table with a non-null `value_as_number`.
+- *Numerator*: For a given `concept_id`, the number of rows in the measurement table with a non-zero `unit_concept_id` that is not in the list of plausible unit concept ids.
+  - NB, in some cases the only plausible unit is no unit (represented by "-1" in the threshold file) - in this case, a non-null, non-zero `unit_concept_id` will fail this check.
+- *Denominator*: The total number of rows in the measurement table with a given `concept_id` and a NULL or non-zero `unit_concept_id`.
 - *Related CDM Convention(s)*: N/A
 - *CDM Fields/Tables*: `MEASUREMENT`
 - *Default Threshold Value*: 5%
@@ -34,7 +35,6 @@ The number and percent of records for a given CONCEPT_ID @conceptId (@conceptNam
 A failure of this check indicates one of the following:
 
 - A measurement record has the incorrect unit
-- A measurement record has no unit when it should have one
 - A measurement record has a unit when it should not have one
 - The list of plausible unit concept IDs in the threshold file is incomplete (please report this as a DataQualityDashboard bug!)
 
@@ -49,8 +49,12 @@ SELECT
   COUNT(*)
 FROM @cdmDatabaseSchema.@cdmTableName m
 WHERE m.@cdmFieldName = @conceptId
-    AND COALESCE (m.unit_concept_id, -1) NOT IN (@plausibleUnitConceptIds) -- '-1' stands for the cases when unit_concept_id is null
-    AND m.value_as_number IS NOT NULL 
+  AND m.unit_concept_id IS NOT NULL
+  /* '-1' stands for the cases when the only plausible unit_concept_id is no unit; 0 prevents flagging rows with a unit_concept_id of 0, which are checked in standardConceptRecordCompleteness */
+  AND (
+    ('@plausibleUnitConceptIds' = '-1' AND m.unit_concept_id != 0)  
+    OR m.unit_concept_id NOT IN (@plausibleUnitConceptIds, 0)
+  )
 GROUP BY 1,2,3
 ```
 

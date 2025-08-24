@@ -20,11 +20,12 @@ output:
 ## Description
 The number and percent of records with a value of 0 in the standard concept field @cdmFieldName in the @cdmTableName table.
 
+NB: In non-required fields, missing values are also counted as failures when a source value is available.
 
 ## Definition
 
-- *Numerator*: The number of rows with a value of 0 in the `_concept_id` standard concept field.  In the case of `MEASUREMENT.unit_concept_id` and `OBSERVATION.unit_concept_id`, the number of rows with a value of 0 in the `_concept_id` standard concept field AND a non-NULL `value_as_number`. 
-- *Denominator*: The total number of rows in the table. In the case of `MEASUREMENT.unit_concept_id` and `OBSERVATION.unit_concept_id`, the number of rows with a non-NULL `value_as_number`. 
+- *Numerator*: The number of rows with a value of 0 in the `_concept_id` standard concept field. For non-required fields, also includes rows where the `_concept_id` field is NULL and the corresponding `_source_value` field is not NULL.
+- *Denominator*: The total number of rows in the table where the `_concept_id` field is not NULL or, for non-required fields, the corresponding `_source_value` field is not NULL.
 - *Related CDM Convention(s)*: [Standard concept mapping](https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Fields)  
 - *CDM Fields/Tables*: All standard concept ID (`_concept_id`) columns in all event tables. 
 - *Default Threshold Value*: 
@@ -36,9 +37,13 @@ The number and percent of records with a value of 0 in the standard concept fiel
 ## User Guidance
 Standard concept mapping is one of the most fundamental conventions of the OMOP CDM.  It enables standardized analysis across diverse data sources and allows users to abstract away the tedium of traversing source vocabularies when building phenotypes.  As such, it is highly recommended to map as many concepts in your source as possible.  Failures of this check should be well-understood and documented so that data users can plan accordingly in the case missing data might impact their analysis. 
 
+**Note**: For non-required fields, this check also fails when a source value is provided but the corresponding concept ID field is NULL, as this indicates that a source value was available but not properly mapped to a standard concept.  For required fields, such a check is not necessary as null values will be detected by the [isRequired](isRequired.html) check.
+
 
 ### ETL Developers
 A failure of this check usually indicates a failure to map a source value to a standard OMOP concept.  In some cases, such a failure can and should be remediated in the concept-mapping step of the ETL.  In other cases, it may represent a mapping that currently is not possible to implement. 
+
+Note that in the case of a non-required concept ID field (e.g. `unit_concept_id`), even though the field is not required by default, it still must be populated if a source value is available.  If no standard concept mapping exists for the source value, the field should be poplated with a value of 0.  If there is no source value, the field should be left NULL.
 
 To investigate the failure, run the following query: 
 
@@ -51,10 +56,22 @@ SELECT
 FROM @cdmDatabaseSchema.@cdmTableName cdmTable 
 LEFT JOIN @vocabDatabaseSchema.concept ON concept.concept_id = cdmTable._source_concept_id 
 WHERE cdmTable.@cdmFieldName = 0  
--- AND cdmTable.value_as_number IS NOT NULL -- uncomment for unit_concept_id checks 
 GROUP BY 1,2,3 
 ORDER BY 4 DESC
 ``` 
+
+To investigate missing concept IDs (NULL values) when source values are available:
+
+```sql
+SELECT  
+  cdmTable._source_value, -- source value field for the table 
+  COUNT(*) 
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable 
+WHERE cdmTable.@cdmFieldName IS NULL
+  AND cdmTable._source_value IS NOT NULL
+GROUP BY 1
+ORDER BY 2 DESC
+```
 
 This will give you a summary of the source codes which failed to map to an OMOP standard concept.  Inspecting this data should give you an initial idea of what might be going on. 
 
@@ -65,7 +82,7 @@ SELECT
   concept_id AS standard_concept_mapping 
 FROM @vocabDatabaseSchema.concept_relationship 
 JOIN @vocabDatabaseSchema.concept ON concept.concept_id = c oncept_relationship.concept_id_2 
-  AND relationship_id = ‘Maps to’ 
+  AND relationship_id = 'Maps to' 
 WHERE concept_relationship.concept_id_1 = <source concept ID> 
 ```
 
@@ -84,10 +101,10 @@ FROM @vocabDatabaseSchema.concept
 WHERE concept_code = <source value> 
 ```
 
-  - If no result is returned, consider whether the source value may be a malformed version of a legitimate code (for example, sometimes ICD10-CM codes do not contain a “.” in source data).  If you can confirm that the code is properly formatted, then you have a source code which does not exist in the OMOP vocabulary.  If you believe the code was omitted from the vocabulary in error, please report this issue to the vocabulary team.  Otherwise, the short-term course of action will be to generate a mapping for the code locally and implement the mapping in your ETL.  For the longer term, the vocabulary team provides a workflow to submit new vocabularies for inclusion in the OMOP vocabularies 
+  - If no result is returned, consider whether the source value may be a malformed version of a legitimate code (for example, sometimes ICD10-CM codes do not contain a "." in source data).  If you can confirm that the code is properly formatted, then you have a source code which does not exist in the OMOP vocabulary.  If you believe the code was omitted from the vocabulary in error, please report this issue to the vocabulary team.  Otherwise, the short-term course of action will be to generate a mapping for the code locally and implement the mapping in your ETL.  For the longer term, the vocabulary team provides a workflow to submit new vocabularies for inclusion in the OMOP vocabularies 
     - Note that in some cases, you will find that no standard concept exists to which to map your source code.  In this case, the standard concept ID field should be left as 0 in the short term; in the longer term please work with the vocabulary team to address this gap as recommended above  
   
-  - Finally, if the investigation query returns no source value, you must trace the relevant record(s) back to their source and confirm if the missing source value is expected.  If not, identify and fix the related issue in your ETL.  If the record legitimately has no value/code in the source data, then the standard concept ID may be left as 0.  However, in some cases these “code-less” records represent junk data which should be filtered out in the ETL.  The proper approach will be context-dependent 
+  - Finally, if the investigation query returns no source value, you must trace the relevant record(s) back to their source and confirm if the missing source value is expected.  If not, identify and fix the related issue in your ETL.  If the record legitimately has no value/code in the source data, then the standard concept ID may be left as 0.  However, in some cases these "code-less" records represent junk data which should be filtered out in the ETL.  The proper approach will be context-dependent 
     - Note in the special case of unitless measurements/observations, the unit_concept_id field should NOT be coded as 0 and rather should be left NULL (the unit_concept_id fields are optional in the CDM spec) 
 
 It is important to note that records with a 0 standard concept ID field will be unusable in standard OHDSI analyses and thus should only be preserved if there is truly no standard concept ID for a given record.  Depending on the significance of the records in question, one should consider removing them from the dataset; however, this choice will depend on a variety of context-specific factors and should be made carefully.  Either way, the presence/absence of these unmappable records and an explanation for why they could not be mapped should be clearly documented in the ETL documentation. 

@@ -24,7 +24,7 @@ The number and percent of records that do not have a standard, valid concept in 
 ## Definition
 
 - *Numerator*: The number of rows with an `_concept_id` that exists in `CONCEPT.concept_id` but does not equal zero, and has `CONCEPT.standard_concept` != ‘S’ or non-NULL `CONCEPT.invalid_reason`. 
-- *Denominator*: The total number of rows in the table. 
+- *Denominator*: The total number of rows in the table with a non-NULL `_concept_id`.
 - *Related CDM Convention(s)*: All `_concept_id` columns should contain a standard, valid concept, or 0: https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Mapping. 
 - *CDM Fields/Tables*: All standard concept ID (`_concept_id`) columns in all event tables.
 - *Default Threshold Value*: 0%

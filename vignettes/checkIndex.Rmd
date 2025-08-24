@@ -52,6 +52,7 @@ This article will detail each check type, its name, check level, description, de
 - [fkClass](checks/fkClass.html)
 - [measurePersonCompleteness](checks/measurePersonCompleteness.html)
 - [measureConditionEraCompleteness](checks/measureConditionEraCompleteness.html)
+- [measureObservationPeriodOverlap](checks/measureObservationPeriodOverlap.html)
 - [isStandardValidConcept](checks/isStandardValidConcept.html)
 - [measureValueCompleteness](checks/measureValueCompleteness.html)
 - [standardConceptRecordCompleteness](checks/standardConceptRecordCompleteness.html)

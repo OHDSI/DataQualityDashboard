@@ -201,8 +201,9 @@ test_that("NA applied correctly when table or field is missing", {
   expect_equal(result, 1)
 })
 
-test_that(".applyNotApplicable handles tableIsMissing and fieldIsMissing correctly for cdmTable and cdmField", {
-  # cdmTable check with missing table should NOT be NA (special case)
+test_that(".applyNotApplicable handles cdmTable and cdmField correctly", {
+  # cdmTable should NEVER be NA, no matter what
+  # Test with missing table
   mockCheckResult <- data.frame(
     checkName = "cdmTable",
     cdmTableName = "FOO",
@@ -218,7 +219,56 @@ test_that(".applyNotApplicable handles tableIsMissing and fieldIsMissing correct
   result <- DataQualityDashboard:::.applyNotApplicable(mockCheckResult)
   expect_equal(result, 0)
 
-  # cdmField check with missing field should NOT be NA (special case)
+  # Test with empty table
+  mockCheckResult <- data.frame(
+    checkName = "cdmTable",
+    cdmTableName = "FOO",
+    cdmFieldName = NA,
+    isError = 0,
+    tableIsMissing = FALSE,
+    fieldIsMissing = FALSE,
+    tableIsEmpty = TRUE,
+    fieldIsEmpty = FALSE,
+    conceptIsMissing = FALSE,
+    conceptAndUnitAreMissing = FALSE
+  )
+  result <- DataQualityDashboard:::.applyNotApplicable(mockCheckResult)
+  expect_equal(result, 0)
+
+  # Test with error
+  mockCheckResult <- data.frame(
+    checkName = "cdmTable",
+    cdmTableName = "FOO",
+    cdmFieldName = NA,
+    isError = 1,
+    tableIsMissing = FALSE,
+    fieldIsMissing = FALSE,
+    tableIsEmpty = FALSE,
+    fieldIsEmpty = FALSE,
+    conceptIsMissing = FALSE,
+    conceptAndUnitAreMissing = FALSE
+  )
+  result <- DataQualityDashboard:::.applyNotApplicable(mockCheckResult)
+  expect_equal(result, 0)
+
+  # cdmField should only be NA if table is missing, otherwise never NA
+  # Test with missing table (should BE NA)
+  mockCheckResult <- data.frame(
+    checkName = "cdmField",
+    cdmTableName = "OBSERVATION",
+    cdmFieldName = "bar",
+    isError = 0,
+    tableIsMissing = TRUE,
+    fieldIsMissing = FALSE,
+    tableIsEmpty = FALSE,
+    fieldIsEmpty = FALSE,
+    conceptIsMissing = FALSE,
+    conceptAndUnitAreMissing = FALSE
+  )
+  result <- DataQualityDashboard:::.applyNotApplicable(mockCheckResult)
+  expect_equal(result, 1)
+
+  # Test with missing field but table exists (should NOT be NA)
   mockCheckResult <- data.frame(
     checkName = "cdmField",
     cdmTableName = "OBSERVATION",
@@ -227,6 +277,22 @@ test_that(".applyNotApplicable handles tableIsMissing and fieldIsMissing correct
     tableIsMissing = FALSE,
     fieldIsMissing = TRUE,
     tableIsEmpty = FALSE,
+    fieldIsEmpty = FALSE,
+    conceptIsMissing = FALSE,
+    conceptAndUnitAreMissing = FALSE
+  )
+  result <- DataQualityDashboard:::.applyNotApplicable(mockCheckResult)
+  expect_equal(result, 0)
+
+  # Test with empty table (should NOT be NA)
+  mockCheckResult <- data.frame(
+    checkName = "cdmField",
+    cdmTableName = "OBSERVATION",
+    cdmFieldName = "bar",
+    isError = 0,
+    tableIsMissing = FALSE,
+    fieldIsMissing = FALSE,
+    tableIsEmpty = TRUE,
     fieldIsEmpty = FALSE,
     conceptIsMissing = FALSE,
     conceptAndUnitAreMissing = FALSE

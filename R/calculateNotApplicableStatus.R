@@ -53,10 +53,18 @@
     }
   }
 
-  # Special case: cdmTable and cdmField should never be marked as NA for missing tables/fields
-  if ((x$checkName == "cdmTable" && x$tableIsMissing) || 
-      (x$checkName == "cdmField" && x$fieldIsMissing)) {
+  # Special case: cdmTable should never be marked as NA, no matter what
+  if (x$checkName == "cdmTable") {
     return(0)
+  }
+
+  # Special case: cdmField should only be NA if table is missing, otherwise never NA
+  if (x$checkName == "cdmField") {
+    if (x$tableIsMissing) {
+      return(1)
+    } else {
+      return(0)
+    }
   }
 
   # Not applicable if table or field is missing (for regular checks)
