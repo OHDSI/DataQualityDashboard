@@ -120,7 +120,8 @@ test_that("Execute a single DQ check on remote databases", {
     "oracle",
     "postgresql",
     "sql server",
-    "redshift"
+    "redshift",
+    "iris"
   )
 
   for (dbType in dbTypes) {
@@ -396,4 +397,36 @@ test_that("checkNames are filtered by checkSeverity", {
     "isPrimaryKey", "isForeignKey"
   )
   expect_true(all(results$CheckResults$checkName %in% expectedCheckNames))
+})
+
+test_that("Execute a single DQ check on DuckDB", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+
+  # Get Eunomia database file in DuckDB format
+  eunomiaDbPath <- Eunomia::getDatabaseFile(
+    datasetName = "GiBleed",
+    dbms = "duckdb"
+  )
+  
+  # Create DuckDB connection details using the Eunomia database file
+  duckdbConnectionDetails <- DatabaseConnector::createConnectionDetails(
+    dbms = "duckdb",
+    server = eunomiaDbPath
+  )
+
+  expect_warning(
+    results <- executeDqChecks(
+      connectionDetails = duckdbConnectionDetails,
+      cdmDatabaseSchema = "main",
+      resultsDatabaseSchema = "main",
+      cdmSourceName = "DuckDB Test",
+      checkNames = "measurePersonCompleteness",
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    regexp = "^Missing check names.*"
+  )
+
+  expect_true(nrow(results$CheckResults) > 0)
 })
