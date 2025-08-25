@@ -1,3 +1,45 @@
+DataQualityDashboard 2.7.0
+==========================
+This release includes:
+
+### New Checks
+
+- **measureObservationPeriodOverlap**: This new check identifies overlapping and back-to-back observation periods, which violate CDM conventions and can cause critical issues in analyses using OHDSI tools.  See the [check documentation](https://ohdsi.github.io/DataQualityDashboard/articles/checks/measureObservationPeriodOverlap.html) for more details!
+
+### Check Updates
+
+**Note that these updates may result in significant changes to your DQD results. However, we hope that the results will be more accurate and actionable! Please reach out with any questions or unexpected findings.**
+
+- Corrected [measureConditionEraCompleteness](https://ohdsi.github.io/DataQualityDashboard/articles/checks/measureConditionEraCompleteness.html) logic such that persons with no non-zero `condition_concept_id`s will *not* fail the check (it is not required or recommended to create a condition era for unmapped condition occurrences)
+- Improved [standardConceptRecordCompleteness](https://ohdsi.github.io/DataQualityDashboard/articles/checks/standardConceptRecordCompleteness.html) and [sourceConceptRecordCompleteness](https://ohdsi.github.io/DataQualityDashboard/articles/checks/sourceConceptRecordCompleteness.html) logic:
+  - Expanded numerator *for non-required concept ID fields* to include records with NULL concept ID and non-NULL source value 
+    - Previously, missing source value mappings - a critical error - were not checked for non-required concept ID fields
+    - NULL required concept ID fields are already checked in `isRequired`
+  - Limited denominator to non-NULL concept ID for required fields, and to non-NULL concept ID *or* non-NULL source value for non-required fields
+  - Removed the exception which only checked `unit_concept_id` fields if `value_as_number` was non-NULL (a missing numeric value does not necessarily mean that a value of 0 is acceptable for the unit concept) 
+  - These changes discourage use of 0 as placeholder for missing units/statuses/etc.  For non-required fields, concept ID of 0 should only be used if a source value is available
+- Refined `isStandardValidConcept`, adding non-NULL requirements for numerator and denominator in order to remove the overlap between this check and `isRequired`
+- Refined `plausibleUnitConceptIds` logic:
+  - Added some missing plausible units to the default threshold files
+  - Removed the filter which limited the check to rows with a non-NULL `value_as_number` - a wrong unit is a wrong unit, regardless of whether a value is available
+  - Added a filter which limits the check to rows with either a non-zero unit or a missing unit, thus removing the overlap between this check and `measureStandardConceptCompleteness`
+
+### Bugfixes
+
+- Fixed Not Applicable status assignment - in certain cases, checks were being marked as NA when they should actually have been failing or passing
+- Removed `PAYER_PLAN_PERIOD.family_source_value` from `sourceValueCompleteness` check in v5.3 default threshold file (this field has no corresponding concept ID field and had this check enabled in error)
+- Disabled `plausibleValueHigh` check for `DRUG_EXPOSURE.quantity` to prevent false positive failures (the default value was in fact plausible for some liquid formulations; in order to accurately measure drug quantity plausibility this check would need to be customized at the concept level)
+- Casted `birth_datetime` to date in `plausibleAfterBirth` to prevent false positive failures for events occurring on the date of birth
+
+### Enhancements
+
+- Made `executeDqChecks` return value invisible
+- Write-to-table functionality improvements:
+  - In the public `writeJsonResultsToTable` function, an option is now provided to write all results to a single table (the approach used in `executeDqChecks` when `writeToTable` = TRUE). **Ulitimately, the approach which writes results to 3 separate tables will be deprecated**; for now, a warning is added to prepare users for this change
+  - Raise warning when write to table fails (previously, failures were silent)
+- Added automated tests on DuckDB and IRIS databases
+- Minor documentation updates
+
 DataQualityDashboard 2.6.3
 ==========================
 This release includes a patch bugfix for the `standardConceptFieldName` update described below. The added field names had previously been added in the wrong column of the threshold file; this has now been fixed.

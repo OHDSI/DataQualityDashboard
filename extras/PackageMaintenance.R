@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -41,13 +41,6 @@ rmarkdown::render("vignettes/CheckStatusDefinitions.Rmd",
                                           toc = TRUE,
                                           number_sections = TRUE))
 unlink("inst/doc/CheckStatusDefinitions.tex")
-
-rmarkdown::render("vignettes/CheckTypeDescriptions.Rmd",
-                  output_file = "../inst/doc/CheckTypeDescriptions.pdf",
-                  rmarkdown::pdf_document(latex_engine = "pdflatex",
-                                          toc = TRUE,
-                                          number_sections = TRUE))
-unlink("inst/doc/CheckTypeDescriptions.tex")
 
 rmarkdown::render("vignettes/DataQualityDashboard.Rmd",
                   output_file = "../inst/doc/DataQualityDashboard.pdf",

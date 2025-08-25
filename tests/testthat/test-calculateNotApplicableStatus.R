@@ -13,7 +13,7 @@ test_that("measurePersonCompleteness should not be marked as not applicable when
     conceptIsMissing = FALSE,
     conceptAndUnitAreMissing = FALSE
   )
-  
+
   # Test that .applyNotApplicable returns 0 (not applicable = FALSE) for measurePersonCompleteness
   # when tableIsEmpty is TRUE but tableIsMissing is FALSE
   result <- DataQualityDashboard:::.applyNotApplicable(mockCheckResult)
@@ -33,7 +33,7 @@ test_that("measurePersonCompleteness should be marked as not applicable when tab
     conceptIsMissing = FALSE,
     conceptAndUnitAreMissing = FALSE
   )
-  
+
   # Test that .applyNotApplicable returns 1 (not applicable = TRUE) for measurePersonCompleteness
   # when tableIsMissing is TRUE
   result <- DataQualityDashboard:::.applyNotApplicable(mockCheckResult)
@@ -159,10 +159,10 @@ test_that("measurePersonCompleteness NOT marked as Not Applicable when table is 
   DatabaseConnector::disconnect(connection)
 
   # measurePersonCompleteness should NOT be marked as not applicable when table is empty
-  r <- results$CheckResults[results$CheckResults$checkName == "measurePersonCompleteness" & 
-                           results$CheckResults$cdmTableName == "OBSERVATION_PERIOD", ]
+  r <- results$CheckResults[results$CheckResults$checkName == "measurePersonCompleteness" &
+    results$CheckResults$cdmTableName == "OBSERVATION_PERIOD", ]
   expect_true(r$notApplicable == 0)
-  
+
   # It should fail because the threshold is 100% and all persons have 0 records in empty table
   expect_true(r$failed == 1)
 })

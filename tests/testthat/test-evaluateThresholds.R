@@ -5,7 +5,7 @@ test_that("evaluateThresholds handles missing table/field errors correctly for c
   tableChecks <- data.frame()
   fieldChecks <- data.frame()
   conceptChecks <- data.frame()
-  
+
   # Simulate a check result for cdmField with a missing table error
   checkResults <- data.frame(
     checkName = "cdmField",
@@ -19,7 +19,7 @@ test_that("evaluateThresholds handles missing table/field errors correctly for c
     pctViolatedRows = 0,
     stringsAsFactors = FALSE
   )
-  
+
   # Call the evaluateThresholds function
   result <- DataQualityDashboard:::.evaluateThresholds(checkResults, tableChecks, fieldChecks, conceptChecks)
   expect_equal(result$failed, 1)
@@ -38,7 +38,7 @@ test_that("evaluateThresholds handles missing table/field errors correctly for c
     pctViolatedRows = 0,
     stringsAsFactors = FALSE
   )
-  
+
   result <- DataQualityDashboard:::.evaluateThresholds(checkResults, tableChecks, fieldChecks, conceptChecks)
   expect_equal(result$failed, 1)
   expect_equal(result$isError, 0)
@@ -49,7 +49,7 @@ test_that("evaluateThresholds handles missing table/field errors correctly for o
   tableChecks <- data.frame()
   fieldChecks <- data.frame()
   conceptChecks <- data.frame()
-  
+
   # Simulate a check result for measurePersonCompleteness with a missing table error
   checkResults <- data.frame(
     checkName = "measurePersonCompleteness",
@@ -63,7 +63,7 @@ test_that("evaluateThresholds handles missing table/field errors correctly for o
     pctViolatedRows = 0,
     stringsAsFactors = FALSE
   )
-  
+
   result <- DataQualityDashboard:::.evaluateThresholds(checkResults, tableChecks, fieldChecks, conceptChecks)
   expect_equal(result$isError, 1)
   expect_equal(result$failed, 0)
@@ -81,7 +81,7 @@ test_that("evaluateThresholds handles missing table/field errors correctly for o
     pctViolatedRows = 0,
     stringsAsFactors = FALSE
   )
-  
+
   result <- DataQualityDashboard:::.evaluateThresholds(checkResults, tableChecks, fieldChecks, conceptChecks)
   expect_equal(result$isError, 1)
   expect_equal(result$failed, 0)
@@ -92,7 +92,7 @@ test_that("evaluateThresholds handles non-missing table/field errors correctly",
   tableChecks <- data.frame()
   fieldChecks <- data.frame()
   conceptChecks <- data.frame()
-  
+
   # Simulate a check result with a general SQL error (not missing table/field)
   checkResults <- data.frame(
     checkName = "cdmTable",
@@ -106,7 +106,7 @@ test_that("evaluateThresholds handles non-missing table/field errors correctly",
     pctViolatedRows = 0,
     stringsAsFactors = FALSE
   )
-  
+
   result <- DataQualityDashboard:::.evaluateThresholds(checkResults, tableChecks, fieldChecks, conceptChecks)
   expect_equal(result$isError, 1)
   expect_equal(result$failed, 0)
