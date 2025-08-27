@@ -1,186 +1,65 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/404.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/AddNewCheck.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/CheckStatusDefinitions.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/DqdForCohorts.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/SqlOnly.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/Thresholds.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checkIndex.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/cdmDatatype.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/cdmField.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/cdmTable.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/fkClass.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/fkDomain.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/isForeignKey.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/isPrimaryKey.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/isRequired.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/isStandardValidConcept.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/measureConditionEraCompleteness.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/measurePersonCompleteness.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/measureValueCompleteness.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleAfterBirth.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleBeforeDeath.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleGenderUseDescendants.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleStartBeforeEnd.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleTemporalAfter.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleUnitConceptIds.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleValueHigh.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleValueLow.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/sourceConceptRecordCompleteness.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/sourceValueCompleteness.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/standardConceptRecordCompleteness.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/withinVisitDates.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/pull_request_template.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/convertJsonResultsFileCase.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-applyNotApplicable.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-calculateNotApplicableStatus.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-containsNAchecks.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-evaluateThresholds.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-getCheckId.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-hasNAchecks.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-processCheck.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-recordResult.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-runCheck.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-summarizeResults.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-writeResultsToCsv.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-writeResultsToJson.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-writeResultsToTable.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/executeDqChecks.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/listDqChecks.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/reEvaluateThresholds.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/viewDqDashboard.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/writeDBResultsToJson.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/writeJsonResultsToCsv.html</loc>
-  </url>
-  <url>
-    <loc>https://ohdsi.github.io/DataQualityDashboard/reference/writeJsonResultsToTable.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/404.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/LICENSE-text.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/AddNewCheck.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/CheckStatusDefinitions.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/DataQualityDashboard.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/DqdForCohorts.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/SqlOnly.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/Thresholds.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checkIndex.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/cdmDatatype.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/cdmField.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/cdmTable.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/fkClass.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/fkDomain.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/isForeignKey.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/isPrimaryKey.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/isRequired.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/isStandardValidConcept.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/measureConditionEraCompleteness.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/measureObservationPeriodOverlap.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/measurePersonCompleteness.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/measureValueCompleteness.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleAfterBirth.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleBeforeDeath.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleGenderUseDescendants.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleStartBeforeEnd.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleTemporalAfter.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleUnitConceptIds.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleValueHigh.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/plausibleValueLow.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/sourceConceptRecordCompleteness.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/sourceValueCompleteness.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/standardConceptRecordCompleteness.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/checks/withinVisitDates.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/articles/index.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/authors.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/index.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/news/index.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/pull_request_template.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/convertJsonResultsFileCase.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-applyNotApplicable.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-calculateNotApplicableStatus.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-containsNAchecks.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-evaluateThresholds.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-getCheckId.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-hasNAchecks.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-processCheck.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-recordResult.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-runCheck.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-summarizeResults.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-writeResultsToCsv.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-writeResultsToJson.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-writeResultsToTable.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/executeDqChecks.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/index.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/listDqChecks.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/reEvaluateThresholds.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/viewDqDashboard.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/writeDBResultsToJson.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/writeJsonResultsToCsv.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/writeJsonResultsToTable.html</loc></url>
 </urlset>
+

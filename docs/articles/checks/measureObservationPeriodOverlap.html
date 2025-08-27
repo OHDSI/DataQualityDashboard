@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>isRequired • DataQualityDashboard</title>
+<title>measureObservationPeriodOverlap • DataQualityDashboard</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
-<script src="../../pkgdown.js"></script><meta property="og:title" content="isRequired">
+<script src="../../pkgdown.js"></script><meta property="og:title" content="measureObservationPeriodOverlap">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -185,14 +185,14 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>isRequired</h1>
+      <h1 data-toc-skip>measureObservationPeriodOverlap</h1>
                         <h4 data-toc-skip class="author">Katy
 Sadowski</h4>
             
             <h4 data-toc-skip class="date">2025-08-25</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/isRequired.Rmd" class="external-link"><code>vignettes/checks/isRequired.Rmd</code></a></small>
-      <div class="hidden name"><code>isRequired.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/measureObservationPeriodOverlap.Rmd" class="external-link"><code>vignettes/checks/measureObservationPeriodOverlap.Rmd</code></a></small>
+      <div class="hidden name"><code>measureObservationPeriodOverlap.Rmd</code></div>
 
     </div>
 
@@ -201,33 +201,36 @@ Sadowski</h4>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><strong>Level</strong>: Field check<br><strong>Context</strong>: Validation<br><strong>Category</strong>: Conformance<br><strong>Subcategory</strong>: Relational<br><strong>Severity</strong>: Fatal 💀<br></p>
+<p><strong>Level</strong>: Table check<br><strong>Context</strong>: Verification<br><strong>Category</strong>: Plausibility<br><strong>Subcategory</strong>: Temporal<br><strong>Severity</strong>: Fatal 💀<br></p>
 </div>
 <div class="section level2">
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
 </h2>
-<p>The number and percent of records with a NULL value in the
-<strong>cdmFieldName</strong> of the <strong>cdmTableName</strong> that
-is considered not nullable</p>
+<p>The number and percent of persons that have overlapping or
+back-to-back observation periods.</p>
 </div>
 <div class="section level2">
 <h2 id="definition">Definition<a class="anchor" aria-label="anchor" href="#definition"></a>
 </h2>
-<p>This check is meant to ensure that all NOT NULL constraints specified
-in the CDM version are followed.</p>
+<p>This check verifies that observation periods for each person do not
+overlap or have gaps of only one day between them. According to the OMOP
+CDM specification, observation periods should not overlap or be
+back-to-back to each other.</p>
 <ul>
 <li>
-<em>Numerator</em>: The number of rows with a NULL value in the
-column</li>
+<em>Numerator</em>: The number of persons who have at least one pair
+of overlapping or back-to-back observation periods</li>
 <li>
-<em>Denominator</em>: The total number of rows in the table</li>
+<em>Denominator</em>: The total number of persons with observation
+periods</li>
 <li>
-<em>Related CDM Convention(s)</em>: “Required” flag in <a href="https://ohdsi.github.io/CommonDataModel/index.html" class="external-link">CDM table
-specs</a>
+<em>Related CDM Convention(s)</em>: “Any two overlapping or adjacent
+OBSERVATION_PERIOD records have to be merged into one” from <a href="https://ohdsi.github.io/CommonDataModel/cdm54.html#observation_period" class="external-link">CDM
+specification</a>
 </li>
 <li>
-<em>CDM Fields/Tables</em>: By default, this check runs on all
-Required fields in the CDM</li>
+<em>CDM Fields/Tables</em>: <code>OBSERVATION_PERIOD</code>
+</li>
 <li>
 <em>Default Threshold Value</em>: 0%</li>
 </ul>
@@ -235,70 +238,81 @@ Required fields in the CDM</li>
 <div class="section level2">
 <h2 id="user-guidance">User Guidance<a class="anchor" aria-label="anchor" href="#user-guidance"></a>
 </h2>
-<p>A failure in this check means that NULL values have ended up in a
-column which should not contain any NULL values. There is a wide variety
-of potential causes for this issue depending on the column in question;
-your source data; and your ETL code. Regardless of its cause, it is
-mandatory to fix the issue by ensuring there are no failures of this
-check – OHDSI tools/analyses expect required columns to be non-NULL in
-all rows.</p>
+<p>A failure in this check indicates that there are persons in the
+database who have overlapping or back-to-back observation periods, which
+violates the OMOP CDM specification. Such observation periods will lead
+to critical errors in analytics as all OHDSI tools assume that
+observation periods do not overlap.</p>
 <div class="section level3">
 <h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span> </span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="st">'@cdmTableName.@cdmFieldName'</span> <span class="kw">AS</span> violating_field, </span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  cdmTable.<span class="op">*</span> </span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="kw">FROM</span> @schema.@cdmTableName cdmTable</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.@cdmFieldName <span class="kw">IS</span> <span class="kw">NULL</span></span></code></pre></div>
+<p>You may use the following SQL query to identify the specific persons
+with overlapping observation periods:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="kw">SELECT</span> <span class="kw">DISTINCT</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    cdmTable.person_id,</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    cdmTable.observation_period_start_date,</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    cdmTable.observation_period_end_date,</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    cdmTable2.observation_period_start_date <span class="kw">AS</span> overlap_start,</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    cdmTable2.observation_period_end_date <span class="kw">AS</span> overlap_end,</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    <span class="cf">CASE</span> </span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>        <span class="cf">WHEN</span> cdmTable.observation_period_start_date <span class="op">&lt;=</span> cdmTable2.observation_period_end_date </span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>            <span class="kw">AND</span> cdmTable.observation_period_end_date <span class="op">&gt;=</span> cdmTable2.observation_period_start_date</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>        <span class="cf">THEN</span> <span class="st">'Overlapping'</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>        <span class="cf">WHEN</span> DATEADD(<span class="dt">day</span>, <span class="dv">1</span>, cdmTable.observation_period_end_date) <span class="op">=</span> cdmTable2.observation_period_start_date</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>            <span class="kw">OR</span> DATEADD(<span class="dt">day</span>, <span class="dv">1</span>, cdmTable2.observation_period_end_date) <span class="op">=</span> cdmTable.observation_period_start_date</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>        <span class="cf">THEN</span> <span class="st">'Back-to-back'</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    <span class="cf">END</span> <span class="kw">AS</span> violation_type</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.observation_period cdmTable</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="kw">JOIN</span> @cdmDatabaseSchema.observation_period cdmTable2 </span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="kw">ON</span> cdmTable.person_id <span class="op">=</span> cdmTable2.person_id</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="kw">AND</span> cdmTable.observation_period_id <span class="op">!=</span> cdmTable2.observation_period_id</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="kw">WHERE</span> (cdmTable.observation_period_start_date <span class="op">&lt;=</span> cdmTable2.observation_period_end_date </span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>    <span class="kw">AND</span> cdmTable.observation_period_end_date <span class="op">&gt;=</span> cdmTable2.observation_period_start_date)</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>    <span class="kw">OR</span> (DATEADD(<span class="dt">day</span>, <span class="dv">1</span>, cdmTable.observation_period_end_date) <span class="op">=</span> cdmTable2.observation_period_start_date)</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>    <span class="kw">OR</span> (DATEADD(<span class="dt">day</span>, <span class="dv">1</span>, cdmTable2.observation_period_end_date) <span class="op">=</span> cdmTable.observation_period_start_date)</span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> cdmTable.person_id, cdmTable.observation_period_start_date</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>
 </h3>
-<p>Recommended actions:</p>
+<p>If this check fails, you should investigate the root cause to
+determine if the issue originates in the source data or if it is the
+result of an ETL bug. Logic will need to be added to the ETL to
+correctly merge overlapping or back-to-back periods of observed time,
+and/or to handle bad data from the source. This is a fatal check and all
+failures must be resolved before the CDM can be used.</p>
+<p><strong>Examples of violations:</strong></p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Overlapping periods</strong>:
 <ul>
-<li>To catch this issue further upstream, consider adding a not-null
-constraint on the column in your database (if possible)</li>
-<li>Fill in the missing values:
-<ul>
-<li>In some columns, placeholder values are acceptable to replace
-missing values. For example, in rows for which there is no _source_value
-or no standard concept mapping, the value 0 should be placed in the
-_concept_id column</li>
-<li>Similarly, the CDM documentation suggests derivation/imputation
-strategies for certain columns. For example, the visit_end_date column
-is required but several options for deriving a placeholder are provided:
-<a href="https://ohdsi.github.io/CommonDataModel/cdm54.html#VISIT_OCCURRENCE" class="external-link uri">https://ohdsi.github.io/CommonDataModel/cdm54.html#VISIT_OCCURRENCE</a>.
-Consult the documentation for similar conventions on other columns</li>
-<li>For missing values in columns in which it is not acceptable to add a
-placeholder or derived value (i.e. primary &amp; foreign keys other than
-concept IDs), there is likely a corresponding ETL error which needs to
-be fixed</li>
+<li>Period 1: 2020-01-01 to 2020-06-30</li>
+<li>Period 2: 2020-05-01 to 2020-12-31</li>
+<li>These overlap from 2020-05-01 to 2020-06-30</li>
 </ul>
 </li>
-<li>If you are unable to fill in the missing value for a record
-according to the CDM conventions, it is best to remove the record from
-your database. It is recommended to document this action for data users,
-especially if you need to do this for more than a handful of records
-and/or if there is a pattern to the missing data</li>
+<li>
+<strong>Back-to-back periods</strong>:
+<ul>
+<li>Period 1: 2020-01-01 to 2020-06-30<br>
+</li>
+<li>Period 2: 2020-07-01 to 2020-12-31</li>
+<li>These are back-to-back (one ends exactly one day before the other
+starts)</li>
 </ul>
+</li>
+</ol>
+<p>Both scenarios should be merged into a single period from 2020-01-01
+to 2020-12-31.</p>
 </div>
 <div class="section level3">
 <h3 id="data-users">Data Users<a class="anchor" aria-label="anchor" href="#data-users"></a>
 </h3>
-<p>This is a critical failure as it can impact joins and calculations
-involving required fields which assume all values are non-NULL. Events
-missing a concept, start date, or person ID will not be able to be
-included in cohorts. Rows missing a primary key violate fundamental
-database integrity principles and could cause a host of downstream
-issues. It is also possible that some tools or analysis code have
-assumptions around the availability of data in required columns which
-may throw errors due to missing values.</p>
-<p>If your data provider is unable or unwilling to address the issue and
-only a small proportion of rows are affected, proceed at your own risk
-with the dataset. If you do so, it is a best practice to interrogate
-whether the affected rows could have played any role in your analysis.
-If a large proportion of rows are affected, the dataset should not be
-used until the issue is fixed.</p>
+<p>An OMOP CDM with overlapping or adjacent observation periods should
+not be used. OHDSI tools assume that observation periods do not overlap,
+and as such will return errors or incorrect results; for example, cohort
+entry criteria and calculation of person-time will be executed
+incorrectly.</p>
 </div>
 </div>
   </div>

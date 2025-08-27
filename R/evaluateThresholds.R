@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -155,7 +155,7 @@
       # Parse error message for missing table/field
       errorMsg <- checkResults[i, ]$error
       if (grepl("does not exist|missing|not found|invalid object name|invalid column name|ORA-00942|no such table|no such column", errorMsg, ignore.case = TRUE) &&
-          (checkResults[i, ]$checkName == "cdmField" || checkResults[i, ]$checkName == "cdmTable")) {
+        (checkResults[i, ]$checkName == "cdmField" || checkResults[i, ]$checkName == "cdmTable")) {
         checkResults[i, ]$failed <- 1
         checkResults[i, ]$isError <- 0
       } else {

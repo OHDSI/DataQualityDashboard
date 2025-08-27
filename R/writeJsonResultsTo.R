@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -21,6 +21,7 @@
 #' @param jsonFilePath              Path to the JSON results file generated using the execute function
 #' @param writeTableName            Name of table in the database to write results to
 #' @param cohortDefinitionId        If writing results for a single cohort this is the ID that will be appended to the table name
+#' @param singleTable               If TRUE, writes all results to a single table. If FALSE (default), writes to 3 separate tables by check level (table, field, concept) (NOTE this default behavior will be deprecated in the future)
 #'
 #' @export
 
@@ -28,7 +29,8 @@ writeJsonResultsToTable <- function(connectionDetails,
                                     resultsDatabaseSchema,
                                     jsonFilePath,
                                     writeTableName = "dqdashboard_results",
-                                    cohortDefinitionId = c()) {
+                                    cohortDefinitionId = c(),
+                                    singleTable = FALSE) {
   jsonData <- jsonlite::read_json(jsonFilePath)
   checkResults <- lapply(jsonData$CheckResults, function(cr) {
     cr[sapply(cr, is.null)] <- NA
@@ -36,13 +38,60 @@ writeJsonResultsToTable <- function(connectionDetails,
   })
   df <- do.call(plyr::rbind.fill, checkResults)
 
-  .writeResultsToTable(
-    connectionDetails = connectionDetails,
-    resultsDatabaseSchema = resultsDatabaseSchema,
-    checkResults = df,
-    writeTableName = writeTableName,
-    cohortDefinitionId = cohortDefinitionId
-  )
+  if (singleTable) {
+    # Write all results to a single table
+    .writeResultsToTable(
+      connectionDetails = connectionDetails,
+      resultsDatabaseSchema = resultsDatabaseSchema,
+      checkResults = df,
+      writeTableName = writeTableName,
+      cohortDefinitionId = cohortDefinitionId
+    )
+  } else {
+    # Write to 3 separate tables by check level (backward compatibility)
+    warning("Writing to 3 separate tables by check level is deprecated and will be removed in a future version. Use singleTable = TRUE to write DQD results to a single table.")
+
+    # Split results by check level
+    tableLevelResults <- df[df$checkLevel == "TABLE", ]
+    fieldLevelResults <- df[df$checkLevel == "FIELD", ]
+    conceptLevelResults <- df[df$checkLevel == "CONCEPT", ]
+
+    # Write table-level results
+    if (nrow(tableLevelResults) > 0) {
+      tableTableName <- paste0(writeTableName, "_table")
+      .writeResultsToTable(
+        connectionDetails = connectionDetails,
+        resultsDatabaseSchema = resultsDatabaseSchema,
+        checkResults = tableLevelResults,
+        writeTableName = tableTableName,
+        cohortDefinitionId = cohortDefinitionId
+      )
+    }
+
+    # Write field-level results
+    if (nrow(fieldLevelResults) > 0) {
+      fieldTableName <- paste0(writeTableName, "_field")
+      .writeResultsToTable(
+        connectionDetails = connectionDetails,
+        resultsDatabaseSchema = resultsDatabaseSchema,
+        checkResults = fieldLevelResults,
+        writeTableName = fieldTableName,
+        cohortDefinitionId = cohortDefinitionId
+      )
+    }
+
+    # Write concept-level results
+    if (nrow(conceptLevelResults) > 0) {
+      conceptTableName <- paste0(writeTableName, "_concept")
+      .writeResultsToTable(
+        connectionDetails = connectionDetails,
+        resultsDatabaseSchema = resultsDatabaseSchema,
+        checkResults = conceptLevelResults,
+        writeTableName = conceptTableName,
+        cohortDefinitionId = cohortDefinitionId
+      )
+    }
+  }
 }
 
 
