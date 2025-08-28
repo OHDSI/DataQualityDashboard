@@ -1,11 +1,12 @@
 Package: DataQualityDashboard
 Type: Package
 Title: Execute and View Data Quality Checks on OMOP CDM Database
-Version: 2.6.3
-Date: 2024-12-24
+Version: 2.7.0
+Date: 2025-08-25
 Authors@R: c(
   person("Katy", "Sadowski", email = "sadowski@ohdsi.org", role = c("aut", "cre")),
   person("Clair", "Blacketer", role = c("aut")),
+  person("Maxim", "Moinat", role = c("aut")),
   person("Ajit", "Londhe", role = c("aut")),
   person("Anthony", "Sena", role = c("aut")),
   person("Anthony", "Molinaro", role = c("aut")),
@@ -42,7 +43,9 @@ Suggests:
     markdown,
     shiny,
     ggplot2,
-    Eunomia,
-    R.utils
-RoxygenNote: 7.3.1
+    Eunomia (>= 2.0.0),
+    duckdb,
+    R.utils,
+    devtools
+RoxygenNote: 7.3.2
 Encoding: UTF-8

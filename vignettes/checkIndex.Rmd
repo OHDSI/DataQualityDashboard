@@ -1,11 +1,11 @@
 ---
 title: "Index"
-author: "Katy Sadowski"
+author: "Clair Blacketer, Katy Sadowski"
 date: "`r Sys.Date()`"
 output:
   html_document:
-    number_sections: yes
-    toc: yes
+    number_sections: true
+    toc: true
 vignette: >
     %\VignetteIndexEntry{Check Index}
     %\VignetteEncoding{UTF-8}
@@ -14,9 +14,25 @@ vignette: >
 
 This section contains detailed descriptions of the data quality checks included in the DataQualityDashboard package. 
 Each check is described on its own page; click on the check name in the list below or in the dropdown menu 
-above to navigate to the check's documentation page.\
+above to navigate to the check's documentation page.
 
-*N.B. This section is currently under development. A documentation page is not yet available for all checks. The links below will be updated as more pages are added. In the meantime, see the [Check Type Descriptions](checks/https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions) page for a brief description of each check.*
+# Introduction
+
+The DataQualityDashboard functions by applying over 20 parameterized check types to a CDM instance, resulting in thousands of resolved, executed, and evaluated individual data quality checks. For example, one check type might be written as 
+
+*The number and percent of records with a value in the **cdmFieldName** field of the **cdmTableName** table less than **plausibleValueLow***.
+
+This would be considered an atemporal plausibility verification check because we are looking for implausibly low values in some field based on internal knowledge. We can use this check type to substitute in values for **cdmFieldName**, **cdmTableName**, and **plausibleValueLow** to create a unique data quality check. If we apply it to PERSON.YEAR_OF_BIRTH here is how that might look: 
+
+*The number and percent of records with a value in the **year_of_birth** field of the **PERSON** table less than **1850**.* 
+
+And, since it is parameterized, we can similarly apply it to DRUG_EXPOSURE.days_supply: 
+
+*The number and percent of records with a value in the **days_supply** field of the **DRUG_EXPOSURE** table less than **0**.*
+
+Version 1 of the tool includes over 20 different check types organized into Kahn contexts and categories ([link to paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/)). Additionally, each data quality check type is considered either a table check, field check, or concept-level check. Table-level checks are those evaluating the table at a high-level without reference to individual fields, or those that span multiple event tables. These include checks making sure required tables are present or that at least some of the people in the PERSON table have records in the event tables. Field-level checks are those related to specific fields in a table. The majority of the check types in version 1 are field-level checks. These include checks evaluating primary key relationship and those investigating if the concepts in a field conform to the specified domain. Concept-level checks are related to individual concepts. These include checks looking for gender-specific concepts in persons of the wrong gender and plausible values for measurement-unit pairs.
+
+This article will detail each check type, its name, check level, description, definition, and to which Kahn context, category, and subcategory it belongs.
 
 ## General guidance
 
@@ -36,6 +52,7 @@ above to navigate to the check's documentation page.\
 - [fkClass](checks/fkClass.html)
 - [measurePersonCompleteness](checks/measurePersonCompleteness.html)
 - [measureConditionEraCompleteness](checks/measureConditionEraCompleteness.html)
+- [measureObservationPeriodOverlap](checks/measureObservationPeriodOverlap.html)
 - [isStandardValidConcept](checks/isStandardValidConcept.html)
 - [measureValueCompleteness](checks/measureValueCompleteness.html)
 - [standardConceptRecordCompleteness](checks/standardConceptRecordCompleteness.html)

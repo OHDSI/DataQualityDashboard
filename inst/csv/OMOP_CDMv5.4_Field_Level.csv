@@ -16,78 +16,78 @@ CDM_SOURCE,cdm,source_description,No,,,varchar(MAX),0,,The description of the CD
 CDM_SOURCE,cdm,source_documentation_reference,No,,,varchar(255),0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CDM_SOURCE,cdm,source_release_date,Yes,0,,date,0,,The release date of the source data.,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,'20000101',1,,"DATEADD(dd,1,GETDATE())",1,,,,,,,,,,Yes,SOURCE_RELEASE_DATE,0,,,,,,,,,,,
 CDM_SOURCE,cdm,vocabulary_version,Yes,0,,varchar(20),0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-COHORT,cohort,cohort_definition_id,Yes,0,,integer,0,,,,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-COHORT,cohort,cohort_end_date,Yes,0,,date,0,,,,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,,,,,,,,,,,,,,,,,,,,,,
-COHORT,cohort,cohort_start_date,Yes,0,,date,0,,,,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,,,,,,,,,,,,,,,,,,,,,,
-COHORT,cohort,subject_id,Yes,0,,integer,0,,,,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-COHORT_DEFINITION,cohort,cohort_definition_description,No,,,varchar(MAX),0,,A complete description of the cohort.,,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-COHORT_DEFINITION,cohort,cohort_definition_id,Yes,0,,integer,0,,"This is the identifier given to the cohort, usually by the ATLAS application",,No,,,Yes,0,,COHORT,COHORT_DEFINITION_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-COHORT_DEFINITION,cohort,cohort_definition_name,Yes,0,,varchar(255),0,,A short description of the cohort,,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-COHORT_DEFINITION,cohort,cohort_definition_syntax,No,,,varchar(MAX),0,,Syntax or code to operationalize the Cohort Definition.,,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-COHORT_DEFINITION,cohort,cohort_initiation_date,No,,,date,0,,A date to indicate when the Cohort was initiated in the COHORT table.,,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-COHORT_DEFINITION,cohort,definition_type_concept_id,Yes,0,,integer,0,,Type defining what kind of Cohort Definition the record represents and how the syntax may be executed.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-COHORT_DEFINITION,cohort,subject_concept_id,Yes,0,,integer,0,,"This field contains a Concept that represents the domain of the subjects that are members of the cohort (e.g., Person, Provider, Visit).",,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+COHORT,cohort,cohort_definition_id,Yes,0,,integer,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+COHORT,cohort,cohort_end_date,Yes,0,,date,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,,,,,,,,,,,,,,,,,,,,,,
+COHORT,cohort,cohort_start_date,Yes,0,,date,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,,,,,,,,,,,,,,,,,,,,,,
+COHORT,cohort,subject_id,Yes,0,,integer,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+COHORT_DEFINITION,cohort,cohort_definition_description,No,,,varchar(MAX),0,,A complete description of the cohort.,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+COHORT_DEFINITION,cohort,cohort_definition_id,Yes,0,,integer,0,,"This is the identifier given to the cohort, usually by the ATLAS application",,No,,,Yes,0,,COHORT,COHORT_DEFINITION_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+COHORT_DEFINITION,cohort,cohort_definition_name,Yes,0,,varchar(255),0,,A short description of the cohort,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+COHORT_DEFINITION,cohort,cohort_definition_syntax,No,,,varchar(MAX),0,,Syntax or code to operationalize the Cohort Definition.,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+COHORT_DEFINITION,cohort,cohort_initiation_date,No,,,date,0,,A date to indicate when the Cohort was initiated in the COHORT table.,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+COHORT_DEFINITION,cohort,definition_type_concept_id,Yes,0,,integer,0,,Type defining what kind of Cohort Definition the record represents and how the syntax may be executed.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+COHORT_DEFINITION,cohort,subject_concept_id,Yes,0,,integer,0,,"This field contains a Concept that represents the domain of the subjects that are members of the cohort (e.g., Person, Provider, Visit).",,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CONCEPT,vocab,concept_class_id,Yes,0,,varchar(20),0,,"The attribute or concept class of the
 Concept. Examples are 'Clinical Drug',
-'Ingredient', 'Clinical Finding' etc.",,No,,,Yes,0,,CONCEPT_CLASS,CONCEPT_CLASS_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+'Ingredient', 'Clinical Finding' etc.",,No,,,Yes,0,,CONCEPT_CLASS,CONCEPT_CLASS_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CONCEPT,vocab,concept_code,Yes,0,,varchar(50),0,,"The concept code represents the identifier
 of the Concept in the source vocabulary,
 such as SNOMED-CT concept IDs,
 RxNorm RXCUIs etc. Note that concept
-codes are not unique across vocabularies.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT,vocab,concept_id,Yes,0,,integer,0,,A unique identifier for each Concept across all domains.,,Yes,0,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT,vocab,concept_name,Yes,0,,varchar(255),0,,"An unambiguous, meaningful and descriptive name for the Concept.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT,vocab,domain_id,Yes,0,,varchar(20),0,,A foreign key to the [DOMAIN](https://ohdsi.github.io/CommonDataModel/cdm531.html#domain) table the Concept belongs to.,,No,,,Yes,0,,DOMAIN,DOMAIN_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+codes are not unique across vocabularies.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT,vocab,concept_id,Yes,0,,integer,0,,A unique identifier for each Concept across all domains.,,Yes,0,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT,vocab,concept_name,Yes,0,,varchar(255),0,,"An unambiguous, meaningful and descriptive name for the Concept.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT,vocab,domain_id,Yes,0,,varchar(20),0,,A foreign key to the [DOMAIN](https://ohdsi.github.io/CommonDataModel/cdm531.html#domain) table the Concept belongs to.,,No,,,Yes,0,,DOMAIN,DOMAIN_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CONCEPT,vocab,invalid_reason,No,,,varchar(1),0,,"Reason the Concept was invalidated.
 Possible values are D (deleted), U
 (replaced with an update) or NULL when
-valid_end_date has the default value.",,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+valid_end_date has the default value.",,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CONCEPT,vocab,standard_concept,No,,,varchar(1),0,,"This flag determines where a Concept is
 a Standard Concept, i.e. is used in the
 data, a Classification Concept, or a
 non-standard Source Concept. The
 allowable values are 'S' (Standard
 Concept) and 'C' (Classification
-Concept), otherwise the content is NULL.",,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Concept), otherwise the content is NULL.",,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CONCEPT,vocab,valid_end_date,Yes,0,,date,0,,"The date when the Concept became
 invalid because it was deleted or
 superseded (updated) by a new concept.
 The default value is 31-Dec-2099,
 meaning, the Concept is valid until it
-becomes deprecated.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,Yes,CONCEPT,VALID_START_DATE,0,,,,,,,,,,,,,,,,,,
+becomes deprecated.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,Yes,CONCEPT,VALID_START_DATE,0,,,,,,,,,,,,,,,,,,
 CONCEPT,vocab,valid_start_date,Yes,0,,date,0,,"The date when the Concept was first
 recorded. The default value is
 1-Jan-1970, meaning, the Concept has no
-(known) date of inception.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,Yes,VALID_END_DATE,0,,,,,,,,,,,
+(known) date of inception.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,Yes,VALID_END_DATE,0,,,,,,,,,,,
 CONCEPT,vocab,vocabulary_id,Yes,0,,varchar(20),0,,"A foreign key to the [VOCABULARY](https://ohdsi.github.io/CommonDataModel/cdm531.html#vocabulary)
 table indicating from which source the
-Concept has been adapted.",,No,,,Yes,0,,VOCABULARY,VOCABULARY_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Concept has been adapted.",,No,,,Yes,0,,VOCABULARY,VOCABULARY_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CONCEPT_ANCESTOR,vocab,ancestor_concept_id,Yes,0,,integer,0,,"The Concept Id for the higher-level concept
-that forms the ancestor in the relationship.",,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+that forms the ancestor in the relationship.",,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CONCEPT_ANCESTOR,vocab,descendant_concept_id,Yes,0,,integer,0,,"The Concept Id for the lower-level concept
 that forms the descendant in the
-relationship.",,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+relationship.",,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CONCEPT_ANCESTOR,vocab,max_levels_of_separation,Yes,0,,integer,0,,"The maximum separation in number of
 levels of hierarchy between ancestor and
 descendant concepts. This is an attribute
-that is used to simplify hierarchic analysis.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+that is used to simplify hierarchic analysis.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CONCEPT_ANCESTOR,vocab,min_levels_of_separation,Yes,0,,integer,0,,"The minimum separation in number of
 levels of hierarchy between ancestor and
 descendant concepts. This is an attribute
-that is used to simplify hierarchic analysis.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT_CLASS,vocab,concept_class_concept_id,Yes,0,,integer,0,,A Concept that represents the Concept Class.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT_CLASS,vocab,concept_class_id,Yes,0,,varchar(20),0,,A unique key for each class.,,Yes,0,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+that is used to simplify hierarchic analysis.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT_CLASS,vocab,concept_class_concept_id,Yes,0,,integer,0,,A Concept that represents the Concept Class.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT_CLASS,vocab,concept_class_id,Yes,0,,varchar(20),0,,A unique key for each class.,,Yes,0,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CONCEPT_CLASS,vocab,concept_class_name,Yes,0,,varchar(255),0,,"The name describing the Concept Class, e.g.
-Clinical Finding, Ingredient, etc.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT_RELATIONSHIP,vocab,concept_id_1,Yes,0,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT_RELATIONSHIP,vocab,concept_id_2,Yes,0,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT_RELATIONSHIP,vocab,invalid_reason,No,,,varchar(1),0,,"Reason the relationship was invalidated. Possible values are 'D' (deleted), 'U' (updated) or NULL.",,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT_RELATIONSHIP,vocab,relationship_id,Yes,0,,varchar(20),0,,The relationship between CONCEPT_ID_1 and CONCEPT_ID_2. Please see the [Vocabulary Conventions](https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#concept_relationships). for more information.,,No,,,Yes,0,,RELATIONSHIP,RELATIONSHIP_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT_RELATIONSHIP,vocab,valid_end_date,Yes,0,,date,0,,The date when the relationship is invalidated.,,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,Yes,CONCEPT_RELATIONSHIP,VALID_START_DATE,0,,,,,,,,,,,,,,,,,,
-CONCEPT_RELATIONSHIP,vocab,valid_start_date,Yes,0,,date,0,,The date when the relationship is first recorded.,,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,Yes,VALID_END_DATE,0,,,,,,,,,,,
-CONCEPT_SYNONYM,vocab,concept_id,Yes,0,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT_SYNONYM,vocab,concept_synonym_name,Yes,0,,varchar(1000),0,,,,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-CONCEPT_SYNONYM,vocab,language_concept_id,Yes,0,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Clinical Finding, Ingredient, etc.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT_RELATIONSHIP,vocab,concept_id_1,Yes,0,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT_RELATIONSHIP,vocab,concept_id_2,Yes,0,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT_RELATIONSHIP,vocab,invalid_reason,No,,,varchar(1),0,,"Reason the relationship was invalidated. Possible values are 'D' (deleted), 'U' (updated) or NULL.",,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT_RELATIONSHIP,vocab,relationship_id,Yes,0,,varchar(20),0,,The relationship between CONCEPT_ID_1 and CONCEPT_ID_2. Please see the [Vocabulary Conventions](https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#concept_relationships). for more information.,,No,,,Yes,0,,RELATIONSHIP,RELATIONSHIP_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT_RELATIONSHIP,vocab,valid_end_date,Yes,0,,date,0,,The date when the relationship is invalidated.,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,Yes,CONCEPT_RELATIONSHIP,VALID_START_DATE,0,,,,,,,,,,,,,,,,,,
+CONCEPT_RELATIONSHIP,vocab,valid_start_date,Yes,0,,date,0,,The date when the relationship is first recorded.,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,Yes,VALID_END_DATE,0,,,,,,,,,,,
+CONCEPT_SYNONYM,vocab,concept_id,Yes,0,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT_SYNONYM,vocab,concept_synonym_name,Yes,0,,varchar(1000),0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONCEPT_SYNONYM,vocab,language_concept_id,Yes,0,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 CONDITION_ERA,cdm,condition_concept_id,Yes,0,,integer,0,,The Concept Id representing the Condition.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,Condition,0,,,,,Yes,0,,Yes,0,,Yes,0,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
 CONDITION_ERA,cdm,condition_era_end_date,Yes,0,,datetime,0,,"The end date for the Condition Era
 constructed from the individual
@@ -170,11 +170,11 @@ DEVICE_EXPOSURE,cdm,unit_source_concept_id,No,,,integer,0,,"This is the concept 
 DEVICE_EXPOSURE,cdm,unit_source_value,No,,,varchar(50),0,,"This field houses the verbatim value from the source data representing the unit of the Device. For example, blood transfusions are considered devices and can be given in mL quantities.","This code is mapped to a Standard Condition Concept in the Standardized Vocabularies and the original code is stored here for reference. Using the blood transfusion example, blood transfusion is represented by the DEVICE_CONCEPT_ID and the unit (mL) would be housed in the UNIT_SOURCE_VALUE and mapped to a standard concept in the unit domain.",No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,Yes,100,,UNIT_CONCEPT_ID,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 DEVICE_EXPOSURE,cdm,visit_detail_id,No,,,integer,0,,The Visit Detail during which the device was prescribed or given.,To populate this field device exposures must be explicitly initiated in the visit detail record.,No,,,Yes,0,,VISIT_DETAIL,VISIT_DETAIL_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
 DEVICE_EXPOSURE,cdm,visit_occurrence_id,No,,,integer,0,,The Visit during which the device was prescribed or given.,To populate this field device exposures must be explicitly initiated in the visit.,No,,,Yes,0,,VISIT_OCCURRENCE,VISIT_OCCURRENCE_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
-DOMAIN,vocab,domain_concept_id,Yes,0,,integer,0,,A Concept representing the Domain Concept the DOMAIN record belongs to.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DOMAIN,vocab,domain_id,Yes,0,,varchar(20),0,,A unique key for each domain.,,Yes,0,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DOMAIN,vocab,domain_concept_id,Yes,0,,integer,0,,A Concept representing the Domain Concept the DOMAIN record belongs to.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DOMAIN,vocab,domain_id,Yes,0,,varchar(20),0,,A unique key for each domain.,,Yes,0,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 DOMAIN,vocab,domain_name,Yes,0,,varchar(255),0,,"The name describing the Domain, e.g.
 Condition, Procedure, Measurement
-etc.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+etc.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 DOSE_ERA,cdm,dose_era_end_date,Yes,0,,datetime,0,,,The date the Person was no longer exposed to the dosage of the specific drug ingredient. An era is ended if there are 31 days or more between dosage records.,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,PERSON,BIRTH_DATETIME,1,,No,,,,,,,Yes,1,,Yes,1,,Yes,,,
 DOSE_ERA,cdm,dose_era_id,Yes,0,,integer,0,,,,Yes,0,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
 DOSE_ERA,cdm,dose_era_start_date,Yes,0,,datetime,0,,"The date the Person started on the specific dosage, with at least 31 days since any prior exposure.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,PERSON,BIRTH_DATETIME,1,,Yes,1,,Yes,DOSE_ERA_END_DATE,1,,Yes,1,,Yes,1,,Yes,,,
@@ -207,7 +207,7 @@ DRUG_EXPOSURE,cdm,lot_number,No,,,varchar(50),0,,,,No,,,No,,,,,,,,,,,No,,,Yes,10
 DRUG_EXPOSURE,cdm,person_id,Yes,0,,integer,0,,The PERSON_ID of the PERSON for whom the drug dispensing or administration is recorded. This may be a system generated code.,,No,,,Yes,0,,PERSON,PERSON_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 DRUG_EXPOSURE,cdm,provider_id,No,,,integer,0,,"The Provider associated with drug record, e.g. the provider who wrote the prescription or the provider who administered the drug.","The ETL may need to make a choice as to which PROVIDER_ID to put here. Based on what is available this may or may not be different than the provider associated with the overall VISIT_OCCURRENCE record, for example the ordering vs administering physician on an EHR record.",No,,,Yes,0,,PROVIDER,PROVIDER_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
 DRUG_EXPOSURE,cdm,quantity,No,,,float,0,,,"To find the dose form of a drug the RELATIONSHIP table can be used where the relationship_id is 'Has dose form'. If liquid, quantity stands for the total amount dispensed or ordered of ingredient in the units given by the drug_strength table. If the unit from the source data does not align with the unit in the DRUG_STRENGTH table the quantity should be converted to the correct unit given in DRUG_STRENGTH. For clinical drugs with fixed dose forms (tablets etc.) the quantity is the number of units/tablets/capsules prescribed or dispensed (can be partial, but then only 1/2 or 1/3, not 0.01). Clinical drugs with divisible dose forms (injections) the quantity is the amount of ingredient the patient got. For example, if the injection is 2mg/mL but the patient got 80mL then quantity is reported as 160.
-Quantified clinical drugs with divisible dose forms (prefilled syringes), the quantity is the amount of ingredient similar to clinical drugs. Please see [how to calculate drug dose](https://ohdsi.github.io/CommonDataModel/drug_dose.html) for more information.",No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,0.0000001,1,,1095,1,,,,,,,No,,,,,,,,,,,,,Yes,,,
+Quantified clinical drugs with divisible dose forms (prefilled syringes), the quantity is the amount of ingredient similar to clinical drugs. Please see [how to calculate drug dose](https://ohdsi.github.io/CommonDataModel/drug_dose.html) for more information.",No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,0.0000001,1,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
 DRUG_EXPOSURE,cdm,refills,No,,,integer,0,,This is only filled in when the record is coming from a prescription written this field is meant to represent intended refills at time of the prescription.,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,0,1,,24,1,,,,,,,No,,,,,,,,,,,,,Yes,,,
 DRUG_EXPOSURE,cdm,route_concept_id,No,,,integer,0,,,The standard CONCEPT_ID that the ROUTE_SOURCE_VALUE maps to in the route domain.,No,,,Yes,0,,CONCEPT,CONCEPT_ID,Route,0,,,,,Yes,0,,Yes,100,,Yes,100,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
 DRUG_EXPOSURE,cdm,route_source_value,No,,,varchar(50),0,,This field houses the verbatim value from the source data representing the drug route.,This information may be called something different in the source data but the field is meant to contain a value indicating when and how a drug was given to a patient. This source value is mapped to a standard concept which is stored in the ROUTE_CONCEPT_ID field.,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,Yes,100,,ROUTE_CONCEPT_ID,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
@@ -216,20 +216,20 @@ DRUG_EXPOSURE,cdm,stop_reason,No,,,varchar(20),0,,"The reason a person stopped a
 DRUG_EXPOSURE,cdm,verbatim_end_date,No,,,date,0,,"This is the end date of the drug exposure as it appears in the source data, if it is given",Put the end date or discontinuation date as it appears from the source data or leave blank if unavailable.,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,DRUG_EXPOSURE,DRUG_EXPOSURE_START_DATE,1,,Yes,1,,,,,,Yes,1,,Yes,1,,Yes,,,
 DRUG_EXPOSURE,cdm,visit_detail_id,No,,,integer,0,,"The VISIT_DETAIL record during which the drug exposure occurred. For example, if the person was in the ICU at the time of the drug administration the VISIT_OCCURRENCE record would reflect the overall hospital stay and the VISIT_DETAIL record would reflect the ICU stay during the hospital visit.",Same rules apply as for the VISIT_OCCURRENCE_ID.,No,,,Yes,0,,VISIT_DETAIL,VISIT_DETAIL_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
 DRUG_EXPOSURE,cdm,visit_occurrence_id,No,,,integer,0,,"The Visit during which the drug was prescribed, administered or dispensed.",To populate this field drug exposures must be explicitly initiated in the visit.,No,,,Yes,0,,VISIT_OCCURRENCE,VISIT_OCCURRENCE_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
-DRUG_STRENGTH,vocab,amount_unit_concept_id,No,,,integer,0,,The Concept representing the Unit of measure for the amount of active ingredient contained within the drug product.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DRUG_STRENGTH,vocab,amount_value,No,,,float,0,,The numeric value or the amount of active ingredient contained within the drug product.,,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DRUG_STRENGTH,vocab,box_size,No,,,integer,0,,The number of units of Clinical Branded Drug or Quantified Clinical or Branded Drug contained in a box as dispensed to the patient.,,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DRUG_STRENGTH,vocab,denominator_unit_concept_id,No,,,integer,0,,The Concept representing the denominator unit for the concentration of active ingredient.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DRUG_STRENGTH,vocab,denominator_value,No,,,float,0,,"The amount of total liquid (or other divisible product, such as ointment, gel, spray, etc.).",,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DRUG_STRENGTH,vocab,drug_concept_id,Yes,0,,integer,0,,The Concept representing the Branded Drug or Clinical Drug Product.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,Drug,0,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DRUG_STRENGTH,vocab,ingredient_concept_id,Yes,0,,integer,0,,The Concept representing the active ingredient contained within the drug product.,"Combination Drugs will have more than one record in this table, one for each active Ingredient.",No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,Ingredient,0,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DRUG_STRENGTH,vocab,invalid_reason,No,,,varchar(1),0,,"Reason the concept was invalidated. Possible values are D (deleted), U (replaced with an update) or NULL when valid_end_date has the default value.",,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DRUG_STRENGTH,vocab,numerator_unit_concept_id,No,,,integer,0,,The Concept representing the Unit of measure for the concentration of active ingredient.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DRUG_STRENGTH,vocab,numerator_value,No,,,float,0,,The concentration of the active ingredient contained within the drug product.,,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DRUG_STRENGTH,vocab,valid_end_date,Yes,0,,date,0,,The date when then Concept became invalid.,,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,Yes,DRUG_STRENGTH,VALID_START_DATE,0,,,,,,,,,,,,,,,,,,
+DRUG_STRENGTH,vocab,amount_unit_concept_id,No,,,integer,0,,The Concept representing the Unit of measure for the amount of active ingredient contained within the drug product.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DRUG_STRENGTH,vocab,amount_value,No,,,float,0,,The numeric value or the amount of active ingredient contained within the drug product.,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DRUG_STRENGTH,vocab,box_size,No,,,integer,0,,The number of units of Clinical Branded Drug or Quantified Clinical or Branded Drug contained in a box as dispensed to the patient.,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DRUG_STRENGTH,vocab,denominator_unit_concept_id,No,,,integer,0,,The Concept representing the denominator unit for the concentration of active ingredient.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DRUG_STRENGTH,vocab,denominator_value,No,,,float,0,,"The amount of total liquid (or other divisible product, such as ointment, gel, spray, etc.).",,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DRUG_STRENGTH,vocab,drug_concept_id,Yes,0,,integer,0,,The Concept representing the Branded Drug or Clinical Drug Product.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,Drug,0,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DRUG_STRENGTH,vocab,ingredient_concept_id,Yes,0,,integer,0,,The Concept representing the active ingredient contained within the drug product.,"Combination Drugs will have more than one record in this table, one for each active Ingredient.",No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,Ingredient,0,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DRUG_STRENGTH,vocab,invalid_reason,No,,,varchar(1),0,,"Reason the concept was invalidated. Possible values are D (deleted), U (replaced with an update) or NULL when valid_end_date has the default value.",,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DRUG_STRENGTH,vocab,numerator_unit_concept_id,No,,,integer,0,,The Concept representing the Unit of measure for the concentration of active ingredient.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DRUG_STRENGTH,vocab,numerator_value,No,,,float,0,,The concentration of the active ingredient contained within the drug product.,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DRUG_STRENGTH,vocab,valid_end_date,Yes,0,,date,0,,The date when then Concept became invalid.,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,Yes,DRUG_STRENGTH,VALID_START_DATE,0,,,,,,,,,,,,,,,,,,
 DRUG_STRENGTH,vocab,valid_start_date,Yes,0,,date,0,,"The date when the Concept was first
 recorded. The default value is
-1-Jan-1970.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,Yes,VALID_END_DATE,0,,,,,,,,,,,
+1-Jan-1970.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,Yes,VALID_END_DATE,0,,,,,,,,,,,
 EPISODE,cdm,episode_concept_id,Yes,0,,integer,0,,"The EPISODE_CONCEPT_ID represents the kind abstraction related to the disease phase, outcome or treatment.","Choose a concept in the Episode domain that best represents the ongoing disease phase, outcome, or treatment. Please see [article] for cancers and [article] for non-cancers describing how these are defined. [Accepted Concepts](https://athena.ohdsi.org/search-terms/terms?domain=Episode&page=1&pageSize=15&query=)",No,,,Yes,0,,CONCEPT,CONCEPT_ID,Episode,0,,,,,Yes,0,,Yes,0,,Yes,5,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 EPISODE,cdm,episode_end_date,No,,,date,0,,The date when the instance of the Episode is considered to have ended.,Please see [article] for how to define an Episode end date.,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,EPISODE,EPISODE_START_DATE,1,,Yes,1,,,,,,Yes,1,,Yes,1,,Yes,,,
 EPISODE,cdm,episode_end_datetime,No,,,datetime,0,,The date when the instance of the Episode is considered to have ended.,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,EPISODE,EPISODE_START_DATETIME,1,,Yes,1,,,,,,Yes,1,,Yes,1,,Yes,,,
@@ -320,7 +320,7 @@ NOTE_NLP,cdm,note_id,Yes,0,,integer,0,,This is the NOTE_ID for the NOTE record t
 NOTE_NLP,cdm,note_nlp_concept_id,No,,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,No,,,
 NOTE_NLP,cdm,note_nlp_id,Yes,0,,integer,0,,A unique identifier for the NLP record.,,Yes,0,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,No,,,
 NOTE_NLP,cdm,note_nlp_source_concept_id,No,,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,No,,,
-NOTE_NLP,cdm,offset,No,,,varchar(50),0,,Character offset of the extracted term in the input note,,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+NOTE_NLP,cdm,offset,No,,,varchar(50),0,,Character offset of the extracted term in the input note,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 NOTE_NLP,cdm,section_concept_id,No,,,integer,0,,,"The SECTION_CONCEPT_ID should be used to represent the note section contained in the NOTE_NLP record. These concepts can be found as parts of document panels and are based on the type of note written, i.e. a discharge summary. These panels can be found as concepts with the relationship 'Subsumes' to CONCEPT_ID [45875957](https://athena.ohdsi.org/search-terms/terms/45875957).",No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,No,,,
 NOTE_NLP,cdm,snippet,No,,,varchar(250),0,,A small window of text surrounding the term,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,No,,,
 NOTE_NLP,cdm,term_exists,No,,,varchar(1),0,,,"Term_exists is defined as a flag that indicates if the patient actually has or had the condition. Any of the following modifiers would make Term_exists false:
@@ -433,46 +433,46 @@ PROVIDER,cdm,year_of_birth,No,,,integer,0,,,,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,
 RELATIONSHIP,vocab,defines_ancestry,Yes,0,,varchar(1),0,,"Defines whether a hierarchical relationship
 contributes to the concept_ancestor table.
 These are subsets of the hierarchical
-relationships. Valid values are 1 or 0.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+relationships. Valid values are 1 or 0.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 RELATIONSHIP,vocab,is_hierarchical,Yes,0,,varchar(1),0,,"Defines whether a relationship defines
 concepts into classes or hierarchies. Values
-are 1 for hierarchical relationship or 0 if not.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+are 1 for hierarchical relationship or 0 if not.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 RELATIONSHIP,vocab,relationship_concept_id,Yes,0,,integer,0,,"A foreign key that refers to an identifier in
 the [CONCEPT](https://ohdsi.github.io/CommonDataModel/cdm531.html#concept) table for the unique
-relationship concept.",,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+relationship concept.",,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 RELATIONSHIP,vocab,relationship_id,Yes,0,,varchar(20),0,,"The type of relationship captured by the
-relationship record.",,Yes,0,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-RELATIONSHIP,vocab,relationship_name,Yes,0,,varchar(255),0,,,,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+relationship record.",,Yes,0,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+RELATIONSHIP,vocab,relationship_name,Yes,0,,varchar(255),0,,,,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 RELATIONSHIP,vocab,reverse_relationship_id,Yes,0,,varchar(20),0,,"The identifier for the relationship used to
 define the reverse relationship between two
-concepts.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-SOURCE_TO_CONCEPT_MAP,vocab,invalid_reason,No,,,varchar(1),0,,"Reason the mapping instance was invalidated. Possible values are D (deleted), U (replaced with an update) or NULL when valid_end_date has the default value.",,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+concepts.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+SOURCE_TO_CONCEPT_MAP,vocab,invalid_reason,No,,,varchar(1),0,,"Reason the mapping instance was invalidated. Possible values are D (deleted), U (replaced with an update) or NULL when valid_end_date has the default value.",,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 SOURCE_TO_CONCEPT_MAP,vocab,source_code,Yes,0,,varchar(50),0,,"The source code being translated
-into a Standard Concept.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+into a Standard Concept.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 SOURCE_TO_CONCEPT_MAP,vocab,source_code_description,No,,,varchar(255),0,,"An optional description for the
 source code. This is included as a
 convenience to compare the
 description of the source code to
-the name of the concept.",,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+the name of the concept.",,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 SOURCE_TO_CONCEPT_MAP,vocab,source_concept_id,Yes,0,,integer,0,,"A foreign key to the Source
 Concept that is being translated
-into a Standard Concept.","This is either 0 or should be a number above 2 billion, which are the Concepts reserved for site-specific codes and mappings.",No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,No,,,
+into a Standard Concept.","This is either 0 or should be a number above 2 billion, which are the Concepts reserved for site-specific codes and mappings.",No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,No,,,
 SOURCE_TO_CONCEPT_MAP,vocab,source_vocabulary_id,Yes,0,,varchar(20),0,,"A foreign key to the
 VOCABULARY table defining the
 vocabulary of the source code that
 is being translated to a Standard
-Concept.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Concept.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 SOURCE_TO_CONCEPT_MAP,vocab,target_concept_id,Yes,0,,integer,0,,"The target Concept
 to which the source code is being
-mapped.",,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-SOURCE_TO_CONCEPT_MAP,vocab,target_vocabulary_id,Yes,0,,varchar(20),0,,The Vocabulary of the target Concept.,,No,,,Yes,0,,VOCABULARY,VOCABULARY_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+mapped.",,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+SOURCE_TO_CONCEPT_MAP,vocab,target_vocabulary_id,Yes,0,,varchar(20),0,,The Vocabulary of the target Concept.,,No,,,Yes,0,,VOCABULARY,VOCABULARY_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 SOURCE_TO_CONCEPT_MAP,vocab,valid_end_date,Yes,0,,date,0,,"The date when the mapping
 instance became invalid because it
 was deleted or superseded
 (updated) by a new relationship.
-Default value is 31-Dec-2099.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,Yes,SOURCE_TO_CONCEPT_MAP,VALID_START_DATE,0,,,,,,,,,,,,,,,,,,
+Default value is 31-Dec-2099.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,Yes,SOURCE_TO_CONCEPT_MAP,VALID_START_DATE,0,,,,,,,,,,,,,,,,,,
 SOURCE_TO_CONCEPT_MAP,vocab,valid_start_date,Yes,0,,date,0,,"The date when the mapping
-instance was first recorded.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,Yes,VALID_END_DATE,0,,,,,,,,,,,
+instance was first recorded.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,Yes,VALID_END_DATE,0,,,,,,,,,,,
 SPECIMEN,cdm,anatomic_site_concept_id,No,,,integer,0,,This is the site on the body where the specimen is from.,Map the ANATOMIC_SITE_SOURCE_VALUE to a Standard Concept in the Spec Anatomic Site domain. This should be coded at the lowest level of granularity [Accepted Concepts](https://athena.ohdsi.org/search-terms/terms?standardConcept=Standard&domain=Spec+Anatomic+Site&conceptClass=Body+Structure&page=4&pageSize=15&query=),No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
 SPECIMEN,cdm,anatomic_site_source_value,No,,,varchar(50),0,,,"This is the site on the body where the specimen was taken from, as represented in the source.",No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,Yes,100,,ANATOMIC_SITE_CONCEPT_ID,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
 SPECIMEN,cdm,disease_status_concept_id,No,,,integer,0,,,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,Yes,0,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
@@ -536,15 +536,15 @@ VISIT_OCCURRENCE,cdm,visit_source_value,No,,,varchar(50),0,,"This field houses t
 VISIT_OCCURRENCE,cdm,visit_start_date,Yes,0,,date,0,,"For inpatient visits, the start date is typically the admission date. For outpatient visits the start date and end date will be the same.","When populating VISIT_START_DATE, you should think about the patient experience to make decisions on how to define visits. In the case of an inpatient visit this should be the date the patient was admitted to the hospital or institution. In all other cases this should be the date of the patient-provider interaction.",No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,PERSON,BIRTH_DATETIME,1,,Yes,1,,Yes,VISIT_END_DATE,1,,Yes,1,,Yes,1,,Yes,,,
 VISIT_OCCURRENCE,cdm,visit_start_datetime,No,,,datetime,0,,,"If no time is given for the start date of a visit, set it to midnight (00:00:0000).",No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,PERSON,BIRTH_DATETIME,1,,Yes,1,,Yes,VISIT_END_DATETIME,1,,Yes,1,,Yes,1,,Yes,,,
 VISIT_OCCURRENCE,cdm,visit_type_concept_id,Yes,0,,Integer,0,,"Use this field to understand the provenance of the visit record, or where the record comes from.","Populate this field based on the provenance of the visit record, as in whether it came from an EHR record or billing claim. [Accepted Concepts](https://athena.ohdsi.org/search-terms/terms?domain=Type+Concept&standardConcept=Standard&page=1&pageSize=15&query=).",No,,,Yes,0,,CONCEPT,CONCEPT_ID,Type Concept,0,,,,,Yes,0,,Yes,0,,Yes,0,,No,,,No,,,,,,,,,,,,,,,No,,,,,,,,,,,,,Yes,,,
-VOCABULARY,vocab,vocabulary_concept_id,Yes,0,,integer,0,,A Concept that represents the Vocabulary the VOCABULARY record belongs to.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+VOCABULARY,vocab,vocabulary_concept_id,Yes,0,,integer,0,,A Concept that represents the Vocabulary the VOCABULARY record belongs to.,,No,,,Yes,0,,CONCEPT,CONCEPT_ID,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 VOCABULARY,vocab,vocabulary_id,Yes,0,,varchar(20),0,,"A unique identifier for each Vocabulary, such
-as ICD9CM, SNOMED, Visit.",,Yes,0,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+as ICD9CM, SNOMED, Visit.",,Yes,0,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 VOCABULARY,vocab,vocabulary_name,Yes,0,,varchar(255),0,,"The name describing the vocabulary, for
 example, International Classification of
 Diseases, Ninth Revision, Clinical
-Modification, Volume 1 and 2 (NCHS) etc.",,No,,,No,,,,,,,,,,,No,,,No,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Modification, Volume 1 and 2 (NCHS) etc.",,No,,,No,,,,,,,,,,,No,,,Yes,0,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 VOCABULARY,vocab,vocabulary_reference,No,,,varchar(255),0,,"External reference to documentation or
 available download of the about the
-vocabulary.",,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+vocabulary.",,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 VOCABULARY,vocab,vocabulary_version,No,,,varchar(255),0,,"Version of the Vocabulary as indicated in
-the source.",,No,,,No,,,,,,,,,,,No,,,No,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+the source.",,No,,,No,,,,,,,,,,,No,,,Yes,100,,No,,,No,,,No,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

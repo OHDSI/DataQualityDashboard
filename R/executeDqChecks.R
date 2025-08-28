@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -383,11 +383,7 @@ executeDqChecks <- function(connectionDetails,
     )
   }
 
-  if (sqlOnly) {
-    invisible(allResults)
-  } else {
-    return(allResults)
-  }
+  invisible(allResults)
 }
 
 .needsAutoCommit <- function(connectionDetails, connection) {

@@ -138,7 +138,7 @@ class DqDashboard extends HTMLElement {
     </table>
     {{#if Total.Total.NA}}
     <div class="text-muted">
-      <div>{{Total.Total.NA}} out of {{Total.Total.Pass}} passed checks are Not Applicable, due to empty tables or fields.</div>
+      <div>{{Total.Total.NA}} out of {{Total.Total.Pass}} passed checks are <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckStatusDefinitions.html#not-applicable" target="_blank">Not Applicable</a>, due to empty tables or fields.</div>
       <div>{{Total.Total.Error}} out of {{Total.Total.Fail}} failed checks are SQL errors.</div>
       <div>Corrected pass percentage for NA and Errors: {{Total.Total.NAPercentPass}}  ({{Total.Total.NaTotalPassed}}/{{Total.Total.NaTotal}}).</div>
     </div>

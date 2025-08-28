@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -92,6 +92,7 @@
       ParallelLogger::logInfo("Finished writing table")
     },
     error = function(e) {
+      warning(sprintf("Writing table failed: %s", e$message))
       ParallelLogger::logError(sprintf("Writing table failed: %s", e$message))
     }
   )

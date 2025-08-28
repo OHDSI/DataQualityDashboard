@@ -1,0 +1,81 @@
+---
+title: "measureObservationPeriodOverlap"
+author: "Katy Sadowski"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## Summary
+
+**Level**: Table check\
+**Context**: Verification\
+**Category**: Plausibility\
+**Subcategory**: Temporal\
+**Severity**: Fatal &#x1F480;\
+
+## Description
+The number and percent of persons that have overlapping or back-to-back observation periods.
+
+## Definition
+This check verifies that observation periods for each person do not overlap or have gaps of only one day between them. According to the OMOP CDM specification, observation periods should not overlap or be back-to-back to each other.
+
+- *Numerator*: The number of persons who have at least one pair of overlapping or back-to-back observation periods
+- *Denominator*: The total number of persons with observation periods
+- *Related CDM Convention(s)*: "Any two overlapping or adjacent OBSERVATION_PERIOD records have to be merged into one" from [CDM specification](https://ohdsi.github.io/CommonDataModel/cdm54.html#observation_period)
+- *CDM Fields/Tables*: `OBSERVATION_PERIOD`
+- *Default Threshold Value*: 0%
+
+## User Guidance
+A failure in this check indicates that there are persons in the database who have overlapping or back-to-back observation periods, which violates the OMOP CDM specification. Such observation periods will lead to critical errors in analytics as all OHDSI tools assume that observation periods do not overlap.
+
+### Violated rows query
+You may use the following SQL query to identify the specific persons with overlapping observation periods:
+
+```sql
+SELECT DISTINCT
+    cdmTable.person_id,
+    cdmTable.observation_period_start_date,
+    cdmTable.observation_period_end_date,
+    cdmTable2.observation_period_start_date AS overlap_start,
+    cdmTable2.observation_period_end_date AS overlap_end,
+    CASE 
+        WHEN cdmTable.observation_period_start_date <= cdmTable2.observation_period_end_date 
+            AND cdmTable.observation_period_end_date >= cdmTable2.observation_period_start_date
+        THEN 'Overlapping'
+        WHEN DATEADD(day, 1, cdmTable.observation_period_end_date) = cdmTable2.observation_period_start_date
+            OR DATEADD(day, 1, cdmTable2.observation_period_end_date) = cdmTable.observation_period_start_date
+        THEN 'Back-to-back'
+    END AS violation_type
+FROM @cdmDatabaseSchema.observation_period cdmTable
+JOIN @cdmDatabaseSchema.observation_period cdmTable2 
+    ON cdmTable.person_id = cdmTable2.person_id
+    AND cdmTable.observation_period_id != cdmTable2.observation_period_id
+WHERE (cdmTable.observation_period_start_date <= cdmTable2.observation_period_end_date 
+    AND cdmTable.observation_period_end_date >= cdmTable2.observation_period_start_date)
+    OR (DATEADD(day, 1, cdmTable.observation_period_end_date) = cdmTable2.observation_period_start_date)
+    OR (DATEADD(day, 1, cdmTable2.observation_period_end_date) = cdmTable.observation_period_start_date)
+ORDER BY cdmTable.person_id, cdmTable.observation_period_start_date
+```
+
+### ETL Developers
+If this check fails, you should investigate the root cause to determine if the issue originates in the source data or if it is the result of an ETL bug.  Logic will need to be added to the ETL to correctly merge overlapping or back-to-back periods of observed time, and/or to handle bad data from the source.  This is a fatal check and all failures must be resolved before the CDM can be used.
+
+**Examples of violations:**
+
+1. **Overlapping periods**: 
+   - Period 1: 2020-01-01 to 2020-06-30
+   - Period 2: 2020-05-01 to 2020-12-31
+   - These overlap from 2020-05-01 to 2020-06-30
+
+2. **Back-to-back periods**:
+   - Period 1: 2020-01-01 to 2020-06-30  
+   - Period 2: 2020-07-01 to 2020-12-31
+   - These are back-to-back (one ends exactly one day before the other starts)
+
+Both scenarios should be merged into a single period from 2020-01-01 to 2020-12-31.
+
+### Data Users
+An OMOP CDM with overlapping or adjacent observation periods should not be used.  OHDSI tools assume that observation periods do not overlap, and as such will return errors or incorrect results; for example, cohort entry criteria and calculation of person-time will be executed incorrectly.

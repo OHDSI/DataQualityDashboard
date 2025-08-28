@@ -9,7 +9,8 @@ writeJsonResultsToTable(
   resultsDatabaseSchema,
   jsonFilePath,
   writeTableName = "dqdashboard_results",
-  cohortDefinitionId = c()
+  cohortDefinitionId = c(),
+  singleTable = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ writeJsonResultsToTable(
 \item{writeTableName}{Name of table in the database to write results to}
 
 \item{cohortDefinitionId}{If writing results for a single cohort this is the ID that will be appended to the table name}
+
+\item{singleTable}{If TRUE, writes all results to a single table. If FALSE (default), writes to 3 separate tables by check level (table, field, concept) (NOTE this default behavior will be deprecated in the future)}
 }
 \description{
 Write JSON Results to SQL Table

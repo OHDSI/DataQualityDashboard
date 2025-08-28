@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -152,7 +152,16 @@
     }
 
     if (!is.na(checkResults[i, ]$error)) {
-      checkResults[i, ]$isError <- 1
+      # Parse error message for missing table/field
+      errorMsg <- checkResults[i, ]$error
+      if (grepl("does not exist|missing|not found|invalid object name|invalid column name|ORA-00942|no such table|no such column", errorMsg, ignore.case = TRUE) &&
+        (checkResults[i, ]$checkName == "cdmField" || checkResults[i, ]$checkName == "cdmTable")) {
+        checkResults[i, ]$failed <- 1
+        checkResults[i, ]$isError <- 0
+      } else {
+        checkResults[i, ]$isError <- 1
+        checkResults[i, ]$failed <- 0
+      }
     } else if (is.na(thresholdValue) | thresholdValue == 0) {
       # If no threshold, or threshold is 0%, then any violating records will cause this check to fail
       if (!is.na(checkResults[i, ]$numViolatedRows) & checkResults[i, ]$numViolatedRows > 0) {

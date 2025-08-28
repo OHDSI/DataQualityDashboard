@@ -1,41 +1,40 @@
 pandoc: '3.2'
-pkgdown: 2.0.9
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   AddNewCheck: AddNewCheck.html
-  cdmDatatype: checks/cdmDatatype.html
-  cdmField: checks/cdmField.html
-  cdmTable: checks/cdmTable.html
+  checks/cdmDatatype: checks/cdmDatatype.html
+  checks/cdmField: checks/cdmField.html
+  checks/cdmTable: checks/cdmTable.html
   checkIndex: checkIndex.html
   CheckStatusDefinitions: CheckStatusDefinitions.html
-  CheckTypeDescriptions: CheckTypeDescriptions.html
   DataQualityDashboard: DataQualityDashboard.html
   DqdForCohorts: DqdForCohorts.html
-  fkClass: checks/fkClass.html
-  fkDomain: checks/fkDomain.html
-  isForeignKey: checks/isForeignKey.html
-  isPrimaryKey: checks/isPrimaryKey.html
-  isRequired: checks/isRequired.html
-  isStandardValidConcept: checks/isStandardValidConcept.html
-  measureConditionEraCompleteness: checks/measureConditionEraCompleteness.html
-  measurePersonCompleteness: checks/measurePersonCompleteness.html
-  measureValueCompleteness: checks/measureValueCompleteness.html
-  plausibleAfterBirth: checks/plausibleAfterBirth.html
-  plausibleBeforeDeath: checks/plausibleBeforeDeath.html
-  plausibleGenderUseDescendants: checks/plausibleGenderUseDescendants.html
-  plausibleStartBeforeEnd: checks/plausibleStartBeforeEnd.html
-  plausibleTemporalAfter: checks/plausibleTemporalAfter.html
-  plausibleUnitConceptIds: checks/plausibleUnitConceptIds.html
-  plausibleValueHigh: checks/plausibleValueHigh.html
-  plausibleValueLow: checks/plausibleValueLow.html
-  sourceConceptRecordCompleteness: checks/sourceConceptRecordCompleteness.html
-  sourceValueCompleteness: checks/sourceValueCompleteness.html
+  checks/fkClass: checks/fkClass.html
+  checks/fkDomain: checks/fkDomain.html
+  checks/isForeignKey: checks/isForeignKey.html
+  checks/isPrimaryKey: checks/isPrimaryKey.html
+  checks/isRequired: checks/isRequired.html
+  checks/isStandardValidConcept: checks/isStandardValidConcept.html
+  checks/measureConditionEraCompleteness: checks/measureConditionEraCompleteness.html
+  checks/measureObservationPeriodOverlap: checks/measureObservationPeriodOverlap.html
+  checks/measurePersonCompleteness: checks/measurePersonCompleteness.html
+  checks/measureValueCompleteness: checks/measureValueCompleteness.html
+  checks/plausibleAfterBirth: checks/plausibleAfterBirth.html
+  checks/plausibleBeforeDeath: checks/plausibleBeforeDeath.html
+  checks/plausibleGenderUseDescendants: checks/plausibleGenderUseDescendants.html
+  checks/plausibleStartBeforeEnd: checks/plausibleStartBeforeEnd.html
+  checks/plausibleTemporalAfter: checks/plausibleTemporalAfter.html
+  checks/plausibleUnitConceptIds: checks/plausibleUnitConceptIds.html
+  checks/plausibleValueHigh: checks/plausibleValueHigh.html
+  checks/plausibleValueLow: checks/plausibleValueLow.html
+  checks/sourceConceptRecordCompleteness: checks/sourceConceptRecordCompleteness.html
+  checks/sourceValueCompleteness: checks/sourceValueCompleteness.html
   SqlOnly: SqlOnly.html
-  standardConceptRecordCompleteness: checks/standardConceptRecordCompleteness.html
+  checks/standardConceptRecordCompleteness: checks/standardConceptRecordCompleteness.html
   Thresholds: Thresholds.html
-  withinVisitDates: checks/withinVisitDates.html
-last_built: 2024-12-25T03:53Z
+  checks/withinVisitDates: checks/withinVisitDates.html
+last_built: 2025-08-27T23:42Z
 urls:
   reference: https://ohdsi.github.io/DataQualityDashboard/reference
   article: https://ohdsi.github.io/DataQualityDashboard/articles
-

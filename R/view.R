@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -17,7 +17,7 @@
 
 #' View DQ Dashboard
 #'
-#' @param jsonPath       The path to the JSON file produced by  \code{\link{executeDqChecks}}
+#' @param jsonPath       The fully-qualified path to the JSON file produced by  \code{\link{executeDqChecks}}
 #' @param launch.browser Passed on to \code{shiny::runApp}
 #' @param display.mode   Passed on to \code{shiny::runApp}
 #' @param ...            Extra parameters for shiny::runApp() like "port" or "host"

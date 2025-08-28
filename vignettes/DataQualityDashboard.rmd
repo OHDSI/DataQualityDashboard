@@ -4,11 +4,11 @@ author: "Clair Blacketer"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
-    number_sections: yes
-    toc: yes
+    number_sections: true
+    toc: true
   html_document:
-    number_sections: yes
-    toc: yes
+    number_sections: true
+    toc: true
 vignette: >
   %\VignetteIndexEntry{Getting Started}
   %\VignetteEncoding{UTF-8}
@@ -154,6 +154,7 @@ Viewing Results
 
 **Launching Dashboard as Shiny App**
 ```r
+# Use the fully-qualified path to the JSON results file
 DataQualityDashboard::viewDqDashboard(jsonFilePath)
 ```
 

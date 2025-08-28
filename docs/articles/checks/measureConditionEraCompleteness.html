@@ -12,14 +12,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
 <script src="../../pkgdown.js"></script><meta property="og:title" content="measureConditionEraCompleteness">
-<meta property="og:description" content="DataQualityDashboard">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -33,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.0</span>
       </span>
     </div>
 
@@ -42,7 +41,7 @@
 <li>
   <a href="../../index.html">
     <span class="fa fa-home fa-lg"></span>
-     
+
   </a>
 </li>
 <li>
@@ -54,14 +53,11 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../../articles/CheckTypeDescriptions.html">Check Type Definitions</a>
-    </li>
-    <li>
       <a href="../../articles/Thresholds.html">DQ Check Failure Thresholds</a>
     </li>
     <li>
@@ -80,8 +76,8 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    NEW! Data Quality Check Types
-     
+    Data Quality Check Types
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -152,6 +148,9 @@
       <a href="../../articles/checks/measureConditionEraCompleteness.html">measureConditionEraCompleteness</a>
     </li>
     <li>
+      <a href="../../articles/checks/measureObservationPeriodOverlap.html">measureObservationPeriodOverlap</a>
+    </li>
+    <li>
       <a href="../../articles/checks/plausibleUnitConceptIds.html">plausibleUnitConceptIds</a>
     </li>
     <li>
@@ -170,7 +169,7 @@
 <li>
   <a href="https://github.com/OHDSI/DataQualityDashboard/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -181,7 +180,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -190,7 +189,7 @@
                         <h4 data-toc-skip class="author">Maxim
 Moinat</h4>
             
-            <h4 data-toc-skip class="date">2024-12-24</h4>
+            <h4 data-toc-skip class="date">2025-08-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/measureConditionEraCompleteness.Rmd" class="external-link"><code>vignettes/checks/measureConditionEraCompleteness.Rmd</code></a></small>
       <div class="hidden name"><code>measureConditionEraCompleteness.Rmd</code></div>
@@ -208,8 +207,8 @@ Moinat</h4>
 <h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
 </h2>
 <p>The number and percent of persons that does not have condition_era
-built successfully, for all persons in
-<code>CONDITION_OCCURRENCE</code>.</p>
+built successfully, for all persons in <code>CONDITION_OCCURRENCE</code>
+with a non-zero <code>condition_concept_id</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="definition">Definition<a class="anchor" aria-label="anchor" href="#definition"></a>
@@ -218,10 +217,12 @@ built successfully, for all persons in
 <li>
 <em>Numerator</em>: Number of unique person_ids that exist in the
 <code>CONDITION_OCCURRENCE</code> table but not in the
-<code>CONDITION_ERA</code> table.</li>
+<code>CONDITION_ERA</code> table, excluding persons whose only condition
+records have <code>condition_concept_id = 0</code>.</li>
 <li>
 <em>Denominator</em>: Number of unique person_ids in the
-<code>CONDITION_OCCURRENCE</code> table.</li>
+<code>CONDITION_OCCURRENCE</code> table with at least one condition
+record with a non-zero <code>condition_concept_id</code>.</li>
 <li>
 <em>Related CDM Convention(s)</em>: Condition Era’s are directly
 derived from Condition Occurrence.</li>
@@ -243,6 +244,10 @@ It does NOT clearly state that the <code>CONDITION_ERA</code> table is
 required when there are condition occurrences. Still, it is has always
 been a common convention in the OHDSI community to derive condition era.
 There is currently no THEMIS convention on condition eras.</p>
+<p><strong>Note</strong>: This check excludes condition records where
+<code>condition_concept_id = 0</code> from both numerator and
+denominator calculations, as it is acceptable that condition eras are
+not built for these records.</p>
 <div class="section level3">
 <h3 id="violated-rows-query">Violated rows query<a class="anchor" aria-label="anchor" href="#violated-rows-query"></a>
 </h3>
@@ -251,7 +256,8 @@ There is currently no THEMIS convention on condition eras.</p>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="kw">FROM</span> @cdmDatabaseSchema.condition_occurrence co</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="kw">LEFT</span> <span class="kw">JOIN</span> @cdmDatabaseSchema.condition_era cdmTable </span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="kw">ON</span> co.person_id <span class="op">=</span> cdmTable.person_id</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.person_id <span class="kw">IS</span> <span class="kw">NULL</span></span></code></pre></div>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="kw">WHERE</span> cdmTable.person_id <span class="kw">IS</span> <span class="kw">NULL</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="kw">AND</span> co.condition_concept_id <span class="op">!=</span> <span class="dv">0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="etl-developers">ETL Developers<a class="anchor" aria-label="anchor" href="#etl-developers"></a>
@@ -282,9 +288,7 @@ same persons as in condition occurrence.</p>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -292,21 +296,21 @@ same persons as in condition occurrence.</p>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Katy Sadowski, Clair Blacketer, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
+<p>Developed by Katy Sadowski, Clair Blacketer, Maxim Moinat, Ajit Londhe, Anthony Sena, Anthony Molinaro, Frank DeFalco, Pavel Grafkin.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

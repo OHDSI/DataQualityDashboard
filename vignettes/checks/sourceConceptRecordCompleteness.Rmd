@@ -20,11 +20,12 @@ output:
 ## Description
 The number and percent of records with a value of 0 in the source concept field @cdmFieldName in the @cdmTableName table.
 
+NB: In non-required fields, missing values are also counted as failures when a source value is available.
 
 ## Definition
 
-- *Numerator*: The number of rows with a value of 0 in the `_source_concept_id` source concept field.  
-- *Denominator*: The total number of rows in the table. 
+- *Numerator*: The number of rows with a value of 0 in the `_source_concept_id` source concept field.  For non-required fields, also includes rows where the `_source_concept_id` field is NULL and the corresponding `_source_value` field is not NULL.
+- *Denominator*: The total number of rows in the table where the `_source_concept_id` field is not NULL or, for non-required fields, the corresponding `_source_value` field is not NULL.
 - *Related CDM Convention(s)*: [Source concept mapping](https://ohdsi.github.io/CommonDataModel/dataModelConventions.html#Fields) 
 - *CDM Fields/Tables*: All source concept ID (`_source_concept_id`) columns in all event tables. 
 - *Default Threshold Value*: 
