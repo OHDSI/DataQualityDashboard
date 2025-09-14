@@ -42,12 +42,12 @@ test_that("Write DB results to json", {
 
   # Check that export length matches length of db table
   results <- jsonlite::fromJSON(file.path(outputFolder, testExportFile))
-  table_rows <- DatabaseConnector::renderTranslateQuerySql(
+  tableRows <- DatabaseConnector::renderTranslateQuerySql(
     connection,
     sql = "select count(*) from @resultsDatabaseSchema.@writeTableName;",
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     writeTableName = writeTableName,
     snakeCaseToCamelCase = TRUE
   )
-  expect_true(length(results$CheckResults) == table_rows)
+  expect_true(length(results$CheckResults) == tableRows)
 })

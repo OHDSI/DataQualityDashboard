@@ -252,10 +252,10 @@ executeDqChecks <- function(connectionDetails,
   })]
 
   checkDescriptionsDf <- checkDescriptionsDf[checkDescriptionsDf$checkLevel %in% checkLevels &
-    checkDescriptionsDf$severity %in% checkSeverity &
-    checkDescriptionsDf$evaluationFilter != "" &
-    checkDescriptionsDf$sqlFile != "" &
-    checkDescriptionsDf$checkName %in% checksToInclude, ]
+                                               checkDescriptionsDf$severity %in% checkSeverity &
+                                               checkDescriptionsDf$evaluationFilter != "" &
+                                               checkDescriptionsDf$sqlFile != "" &
+                                               checkDescriptionsDf$checkName %in% checksToInclude, ]
 
   if (length(checkNames) > 0) {
     checkDescriptionsDf <- checkDescriptionsDf[checkDescriptionsDf$checkName %in% checkNames, ]
