@@ -62,7 +62,7 @@ test_that("Not Applicable status Table Empty", {
   )
 
   r <- results$CheckResults[results$CheckResults$checkName == "measureValueCompleteness" &
-                              results$CheckResults$tableName == "device_exposure", ]
+    results$CheckResults$tableName == "device_exposure", ]
   expect_true(all(r$notApplicable == 1))
 })
 
@@ -160,7 +160,7 @@ test_that("measurePersonCompleteness NOT marked as Not Applicable when table is 
 
   # measurePersonCompleteness should NOT be marked as not applicable when table is empty
   r <- results$CheckResults[results$CheckResults$checkName == "measurePersonCompleteness" &
-                              results$CheckResults$cdmTableName == "OBSERVATION_PERIOD", ]
+    results$CheckResults$cdmTableName == "OBSERVATION_PERIOD", ]
   expect_true(r$notApplicable == 0)
 
   # It should fail because the threshold is 100% and all persons have 0 records in empty table

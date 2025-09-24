@@ -244,8 +244,8 @@ test_that("Execute a single DQ check on remote databases", {
     sysPassword <- URLdecode(Sys.getenv(sprintf("CDM5_%s_PASSWORD", toupper(gsub(" ", "_", dbType)))))
     sysServer <- Sys.getenv(sprintf("CDM5_%s_SERVER", toupper(gsub(" ", "_", dbType))))
     if (sysUser != "" &
-          sysPassword != "" &
-          sysServer != "") {
+      sysPassword != "" &
+      sysServer != "") {
       cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM54_SCHEMA", toupper(gsub(" ", "_", dbType))))
       resultsDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_OHDSI_SCHEMA", toupper(gsub(" ", "_", dbType))))
 
