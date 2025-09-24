@@ -75,7 +75,7 @@
 
   # convert column names to snake case, omitting the checkId column,
   # which has no underscore in the results table DDL
-  for (i in 1:ncol(checkResults)) {
+  for (i in seq_len(ncol(checkResults))) {
     if (colnames(checkResults)[i] == "checkId") {
       colnames(checkResults)[i] <- tolower(colnames(checkResults)[i])
     } else {
