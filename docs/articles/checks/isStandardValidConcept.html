@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
       </span>
     </div>
 
@@ -189,7 +189,7 @@
                         <h4 data-toc-skip class="author">Stephanie Hong,
 Katy Sadowski</h4>
             
-            <h4 data-toc-skip class="date">2025-08-27</h4>
+            <h4 data-toc-skip class="date">2025-09-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/checks/isStandardValidConcept.Rmd" class="external-link"><code>vignettes/checks/isStandardValidConcept.Rmd</code></a></small>
       <div class="hidden name"><code>isStandardValidConcept.Rmd</code></div>
@@ -218,7 +218,8 @@ concept in the <span class="citation">@cdmFieldName</span> field in the
 <em>Numerator</em>: The number of rows with an
 <code>_concept_id</code> that exists in <code>CONCEPT.concept_id</code>
 but does not equal zero, and has <code>CONCEPT.standard_concept</code>
-!= ‘S’ or non-NULL <code>CONCEPT.invalid_reason</code>.</li>
+!= ‘S’, NULL <code>CONCEPT.standard_concept</code>, or non-NULL
+<code>CONCEPT.invalid_reason</code>.</li>
 <li>
 <em>Denominator</em>: The total number of rows in the table with a
 non-NULL <code>_concept_id</code>.</li>
@@ -259,7 +260,7 @@ mapping process: <a href="https://ohdsi.github.io/TheBookOfOhdsi/ExtractTransfor
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="kw">FROM</span> @schema.@cdmTableName cdmTable </span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="kw">JOIN</span> @vocabDatabaseSchema.concept co <span class="kw">ON</span> cdmTable.@cdmFieldName <span class="op">=</span> co.concept_id </span>
 <span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="kw">WHERE</span> co.concept_id <span class="op">!=</span> <span class="dv">0</span>  </span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="kw">AND</span> (co.standard_concept <span class="op">!=</span> <span class="st">'S'</span> <span class="kw">OR</span> co.invalid_reason <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span>) </span></code></pre></div>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="kw">AND</span> (co.standard_concept <span class="op">!=</span> <span class="st">'S'</span> <span class="kw">OR</span> co.invalid_reason <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">OR</span> co.standard_concept <span class="kw">IS</span> <span class="kw">NULL</span>) </span></code></pre></div>
 <p>You may build upon this query by joining the
 <code>_source_concept_id</code> column to the concept table and
 inspecting the source concepts from which the failing non-standard
@@ -301,7 +302,7 @@ condition_occurrence table:</p>
 <span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>  <span class="kw">JOIN</span> @vocabDatabaseSchema.concept c1 <span class="kw">ON</span> condition_occurrence.condition_concept_id <span class="op">=</span> c1.concept_id </span>
 <span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  <span class="kw">LEFT</span> <span class="kw">JOIN</span> @vocabDatabaseSchema.concept c2 <span class="kw">ON</span> condition_occurrence.condition_source_concept_id <span class="op">=</span> c2.concept_id </span>
 <span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="kw">WHERE</span> c1.concept_id <span class="op">!=</span> <span class="dv">0</span>  </span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="kw">AND</span> (c1.standard_concept <span class="op">!=</span> <span class="st">'S'</span> <span class="kw">OR</span> c1.invalid_reason <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span>) </span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="kw">AND</span> (c1.standard_concept <span class="op">!=</span> <span class="st">'S'</span> <span class="kw">OR</span> c1.invalid_reason <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">OR</span> c1.standard_concept <span class="kw">IS</span> <span class="kw">NULL</span>) </span>
 <span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span> </span>
 <span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> <span class="dv">7</span> <span class="kw">DESC</span> </span></code></pre></div>
 <p>If you can confirm by inspecting the source concept and/or source

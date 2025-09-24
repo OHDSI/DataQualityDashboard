@@ -1,3 +1,7 @@
+DataQualityDashboard 2.8.0
+==========================
+This release includes a bugfix in the `isStandardValidConcept` check.  Previously, this check was not flagging records with a valid, non-standard concept in the concept ID field.  It was only flagging classification concepts and invalid concepts.
+
 DataQualityDashboard 2.7.0
 ==========================
 This release includes:
