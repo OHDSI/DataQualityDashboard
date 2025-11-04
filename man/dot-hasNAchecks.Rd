@@ -9,6 +9,9 @@
 \arguments{
 \item{checkResults}{A dataframe containing the results of the data quality checks}
 }
+\value{
+A logical value indicating whether all required checks are present
+}
 \description{
 Determines if all checks are present expected to calculate the 'Not Applicable' status
 }

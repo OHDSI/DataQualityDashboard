@@ -23,6 +23,8 @@
 #' @param outputFolder              The folder to output the json results file to
 #' @param outputFile                The output filename of the json results file
 #'
+#' @return NULL (writes results to JSON file)
+#'
 #' @export
 #'
 

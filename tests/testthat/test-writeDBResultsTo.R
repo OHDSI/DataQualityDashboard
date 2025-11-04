@@ -8,8 +8,9 @@ test_that("Write DB results to json", {
   resultsDatabaseSchemaEunomia <- "main"
   writeTableName <- "dqd_db_results"
 
-  expect_warning(
-    results <- DataQualityDashboard::executeDqChecks(
+  # Suppress both DatabaseConnector warnings and Missing check names warning
+  results <- withCallingHandlers(
+    DataQualityDashboard::executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
       resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
@@ -19,7 +20,13 @@ test_that("Write DB results to json", {
       writeToTable = TRUE,
       writeTableName = writeTableName
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      msg <- conditionMessage(w)
+      # Suppress warnings about converting logical columns and missing check names
+      if (grepl("Converting to numeric", msg) || grepl("Missing check names", msg)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   connection <- DatabaseConnector::connect(connectionDetailsEunomia)

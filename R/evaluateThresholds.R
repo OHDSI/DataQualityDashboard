@@ -21,6 +21,8 @@
 #' @param fieldChecks               A dataframe containing the field checks
 #' @param conceptChecks             A dataframe containing the concept checks
 #'
+#' @return A dataframe with updated check results including pass/fail status and threshold values
+#'
 #' @keywords internal
 
 .evaluateThresholds <- function(checkResults,

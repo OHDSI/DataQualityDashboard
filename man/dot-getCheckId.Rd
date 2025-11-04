@@ -26,6 +26,9 @@
 
 \item{unitConceptId}{The unit concept id the quality check is applied to}
 }
+\value{
+A character string representing the unique check ID
+}
 \description{
 Internal function to define the id of each check.
 }

@@ -46,19 +46,26 @@ test_that("Not Applicable status Table Empty", {
 
   # Make sure the device exposure table is empty
   connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
+  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
   DatabaseConnector::executeSql(connection, "DELETE FROM DEVICE_EXPOSURE;")
-  DatabaseConnector::disconnect(connection)
 
-  results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomiaNaChecks,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkNames = c("cdmTable", "cdmField", "measureValueCompleteness"),
-    # Eunomia COST table has misspelled 'REVEUE_CODE_SOURCE_VALUE'
-    tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
-    outputFolder = outputFolder,
-    writeToTable = FALSE
+  results <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomiaNaChecks,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = c("cdmTable", "cdmField", "measureValueCompleteness"),
+      # Eunomia COST table has misspelled 'REVEUE_CODE_SOURCE_VALUE'
+      tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   r <- results$CheckResults[results$CheckResults$checkName == "measureValueCompleteness" &
@@ -72,27 +79,32 @@ test_that("measureConditionEraCompleteness Not Applicable if condition_occurrenc
 
   # Remove records from Condition Occurrence
   connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
+  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
   DatabaseConnector::executeSql(connection, "CREATE TABLE CONDITION_OCCURRENCE_BACK AS SELECT * FROM CONDITION_OCCURRENCE;")
   DatabaseConnector::executeSql(connection, "DELETE FROM CONDITION_OCCURRENCE;")
-  DatabaseConnector::disconnect(connection)
 
-  results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomiaNaChecks,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkNames = c("cdmTable", "cdmField", "measureValueCompleteness", "measureConditionEraCompleteness"),
-    # Eunomia COST table has misspelled 'REVEUE_CODE_SOURCE_VALUE'
-    tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
-    outputFolder = outputFolder,
-    writeToTable = FALSE
+  results <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomiaNaChecks,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = c("cdmTable", "cdmField", "measureValueCompleteness", "measureConditionEraCompleteness"),
+      # Eunomia COST table has misspelled 'REVEUE_CODE_SOURCE_VALUE'
+      tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   # Reinstate Condition Occurrence
-  connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
   DatabaseConnector::executeSql(connection, "INSERT INTO CONDITION_OCCURRENCE SELECT * FROM CONDITION_OCCURRENCE_BACK;")
   DatabaseConnector::executeSql(connection, "DROP TABLE CONDITION_OCCURRENCE_BACK;")
-  disconnect(connection)
 
   r <- results$CheckResults[results$CheckResults$checkName == "measureConditionEraCompleteness", ]
   expect_true(r$notApplicable == 1)
@@ -104,27 +116,32 @@ test_that("measureConditionEraCompleteness Fails if condition_era empty", {
 
   # Remove records from Condition Era
   connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
+  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
   DatabaseConnector::executeSql(connection, "CREATE TABLE CONDITION_ERA_BACK AS SELECT * FROM CONDITION_ERA;")
   DatabaseConnector::executeSql(connection, "DELETE FROM CONDITION_ERA;")
-  DatabaseConnector::disconnect(connection)
 
-  results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomiaNaChecks,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkNames = c("cdmTable", "cdmField", "measureValueCompleteness", "measureConditionEraCompleteness"),
-    # Eunomia COST table has misspelled 'REVEUE_CODE_SOURCE_VALUE'
-    tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
-    outputFolder = outputFolder,
-    writeToTable = FALSE
+  results <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomiaNaChecks,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = c("cdmTable", "cdmField", "measureValueCompleteness", "measureConditionEraCompleteness"),
+      # Eunomia COST table has misspelled 'REVEUE_CODE_SOURCE_VALUE'
+      tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   # Reinstate the Condition Era
-  connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
   DatabaseConnector::executeSql(connection, "INSERT INTO CONDITION_ERA SELECT * FROM CONDITION_ERA_BACK;")
   DatabaseConnector::executeSql(connection, "DROP TABLE CONDITION_ERA_BACK;")
-  DatabaseConnector::disconnect(connection)
 
   r <- results$CheckResults[results$CheckResults$checkName == "measureConditionEraCompleteness", ]
   expect_true(r$failed == 1)
@@ -136,27 +153,32 @@ test_that("measurePersonCompleteness NOT marked as Not Applicable when table is 
 
   # Remove records from Device Exposure to make it empty
   connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
+  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
   DatabaseConnector::executeSql(connection, "CREATE TABLE OBSERVATION_PERIOD_BACK AS SELECT * FROM OBSERVATION_PERIOD;")
   DatabaseConnector::executeSql(connection, "DELETE FROM OBSERVATION_PERIOD;")
-  DatabaseConnector::disconnect(connection)
 
-  results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomiaNaChecks,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkNames = c("cdmTable", "cdmField", "measureValueCompleteness", "measurePersonCompleteness"),
-    # Eunomia COST table has misspelled 'REVEUE_CODE_SOURCE_VALUE'
-    tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
-    outputFolder = outputFolder,
-    writeToTable = FALSE
+  results <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomiaNaChecks,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = c("cdmTable", "cdmField", "measureValueCompleteness", "measurePersonCompleteness"),
+      # Eunomia COST table has misspelled 'REVEUE_CODE_SOURCE_VALUE'
+      tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   # Reinstate Device Exposure
-  connection <- DatabaseConnector::connect(connectionDetailsEunomiaNaChecks)
   DatabaseConnector::executeSql(connection, "INSERT INTO OBSERVATION_PERIOD SELECT * FROM OBSERVATION_PERIOD_BACK;")
   DatabaseConnector::executeSql(connection, "DROP TABLE OBSERVATION_PERIOD_BACK;")
-  DatabaseConnector::disconnect(connection)
 
   # measurePersonCompleteness should NOT be marked as not applicable when table is empty
   r <- results$CheckResults[results$CheckResults$checkName == "measurePersonCompleteness" &

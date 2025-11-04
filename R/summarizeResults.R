@@ -18,6 +18,8 @@
 #'
 #' @param checkResults              A dataframe containing the results of the checks after running against the database
 #'
+#' @return A list containing summary statistics of the check results
+#'
 #' @keywords internal
 #'
 

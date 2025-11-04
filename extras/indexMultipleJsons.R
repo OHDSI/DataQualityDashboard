@@ -36,12 +36,12 @@ subsetDataQualityChecks <- function(inputFolder, outputFolder) {
   tables <- c("PERSON", "OBSERVATION_PERIOD", "VISIT_OCCURRENCE", "CONDITION_OCCURRENCE", "DRUG_EXPOSURE", "PROCEDURE_OCCURRENCE", "MEASUREMENT", "OBSERVATION", "DRUG_ERA", "CONDITION_ERA")
   excludedFieldNames <- c("device_exposure_id", "visit_detail_id", "note_id", "specimen_id", "location_id", "care_site_id", "provider_id", "payer_plan_period_id", "dose_era_id", "drug_source_concept_id", "observation_source_concept_id", "condition_source_concept_id", "procedure_source_concept_id", "modifier_source_value", "measurement_time", "route_concept_id")
   
-  resultFiles <- list.files(path = inputFolder, full.names = T, pattern = "json")
+  resultFiles <- list.files(path = inputFolder, full.names = TRUE, pattern = "json")
   for (f in resultFiles) {
     writeLines(paste("processing", f))
     fileContents <- readLines(f, warn = FALSE)
     fileContentsConverted <- iconv(fileContents, 'utf-8', 'utf-8', sub = '')
-    resultJson <- rjson::fromJSON(fileContentsConverted,simplify=T)  
+    resultJson <- rjson::fromJSON(fileContentsConverted,simplify=TRUE)  
     
     # convert results to dataframe    
     checkResults <-resultJson$CheckResults

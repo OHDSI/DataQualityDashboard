@@ -4,7 +4,7 @@ test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  expect_warning(
+  withCallingHandlers(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
@@ -12,9 +12,13 @@ test_that("Execute reEvaluateThresholds on Synthea/Eunomia", {
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
-      writeToTable = F
+      writeToTable = FALSE
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)

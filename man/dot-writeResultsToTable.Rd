@@ -24,6 +24,9 @@
 \item{cohortDefinitionId}{(OPTIONAL) The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
 with the fields cohort_definition_id and subject_id.}
 }
+\value{
+NULL (writes results to database table)
+}
 \description{
 Internal function to write the check results to a table in the database. Requires write access to the database
 }

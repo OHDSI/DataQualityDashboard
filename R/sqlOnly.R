@@ -98,7 +98,9 @@
 #' @param dbms                      The database type (e.g. spark, sql server) - needed for proper query rendering
 #' @param outputFolder              Location to write the generated SQL files
 #' @param checkDescription          The description of the data quality check
-
+#' 
+#' @return NULL (writes SQL queries to file)
+#' 
 #' @noRd
 #' @keywords internal
 #'
@@ -146,12 +148,14 @@
 
 
 #' Internal function to write the DDL to outputFolder
-
+#'
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
 #' @param writeTableName            The table tor write DQD results to. Used when sqlOnly or writeToTable is True.
 #' @param dbms                      The database type (e.g. spark, sql server) - needed for proper query rendering
 #' @param outputFolder              Location to write the generated SQL files
-
+#' 
+#' @return NULL (writes DDL to file)
+#' 
 #' @noRd
 #' @keywords internal
 .writeDDL <- function(
@@ -180,7 +184,7 @@
 
 #' Internal function to get one threshold
 #' Note: this does not evaluate is_error or not_applicable status
-
+#'
 #' @param checkName                 The name of the check - such as measurePersonCompleteness
 #' @param checkLevel                The check level - such as TABLE
 #' @param cdmTableName              The name of the CDM table - such as MEASUREMENT
@@ -190,7 +194,9 @@
 #' @param tableChecks               A dataframe containing the table checks
 #' @param fieldChecks               A dataframe containing the field checks
 #' @param conceptChecks             A dataframe containing the concept checks
-
+#'
+#' @return A numeric value indicating the threshold value
+#'
 #' @noRd
 #' @keywords internal
 .getThreshold <- function(
@@ -275,5 +281,5 @@
     thresholdValue <- 0
   }
 
-  thresholdValue
+  return(thresholdValue)
 }

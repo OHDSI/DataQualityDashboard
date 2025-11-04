@@ -34,6 +34,8 @@
 #' @param sqlOnlyIncrementalInsert  (OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #'
+#' @return A dataframe containing the check results or SQL queries (NULL if sqlOnlyIncrementalInsert is TRUE)
+#' 
 #' @import magrittr
 #'
 #' @keywords internal
@@ -128,12 +130,13 @@
       sqlToUnion <- dfs$query
       if (length(sqlToUnion) > 0) {
         .writeSqlOnlyQueries(sqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
+        return(NULL)
       }
     } else {
-      dfs
+      return(dfs)
     }
   } else {
     ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
-    data.frame()
+    return(data.frame())
   }
 }

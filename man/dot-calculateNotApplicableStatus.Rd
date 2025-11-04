@@ -9,6 +9,9 @@
 \arguments{
 \item{checkResults}{A dataframe containing the results of the data quality checks}
 }
+\value{
+A dataframe with updated check results including notApplicable status and reasons
+}
 \description{
 Determines if check should be notApplicable and the notApplicableReason
 }

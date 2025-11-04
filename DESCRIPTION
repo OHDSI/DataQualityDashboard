@@ -14,8 +14,8 @@ Authors@R: c(
   person("Pavel", "Grafkin", role = c("aut"))
   )
 Maintainer: Katy Sadowski <sadowski@ohdsi.org>
-Description: An R package for assessing data quality in standardized OMOP Common Data Model data sources.
-License: Apache License (>= 2)
+Description: An R package for assessing data quality in Observational Medical Outcomes Partnership Common Data Model (OMOP CDM) databases.  Executes data quality checks and provides an R Shiny application to view the results.
+License: Apache License 2.0
 Config/build/clean-inst-doc: FALSE
 VignetteBuilder: knitr
 Config/testthat/edition: 3

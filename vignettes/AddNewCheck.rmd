@@ -77,7 +77,7 @@ This will bring up a SqlRender window in your browser. Paste in your complete DQ
 
 ![Figure 2: launchSqlRenderDeveloper](./images/SQLRenderDeveloper.png)
 
-SQL Server SQL is the lingua franca for Data Quality Dashboard queries. SQLRender will modify the query to other SQL dialects. See [SQLRender on CRAN](https://cran.r-project.org/web/packages/SqlRender/index.html) for additional information. When satisfied with the results of the query save the SQL in a file named ERVisitLength.sql in the directory DataQualityDashboard/inst/sql/sql_server.
+SQL Server SQL is the lingua franca for Data Quality Dashboard queries. SQLRender will modify the query to other SQL dialects. See [SQLRender on CRAN](https://CRAN.R-project.org/package=SqlRender) for additional information. When satisfied with the results of the query save the SQL in a file named ERVisitLength.sql in the directory DataQualityDashboard/inst/sql/sql_server.
 
 ## Add the Query to Check Descriptions File
 The Check Description file is found in the DataQualityDashboard/inst/csv directory. There is a Check Description for each CDM release.  Within the Check Description file are the following columns:
