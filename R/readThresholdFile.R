@@ -14,6 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#' Internal function to read threshold files
+#'
+#' @param checkThresholdLoc The location of the threshold file
+#' @param defaultLoc The default location of the threshold file
+#'
+#' @return A dataframe containing the threshold data
+#'
+#' @keywords internal
 .readThresholdFile <- function(checkThresholdLoc, defaultLoc) {
   thresholdFile <- checkThresholdLoc
 

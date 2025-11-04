@@ -15,6 +15,9 @@ viewDqDashboard(jsonPath, launch.browser = NULL, display.mode = NULL, ...)
 
 \item{...}{Extra parameters for shiny::runApp() like "port" or "host"}
 }
+\value{
+NULL (launches Shiny application)
+}
 \description{
 View DQ Dashboard
 }

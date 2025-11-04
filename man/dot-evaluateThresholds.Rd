@@ -15,6 +15,9 @@
 
 \item{conceptChecks}{A dataframe containing the concept checks}
 }
+\value{
+A dataframe with updated check results including pass/fail status and threshold values
+}
 \description{
 Internal function to evaluate the data quality checks against given thresholds.
 }

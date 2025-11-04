@@ -9,6 +9,9 @@
 \arguments{
 \item{checkNames}{A character vector of check names}
 }
+\value{
+A logical value indicating whether all required checks are present
+}
 \description{
 Determines if all checks required for 'Not Applicable' status are in the checkNames
 }

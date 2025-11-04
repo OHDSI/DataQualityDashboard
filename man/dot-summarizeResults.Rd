@@ -9,6 +9,9 @@
 \arguments{
 \item{checkResults}{A dataframe containing the results of the checks after running against the database}
 }
+\value{
+A list containing summary statistics of the check results
+}
 \description{
 Internal function to summarize the results of the DQD run.
 }

@@ -23,6 +23,8 @@
 #' @param cohortDefinitionId        If writing results for a single cohort this is the ID that will be appended to the table name
 #' @param singleTable               If TRUE, writes all results to a single table. If FALSE (default), writes to 3 separate tables by check level (table, field, concept) (NOTE this default behavior will be deprecated in the future)
 #'
+#' @return NULL (writes results to database table)
+#'
 #' @export
 
 writeJsonResultsToTable <- function(connectionDetails,
@@ -101,6 +103,8 @@ writeJsonResultsToTable <- function(connectionDetails,
 #' @param csvPath     Path to the CSV output file
 #' @param columns     (OPTIONAL) List of desired columns
 #' @param delimiter   (OPTIONAL) CSV delimiter
+#'
+#' @return NULL (writes results to CSV file)
 #'
 #' @export
 

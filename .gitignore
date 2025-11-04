@@ -45,3 +45,4 @@ vignettes/*.log
 /Meta/
 *.log
 /sql
+.cursor

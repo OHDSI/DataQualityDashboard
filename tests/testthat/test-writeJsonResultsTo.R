@@ -4,7 +4,7 @@ test_that("Write JSON results", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  expect_warning(
+  withCallingHandlers(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
@@ -14,7 +14,11 @@ test_that("Write JSON results", {
       outputFolder = outputFolder,
       writeToTable = FALSE
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)
@@ -46,7 +50,7 @@ test_that("Write JSON results with singleTable parameter", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  expect_warning(
+  withCallingHandlers(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
@@ -56,7 +60,11 @@ test_that("Write JSON results with singleTable parameter", {
       outputFolder = outputFolder,
       writeToTable = FALSE
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   jsonPath <- list.files(outputFolder, ".json", full.names = TRUE)

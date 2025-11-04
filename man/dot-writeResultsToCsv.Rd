@@ -24,6 +24,9 @@
 
 \item{delimiter}{The delimiter for the file. Default is comma.}
 }
+\value{
+NULL (writes results to CSV file)
+}
 \description{
 Internal function to write the check results to a csv file.
 }

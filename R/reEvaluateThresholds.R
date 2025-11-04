@@ -26,6 +26,8 @@
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
 #' @param cdmVersion                The CDM version to target for the data source. By default, 5.3 is used.
 #'
+#' @return A list containing the re-evaluated DQD results
+#'
 #' @export
 
 reEvaluateThresholds <- function(jsonFilePath,

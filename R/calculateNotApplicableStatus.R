@@ -18,6 +18,8 @@
 #'
 #' @param checkResults A dataframe containing the results of the data quality checks
 #'
+#' @return A logical value indicating whether all required checks are present
+#'
 #' @keywords internal
 .hasNAchecks <- function(checkResults) {
   checkNames <- unique(checkResults$checkName)
@@ -27,6 +29,8 @@
 #' Determines if all checks required for 'Not Applicable' status are in the checkNames
 #'
 #' @param checkNames A character vector of check names
+#'
+#' @return A logical value indicating whether all required checks are present
 #'
 #' @keywords internal
 .containsNAchecks <- function(checkNames) {
@@ -41,6 +45,8 @@
 #' Applies the 'Not Applicable' status to a single check
 #'
 #' @param x Results from a single check
+#'
+#' @return A numeric value (0 or 1) indicating whether the check is not applicable
 #'
 #' @keywords internal
 .applyNotApplicable <- function(x) {
@@ -96,6 +102,8 @@
 #' Determines if check should be notApplicable and the notApplicableReason
 #'
 #' @param checkResults A dataframe containing the results of the data quality checks
+#'
+#' @return A dataframe with updated check results including notApplicable status and reasons
 #'
 #' @keywords internal
 .calculateNotApplicableStatus <- function(checkResults) {

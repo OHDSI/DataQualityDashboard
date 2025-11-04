@@ -20,6 +20,9 @@ listDqChecks(
 
 \item{conceptCheckThresholdLoc}{The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.}
 }
+\value{
+A list containing check descriptions, table checks, field checks, and concept checks
+}
 \description{
 Details on all checks defined by the DataQualityDashboard Package.
 }

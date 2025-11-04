@@ -26,6 +26,9 @@ writeDBResultsToJson(
 
 \item{outputFile}{The output filename of the json results file}
 }
+\value{
+NULL (writes results to JSON file)
+}
 \description{
 Write DQD results database table to json
 }

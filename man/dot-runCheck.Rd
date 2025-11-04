@@ -59,6 +59,9 @@
 
 \item{sqlOnly}{Should the SQLs be executed (FALSE) or just returned (TRUE)?}
 }
+\value{
+A dataframe containing the check results or SQL queries (NULL if sqlOnlyIncrementalInsert is TRUE)
+}
 \description{
 Internal function to run and process each data quality check.
 }

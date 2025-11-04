@@ -26,6 +26,9 @@
 
 \item{outputFolder}{The folder to output logs and SQL files to.}
 }
+\value{
+A dataframe containing the check results
+}
 \description{
 Internal function to send the fully qualified sql to the database and return the numerical result.
 }

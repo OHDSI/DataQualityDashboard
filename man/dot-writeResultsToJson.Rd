@@ -13,6 +13,9 @@
 
 \item{outputFile}{The output filename}
 }
+\value{
+NULL (writes results to JSON file)
+}
 \description{
 Write DQD results to json
 }

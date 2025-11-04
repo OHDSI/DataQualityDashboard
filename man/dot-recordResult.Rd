@@ -29,6 +29,9 @@
 
 \item{error}{Any errors returned from the server}
 }
+\value{
+A dataframe containing the check results
+}
 \description{
 Internal function to put the results of each quality check into a dataframe.
 }

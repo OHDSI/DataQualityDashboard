@@ -2,11 +2,11 @@ DataQualityDashboard
 ====================
 
 <!-- badges: start -->
-[![codecov.io](https://codecov.io/github/OHDSI/DataQualityDashboard/coverage.svg?branch=main)](https://codecov.io/github/OHDSI/DataQualityDashboard?branch=main)
+[![codecov.io](https://app.codecov.io/github/OHDSI/DataQualityDashboard?branch=main)](https://app.codecov.io/github/OHDSI/DataQualityDashboard?branch=main)
 [![Build Status](https://github.com/OHDSI/DataQualityDashboard/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/DataQualityDashboard/actions?query=workflow%3AR-CMD-check)
 <!-- badges: end -->
 
-DataQualityDashboard is part of [HADES](https://ohdsi.github.io/Hades).
+DataQualityDashboard is part of [HADES](https://ohdsi.github.io/Hades/).
 
 The goal of the Data Quality Dashboard (DQD) project is to design and develop an open-source tool to expose and evaluate observational data quality. 
 
