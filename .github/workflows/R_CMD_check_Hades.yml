@@ -81,6 +81,11 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "24.04"))')
 
+      - name: Pre-install litedown (workaround for download issues)
+        if: runner.os == 'macOS'
+        run: |
+          Rscript -e "tryCatch(install.packages('litedown', repos = 'https://cloud.r-project.org', quiet = TRUE), error = function(e) message('Pre-install failed, will retry in dependency step'))"
+      
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
