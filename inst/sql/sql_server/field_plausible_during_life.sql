@@ -5,6 +5,7 @@ get number of events that occur after death event (PLAUSIBLE_DURING_LIFE == Yes)
 
 Parameters used in this template:
 schema = @schema
+cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
@@ -38,7 +39,7 @@ FROM
                     ON cdmTable.person_id = c.subject_id
                     AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
             }
-        JOIN @schema.death de 
+        JOIN @cdmDatabaseSchema.death de 
             ON cdmTable.person_id = de.person_id
         WHERE CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(day, 60, CAST(de.death_date AS DATE))
         /*violatedRowsEnd*/
@@ -56,6 +57,6 @@ FROM
     WHERE person_id IN
         (SELECT 
             person_id 
-        FROM @schema.death)
+        FROM @cdmDatabaseSchema.death)
 ) denominator
 ;

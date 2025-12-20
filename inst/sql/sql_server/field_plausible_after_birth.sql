@@ -6,6 +6,7 @@ Denominator is number of events with a non-null date.
 
 Parameters used in this template:
 schema = @schema
+cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
@@ -39,7 +40,7 @@ FROM
             ON cdmTable.person_id = c.subject_id
             AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
         }
-        JOIN @schema.person p 
+        JOIN @cdmDatabaseSchema.person p 
             ON cdmTable.person_id = p.person_id
         WHERE cdmTable.@cdmFieldName IS NOT NULL AND 
             CAST(cdmTable.@cdmFieldName AS DATE) < COALESCE(

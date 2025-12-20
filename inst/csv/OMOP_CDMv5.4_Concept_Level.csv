@@ -434,7 +434,7 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,4152194,Systolic blood pressure,,,,,,,,,,,,,,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,37393840,Haematocrit,,,,,,,,,,,,,,,,,,,,,,,"44777604,8523,8554,-1",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3000593,Cobalamin (Vitamin B12) [Mass/volume] in Serum or Plasma,,,,,,,,,,,,,,,,,,,,,,,"8845,8725",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3002888,Erythrocyte distribution width [Entitic volume],,,,,,,,,,,,,,,,,,,,,,,8583,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3010910,Erythrocytes [#/volume] in Body fluid,,,,,,,,,,,,,,,,,,,,,,,"8647,8785,8815,893,8784,8848,9257",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3010910,Erythrocytes [#/volume] in Body fluid,,,,,,,,,,,,,,,,,,,,,,,"8647,8785,8815,8931,8784,8848,9257",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3013290,Carbon dioxide [Partial pressure] in Blood,,,,,,,,,,,,,,,,,,,,,,,8876,5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3027970,Globulin [Mass/volume] in Serum by calculation,,,,,,,,,,,,,,,,,,,,,,,"8636,8713,8950",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4239408,Heart rate,,,,,,,,,,,,,,,,,,,,,,,"8483,8541,8581",5,Approved UNIT_CONCEPT_IDs for the given MEASUREMENT_CONCEPT_ID

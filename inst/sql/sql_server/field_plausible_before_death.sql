@@ -6,6 +6,7 @@ Denominator is number of events with a non-null date, of persons who died.
 
 Parameters used in this template:
 schema = @schema
+cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
@@ -39,7 +40,7 @@ FROM
             ON cdmTable.person_id = c.subject_id
             AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
         }
-        JOIN @schema.death de 
+        JOIN @cdmDatabaseSchema.death de 
             ON cdmTable.person_id = de.person_id
         WHERE cdmTable.@cdmFieldName IS NOT NULL 
             AND CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(day, 60, de.death_date)
@@ -55,7 +56,7 @@ FROM
         ON cdmTable.person_id = c.subject_id
         AND c.cohort_definition_id = @cohortDefinitionId
     }
-    JOIN @schema.death
+    JOIN @cdmDatabaseSchema.death
         ON death.person_id = cdmTable.person_id
     WHERE cdmTable.@cdmFieldName IS NOT NULL
 ) denominator
