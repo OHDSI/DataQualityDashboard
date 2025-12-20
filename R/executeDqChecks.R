@@ -243,6 +243,13 @@ executeDqChecks <- function(connectionDetails,
     TRUE ~ cdmDatabaseSchema
   ))
 
+  fieldChecks <- dplyr::mutate(fieldChecks, databaseSchema = dplyr::case_when(
+    databaseSchema == "CDM" ~ cdmDatabaseSchema,
+    databaseSchema == "VOCAB" ~ vocabDatabaseSchema,
+    databaseSchema == "COHORT" ~ cohortDatabaseSchema,
+    TRUE ~ cdmDatabaseSchema
+  ))
+
   fieldChecks <- merge(x = fieldChecks, y = tableChecks[, c("cdmTableName", "schema")], by = "cdmTableName", all.x = TRUE)
 
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
