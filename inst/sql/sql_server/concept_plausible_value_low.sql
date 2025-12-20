@@ -3,7 +3,7 @@ CONCEPT LEVEL check:
 PLAUSIBLE_VALUE_LOW - find any MEASUREMENT records that have VALUE_AS_NUMBER with non-null value < plausible low value
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 conceptId = @conceptId
@@ -32,7 +32,7 @@ FROM (
 		/*violatedRowsBegin*/
 		SELECT 
 			m.* 
-		FROM @cdmDatabaseSchema.@cdmTableName m
+		FROM @schema.@cdmTableName m
 		{@cohort}?{
 			JOIN @cohortDatabaseSchema.@cohortTableName c
 				ON m.person_id = c.subject_id
@@ -48,7 +48,7 @@ FROM (
 ( 
 	SELECT 
 		COUNT_BIG(*) AS num_rows
-	FROM @cdmDatabaseSchema.@cdmTableName m
+	FROM @schema.@cdmTableName m
 	{@cohort}?{
 		JOIN @cohortDatabaseSchema.@cohortTableName c
 			ON m.person_id = c.subject_id

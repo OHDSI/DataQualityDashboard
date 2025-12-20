@@ -5,7 +5,7 @@ Checks for events that occur more than 60 days after death (PLAUSIBLE_BEFORE_DEA
 Denominator is number of events with a non-null date, of persons who died.
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
@@ -33,13 +33,13 @@ FROM
         SELECT 
             '@cdmTableName.@cdmFieldName' AS violating_field, 
             cdmTable.*
-        FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+        FROM @schema.@cdmTableName cdmTable
         {@cohort & '@runForCohort' == 'Yes'} ? {
         JOIN @cohortDatabaseSchema.@cohortTableName c 
             ON cdmTable.person_id = c.subject_id
             AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
         }
-        JOIN @cdmDatabaseSchema.death de 
+        JOIN @schema.death de 
             ON cdmTable.person_id = de.person_id
         WHERE cdmTable.@cdmFieldName IS NOT NULL 
             AND CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(day, 60, de.death_date)
@@ -49,13 +49,13 @@ FROM
 (
     SELECT 
         COUNT_BIG(*) AS num_rows
-    FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+    FROM @schema.@cdmTableName cdmTable
     {@cohort & '@runForCohort' == 'Yes'} ? {
     JOIN @cohortDatabaseSchema.@cohortTableName c 
         ON cdmTable.person_id = c.subject_id
         AND c.cohort_definition_id = @cohortDefinitionId
     }
-    JOIN @cdmDatabaseSchema.death
+    JOIN @schema.death
         ON death.person_id = cdmTable.person_id
     WHERE cdmTable.@cdmFieldName IS NOT NULL
 ) denominator

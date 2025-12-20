@@ -4,7 +4,7 @@ PLAUSIBLE_DURING_LIFE
 get number of events that occur after death event (PLAUSIBLE_DURING_LIFE == Yes)
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
@@ -32,13 +32,13 @@ FROM
         SELECT 
             '@cdmTableName.@cdmFieldName' AS violating_field, 
             cdmTable.*
-        FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+        FROM @schema.@cdmTableName cdmTable
             {@cohort & '@runForCohort' == 'Yes'}?{
                 JOIN @cohortDatabaseSchema.@cohortTableName c 
                     ON cdmTable.person_id = c.subject_id
                     AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
             }
-        JOIN @cdmDatabaseSchema.death de 
+        JOIN @schema.death de 
             ON cdmTable.person_id = de.person_id
         WHERE CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(day, 60, CAST(de.death_date AS DATE))
         /*violatedRowsEnd*/
@@ -47,7 +47,7 @@ FROM
 (
     SELECT 
         COUNT_BIG(*) AS num_rows
-    FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+    FROM @schema.@cdmTableName cdmTable
     {@cohort & '@runForCohort' == 'Yes'}?{
         JOIN @cohortDatabaseSchema.@cohortTableName c 
             ON cdmTable.person_id = c.subject_id
@@ -56,6 +56,6 @@ FROM
     WHERE person_id IN
         (SELECT 
             person_id 
-        FROM @cdmDatabaseSchema.death)
+        FROM @schema.death)
 ) denominator
 ;
