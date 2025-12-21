@@ -22,7 +22,7 @@
 #' @param checkDescription          The description of the data quality check
 #' @param sql                       The fully qualified sql for the data quality check
 #' @param outputFolder              The folder to output logs and SQL files to.
-#' 
+#'
 #' @return A dataframe containing the check results
 #'
 #' @keywords internal

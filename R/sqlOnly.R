@@ -98,9 +98,9 @@
 #' @param dbms                      The database type (e.g. spark, sql server) - needed for proper query rendering
 #' @param outputFolder              Location to write the generated SQL files
 #' @param checkDescription          The description of the data quality check
-#' 
+#'
 #' @return NULL (writes SQL queries to file)
-#' 
+#'
 #' @noRd
 #' @keywords internal
 #'
@@ -153,9 +153,9 @@
 #' @param writeTableName            The table tor write DQD results to. Used when sqlOnly or writeToTable is True.
 #' @param dbms                      The database type (e.g. spark, sql server) - needed for proper query rendering
 #' @param outputFolder              Location to write the generated SQL files
-#' 
+#'
 #' @return NULL (writes DDL to file)
-#' 
+#'
 #' @noRd
 #' @keywords internal
 .writeDDL <- function(

@@ -35,7 +35,7 @@
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
 #'
 #' @return A dataframe containing the check results or SQL queries (NULL if sqlOnlyIncrementalInsert is TRUE)
-#' 
+#'
 #' @import magrittr
 #'
 #' @keywords internal

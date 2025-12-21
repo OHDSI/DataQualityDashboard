@@ -294,21 +294,25 @@ test_that("Execute a single DQ check on remote databases", {
 
   for (dbType in dbTypes) {
     print(sprintf("Processing database type: %s", dbType))
-    
-    if (dbType %in% c("oracle",
-                      "postgresql",
-                      "sql server",
-                      "redshift",
-                      "spark")) {
+
+    if (dbType %in% c(
+      "oracle",
+      "postgresql",
+      "sql server",
+      "redshift",
+      "spark"
+    )) {
       cdmPattern <- "CDM5"
       if (dbType != "spark") {
         cdmSchemaPattern <- "CDM54"
       } else {
         cdmSchemaPattern <- "CDM"
       }
-    } else if (dbType %in% c("iris",
-                             "snowflake",
-                             "bigquery")) {
+    } else if (dbType %in% c(
+      "iris",
+      "snowflake",
+      "bigquery"
+    )) {
       cdmPattern <- "CDM"
       if (dbType != "snowflake") {
         cdmSchemaPattern <- "CDM"
@@ -320,9 +324,11 @@ test_that("Execute a single DQ check on remote databases", {
     if (dbType == "bigquery") {
       bqKeyFile <- tempfile(fileext = ".json")
       writeLines(Sys.getenv("CDM_BIG_QUERY_KEY_FILE"), bqKeyFile)
-      sysConnectionString <- gsub("<keyfile path>",
-                                  normalizePath(bqKeyFile, winslash = "/"),
-                                  Sys.getenv("CDM_BIG_QUERY_CONNECTION_STRING"))
+      sysConnectionString <- gsub(
+        "<keyfile path>",
+        normalizePath(bqKeyFile, winslash = "/"),
+        Sys.getenv("CDM_BIG_QUERY_CONNECTION_STRING")
+      )
       sysUser <- Sys.getenv(sprintf("%s_BIG_QUERY_USER", cdmPattern))
       sysPassword <- Sys.getenv(sprintf("%s_BIG_QUERY_PASSWORD", cdmPattern))
       sysServer <- Sys.getenv(sprintf("%s_BIG_QUERY_SERVER", cdmPattern))
@@ -336,11 +342,11 @@ test_that("Execute a single DQ check on remote databases", {
         sysConnectionString <- ""
       }
     }
-    
-    if ((sysUser != "" & sysPassword != "" & (sysServer != "" | sysConnectionString != ""))
-        | (dbType == "bigquery" & sysConnectionString != "")) {
+
+    if ((sysUser != "" & sysPassword != "" & (sysServer != "" | sysConnectionString != "")) |
+      (dbType == "bigquery" & sysConnectionString != "")) {
       print(sprintf("Connection details found for %s, proceeding...", dbType))
-      
+
       if (dbType == "bigquery") {
         cdmDatabaseSchema <- Sys.getenv(sprintf("%s_BIG_QUERY_%s_SCHEMA", cdmPattern, cdmSchemaPattern))
         resultsDatabaseSchema <- Sys.getenv(sprintf("%s_BIG_QUERY_OHDSI_SCHEMA", cdmPattern))
@@ -359,13 +365,16 @@ test_that("Execute a single DQ check on remote databases", {
       )
 
       # Verify connection before attempting to run checks
-      connectionOk <- tryCatch({
-        verifyConnection(connectionDetails)
-        TRUE
-      }, error = function(e) {
-        warning(sprintf("Cannot connect to %s database: %s", dbType, e$message))
-        FALSE
-      })
+      connectionOk <- tryCatch(
+        {
+          verifyConnection(connectionDetails)
+          TRUE
+        },
+        error = function(e) {
+          warning(sprintf("Cannot connect to %s database: %s", dbType, e$message))
+          FALSE
+        }
+      )
 
       if (!connectionOk) {
         print(sprintf("Skipping %s due to connection failure, continuing to next database...", dbType))
@@ -375,44 +384,47 @@ test_that("Execute a single DQ check on remote databases", {
       print(sprintf("Connection verified for %s, running checks...", dbType))
 
       # Run the checks
-      checkOk <- tryCatch({
-        results <- withCallingHandlers(
-          executeDqChecks(
-            connectionDetails = connectionDetails,
-            cdmDatabaseSchema = cdmDatabaseSchema,
-            resultsDatabaseSchema = resultsDatabaseSchema,
-            cdmSourceName = "test",
-            numThreads = 1,
-            sqlOnly = FALSE,
-            outputFolder = outputFolder,
-            verboseMode = FALSE,
-            writeToTable = FALSE,
-            checkNames = "measurePersonCompleteness",
-            cdmVersion = "5.4"
-          ),
-          warning = function(w) {
-            if (grepl("^Missing check names", w$message)) {
-              invokeRestart("muffleWarning")
+      checkOk <- tryCatch(
+        {
+          results <- withCallingHandlers(
+            executeDqChecks(
+              connectionDetails = connectionDetails,
+              cdmDatabaseSchema = cdmDatabaseSchema,
+              resultsDatabaseSchema = resultsDatabaseSchema,
+              cdmSourceName = "test",
+              numThreads = 1,
+              sqlOnly = FALSE,
+              outputFolder = outputFolder,
+              verboseMode = FALSE,
+              writeToTable = FALSE,
+              checkNames = "measurePersonCompleteness",
+              cdmVersion = "5.4"
+            ),
+            warning = function(w) {
+              if (grepl("^Missing check names", w$message)) {
+                invokeRestart("muffleWarning")
+              }
             }
+          )
+          expect_true(nrow(results$CheckResults) > 0)
+          TRUE
+        },
+        error = function(e) {
+          if (grepl("Connection reset|Communication link failure|SocketException", e$message, ignore.case = TRUE)) {
+            warning(sprintf("Connection error on %s: %s", dbType, e$message))
+            FALSE
+          } else {
+            # For non-connection errors, fail the test
+            stop(e)
           }
-        )
-        expect_true(nrow(results$CheckResults) > 0)
-        TRUE
-      }, error = function(e) {
-        if (grepl("Connection reset|Communication link failure|SocketException", e$message, ignore.case = TRUE)) {
-          warning(sprintf("Connection error on %s: %s", dbType, e$message))
-          FALSE
-        } else {
-          # For non-connection errors, fail the test
-          stop(e)
         }
-      })
+      )
 
       if (!checkOk) {
         print(sprintf("Skipping %s due to check execution failure, continuing to next database...", dbType))
         next
       }
-      
+
       print(sprintf("Successfully completed checks for %s", dbType))
     } else {
       print(sprintf("No connection details found for %s, skipping...", dbType))
