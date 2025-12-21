@@ -1,3 +1,12 @@
+DataQualityDashboard 2.8.1
+==========================
+This release contains some minor bug fixes:
+
+- Adds missing plausible units to the `plausibleUnitConceptIds` check
+- Fixes schema references causing errors for users with cohort and/or vocabulary tables stored in various schemas
+
+It also contains some changes to enable CRAN submission.
+
 DataQualityDashboard 2.8.0
 ==========================
 This release includes a bugfix in the `isStandardValidConcept` check.  Previously, this check was not flagging records with a valid, non-standard concept in the concept ID field.  It was only flagging classification concepts and invalid concepts.
@@ -39,7 +48,7 @@ This release includes:
 
 - Made `executeDqChecks` return value invisible
 - Write-to-table functionality improvements:
-  - In the public `writeJsonResultsToTable` function, an option is now provided to write all results to a single table (the approach used in `executeDqChecks` when `writeToTable` = TRUE). **Ulitimately, the approach which writes results to 3 separate tables will be deprecated**; for now, a warning is added to prepare users for this change
+  - In the public `writeJsonResultsToTable` function, an option is now provided to write all results to a single table (the approach used in `executeDqChecks` when `writeToTable` = TRUE). **Ultimately, the approach which writes results to 3 separate tables will be deprecated**; for now, a warning is added to prepare users for this change
   - Raise warning when write to table fails (previously, failures were silent)
 - Added automated tests on DuckDB and IRIS databases
 - Minor documentation updates

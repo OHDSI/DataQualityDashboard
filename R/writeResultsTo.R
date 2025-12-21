@@ -19,9 +19,9 @@
 #' @param result           A DQD results object (list)
 #' @param outputFolder     The output folder
 #' @param outputFile       The output filename
-#' 
+#'
 #' @return NULL (writes results to JSON file)
-#' 
+#'
 #' @keywords internal
 
 .writeResultsToJson <- function(result,

@@ -46,7 +46,9 @@
 <url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-evaluateThresholds.html</loc></url>
 <url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-getCheckId.html</loc></url>
 <url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-hasNAchecks.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-needsAutoCommit.html</loc></url>
 <url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-processCheck.html</loc></url>
+<url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-readThresholdFile.html</loc></url>
 <url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-recordResult.html</loc></url>
 <url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-runCheck.html</loc></url>
 <url><loc>https://ohdsi.github.io/DataQualityDashboard/reference/dot-summarizeResults.html</loc></url>
