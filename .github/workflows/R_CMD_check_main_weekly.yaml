@@ -63,26 +63,7 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
-      - name: Fix litedown download issue on macOS
-        if: runner.os == 'macOS'
-        env:
-          PAK_PREFER_SOURCE: "true"
-        run: |
-          Rscript -e "
-          # Install pak if not available
-          if (!requireNamespace('pak', quietly = TRUE)) {
-            install.packages('pak', repos = 'https://r-lib.github.io/p/pak')
-          }
-          # Clear pak cache to remove corrupted downloads
-          tryCatch(pak::cache_clean(force = TRUE), error = function(e) message('Cache clean failed, continuing'))
-          # Install litedown from source to avoid corrupted binary
-          # Install without version - pak will handle version matching from lockfile
-          install.packages('litedown', repos = 'https://cloud.r-project.org', type = 'source')
-          "
-      
       - uses: r-lib/actions/setup-r-dependencies@v2
-        env:
-          PAK_PREFER_SOURCE: "true"
         with:
           extra-packages: any::rcmdcheck
           needs: check
