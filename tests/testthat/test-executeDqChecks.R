@@ -316,28 +316,38 @@ test_that("Execute a single DQ check on remote databases", {
         cdmSchemaPattern <- "CDM53"
       }
     }
-    
-    userVarName <- sprintf("%s_%s_USER", cdmPattern, toupper(gsub(" ", "_", dbType)))
-    passwordVarName <- sprintf("%s_%s_PASSWORD", cdmPattern, toupper(gsub(" ", "_", dbType)))
-    serverVarName <- sprintf("%s_%s_SERVER", cdmPattern, toupper(gsub(" ", "_", dbType)))
-    
-    sysUser <- Sys.getenv(userVarName)
-    sysPassword <- URLdecode(Sys.getenv(passwordVarName))
-    sysServer <- Sys.getenv(serverVarName)
-    
-    if (sysServer == "") {
-      sysConnectionString <- Sys.getenv(sprintf("%s_%s_CONNECTION_STRING", cdmPattern, toupper(gsub(" ", "_", dbType))))
+
+    if (dbType == "bigquery") {
+      bqKeyFile <- tempfile(fileext = ".json")
+      writeLines(Sys.getenv("CDM_BIG_QUERY_KEY_FILE"), bqKeyFile)
+      sysConnectionString <- gsub("<keyfile path>",
+                                  normalizePath(bqKeyFile, winslash = "/"),
+                                  Sys.getenv("CDM_BIG_QUERY_CONNECTION_STRING"))
+      sysUser <- Sys.getenv(sprintf("%s_BIG_QUERY_USER", cdmPattern))
+      sysPassword <- Sys.getenv(sprintf("%s_BIG_QUERY_PASSWORD", cdmPattern))
+      sysServer <- Sys.getenv(sprintf("%s_BIG_QUERY_SERVER", cdmPattern))
     } else {
-      sysConnectionString <- ""
+      sysUser <- Sys.getenv(sprintf("%s_%s_USER", cdmPattern, toupper(gsub(" ", "_", dbType))))
+      sysPassword <- Sys.getenv(sprintf("%s_%s_PASSWORD", cdmPattern, toupper(gsub(" ", "_", dbType))))
+      sysServer <- Sys.getenv(sprintf("%s_%s_SERVER", cdmPattern, toupper(gsub(" ", "_", dbType))))
+      if (sysServer == "") {
+        sysConnectionString <- Sys.getenv(sprintf("%s_%s_CONNECTION_STRING", cdmPattern, toupper(gsub(" ", "_", dbType))))
+      } else {
+        sysConnectionString <- ""
+      }
     }
     
-    if (sysUser != "" &
-      sysPassword != "" &
-      (sysServer != "" | sysConnectionString != "")) {
+    if ((sysUser != "" & sysPassword != "" & (sysServer != "" | sysConnectionString != ""))
+        | (dbType == "bigquery" & sysConnectionString != "")) {
       print(sprintf("Connection details found for %s, proceeding...", dbType))
       
-      cdmDatabaseSchema <- Sys.getenv(sprintf("%s_%s_%s_SCHEMA", cdmPattern, toupper(gsub(" ", "_", dbType)), cdmSchemaPattern))
-      resultsDatabaseSchema <- Sys.getenv(sprintf("%s_%s_OHDSI_SCHEMA", cdmPattern, toupper(gsub(" ", "_", dbType))))
+      if (dbType == "bigquery") {
+        cdmDatabaseSchema <- Sys.getenv(sprintf("%s_BIG_QUERY_%s_SCHEMA", cdmPattern, cdmSchemaPattern))
+        resultsDatabaseSchema <- Sys.getenv(sprintf("%s_BIG_QUERY_OHDSI_SCHEMA", cdmPattern))
+      } else {
+        cdmDatabaseSchema <- Sys.getenv(sprintf("%s_%s_%s_SCHEMA", cdmPattern, toupper(gsub(" ", "_", dbType)), cdmSchemaPattern))
+        resultsDatabaseSchema <- Sys.getenv(sprintf("%s_%s_OHDSI_SCHEMA", cdmPattern, toupper(gsub(" ", "_", dbType))))
+      }
 
       connectionDetails <- DatabaseConnector::createConnectionDetails(
         dbms = dbType,
