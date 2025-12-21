@@ -5,6 +5,7 @@ Checks for events that occur more than 60 days after death (PLAUSIBLE_BEFORE_DEA
 Denominator is number of events with a non-null date, of persons who died.
 
 Parameters used in this template:
+schema = @schema
 cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
@@ -33,7 +34,7 @@ FROM
         SELECT 
             '@cdmTableName.@cdmFieldName' AS violating_field, 
             cdmTable.*
-        FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+        FROM @schema.@cdmTableName cdmTable
         {@cohort & '@runForCohort' == 'Yes'} ? {
         JOIN @cohortDatabaseSchema.@cohortTableName c 
             ON cdmTable.person_id = c.subject_id
@@ -49,7 +50,7 @@ FROM
 (
     SELECT 
         COUNT_BIG(*) AS num_rows
-    FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+    FROM @schema.@cdmTableName cdmTable
     {@cohort & '@runForCohort' == 'Yes'} ? {
     JOIN @cohortDatabaseSchema.@cohortTableName c 
         ON cdmTable.person_id = c.subject_id

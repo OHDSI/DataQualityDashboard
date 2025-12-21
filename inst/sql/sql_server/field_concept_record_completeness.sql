@@ -4,7 +4,7 @@ number of 0s / total number of records with non-null concept_id
 NB: in non-required fields, missing values are also counted as failures when a source value is available
 
 Parameters used in this template:
-cdmDatabaseSchema = @cdmDatabaseSchema
+schema = @schema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
 {@cohort & '@runForCohort' == 'Yes'}?{
@@ -29,7 +29,7 @@ FROM (
         SELECT 
             '@cdmTableName.@cdmFieldName' AS violating_field, 
             cdmTable.* 
-        FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+        FROM @schema.@cdmTableName cdmTable
         {@cohort & '@runForCohort' == 'Yes'}?{
             JOIN @cohortDatabaseSchema.@cohortTableName c
                 ON cdmTable.person_id = c.subject_id
@@ -64,7 +64,7 @@ FROM (
 ) violated_row_count,
 ( 
     SELECT COUNT_BIG(*) AS num_rows
-    FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+    FROM @schema.@cdmTableName cdmTable
     {@cohort & '@runForCohort' == 'Yes'}?{
         JOIN @cohortDatabaseSchema.@cohortTableName c
             ON cdmTable.person_id = c.subject_id

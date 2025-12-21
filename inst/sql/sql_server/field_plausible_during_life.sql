@@ -4,6 +4,7 @@ PLAUSIBLE_DURING_LIFE
 get number of events that occur after death event (PLAUSIBLE_DURING_LIFE == Yes)
 
 Parameters used in this template:
+schema = @schema
 cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
@@ -32,7 +33,7 @@ FROM
         SELECT 
             '@cdmTableName.@cdmFieldName' AS violating_field, 
             cdmTable.*
-        FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+        FROM @schema.@cdmTableName cdmTable
             {@cohort & '@runForCohort' == 'Yes'}?{
                 JOIN @cohortDatabaseSchema.@cohortTableName c 
                     ON cdmTable.person_id = c.subject_id
@@ -47,7 +48,7 @@ FROM
 (
     SELECT 
         COUNT_BIG(*) AS num_rows
-    FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+    FROM @schema.@cdmTableName cdmTable
     {@cohort & '@runForCohort' == 'Yes'}?{
         JOIN @cohortDatabaseSchema.@cohortTableName c 
             ON cdmTable.person_id = c.subject_id
