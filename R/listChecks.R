@@ -24,6 +24,8 @@
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
 #'
+#' @return A list containing check descriptions, table checks, field checks, and concept checks
+#'
 #' @importFrom readr read_csv local_edition
 #'
 #' @export

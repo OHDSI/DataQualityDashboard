@@ -1,10 +1,10 @@
 citHeader("To cite DataQualityDashboard in publications use:")
 
 bibentry(bibtype = "Article",
-        author = personList(as.person("C. Blacketer"),
-                            as.person("F. J. Schuemie"),
-                            as.person("P. B. Ryan"),
-                            as.person("P. Rijnbeek")),
+        author = c(as.person("C. Blacketer"),
+                   as.person("F. J. Schuemie"),
+                   as.person("P. B. Ryan"),
+                   as.person("P. Rijnbeek")),
         title = "Increasing trust in real-world evidence through evaluation of observational data quality",
         journal = "Journal of the American Medical Informatics Association",
         volume = "28",

@@ -24,6 +24,8 @@
 #' @param warning                   Any warnings returned from the server
 #' @param error                     Any errors returned from the server
 #'
+#' @return A dataframe containing the check results
+#'
 #' @keywords internal
 #' @importFrom stats setNames
 #'
@@ -74,5 +76,5 @@
     reportResult$pctViolatedRows <- result$pctViolatedRows
     reportResult$numDenominatorRows <- result$numDenominatorRows
   }
-  reportResult
+  return(reportResult)
 }

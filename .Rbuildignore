@@ -11,3 +11,8 @@ docs
 ^LICENSE$
 ^inst/doc/.*\.pdf$
 .lintr
+.cursor
+errorReportSql.txt
+output/
+^vignettes/checks$
+^vignettes/checkIndex\.Rmd$

@@ -19,7 +19,9 @@
 #' @param result           A DQD results object (list)
 #' @param outputFolder     The output folder
 #' @param outputFile       The output filename
-
+#'
+#' @return NULL (writes results to JSON file)
+#'
 #' @keywords internal
 
 .writeResultsToJson <- function(result,
@@ -42,6 +44,9 @@
 #' @param writeTableName            The name of the table to be written to the database. Default is "dqdashboard_results".
 #' @param cohortDefinitionId        (OPTIONAL) The cohort definition id for the cohort you wish to run the DQD on. The package assumes a standard OHDSI cohort table called 'Cohort'
 #'                                  with the fields cohort_definition_id and subject_id.
+#'
+#' @return NULL (writes results to database table)
+#'
 #' @keywords internal
 
 .writeResultsToTable <- function(connectionDetails,
@@ -104,6 +109,8 @@
 #' @param csvPath                   The path where the csv file should be written
 #' @param columns                   The columns to be included in the csv file. Default is all columns in the checkResults dataframe.
 #' @param delimiter                 The delimiter for the file. Default is comma.
+#'
+#' @return NULL (writes results to CSV file)
 #'
 #' @keywords internal
 

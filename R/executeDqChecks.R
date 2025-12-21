@@ -47,7 +47,7 @@
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
 #'
-#' @return If sqlOnly = FALSE, a list object of results
+#' @return A list object of results
 #'
 #' @importFrom magrittr %>%
 #' @import DatabaseConnector
@@ -386,6 +386,15 @@ executeDqChecks <- function(connectionDetails,
   invisible(allResults)
 }
 
+#' Internal function to determine if the connection needs auto commit
+#'
+#' @param connectionDetails A connectionDetails object for connecting to the CDM database
+#' @param connection A connection for connecting to the CDM database using the DatabaseConnector::connect(connectionDetails) function.
+#'
+#' @return A logical value indicating if the connection needs auto commit
+#'
+#' @keywords internal
+#'
 .needsAutoCommit <- function(connectionDetails, connection) {
   autoCommit <- FALSE
   if (!is.null(connection)) {
@@ -395,5 +404,5 @@ executeDqChecks <- function(connectionDetails,
       }
     }
   }
-  autoCommit
+  return(autoCommit)
 }

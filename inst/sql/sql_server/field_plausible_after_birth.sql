@@ -5,6 +5,7 @@ Birthdate is either birth_datetime or composed from year_of_birth, month_of_birt
 Denominator is number of events with a non-null date.
 
 Parameters used in this template:
+schema = @schema
 cdmDatabaseSchema = @cdmDatabaseSchema
 cdmTableName = @cdmTableName
 cdmFieldName = @cdmFieldName
@@ -33,7 +34,7 @@ FROM
         SELECT 
             '@cdmTableName.@cdmFieldName' AS violating_field, 
             cdmTable.*
-        FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+        FROM @schema.@cdmTableName cdmTable
         {@cohort & '@runForCohort' == 'Yes'} ? {
         JOIN @cohortDatabaseSchema.@cohortTableName c 
             ON cdmTable.person_id = c.subject_id
@@ -62,7 +63,7 @@ FROM
 (
     SELECT 
         COUNT_BIG(*) AS num_rows
-    FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+    FROM @schema.@cdmTableName cdmTable
     {@cohort & '@runForCohort' == 'Yes'} ? {
     JOIN @cohortDatabaseSchema.@cohortTableName c 
         ON cdmTable.person_id = c.subject_id

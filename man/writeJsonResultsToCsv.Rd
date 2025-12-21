@@ -24,6 +24,9 @@ writeJsonResultsToCsv(
 
 \item{delimiter}{(OPTIONAL) CSV delimiter}
 }
+\value{
+NULL (writes results to CSV file)
+}
 \description{
 Write JSON Results to CSV file
 }

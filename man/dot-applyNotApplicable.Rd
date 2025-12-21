@@ -9,6 +9,9 @@
 \arguments{
 \item{x}{Results from a single check}
 }
+\value{
+A numeric value (0 or 1) indicating whether the check is not applicable
+}
 \description{
 Applies the 'Not Applicable' status to a single check
 }

@@ -22,6 +22,8 @@
 #' @param display.mode   Passed on to \code{shiny::runApp}
 #' @param ...            Extra parameters for shiny::runApp() like "port" or "host"
 #'
+#' @return NULL (launches Shiny application)
+#'
 #' @importFrom utils menu install.packages
 #' @importFrom jsonlite toJSON parse_json
 #'
@@ -46,6 +48,8 @@ viewDqDashboard <- function(jsonPath, launch.browser = NULL, display.mode = NULL
 
 # Borrowed from devtools:
 # https://github.com/hadley/devtools/blob/ba7a5a4abd8258c52cb156e7b26bb4bf47a79f0b/R/utils.r#L44
+#' @return A logical value indicating whether the package is installed
+#' @keywords internal
 is_installed <- function(pkg, version = "0") {
   installed_version <-
     tryCatch(
@@ -54,11 +58,13 @@ is_installed <- function(pkg, version = "0") {
         NA
       }
     )
-  !is.na(installed_version) && installed_version >= version
+  return(!is.na(installed_version) && installed_version >= version)
 }
 
 # Borrowed and adapted from devtools:
 # https://github.com/hadley/devtools/blob/ba7a5a4abd8258c52cb156e7b26bb4bf47a79f0b/R/utils.r#L74
+#' @return NULL (installs package if needed or stops with error)
+#' @keywords internal
 ensure_installed <- function(pkg) {
   if (!is_installed(pkg)) {
     msg <-

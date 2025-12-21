@@ -23,6 +23,8 @@
 #' @param conceptId                 The concept id the quality check is applied to
 #' @param unitConceptId             The unit concept id the quality check is applied to
 #'
+#' @return A character string representing the unique check ID
+#'
 #' @keywords internal
 #' @importFrom stats na.omit
 #'

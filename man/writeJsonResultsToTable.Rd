@@ -26,6 +26,9 @@ writeJsonResultsToTable(
 
 \item{singleTable}{If TRUE, writes all results to a single table. If FALSE (default), writes to 3 separate tables by check level (table, field, concept) (NOTE this default behavior will be deprecated in the future)}
 }
+\value{
+NULL (writes results to database table)
+}
 \description{
 Write JSON Results to SQL Table
 }

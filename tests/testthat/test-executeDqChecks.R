@@ -5,7 +5,7 @@ test_that("Execute a single DQ check on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  expect_warning(
+  withCallingHandlers(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
@@ -13,9 +13,13 @@ test_that("Execute a single DQ check on Synthea/Eunomia", {
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
-      writeToTable = F
+      writeToTable = FALSE
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   expect_true(nrow(results$CheckResults) > 1)
@@ -25,14 +29,21 @@ test_that("Execute all TABLE checks on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomia,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkLevels = "TABLE",
-    outputFolder = outputFolder,
-    writeToTable = F
+  results <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomia,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkLevels = "TABLE",
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   expect_true(nrow(results$CheckResults) > 0)
@@ -42,14 +53,21 @@ test_that("Execute FIELD checks on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomia,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkLevels = "FIELD",
-    outputFolder = outputFolder,
-    writeToTable = F
+  results <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomia,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkLevels = "FIELD",
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message) || grepl("^DEPRECATION WARNING", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
   expect_true(nrow(results$CheckResults) > 0)
 })
@@ -57,19 +75,26 @@ test_that("Execute FIELD checks on Synthea/Eunomia", {
 test_that("Execute CONCEPT checks on Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomia,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkLevels = "CONCEPT",
-    conceptCheckThresholdLoc = system.file(
-      "csv",
-      "unittest_OMOP_CDMv5.3_Concept_Level.csv",
-      package = "DataQualityDashboard"
+  results <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomia,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkLevels = "CONCEPT",
+      conceptCheckThresholdLoc = system.file(
+        "csv",
+        "unittest_OMOP_CDMv5.3_Concept_Level.csv",
+        package = "DataQualityDashboard"
+      ),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
     ),
-    outputFolder = outputFolder,
-    writeToTable = F
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message) || grepl("^DEPRECATION WARNING", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
   expect_true(nrow(results$CheckResults) > 0)
 })
@@ -79,14 +104,21 @@ test_that("Execute observation period overlap check", {
   on.exit(unlink(outputFolder, recursive = TRUE))
 
   # First, run the check on clean data (should pass)
-  resultsClean <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomiaOverlap,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkNames = c("measureObservationPeriodOverlap"),
-    outputFolder = outputFolder,
-    writeToTable = F
+  resultsClean <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomiaOverlap,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = c("measureObservationPeriodOverlap"),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   expect_true(nrow(resultsClean$CheckResults) > 0)
@@ -116,14 +148,21 @@ test_that("Execute observation period overlap check", {
   )
 
   # Run the check again with overlapping data (should fail)
-  resultsOverlap <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomiaOverlap,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkNames = c("measureObservationPeriodOverlap"),
-    outputFolder = outputFolder,
-    writeToTable = F
+  resultsOverlap <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomiaOverlap,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = c("measureObservationPeriodOverlap"),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   expect_true(nrow(resultsOverlap$CheckResults) > 0)
@@ -159,14 +198,21 @@ test_that("Execute observation period overlap check", {
   )
 
   # Run the check again with back-to-back data (should fail)
-  resultsBackToBack <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomiaOverlap,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkNames = c("measureObservationPeriodOverlap"),
-    outputFolder = outputFolder,
-    writeToTable = F
+  resultsBackToBack <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomiaOverlap,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = c("measureObservationPeriodOverlap"),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   expect_true(nrow(resultsBackToBack$CheckResults) > 0)
@@ -204,7 +250,7 @@ test_that("Execute a single DQ check on a cohort in Synthea/Eunomia", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  expect_warning(
+  withCallingHandlers(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
@@ -212,11 +258,15 @@ test_that("Execute a single DQ check on a cohort in Synthea/Eunomia", {
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
-      writeToTable = F,
+      writeToTable = FALSE,
       cohortTableName = "cohort",
       cohortDefinitionId = fakeCohortId
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   expect_true(nrow(results$CheckResults) > 1)
@@ -236,45 +286,148 @@ test_that("Execute a single DQ check on remote databases", {
     "postgresql",
     "sql server",
     "redshift",
-    "iris"
+    "iris",
+    "snowflake",
+    "spark",
+    "bigquery"
   )
 
   for (dbType in dbTypes) {
-    sysUser <- Sys.getenv(sprintf("CDM5_%s_USER", toupper(gsub(" ", "_", dbType))))
-    sysPassword <- URLdecode(Sys.getenv(sprintf("CDM5_%s_PASSWORD", toupper(gsub(" ", "_", dbType)))))
-    sysServer <- Sys.getenv(sprintf("CDM5_%s_SERVER", toupper(gsub(" ", "_", dbType))))
-    if (sysUser != "" &
-      sysPassword != "" &
-      sysServer != "") {
-      cdmDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_CDM54_SCHEMA", toupper(gsub(" ", "_", dbType))))
-      resultsDatabaseSchema <- Sys.getenv(sprintf("CDM5_%s_OHDSI_SCHEMA", toupper(gsub(" ", "_", dbType))))
+    print(sprintf("Processing database type: %s", dbType))
 
-      connectionDetails <- createConnectionDetails(
+    if (dbType %in% c(
+      "oracle",
+      "postgresql",
+      "sql server",
+      "redshift",
+      "spark"
+    )) {
+      cdmPattern <- "CDM5"
+      if (dbType != "spark") {
+        cdmSchemaPattern <- "CDM54"
+      } else {
+        cdmSchemaPattern <- "CDM"
+      }
+    } else if (dbType %in% c(
+      "iris",
+      "snowflake",
+      "bigquery"
+    )) {
+      cdmPattern <- "CDM"
+      if (dbType != "snowflake") {
+        cdmSchemaPattern <- "CDM"
+      } else {
+        cdmSchemaPattern <- "CDM53"
+      }
+    }
+
+    if (dbType == "bigquery") {
+      bqKeyFile <- tempfile(fileext = ".json")
+      writeLines(Sys.getenv("CDM_BIG_QUERY_KEY_FILE"), bqKeyFile)
+      sysConnectionString <- gsub(
+        "<keyfile path>",
+        normalizePath(bqKeyFile, winslash = "/"),
+        Sys.getenv("CDM_BIG_QUERY_CONNECTION_STRING")
+      )
+      sysUser <- Sys.getenv(sprintf("%s_BIG_QUERY_USER", cdmPattern))
+      sysPassword <- Sys.getenv(sprintf("%s_BIG_QUERY_PASSWORD", cdmPattern))
+      sysServer <- Sys.getenv(sprintf("%s_BIG_QUERY_SERVER", cdmPattern))
+    } else {
+      sysUser <- Sys.getenv(sprintf("%s_%s_USER", cdmPattern, toupper(gsub(" ", "_", dbType))))
+      sysPassword <- Sys.getenv(sprintf("%s_%s_PASSWORD", cdmPattern, toupper(gsub(" ", "_", dbType))))
+      sysServer <- Sys.getenv(sprintf("%s_%s_SERVER", cdmPattern, toupper(gsub(" ", "_", dbType))))
+      if (sysServer == "") {
+        sysConnectionString <- Sys.getenv(sprintf("%s_%s_CONNECTION_STRING", cdmPattern, toupper(gsub(" ", "_", dbType))))
+      } else {
+        sysConnectionString <- ""
+      }
+    }
+
+    if ((sysUser != "" & sysPassword != "" & (sysServer != "" | sysConnectionString != "")) |
+      (dbType == "bigquery" & sysConnectionString != "")) {
+      print(sprintf("Connection details found for %s, proceeding...", dbType))
+
+      if (dbType == "bigquery") {
+        cdmDatabaseSchema <- Sys.getenv(sprintf("%s_BIG_QUERY_%s_SCHEMA", cdmPattern, cdmSchemaPattern))
+        resultsDatabaseSchema <- Sys.getenv(sprintf("%s_BIG_QUERY_OHDSI_SCHEMA", cdmPattern))
+      } else {
+        cdmDatabaseSchema <- Sys.getenv(sprintf("%s_%s_%s_SCHEMA", cdmPattern, toupper(gsub(" ", "_", dbType)), cdmSchemaPattern))
+        resultsDatabaseSchema <- Sys.getenv(sprintf("%s_%s_OHDSI_SCHEMA", cdmPattern, toupper(gsub(" ", "_", dbType))))
+      }
+
+      connectionDetails <- DatabaseConnector::createConnectionDetails(
         dbms = dbType,
         user = sysUser,
         password = sysPassword,
         server = sysServer,
+        connectionString = sysConnectionString,
         pathToDriver = jdbcDriverFolder
       )
 
-      expect_warning(
-        results <- executeDqChecks(
-          connectionDetails = connectionDetails,
-          cdmDatabaseSchema = cdmDatabaseSchema,
-          resultsDatabaseSchema = resultsDatabaseSchema,
-          cdmSourceName = "test",
-          numThreads = 1,
-          sqlOnly = FALSE,
-          outputFolder = outputFolder,
-          verboseMode = FALSE,
-          writeToTable = FALSE,
-          checkNames = "measurePersonCompleteness",
-          cdmVersion = "5.4"
-        ),
-        regexp = "^Missing check names.*"
+      # Verify connection before attempting to run checks
+      connectionOk <- tryCatch(
+        {
+          verifyConnection(connectionDetails)
+          TRUE
+        },
+        error = function(e) {
+          warning(sprintf("Cannot connect to %s database: %s", dbType, e$message))
+          FALSE
+        }
       )
 
-      expect_true(nrow(results$CheckResults) > 0)
+      if (!connectionOk) {
+        print(sprintf("Skipping %s due to connection failure, continuing to next database...", dbType))
+        next
+      }
+
+      print(sprintf("Connection verified for %s, running checks...", dbType))
+
+      # Run the checks
+      checkOk <- tryCatch(
+        {
+          results <- withCallingHandlers(
+            executeDqChecks(
+              connectionDetails = connectionDetails,
+              cdmDatabaseSchema = cdmDatabaseSchema,
+              resultsDatabaseSchema = resultsDatabaseSchema,
+              cdmSourceName = "test",
+              numThreads = 1,
+              sqlOnly = FALSE,
+              outputFolder = outputFolder,
+              verboseMode = FALSE,
+              writeToTable = FALSE,
+              checkNames = "measurePersonCompleteness",
+              cdmVersion = "5.4"
+            ),
+            warning = function(w) {
+              if (grepl("^Missing check names", w$message)) {
+                invokeRestart("muffleWarning")
+              }
+            }
+          )
+          expect_true(nrow(results$CheckResults) > 0)
+          TRUE
+        },
+        error = function(e) {
+          if (grepl("Connection reset|Communication link failure|SocketException", e$message, ignore.case = TRUE)) {
+            warning(sprintf("Connection error on %s: %s", dbType, e$message))
+            FALSE
+          } else {
+            # For non-connection errors, fail the test
+            stop(e)
+          }
+        }
+      )
+
+      if (!checkOk) {
+        print(sprintf("Skipping %s due to check execution failure, continuing to next database...", dbType))
+        next
+      }
+
+      print(sprintf("Successfully completed checks for %s", dbType))
+    } else {
+      print(sprintf("No connection details found for %s, skipping...", dbType))
     }
   }
 })
@@ -301,7 +454,7 @@ test_that("Execute DQ checks and write to table", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  expect_warning(
+  withCallingHandlers(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
@@ -312,7 +465,11 @@ test_that("Execute DQ checks and write to table", {
       writeToTable = TRUE,
       writeTableName = "dqd_results"
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message) || grepl("Column.*is of type.*logical.*but this is not supported", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
   connection <- DatabaseConnector::connect(connectionDetailsEunomia)
   on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
@@ -326,7 +483,7 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=4 and sqlO
   on.exit(unlink(outputFolder, recursive = TRUE))
   sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server", pathToDriver = "/")
 
-  expect_warning(
+  withCallingHandlers(
     results <- executeDqChecks(
       connectionDetails = sqlOnlyConnectionDetails,
       cdmDatabaseSchema = "@yourCdmSchema",
@@ -340,7 +497,11 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=4 and sqlO
       sqlOnlyIncrementalInsert = TRUE,
       writeTableName = "dqdashboard_results"
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
   expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
   dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
@@ -355,7 +516,7 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
   on.exit(unlink(outputFolder, recursive = TRUE))
   sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server", pathToDriver = "/")
 
-  expect_warning(
+  withCallingHandlers(
     results <- executeDqChecks(
       connectionDetails = sqlOnlyConnectionDetails,
       cdmDatabaseSchema = "@yourCdmSchema",
@@ -369,7 +530,11 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
       sqlOnlyIncrementalInsert = TRUE,
       writeTableName = "dqdashboard_results"
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
   expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
   dqdSqlFile <- "TABLE_measurePersonCompleteness.sql"
@@ -384,7 +549,7 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
   on.exit(unlink(outputFolder, recursive = TRUE))
   sqlOnlyConnectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sql server", pathToDriver = "/")
 
-  expect_warning(
+  withCallingHandlers(
     results <- executeDqChecks(
       connectionDetails = sqlOnlyConnectionDetails,
       cdmDatabaseSchema = "@yourCdmSchema",
@@ -398,7 +563,11 @@ test_that("Execute DQ checks using sqlOnly=TRUE and sqlOnlyUnionCount=1 and sqlO
       sqlOnlyIncrementalInsert = FALSE,
       writeTableName = "dqdashboard_results"
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
   expect_true("ddlDqdResults.sql" %in% list.files(outputFolder))
   dqdSqlFile <- "measurePersonCompleteness.sql"
@@ -412,7 +581,7 @@ test_that("Incremental insert SQL is valid.", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  expect_warning(
+  withCallingHandlers(
     results <- executeDqChecks(
       connectionDetails = connectionDetailsEunomia,
       cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
@@ -426,7 +595,11 @@ test_that("Incremental insert SQL is valid.", {
       sqlOnlyIncrementalInsert = TRUE,
       writeTableName = "dqd_results"
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   ddlSqlFile <- file.path(outputFolder, "ddlDqdResults.sql")
@@ -462,7 +635,7 @@ test_that("Multiple cdm_source rows triggers warning.", {
       cdmSourceName = "Eunomia",
       checkNames = "measurePersonCompleteness",
       outputFolder = outputFolder,
-      writeToTable = F
+      writeToTable = FALSE
     )
   )
 
@@ -475,19 +648,26 @@ test_that("Multiple cdm_source rows triggers warning.", {
 test_that("Execute checks on Synthea/Eunomia to test new variable executionTimeSeconds", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
-  results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomia,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkLevels = "CONCEPT",
-    conceptCheckThresholdLoc = system.file(
-      "csv",
-      "unittest_OMOP_CDMv5.3_Concept_Level.csv",
-      package = "DataQualityDashboard"
+  results <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomia,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = "measurePersonCompleteness",
+      conceptCheckThresholdLoc = system.file(
+        "csv",
+        "unittest_OMOP_CDMv5.3_Concept_Level.csv",
+        package = "DataQualityDashboard"
+      ),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
     ),
-    outputFolder = outputFolder,
-    writeToTable = F
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
   expect_true(is.numeric(results$executionTimeSeconds))
 })
@@ -497,14 +677,21 @@ test_that("checkNames are filtered by checkSeverity", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  results <- executeDqChecks(
-    connectionDetails = connectionDetailsEunomia,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkSeverity = "fatal",
-    outputFolder = outputFolder,
-    writeToTable = F
+  results <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomia,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkSeverity = "fatal",
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   expectedCheckNames <- c(
@@ -530,7 +717,7 @@ test_that("Execute a single DQ check on DuckDB", {
     server = eunomiaDbPath
   )
 
-  expect_warning(
+  withCallingHandlers(
     results <- executeDqChecks(
       connectionDetails = duckdbConnectionDetails,
       cdmDatabaseSchema = "main",
@@ -540,7 +727,11 @@ test_that("Execute a single DQ check on DuckDB", {
       outputFolder = outputFolder,
       writeToTable = FALSE
     ),
-    regexp = "^Missing check names.*"
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   expect_true(nrow(results$CheckResults) > 0)

@@ -29,6 +29,9 @@ reEvaluateThresholds(
 
 \item{cdmVersion}{The CDM version to target for the data source. By default, 5.3 is used.}
 }
+\value{
+A list containing the re-evaluated DQD results
+}
 \description{
 Re-evaluate an existing DQD result against an updated thresholds file.
 }

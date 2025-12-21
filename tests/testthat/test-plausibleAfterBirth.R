@@ -5,6 +5,7 @@ test_that("plausibleAfterBirth allows events on same day as birth (issue #561)",
   on.exit(unlink(outputFolder, recursive = TRUE))
 
   connection <- DatabaseConnector::connect(connectionDetailsPlausibleAfterBirth)
+  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
 
   # Set up test data: person with birth_datetime and visit on same day
   DatabaseConnector::executeSql(connection, "
@@ -24,18 +25,23 @@ test_that("plausibleAfterBirth allows events on same day as birth (issue #561)",
     (1, 1, 9201, '1990-01-15', '1990-01-15 10:00:00', '1990-01-15', '1990-01-15 10:00:00', 44818517);
   ")
 
-  DatabaseConnector::disconnect(connection)
-
   # Run the plausibleAfterBirth check
-  results <- executeDqChecks(
-    connectionDetails = connectionDetailsPlausibleAfterBirth,
-    cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-    resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-    cdmSourceName = "Eunomia",
-    checkNames = "plausibleAfterBirth",
-    tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
-    outputFolder = outputFolder,
-    writeToTable = FALSE
+  results <- withCallingHandlers(
+    executeDqChecks(
+      connectionDetails = connectionDetailsPlausibleAfterBirth,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = "plausibleAfterBirth",
+      tablesToExclude = c("COST", "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
   )
 
   # Get results for visit_occurrence.visit_start_date
@@ -53,8 +59,8 @@ test_that("plausibleAfterBirth allows events on same day as birth (issue #561)",
 
   # Debug: check all results for visit_occurrence
   cat("\nAll results for visit_occurrence:\n")
-  visit_results <- results$CheckResults[grepl("visit", tolower(results$CheckResults$cdmTableName)), ]
-  print(visit_results)
+  visitResults <- results$CheckResults[grepl("visit", tolower(results$CheckResults$cdmTableName)), ]
+  print(visitResults)
 
   # Should have 0 violations (event on same day as birth should be allowed)
   expect_equal(r$numViolatedRows, 0)

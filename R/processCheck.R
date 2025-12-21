@@ -23,6 +23,8 @@
 #' @param sql                       The fully qualified sql for the data quality check
 #' @param outputFolder              The folder to output logs and SQL files to.
 #'
+#' @return A dataframe containing the check results
+#'
 #' @keywords internal
 #'
 
@@ -64,10 +66,10 @@
       )
 
       delta <- difftime(Sys.time(), start, units = "secs")
-      .recordResult(
+      return(.recordResult(
         result = result, check = check, checkDescription = checkDescription, sql = sql,
         executionTime = sprintf("%f %s", delta, attr(delta, "units"))
-      )
+      ))
     },
     warning = function(w) {
       ParallelLogger::logWarn(sprintf(
@@ -77,7 +79,7 @@
         check["cdmTableName"],
         check["cdmFieldName"], w$message
       ))
-      .recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message)
+      return(.recordResult(check = check, checkDescription = checkDescription, sql = sql, warning = w$message))
     },
     error = function(e) {
       ParallelLogger::logError(sprintf(
@@ -87,7 +89,7 @@
         check["cdmTableName"],
         check["cdmFieldName"], e$message
       ))
-      .recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message)
+      return(.recordResult(check = check, checkDescription = checkDescription, sql = sql, error = e$message))
     }
   )
 }
