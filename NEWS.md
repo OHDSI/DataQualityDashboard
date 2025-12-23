@@ -3,7 +3,7 @@ DataQualityDashboard 2.8.1
 This release contains some minor bug fixes:
 
 - Adds missing plausible units to the `plausibleUnitConceptIds` check
-- Fixes schema references causing errors for users with cohort and/or vocabulary tables stored in various schemas
+- Fixes schema references causing errors for users with cohort and/or vocabulary tables stored outside the CDM schema
 
 It also contains some changes to enable CRAN submission.
 
