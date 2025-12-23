@@ -1,3 +1,7 @@
+DataQualityDashboard 2.8.2
+==========================
+This release contains an update to the GitHub Actions workflow file to resolve an issue pushing the package to drat.
+
 DataQualityDashboard 2.8.1
 ==========================
 This release contains some minor bug fixes:

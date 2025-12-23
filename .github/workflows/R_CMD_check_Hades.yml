@@ -172,7 +172,7 @@ jobs:
         if: ${{ env.new_version != '' }}
         uses: actions/create-release@v1
         env:
-          # --- CHANGE (Option 1): use the built-in GITHUB_TOKEN instead of the admin PAT secret ---
+          # --- CHANGE: use the built-in GITHUB_TOKEN instead of the admin PAT secret ---
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # <-- CHANGED: was secrets.GH_TOKEN
         with:
           tag_name: ${{ env.new_version }}
@@ -204,6 +204,9 @@ jobs:
 
       - name: Push to drat
         if: ${{ env.new_version != '' }}
+        env:
+          # --- CHANGED: Prefer the existing PAT secret for cross-repo push to OHDSI/drat.
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           bash deploy.sh
 
