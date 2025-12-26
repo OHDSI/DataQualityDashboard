@@ -10,6 +10,11 @@ on:
 
 name: R-CMD-check
 
+# --- CHANGE: explicitly grant the built-in GITHUB_TOKEN permission to create releases/tags ---
+# This avoids relying on the admin PAT in secrets.GH_TOKEN for release creation.
+permissions:                      # <-- CHANGED: added
+  contents: write                 # <-- CHANGED: added (needed to create tags/releases)
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
@@ -52,7 +57,7 @@ jobs:
       CDM_SNOWFLAKE_OHDSI_SCHEMA: ${{ secrets.CDM_SNOWFLAKE_OHDSI_SCHEMA }}
       CDM_SNOWFLAKE_PASSWORD: ${{ secrets.CDM_SNOWFLAKE_PASSWORD }}
       CDM_SNOWFLAKE_CONNECTION_STRING: ${{ secrets.CDM_SNOWFLAKE_CONNECTION_STRING }}
-      CDM_SNOWFLAKE_USER: ${{ secrets.CDM_SNOWFLAKE_USER }}      
+      CDM_SNOWFLAKE_USER: ${{ secrets.CDM_SNOWFLAKE_USER }}
       CDM5_SPARK_USER: ${{ secrets.CDM5_SPARK_USER }}
       CDM5_SPARK_PASSWORD: ${{ secrets.CDM5_SPARK_PASSWORD }}
       CDM5_SPARK_CONNECTION_STRING: ${{ secrets.CDM5_SPARK_CONNECTION_STRING }}
@@ -140,11 +145,11 @@ jobs:
 
   Release:
     needs: R-CMD-Check
-
     runs-on: macOS-latest
 
-    env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    # --- CHANGE: remove the PAT-based GH_TOKEN env, since release creation will use GITHUB_TOKEN ---
+    # env:
+    #   GH_TOKEN: ${{ secrets.GH_TOKEN }}   # <-- CHANGED: removed/commented out (no longer needed for release)
 
     if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
 
@@ -167,7 +172,8 @@ jobs:
         if: ${{ env.new_version != '' }}
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          # --- CHANGE: use the built-in GITHUB_TOKEN instead of the admin PAT secret ---
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # <-- CHANGED: was secrets.GH_TOKEN
         with:
           tag_name: ${{ env.new_version }}
           release_name: Release ${{ env.new_version }}
@@ -198,6 +204,9 @@ jobs:
 
       - name: Push to drat
         if: ${{ env.new_version != '' }}
+        env:
+          # --- CHANGED: Prefer the existing PAT secret for cross-repo push to OHDSI/drat.
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           bash deploy.sh
 
@@ -205,4 +214,3 @@ jobs:
         if: ${{ env.new_version != '' }}
         run: |
           curl --data "build=true" -X POST https://registry.hub.docker.com/u/ohdsi/broadsea-methodslibrary/trigger/f0b51cec-4027-4781-9383-4b38b42dd4f5/
-
