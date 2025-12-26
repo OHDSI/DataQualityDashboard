@@ -1,3 +1,7 @@
+DataQualityDashboard 2.8.3
+==========================
+This release adds missing plausible units to the `plausibleUnitConceptIds` check.
+
 DataQualityDashboard 2.8.2
 ==========================
 This release contains an update to the GitHub Actions workflow file to resolve an issue pushing the package to drat.
