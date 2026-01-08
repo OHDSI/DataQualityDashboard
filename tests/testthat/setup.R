@@ -84,6 +84,7 @@ verifyConnection <- function(connectionDetails) {
   tryCatch(
     {
       connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+      on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
       # Test the connection with a simple query that works across all databases
       # For Oracle, we need FROM DUAL, which SqlRender handles when we use a proper template
       if (tolower(connectionDetails$dbms) == "oracle") {
@@ -93,7 +94,6 @@ verifyConnection <- function(connectionDetails) {
       }
       testSql <- SqlRender::translate(sql = testSql, targetDialect = connectionDetails$dbms)
       DatabaseConnector::querySql(connection = connection, sql = testSql)
-      DatabaseConnector::disconnect(connection)
       return(TRUE)
     },
     error = function(e) {

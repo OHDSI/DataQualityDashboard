@@ -1,3 +1,7 @@
+DataQualityDashboard 2.8.4
+==========================
+This release contains minor changes needed to support CRAN submission.
+
 DataQualityDashboard 2.8.3
 ==========================
 This release adds missing plausible units to the `plausibleUnitConceptIds` check.

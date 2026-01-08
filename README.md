@@ -2,7 +2,7 @@ DataQualityDashboard
 ====================
 
 <!-- badges: start -->
-[![codecov.io](https://app.codecov.io/github/OHDSI/DataQualityDashboard?branch=main)](https://app.codecov.io/github/OHDSI/DataQualityDashboard?branch=main)
+[![codecov.io](https://app.codecov.io/gh/OHDSI/DataQualityDashboard/branch/main/graph/badge.svg)](https://app.codecov.io/gh/OHDSI/DataQualityDashboard)
 [![Build Status](https://github.com/OHDSI/DataQualityDashboard/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/DataQualityDashboard/actions?query=workflow%3AR-CMD-check)
 <!-- badges: end -->
 
@@ -18,7 +18,7 @@ This package will run a series of data quality checks against an OMOP CDM instan
 Overview
 ========
 
-The quality checks were organized according to the Kahn Framework<sup id="kahn">[1](#f1)</sup> which uses a system of categories and contexts that represent strategies for assessing data quality. For an introduction to the kahn framework please click [here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/). 
+The quality checks were organized according to the Kahn Framework<sup id="kahn">[1](#f1)</sup> which uses a system of categories and contexts that represent strategies for assessing data quality. For an introduction to the kahn framework please click [here](https://pmc.ncbi.nlm.nih.gov/articles/PMC5051581/). 
 
 Using this framework, the Data Quality Dashboard takes a systematic-based approach to running data quality checks. Instead of writing thousands of individual checks, we use “data quality check types”. These “check types” are more general, parameterized data quality checks into which OMOP tables, fields, and concepts can be substituted to represent a singular data quality idea. For example, one check type might be written as 
 
