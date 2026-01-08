@@ -151,6 +151,7 @@ executeDqChecks <- function(connectionDetails,
     }
     metadata$dqdVersion <- as.character(packageVersion("DataQualityDashboard"))
   } else {
+    connection <- NULL
     metadata <- data.frame(
       dqdVersion = as.character(packageVersion("DataQualityDashboard")),
       cdmSourceName = cdmSourceName
@@ -305,10 +306,6 @@ executeDqChecks <- function(connectionDetails,
     progressBar = TRUE
   )
   ParallelLogger::stopCluster(cluster = cluster)
-
-  if (numThreads == 1 && !sqlOnly) {
-    DatabaseConnector::disconnect(connection = connection)
-  }
 
   allResults <- NULL
 
