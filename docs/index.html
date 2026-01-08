@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.4</span>
       </span>
     </div>
 
@@ -202,7 +202,7 @@
 <div class="section level1">
 <h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h1>
-<p>The quality checks were organized according to the Kahn Framework<sup id="kahn"><a href="#f1">1</a></sup> which uses a system of categories and contexts that represent strategies for assessing data quality. For an introduction to the kahn framework please click <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/" class="external-link">here</a>.</p>
+<p>The quality checks were organized according to the Kahn Framework<sup id="kahn"><a href="#f1">1</a></sup> which uses a system of categories and contexts that represent strategies for assessing data quality. For an introduction to the kahn framework please click <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5051581/" class="external-link">here</a>.</p>
 <p>Using this framework, the Data Quality Dashboard takes a systematic-based approach to running data quality checks. Instead of writing thousands of individual checks, we use “data quality check types”. These “check types” are more general, parameterized data quality checks into which OMOP tables, fields, and concepts can be substituted to represent a singular data quality idea. For example, one check type might be written as</p>
 <p><em>The number and percent of records with a value in the <strong>cdmFieldName</strong> field of the <strong>cdmTableName</strong> table less than <strong>plausibleValueLow</strong>.</em></p>
 <p>This would be considered an atemporal plausibility verification check because we are looking for implausibly low values in some field based on internal knowledge. We can use this check type to substitute in values for <strong>cdmFieldName</strong>, <strong>cdmTableName</strong>, and <strong>plausibleValueLow</strong> to create a unique data quality check. If we apply it to PERSON.YEAR_OF_BIRTH here is how that might look:</p>
@@ -417,7 +417,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://app.codecov.io/github/OHDSI/DataQualityDashboard?branch=main" class="external-link"><img src="https://app.codecov.io/github/OHDSI/DataQualityDashboard?branch=main" alt="codecov.io"></a></li>
+<li><a href="https://app.codecov.io/gh/OHDSI/DataQualityDashboard" class="external-link"><img src="https://app.codecov.io/gh/OHDSI/DataQualityDashboard/branch/main/graph/badge.svg" alt="codecov.io"></a></li>
 <li><a href="https://github.com/OHDSI/DataQualityDashboard/actions?query=workflow%3AR-CMD-check" class="external-link"><img src="https://github.com/OHDSI/DataQualityDashboard/workflows/R-CMD-check/badge.svg" alt="Build Status"></a></li>
 </ul>
 </div>

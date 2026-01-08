@@ -81,6 +81,22 @@ jobs:
         with:
           job-config: ${{ matrix.config.job-config }}
           token: ${{ secrets.RHUB_TOKEN }}
+
+      - name: Set up Java for rJava (macOS)
+        if: runner.os == 'macOS'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          
+      - name: Configure Java for R (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+          R CMD javareconf
+
       - uses: r-hub/actions/platform-info@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}

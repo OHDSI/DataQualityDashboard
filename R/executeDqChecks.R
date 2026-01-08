@@ -1,4 +1,4 @@
-# Copyright 2025 Observational Health Data Sciences and Informatics
+# Copyright 2026 Observational Health Data Sciences and Informatics
 #
 # This file is part of DataQualityDashboard
 #
@@ -135,6 +135,7 @@ executeDqChecks <- function(connectionDetails,
   # capture metadata -----------------------------------------------------------------------
   if (!sqlOnly) {
     connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+    on.exit(DatabaseConnector::disconnect(connection = connection))
     sql <- SqlRender::render(
       sql = "select * from @cdmDatabaseSchema.cdm_source;",
       cdmDatabaseSchema = cdmDatabaseSchema
@@ -149,7 +150,6 @@ executeDqChecks <- function(connectionDetails,
       warning("The cdm_source table has more than 1 row. A single row from this table has been selected to populate DQD metadata.")
     }
     metadata$dqdVersion <- as.character(packageVersion("DataQualityDashboard"))
-    DatabaseConnector::disconnect(connection)
   } else {
     metadata <- data.frame(
       dqdVersion = as.character(packageVersion("DataQualityDashboard")),
@@ -278,11 +278,6 @@ executeDqChecks <- function(connectionDetails,
   }
 
   checkDescriptions <- split(checkDescriptionsDf, seq_len(nrow(checkDescriptionsDf)))
-
-  connection <- NULL
-  if (numThreads == 1 && !sqlOnly) {
-    connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
-  }
 
   fieldChecks$cdmFieldName <- toupper(fieldChecks$cdmFieldName)
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)

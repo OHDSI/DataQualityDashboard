@@ -1,8 +1,8 @@
 Package: DataQualityDashboard
 Type: Package
 Title: Execute and View Data Quality Checks on OMOP CDM Database
-Version: 2.8.3
-Date: 2025-12-26
+Version: 2.8.4
+Date: 2026-01-08
 Authors@R: c(
   person("Katy", "Sadowski", email = "sadowski@ohdsi.org", role = c("aut", "cre")),
   person("Clair", "Blacketer", role = c("aut")),
@@ -13,6 +13,7 @@ Authors@R: c(
   person("Frank", "DeFalco", role = c("aut")),
   person("Pavel", "Grafkin", role = c("aut"))
   )
+Author: Katy Sadowski [aut, cre], Clair Blacketer [aut], Maxim Moinat [aut], Ajit Londhe [aut], Anthony Sena [aut], Anthony Molinaro [aut], Frank DeFalco [aut], Pavel Grafkin [aut]
 Maintainer: Katy Sadowski <sadowski@ohdsi.org>
 Description: An R package for assessing data quality in Observational Medical Outcomes Partnership Common Data Model (OMOP CDM) databases.  Executes data quality checks and provides an R Shiny application to view the results.
 License: Apache License 2.0
