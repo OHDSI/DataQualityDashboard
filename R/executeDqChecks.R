@@ -135,7 +135,7 @@ executeDqChecks <- function(connectionDetails,
   # capture metadata -----------------------------------------------------------------------
   if (!sqlOnly) {
     connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
-    on.exit(DatabaseConnector::disconnect(connection = connection))
+    on.exit(DatabaseConnector::disconnect(connection = connection), add = TRUE)
     sql <- SqlRender::render(
       sql = "select * from @cdmDatabaseSchema.cdm_source;",
       cdmDatabaseSchema = cdmDatabaseSchema
@@ -194,7 +194,7 @@ executeDqChecks <- function(connectionDetails,
     appenders = appenders
   )
   ParallelLogger::registerLogger(logger = logger)
-  on.exit(ParallelLogger::unregisterLogger("DqDashboard", silent = TRUE))
+  on.exit(ParallelLogger::unregisterLogger("DqDashboard", silent = TRUE), add = TRUE)
 
   # load Threshold CSVs ----------------------------------------------------------------------------------------
 
