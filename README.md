@@ -2,7 +2,7 @@ DataQualityDashboard
 ====================
 
 <!-- badges: start -->
-[![codecov.io](https://app.codecov.io/gh/OHDSI/DataQualityDashboard/branch/main/graph/badge.svg)](https://app.codecov.io/gh/OHDSI/DataQualityDashboard)
+[![codecov](https://codecov.io/gh/OHDSI/DataQualityDashboard/branch/main/graph/badge.svg)](https://app.codecov.io/gh/OHDSI/DataQualityDashboard)
 [![Build Status](https://github.com/OHDSI/DataQualityDashboard/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/DataQualityDashboard/actions?query=workflow%3AR-CMD-check)
 <!-- badges: end -->
 
