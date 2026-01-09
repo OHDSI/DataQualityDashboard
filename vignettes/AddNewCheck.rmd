@@ -84,7 +84,7 @@ The Check Description file is found in the DataQualityDashboard/inst/csv directo
 - checkLevel -- Possible values are TABLE, FIELD or CONCEPT. This is the csv file that has the information telling the DQD code on what tables and fields to run the check. For our example, check of the length of an ER stay, this will be the csv file with field level checks. 
 - checkName -- Name used in the DQD code to identify the check. For this example use **ERVisitLength**
 - checkDescription -- Short user provided description of what the check does. This description is displayed in the DQD results. 
-- kahnContext -- The following 3 columns are a means of organizing quality checks. For additional information see [Harmonized Data Quality Assessment Terminology and Framework](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5051581/). For this example use 'Verification'
+- kahnContext -- The following 3 columns are a means of organizing quality checks. For additional information see [Harmonized Data Quality Assessment Terminology and Framework](https://pmc.ncbi.nlm.nih.gov/articles/PMC5051581/). For this example use 'Verification'
 - kahnCategory -- Use 'Plausibility'
 - kahnSubcategory -- Use 'Temporal'
 - sqlFile -- The name of the SQL file we created above. The name should include the values for checkLevel and checkName.  For example, field_ERVisitLength.sql

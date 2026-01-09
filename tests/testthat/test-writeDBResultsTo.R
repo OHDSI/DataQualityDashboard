@@ -30,6 +30,7 @@ test_that("Write DB results to json", {
   )
 
   connection <- DatabaseConnector::connect(connectionDetailsEunomia)
+  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
 
   testExportFile <- "dq-result-test.json"
 
@@ -41,8 +42,6 @@ test_that("Write DB results to json", {
     outputFolder,
     testExportFile
   )
-
-  on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
 
   # Check that file was exported properly
   expect_true(file.exists(file.path(outputFolder, testExportFile)))
