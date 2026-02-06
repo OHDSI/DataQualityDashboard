@@ -5,6 +5,7 @@ function loadResults(results) {
     var metadata = results.Metadata[0];
     $('cdm-source-name').text(metadata.cdmSourceName);
     $('dq-metadata').attr('data-results', JSON.stringify(metadata));
+    $('#appVersion').text(results.appVersion);
 
     function format(d) {
         errorMessage = '';
@@ -152,12 +153,13 @@ function loadResults(results) {
             { data: function (d) { if (d.isError == 1) { return "ERROR" } else if (d.notApplicable == 1) { return "NOT APPLICABLE" } else if (d.failed == 1) { return "FAIL" } else {return "PASS"} }, title: "STATUS", className: 'dt-body-right' },
             /*{ data: function (d) { return d.context ? d.context : "None"; }, title: "CONTEXT" },*/
             { data: "cdmTableName", title: "TABLE"},
-            { data: function (d) { return d.cdmFieldName ? d.cdmFieldName : "None"; }, title: "FIELD", visible: false },
-            { data: "checkName", title: "CHECK", visible: false},
+            { data: function (d) { return d.cdmFieldName ? d.cdmFieldName : "None"; }, title: "FIELD", visible: true },
+            { data: "checkName", title: "CHECK", visible: true},
             { data: "category", title: "CATEGORY" },
-            { data: function (d) { return d.subcategory ? d.subcategory : "None" }, title: "SUBCATEGORY" },
-            { data: "checkLevel", title: "LEVEL" },
-            { data: function (d) { if (d.notesValue == null) { return "None"; } else { return "Exists"; } }, title: "NOTES" },
+            { data: function (d) { return d.subcategory ? d.subcategory : "None" }, title: "SUBCATEGORY", visible: false },
+            { data: "checkLevel", title: "LEVEL", visible: false },
+            { data: "severity", title: "SEVERITY", visible: true },
+            { data: function (d) { if (d.notesValue == null) { return "None"; } else { return "Exists"; } }, title: "NOTES", visible: false },
             
             {
                 data: function (d) {
