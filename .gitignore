@@ -46,3 +46,8 @@ vignettes/*.log
 *.log
 /sql
 .cursor
+
+# Environment files
+.env
+.env.local
+.env.*.local
