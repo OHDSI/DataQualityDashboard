@@ -33,6 +33,7 @@
 #' @param sqlOnlyUnionCount         (OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.
 #' @param sqlOnlyIncrementalInsert  (OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
+#' @param checksToExclude           (OPTIONAL) A character vector of specific check IDs to exclude from execution (lowercase). Default is empty.
 #'
 #' @return A dataframe containing the check results or SQL queries (NULL if sqlOnlyIncrementalInsert is TRUE)
 #'
@@ -56,7 +57,8 @@
                       outputFolder,
                       sqlOnlyUnionCount,
                       sqlOnlyIncrementalInsert,
-                      sqlOnly) {
+                      sqlOnly,
+                      checksToExclude = c()) {
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
 
   filterExpression <- sprintf(
@@ -65,6 +67,26 @@
     checkDescription$evaluationFilter
   )
   checks <- eval(parse(text = filterExpression))
+
+  # Exclude specific check IDs if requested
+  if (length(checksToExclude) > 0 && nrow(checks) > 0) {
+    checkIds <- apply(checks, 1, function(row) {
+      .getCheckId(
+        checkLevel = checkDescription$checkLevel,
+        checkName = checkDescription$checkName,
+        cdmTableName = row["cdmTableName"],
+        cdmFieldName = row["cdmFieldName"],
+        conceptId = row["conceptId"],
+        unitConceptId = row["unitConceptId"]
+      )
+    })
+    excludeMask <- checkIds %in% checksToExclude
+    if (any(excludeMask)) {
+      excludedIds <- checkIds[excludeMask]
+      ParallelLogger::logInfo(sprintf("Excluding %d check(s): %s", length(excludedIds), paste(excludedIds, collapse = ", ")))
+      checks <- checks[!excludeMask, , drop = FALSE]
+    }
+  }
 
   if (length(cohortDefinitionId > 0)) {
     cohort <- TRUE

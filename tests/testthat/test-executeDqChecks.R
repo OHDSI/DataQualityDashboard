@@ -736,3 +736,31 @@ test_that("Execute a single DQ check on DuckDB", {
 
   expect_true(nrow(results$CheckResults) > 0)
 })
+
+test_that("checksToExclude excludes specific check IDs", {
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+
+  excludedCheckId <- "field_isforeignkey_condition_occurrence_visit_detail_id"
+
+  withCallingHandlers(
+    results <- executeDqChecks(
+      connectionDetails = connectionDetailsEunomia,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      checkNames = "isForeignKey",
+      checksToExclude = excludedCheckId,
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    warning = function(w) {
+      if (grepl("^Missing check names", w$message)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+
+  expect_true(nrow(results$CheckResults) > 0)
+  expect_false(excludedCheckId %in% results$CheckResults$checkId)
+})

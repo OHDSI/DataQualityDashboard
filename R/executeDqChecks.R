@@ -42,6 +42,7 @@
 #' @param cohortDatabaseSchema      The schema where the cohort table is located.
 #' @param cohortTableName           The name of the cohort table. Defaults to `cohort`.
 #' @param tablesToExclude           (OPTIONAL) Choose which CDM tables to exclude from the execution.
+#' @param checksToExclude           (OPTIONAL) A character vector of specific check IDs to exclude from execution. Check IDs have the form "checkLevel_checkName_cdmTableName_cdmFieldName" (all lowercase), e.g. "field_isforeignkey_condition_occurrence_visit_detail_id". Matching is case-insensitive.
 #' @param cdmVersion                The CDM version to target for the data source. Options are "5.2", "5.3", or "5.4". By default, "5.3" is used.
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
@@ -83,6 +84,8 @@ executeDqChecks <- function(connectionDetails,
                             cohortDatabaseSchema = resultsDatabaseSchema,
                             cohortTableName = "cohort",
                             tablesToExclude = c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
+                            checksToExclude = c(),
+                            writeErrorsToConsole = FALSE,
                             cdmVersion = "5.3",
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
@@ -120,7 +123,8 @@ executeDqChecks <- function(connectionDetails,
   stopifnot(
     is.null(checkNames) | is.character(checkNames),
     is.character(checkSeverity),
-    is.null(tablesToExclude) | is.character(tablesToExclude)
+    is.null(tablesToExclude) | is.character(tablesToExclude),
+    is.null(checksToExclude) | is.character(checksToExclude)
   )
   stopifnot(is.character(cdmVersion))
 
@@ -226,6 +230,11 @@ executeDqChecks <- function(connectionDetails,
   )
   # ensure we use only checks that are intended to be run -----------------------------------------
 
+  if (length(checksToExclude) > 0) {
+    checksToExclude <- tolower(checksToExclude)
+    ParallelLogger::logInfo(sprintf("Individual checks excluded: %s", paste(checksToExclude, collapse = ", ")))
+  }
+
   if (length(tablesToExclude) > 0) {
     tablesToExclude <- toupper(tablesToExclude)
     ParallelLogger::logInfo(sprintf("CDM Tables skipped: %s", paste(tablesToExclude, collapse = ", ")))
@@ -303,6 +312,7 @@ executeDqChecks <- function(connectionDetails,
     sqlOnlyUnionCount,
     sqlOnlyIncrementalInsert,
     sqlOnly,
+    checksToExclude,
     progressBar = TRUE
   )
   ParallelLogger::stopCluster(cluster = cluster)
@@ -322,6 +332,24 @@ executeDqChecks <- function(connectionDetails,
 
     # create overview
     overview <- .summarizeResults(checkResults = checkResults)
+
+    # Log error summary to console ---------------------------------------------------
+    if (writeErrorsToConsole) {
+      errorRows <- checkResults[!is.na(checkResults$error), ]
+      if (nrow(errorRows) > 0) {
+        ParallelLogger::logInfo(sprintf("--- %d check(s) returned errors ---", nrow(errorRows)))
+        for (i in seq_len(nrow(errorRows))) {
+          row <- errorRows[i, ]
+          ParallelLogger::logError(sprintf(
+            "[%s] %s | %s.%s\nError: %s\nSQL:\n%s",
+            row$checkLevel, row$checkName,
+            row$cdmTableName, row$cdmFieldName,
+            row$error,
+            row$queryText
+          ))
+        }
+      }
+    }
 
     endTime <- Sys.time()
     delta <- endTime - startTime

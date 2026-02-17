@@ -29,6 +29,7 @@ executeDqChecks(
   cohortTableName = "cohort",
   tablesToExclude = c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR",
     "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
+  checksToExclude = c(),
   cdmVersion = "5.3",
   tableCheckThresholdLoc = "default",
   fieldCheckThresholdLoc = "default",
@@ -82,6 +83,8 @@ with the fields cohort_definition_id and subject_id.}
 \item{cohortTableName}{The name of the cohort table. Defaults to `cohort`.}
 
 \item{tablesToExclude}{(OPTIONAL) Choose which CDM tables to exclude from the execution.}
+
+\item{checksToExclude}{(OPTIONAL) A character vector of specific check IDs to exclude from execution. Check IDs have the form "checkLevel_checkName_cdmTableName_cdmFieldName" (all lowercase), e.g. "field_isforeignkey_condition_occurrence_visit_detail_id". Matching is case-insensitive.}
 
 \item{cdmVersion}{The CDM version to target for the data source. Options are "5.2", "5.3", or "5.4". By default, "5.3" is used.}
 
