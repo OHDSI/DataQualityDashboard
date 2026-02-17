@@ -1,0 +1,14 @@
+.git
+.devcontainer
+.vscode
+.Rproj.user
+.Rhistory
+.RData
+.Rdata
+output/
+results/
+docs/
+*.log
+errorReport.txt
+errorReportSql.txt
+sql
