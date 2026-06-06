@@ -1,0 +1,76 @@
+---
+title: "Running DQD on Extension Tables"
+author: "Maxim Moinat"
+date: "`r Sys.Date()`"
+output:
+    pdf_document:
+        number_sections: true
+        toc: true
+    html_document:
+        number_sections: true
+        toc: true
+vignette: >
+    %\VignetteIndexEntry{Running DQD on Extension Tables}
+    %\VignetteEncoding{UTF-8}
+    %\VignetteEngine{knitr::knitr}
+---
+
+## Introduction
+The checks in the Data Quality Dashboard are in principle generic and could be applied to any data model.
+It is restricted to the OMOP CDM by the default given Threshold files.
+To run the DQD on an extension, the user needs to provide the appropriate threshold files for the extension tables and fields. 
+This has two issues:
+
+1. This requires downloading the source code and build the package with a custom threshold file.
+2. The threshold file, being a wide-format, is not well suited for editing and maintenance. An excel-like tool is needed to navigate the table and the wide table is very sparse.
+
+To solve this, there is a new function `executeDqChecksOnExtension` that takes long-format threshold files for the extension tables and fields, pivots them to wide-format, and then runs the DQD using those thresholds. This allows users to maintain their threshold files in a more user-friendly format and run the DQD on their extensions without needing to modify the package source code.
+
+## Usage
+To use the `executeDqChecksOnExtension` function, you need to prepare long-format threshold files. Two examples:
+
+** Table level **
+
+| cdmTableName | checkName                 | Threshold | Notes |
+|--------------|---------------------------|-----------|-------|
+| pregnancy    | isRequired                | 0         |       |
+| pregnancy    | measurePersonCompleteness | 100       |       |
+| infant       | measurePersonCompleteness | 100       |       |
+| pregnancy    | noAdditionalField         | 0         |       |
+| infant       | noAdditionalField         | 0         |       |
+
+** Field level **
+
+| cdmTableName | cdmFieldName                  | checkName               | Threshold | checkParameter     | checkParameter_TableName | checkParameter_FieldName | Notes |
+|--------------|-------------------------------|-------------------------|-----------|--------------------|--------------------------|--------------------------|-------|
+| pregnancy    | pregnancy_id                  | isRequired              | 0         |                    |                          |                          |       |
+| pregnancy    | person_id                     | isRequired              | 0         |                    |                          |                          |       |
+| pregnancy    | pregnancy_start_date          | isRequired              | 0         |                    |                          |                          |       |
+| pregnancy    | pregnancy_end_date            | isRequired              | 0         |                    |                          |                          |       |
+| pregnancy    | pregnancy_id                  | measureValueCompleteness | 0         |                    |                          |                          |       |
+| pregnancy    | person_id                     | measureValueCompleteness | 0         |                    |                          |                          |       |
+| pregnancy    | pregnancy_start_date          | measureValueCompleteness | 0         |                    |                          |                          |       |
+| pregnancy    | pregnancy_end_date            | measureValueCompleteness | 0         |                    |                          |                          |       |
+| pregnancy    | pregnancy_start_date          | plausibleValueLow       | 1         | 19500101           |                          |                          |       |
+| pregnancy    | pregnancy_start_date          | plausibleValueHigh      | 1         | DATEADD(dd,1,GETDATE()) |                   |                          |       |
+| pregnancy    | gestational_length_in_day     | plausibleValueLow       | 1         | 0.0000001          |                          |                          |       |
+| pregnancy    | gestational_length_in_day     | plausibleValueHigh      | 1         | 325                |                          |                          |       |
+
+Then provide this table to the `executeDqChecksOnExtension` function as follows:
+```{r}
+executeDqChecksOnExtension(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  resultsDatabaseSchema = resultsDatabaseSchema,
+  tableCheckThresholdExtensionLoc = "path/to/table_level_thresholds.csv",
+  fieldCheckThresholdExtensionLoc = "path/to/field_level_thresholds.csv",
+  conceptCheckThresholdExtensionLoc = "path/to/concept_level_thresholds.csv",
+  executeStandardDqd = TRUE,
+  numThreads = 1,
+  sqlOnly = FALSE,
+  sqlOnlyUnionCount = 1,
+  sqlOnlyIncrementalInsert = FALSE
+)
+```
+
+This will pivot the long-format threshold files to wide-format, run the DQD checks using those thresholds, and return the results. It will only execute the given checks. So for a full QC, you will also need to run the regular `executeDqChecks` function with the default threshold files for the standard CDM tables and fields. In the future we may add a parameter to run both the standard and extension checks in one go, but for now they need to be run separately.
