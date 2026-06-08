@@ -65,7 +65,6 @@ executeDqChecksOnExtension(
   tableCheckThresholdExtensionLoc = "path/to/table_level_thresholds.csv",
   fieldCheckThresholdExtensionLoc = "path/to/field_level_thresholds.csv",
   conceptCheckThresholdExtensionLoc = "path/to/concept_level_thresholds.csv",
-  executeStandardDqd = TRUE,
   numThreads = 1,
   sqlOnly = FALSE,
   sqlOnlyUnionCount = 1,
@@ -74,3 +73,27 @@ executeDqChecksOnExtension(
 ```
 
 This will pivot the long-format threshold files to wide-format, run the DQD checks using those thresholds, and return the results. It will only execute the given checks. So for a full QC, you will also need to run the regular `executeDqChecks` function with the default threshold files for the standard CDM tables and fields. In the future we may add a parameter to run both the standard and extension checks in one go, but for now they need to be run separately.
+
+## Example
+```{r}
+library(Eunomia)
+library(DataQualityDashboard)
+connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
+cdmDatabaseSchemaEunomia <- "main"
+resultsDatabaseSchemaEunomia <- "main"
+
+r <- executeDqChecksOnExtension(
+  connectionDetails = connectionDetailsEunomia,
+  cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+  resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+  cdmSourceName = "ExtensionExample",
+  outputFolder = "output",
+  tableCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.4_Table_Level.csv",
+  fieldCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.4_Field_Level.csv",
+  # conceptCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.4_Field_Level.csv",
+  checkLevel = c('TABLE', 'FIELD'),
+  sqlOnly = TRUE
+)
+
+print(r$Overview)
+```

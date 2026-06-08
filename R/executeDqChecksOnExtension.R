@@ -59,9 +59,9 @@ executeDqChecksOnExtension <- function(
   resultsDatabaseSchema,
   vocabDatabaseSchema = cdmDatabaseSchema,
   cdmSourceName,
-  tableCheckThresholdExtensionLoc,
-  fieldCheckThresholdExtensionLoc,
-  conceptCheckThresholdExtensionLoc,
+  tableCheckThresholdExtensionLoc = NULL,
+  fieldCheckThresholdExtensionLoc = NULL,
+  conceptCheckThresholdExtensionLoc = NULL,
   numThreads = 1,
   sqlOnly = FALSE,
   sqlOnlyUnionCount = 1,
@@ -80,29 +80,54 @@ executeDqChecksOnExtension <- function(
   cohortDatabaseSchema = resultsDatabaseSchema,
   cohortTableName = "cohort",
   tablesToExclude = c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
-  cdmVersion = "5.3",
-  tableCheckThresholdLoc = "default",
-  fieldCheckThresholdLoc = "default",
-  conceptCheckThresholdLoc = "default"
+  cdmVersion = "5.3"
 ) {
+  hasThresholdFile <- function(path) {
+    !is.null(path) && length(path) == 1 && !is.na(path) && nzchar(path)
+  }
+
   # Transform long-format threshold files to wide-format and write to temporary files -------------------
-  tableCheckThresholdLoc <- tempfile(fileext = '.csv')
-  .pivotTableLevelThreshold(
-    in_path = tableCheckThresholdExtensionLoc,
-    out_path = tableCheckThresholdLoc
-  )
+  tableCheckThresholdLoc <- "default"
+  fieldCheckThresholdLoc <- "default"
+  conceptCheckThresholdLoc <- "default"
+  availableCheckLevels <- character(0)
 
-  fieldCheckThresholdLoc <- tempfile(fileext = '.csv')
-  .pivotFieldLevelThreshold(
-    in_path = fieldCheckThresholdExtensionLoc,
-    out_path = fieldCheckThresholdLoc
-  )
+  if (hasThresholdFile(tableCheckThresholdExtensionLoc)) {
+    tableCheckThresholdLoc <- tempfile(fileext = ".csv")
+    .pivotTableLevelThreshold(
+      in_path = tableCheckThresholdExtensionLoc,
+      out_path = tableCheckThresholdLoc
+    )
+    availableCheckLevels <- c(availableCheckLevels, "TABLE")
+  }
 
-  conceptCheckThresholdLoc <- tempfile(fileext = '.csv')
-  .pivotConceptLevelThreshold(
-    in_path = conceptCheckThresholdExtensionLoc,
-    out_path = conceptCheckThresholdLoc
-  )
+  if (hasThresholdFile(fieldCheckThresholdExtensionLoc)) {
+    fieldCheckThresholdLoc <- tempfile(fileext = ".csv")
+    .pivotFieldLevelThreshold(
+      in_path = fieldCheckThresholdExtensionLoc,
+      out_path = fieldCheckThresholdLoc
+    )
+    availableCheckLevels <- c(availableCheckLevels, "FIELD")
+  }
+
+  if (hasThresholdFile(conceptCheckThresholdExtensionLoc)) {
+    conceptCheckThresholdLoc <- tempfile(fileext = ".csv")
+    .pivotConceptLevelThreshold(
+      in_path = conceptCheckThresholdExtensionLoc,
+      out_path = conceptCheckThresholdLoc
+    )
+    availableCheckLevels <- c(availableCheckLevels, "CONCEPT")
+  }
+
+  if (is.null(checkLevels)) {
+    checkLevels <- availableCheckLevels
+  } else {
+    checkLevels <- intersect(checkLevels, availableCheckLevels)
+  }
+
+  if (length(checkLevels) == 0) {
+    stop("No extension threshold file locations were provided for the requested check levels.")
+  }
 
   results <- executeDqChecks(
     connectionDetails = connectionDetails, 
@@ -150,9 +175,6 @@ executeDqChecksOnExtension <- function(
   .pivot(
     in_path,
     values_from = c('checkParameter', 'Threshold', 'Notes')    
-  ) |>
-  rename(
-    schema = databaseSchema
   ) |>
   write_csv(
     out_path,
@@ -241,10 +263,6 @@ executeDqChecksOnExtension <- function(
   wideLevel |>
     rename_with(
       ~ sub('checkParameter_?', '', .x)
-    ) |> 
-    mutate(
-      databaseSchema = 'CDM',
-      .after = cdmTableName
     ) |>
     select_if(
       function(x) !(all(is.na(x)))
