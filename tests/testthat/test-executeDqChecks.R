@@ -49,6 +49,9 @@ test_that("Execute all TABLE checks on Synthea/Eunomia", {
   )
 
   expect_true(nrow(results$CheckResults) > 0)
+  
+  sqlErrors <- stats::na.omit(results$CheckResults$error)
+  expect_length(sqlErrors, 0)
 })
 
 test_that("Execute FIELD checks on Synthea/Eunomia", {
@@ -73,6 +76,9 @@ test_that("Execute FIELD checks on Synthea/Eunomia", {
     }
   )
   expect_true(nrow(results$CheckResults) > 0)
+  
+  sqlErrors <- stats::na.omit(results$CheckResults$error)
+  expect_length(sqlErrors, 0)
 })
 
 test_that("Execute CONCEPT checks on Synthea/Eunomia", {
@@ -101,6 +107,9 @@ test_that("Execute CONCEPT checks on Synthea/Eunomia", {
     }
   )
   expect_true(nrow(results$CheckResults) > 0)
+  
+  sqlErrors <- stats::na.omit(results$CheckResults$error)
+  expect_length(sqlErrors, 0)
 })
 
 test_that("Execute observation period overlap check", {
