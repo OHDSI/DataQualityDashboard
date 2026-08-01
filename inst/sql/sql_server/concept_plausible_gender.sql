@@ -40,7 +40,7 @@ FROM
 				ON cdmTable.person_id = c.subject_id
 				AND c.cohort_definition_id = @cohortDefinitionId
 			}
-		WHERE cdmTable.@cdmFieldName = @conceptId
+		WHERE cdmTable.@cdmFieldName IN (@conceptId)
 		  	AND p.gender_concept_id <> {@plausibleGender == 'Male'} ? {8507} : {8532} 
 		/*violatedRowsEnd*/
 	) violated_rows
@@ -54,6 +54,6 @@ FROM
 		  	ON cdmTable.person_id = c.subject_id
 		  	AND c.cohort_definition_id = @cohortDefinitionId
 	}
-	WHERE @cdmFieldName = @conceptId
+	WHERE @cdmFieldName IN (@conceptId)
 ) denominator
 ;
