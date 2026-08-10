@@ -220,11 +220,13 @@ executeDqChecksOnExtension <- function(
 .pivotConceptLevelThreshold <- function(in_path, out_path) {
   .pivot(
     in_path,
-    values_from = c('checkParameter', 'Threshold', 'Notes', 'checkParameter_conceptId', 'checkParameter_conceptName', 'checkParameter_unitConceptId', 'checkParameter_unitConceptName')
+    # The following are not parameters, but just like table and field they are keys to pivot by
+    # 'checkParameter_conceptId', 'checkParameter_conceptName', 'checkParameter_unitConceptId', 'checkParameter_unitConceptName'
+    values_from = c('checkParameter', 'Threshold', 'Notes')
   ) |> 
   rename(
-    conceptId = plausibleGenderUseDescendantsconceptId,
-    conceptName = plausibleGenderUseDescendantsconceptName    
+    plausibleGenderUseDescendantsconceptId = conceptId,
+    plausibleGenderUseDescendantsconceptName = conceptName
   ) |>
   write_csv(
     out_path,

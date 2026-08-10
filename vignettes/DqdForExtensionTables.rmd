@@ -58,7 +58,7 @@ To use the `executeDqChecksOnExtension` function, you need to prepare long-forma
 
 Then provide this table to the `executeDqChecksOnExtension` function as follows:
 ```{r}
-executeDqChecksOnExtension(
+DataQualityDashboard::executeDqChecksOnExtension(
   connectionDetails = connectionDetails,
   cdmDatabaseSchema = cdmDatabaseSchema,
   resultsDatabaseSchema = resultsDatabaseSchema,
@@ -82,7 +82,7 @@ connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
 cdmDatabaseSchemaEunomia <- "main"
 resultsDatabaseSchemaEunomia <- "main"
 
-r <- executeDqChecksOnExtension(
+r <- DataQualityDashboard::executeDqChecksOnExtension(
   connectionDetails = connectionDetailsEunomia,
   cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
   resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
@@ -90,8 +90,8 @@ r <- executeDqChecksOnExtension(
   outputFolder = "output",
   tableCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.4_Table_Level.csv",
   fieldCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.4_Field_Level.csv",
-  # conceptCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.4_Field_Level.csv",
-  checkLevel = c('TABLE', 'FIELD'),
+  conceptCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.4_Concept_Level.csv",
+  checkLevel = c('TABLE', 'FIELD', 'CONCEPT'),
   sqlOnly = TRUE
 )
 
