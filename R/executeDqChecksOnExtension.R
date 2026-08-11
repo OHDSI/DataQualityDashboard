@@ -215,7 +215,7 @@ executeDqChecksOnExtension <- function(
     in_path,
     values_from = c('checkParameter', 'Threshold', 'Notes')    
   ) |>
-  # remove columns for cdmTable, these are just placeholders in long format to render row for each table
+  # remove columns for cdmTable check, these are just placeholders in long format to render row for each table
   select(
     !c('cdmTable', 'cdmTableThreshold', 'cdmTableNotes')
   ) |>

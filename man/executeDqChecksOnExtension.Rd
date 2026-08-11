@@ -38,7 +38,7 @@ executeDqChecksOnExtension(
 \arguments{
 \item{connectionDetails}{A connectionDetails object for connecting to the CDM database}
 
-\item{cdmDatabaseSchema}{The fully qualified database name of the CDM schema}
+\item{cdmDatabaseSchema}{The fully qualified database name of the CDM schema. All extension tables must be in this schema.}
 
 \item{resultsDatabaseSchema}{The fully qualified database name of the results schema}
 
@@ -101,5 +101,5 @@ with the fields cohort_definition_id and subject_id.}
 dqd results object
 }
 \description{
-This function is a wrapper around DQD::executeDqChecks that allows for using the long-format threshold files
+This function is a wrapper around DQD::executeDqChecks that allows for using the long-format threshold files.
 }

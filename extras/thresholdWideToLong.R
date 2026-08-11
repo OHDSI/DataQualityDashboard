@@ -5,7 +5,7 @@ library(tidyverse)
 
 in_path <- "inst/csv"
 out_path <- "extras/thresholdsLongFormat"
-version <- "5.4"
+version <- "5.3"
 tableLevelThreshold <- sprintf("OMOP_CDMv%s_Table_Level.csv", version)
 fieldLevelThreshold <- sprintf("OMOP_CDMv%s_Field_Level.csv", version)
 conceptLevelThreshold <- sprintf("OMOP_CDMv%s_Concept_Level.csv", version)
@@ -65,12 +65,25 @@ tableLevelChecks <- checkValue %>%
   ) %>%
   select(
     cdmTableName,
-    schema,
     checkName,
     Threshold,
     checkParameter = checkValue,
     Notes
   )
+
+# Add cdmTable before
+tableLevelChecks <- rbind(
+  tableLevel %>%
+    mutate(
+      cdmTableName,
+      checkName = 'cdmTable',
+      Threshold = 0,
+      checkParameter = NA,
+      Notes = NA,
+      .keep = 'none'
+    ),
+  tableLevelChecks
+) 
 
 #unique(tableLevelChecks$checkName)
 # View(tableLevelChecks)
@@ -160,7 +173,7 @@ fieldLevelChecks <- checkValue %>%
 
 write_csv(
   fieldLevelChecks,
-  file.path(out_path, paste0('long_', fieldLevelThreshold)),
+  file.path(out_path, paste0('long_2', fieldLevelThreshold)),
   na = ""
 )
 
@@ -188,7 +201,8 @@ checkValue <- conceptLevel %>%
     cols = !1:6,
     names_to = "checkName",
     values_to = "checkValue",
-    cols_vary = "slowest"
+    cols_vary = "slowest",
+    values_transform = as.character
   ) %>%
   filter(
     !(checkValue == 'No' | checkValue == '')
