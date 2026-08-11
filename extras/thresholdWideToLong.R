@@ -5,7 +5,7 @@ library(tidyverse)
 
 in_path <- "inst/csv"
 out_path <- "extras/thresholdsLongFormat"
-version <- "5.3"
+version <- "5.4"
 tableLevelThreshold <- sprintf("OMOP_CDMv%s_Table_Level.csv", version)
 fieldLevelThreshold <- sprintf("OMOP_CDMv%s_Field_Level.csv", version)
 conceptLevelThreshold <- sprintf("OMOP_CDMv%s_Concept_Level.csv", version)
@@ -173,7 +173,7 @@ fieldLevelChecks <- checkValue %>%
 
 write_csv(
   fieldLevelChecks,
-  file.path(out_path, paste0('long_2', fieldLevelThreshold)),
+  file.path(out_path, paste0('long_', fieldLevelThreshold)),
   na = ""
 )
 
@@ -250,13 +250,13 @@ conceptLevelChecks <- checkValue %>%
   select(
     cdmTableName,
     cdmFieldName,
+    conceptId,
+    conceptName,
+    unitConceptId,
+    unitConceptName,
     checkName,
     Threshold,
     checkParameter = checkValue,
-    checkParameter_conceptId = conceptId,
-    checkParameter_conceptName = conceptName,
-    checkParameter_unitConceptId = unitConceptId,
-    checkParameter_unitConceptName = unitConceptName,
     Notes
   )
 

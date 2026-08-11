@@ -267,14 +267,8 @@ executeDqChecksOnExtension <- function(
 .pivotConceptLevelThreshold <- function(in_path, out_path) {
   .pivot(
     in_path,
-    # The following are not parameters, but just like table and field they are keys to pivot by
-    # 'checkParameter_conceptId', 'checkParameter_conceptName', 'checkParameter_unitConceptId', 'checkParameter_unitConceptName'
     values_from = c('checkParameter', 'Threshold', 'Notes')
   ) |> 
-  rename(
-    plausibleGenderUseDescendantsconceptId = conceptId,
-    plausibleGenderUseDescendantsconceptName = conceptName
-  ) |>
   write_csv(
     out_path,
     col_names = TRUE,
@@ -299,6 +293,7 @@ executeDqChecksOnExtension <- function(
   wideLevel <- longLevel |>
     mutate(
       checkParameter = coalesce(checkParameter, 'Yes'),
+      Threshold = coalesce(Threshold, 100),
       Notes = coalesce(Notes, '')
     ) |>
     pivot_wider(

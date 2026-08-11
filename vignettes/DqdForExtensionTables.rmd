@@ -91,8 +91,8 @@ r <- DataQualityDashboard::executeDqChecksOnExtension(
   tableCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.3_Table_Level.csv",
   fieldCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.3_Field_Level.csv",
   conceptCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.3_Concept_Level.csv",
-  # checkLevel = c('TABLE'),
-  checkLevel = c('TABLE', 'FIELD'),
+  checkLevel = c('CONCEPT'),
+  # checkLevel = c('TABLE', 'FIELD'),
   # checkLevel = c('TABLE', 'FIELD', 'CONCEPT'),
   writeToTable = FALSE
 )
