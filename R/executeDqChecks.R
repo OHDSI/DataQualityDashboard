@@ -243,9 +243,6 @@ executeDqChecks <- function(connectionDetails,
 
   fieldChecks <- merge(x = fieldChecks, y = tableChecks[, c("cdmTableName", "schema")], by = "cdmTableName", all.x = TRUE)
 
-  # Default to cdmDatabaseSchema if schema not specified in table checks.
-  fieldChecks[is.na(fieldChecks$schema), "schema"] <- cdmDatabaseSchema
-
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |
       !is.null(eval(parse(text = sprintf("fieldChecks$%s", check)))) |

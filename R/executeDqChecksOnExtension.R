@@ -86,6 +86,17 @@ executeDqChecksOnExtension <- function(
     !is.null(path) && length(path) == 1 && !is.na(path) && nzchar(path)
   }
 
+  runFieldChecks <- is.null(checkLevels) || "FIELD" %in% checkLevels
+
+  if (runFieldChecks &&
+      hasThresholdFile(tableCheckThresholdExtensionLoc) &&
+      hasThresholdFile(fieldCheckThresholdExtensionLoc)) {
+    .validateFieldThresholdTables(
+      tableCheckThresholdExtensionLoc = tableCheckThresholdExtensionLoc,
+      fieldCheckThresholdExtensionLoc = fieldCheckThresholdExtensionLoc
+    )
+  }
+
   # Transform long-format threshold files to wide-format and write to temporary files -------------------
   tableCheckThresholdLoc <- "default"
   fieldCheckThresholdLoc <- "default"
@@ -163,18 +174,54 @@ executeDqChecksOnExtension <- function(
 }
 
 
+#' Validate that all field-level threshold tables are present in the table-level threshold file.
+#' @param tableCheckThresholdExtensionLoc Path to the long-format table-level threshold file
+#' @param fieldCheckThresholdExtensionLoc Path to the long-format field-level threshold file
+#' @return NULL
+#' @noRd
+.validateFieldThresholdTables <- function(tableCheckThresholdExtensionLoc,
+                                          fieldCheckThresholdExtensionLoc) {
+  tableThresholds <- read_csv(tableCheckThresholdExtensionLoc, show_col_types = FALSE)
+  fieldThresholds <- read_csv(fieldCheckThresholdExtensionLoc, show_col_types = FALSE)
+
+  tableNames <- unique(trimws(stats::na.omit(tableThresholds$cdmTableName)))
+  fieldTableNames <- unique(trimws(stats::na.omit(fieldThresholds$cdmTableName)))
+  missingTableNames <- sort(setdiff(fieldTableNames, tableNames))
+
+  if (length(missingTableNames) > 0) {
+    stop(
+      paste0(
+        "All table names in the field-level threshold file must also exist in the table-level threshold file. At least specify a 'cdmTable' check. Missing table(s): ",
+        paste(missingTableNames, collapse = ", ")
+      ),
+      call. = FALSE
+    )
+  }
+
+  invisible(NULL)
+}
+
+
 #' Reads the Table-level DQD Thresholds file in long format and writes it in wide format. 
 #' The long format is more human readable and easier to maintain, but the wide format is expected for DQD.
 #' @param in_path Input path with long-format thresholds file
 #' @param out_path Output path to write wide-format thresholds file to
 #' @return NULL
-#' @importFrom dplyr rename
+#' @importFrom dplyr select mutate
 #' @importFrom readr write_csv
 #' @noRd
 .pivotTableLevelThreshold <- function(in_path, out_path) {
   .pivot(
     in_path,
     values_from = c('checkParameter', 'Threshold', 'Notes')    
+  ) |>
+  # remove columns for cdmTable, these are just placeholders in long format to render row for each table
+  select(
+    !c('cdmTable', 'cdmTableThreshold', 'cdmTableNotes')
+  ) |>
+  mutate(
+    schema = 'CDM',
+    .after = cdmTableName
   ) |>
   write_csv(
     out_path,

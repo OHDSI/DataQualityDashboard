@@ -104,3 +104,6 @@ print(r)
 ## Implementation notes
  - In contrast to the regular threshold files, you cannot specify in which schema each table can be found (CDM, VOCAB or COHORT).
    The function `executeDqChecksOnExtension` expects the tables are in the `cdmDatabaseSchema`.
+ - The `cdmTable` and `cdmField` checks were implicit, but made explict in long format threshold file. i.e. start of defining is listing all tables/fields with `cdmTable`/`cdmField` checks.
+ - The processer checks if all tables in field-level are in table-level. And all fields in concept-level are in field-level file. If not, an error is thrown.
+ - For field level thresholds, the expectation is that at least `measureValueCompleteness` is specified. The `cdmField` check is implicit.
