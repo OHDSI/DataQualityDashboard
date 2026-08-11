@@ -202,7 +202,8 @@ executeDqChecks <- function(connectionDetails,
       "csv",
       sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion),
       package = "DataQualityDashboard"
-    )
+    ),
+    show_col_types = FALSE
   )
   checkDescriptionsDf <- as.data.frame(checkDescriptionsDf)
 
@@ -241,6 +242,9 @@ executeDqChecks <- function(connectionDetails,
   ))
 
   fieldChecks <- merge(x = fieldChecks, y = tableChecks[, c("cdmTableName", "schema")], by = "cdmTableName", all.x = TRUE)
+
+  # Default to cdmDatabaseSchema if schema not specified in table checks.
+  fieldChecks[is.na(fieldChecks$schema), "schema"] <- cdmDatabaseSchema
 
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |

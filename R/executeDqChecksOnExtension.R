@@ -16,9 +16,9 @@
 
 #' Execute DQD for extension tables, using custom threshold files in long format.
 #' 
-#' This function is a wrapper around DQD::executeDqChecks that allows for using the long-format threshold files
+#' This function is a wrapper around DQD::executeDqChecks that allows for using the long-format threshold files.
 #' @param connectionDetails         A connectionDetails object for connecting to the CDM database
-#' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema
+#' @param cdmDatabaseSchema         The fully qualified database name of the CDM schema. All extension tables must be in this schema.
 #' @param resultsDatabaseSchema     The fully qualified database name of the results schema
 #' @param vocabDatabaseSchema       The fully qualified database name of the vocabulary schema (default is to set it as the cdmDatabaseSchema)
 #' @param numThreads                The number of concurrent threads to use to execute the queries
@@ -92,7 +92,7 @@ executeDqChecksOnExtension <- function(
   conceptCheckThresholdLoc <- "default"
   availableCheckLevels <- character(0)
 
-  if (hasThresholdFile(tableCheckThresholdExtensionLoc)) {
+  if ("TABLE" %in% checkLevels && hasThresholdFile(tableCheckThresholdExtensionLoc)) {
     tableCheckThresholdLoc <- tempfile(fileext = ".csv")
     .pivotTableLevelThreshold(
       in_path = tableCheckThresholdExtensionLoc,
@@ -101,7 +101,7 @@ executeDqChecksOnExtension <- function(
     availableCheckLevels <- c(availableCheckLevels, "TABLE")
   }
 
-  if (hasThresholdFile(fieldCheckThresholdExtensionLoc)) {
+  if ("FIELD" %in% checkLevels && hasThresholdFile(fieldCheckThresholdExtensionLoc)) {
     fieldCheckThresholdLoc <- tempfile(fileext = ".csv")
     .pivotFieldLevelThreshold(
       in_path = fieldCheckThresholdExtensionLoc,
@@ -110,7 +110,7 @@ executeDqChecksOnExtension <- function(
     availableCheckLevels <- c(availableCheckLevels, "FIELD")
   }
 
-  if (hasThresholdFile(conceptCheckThresholdExtensionLoc)) {
+  if ("CONCEPT" %in% checkLevels && hasThresholdFile(conceptCheckThresholdExtensionLoc)) {
     conceptCheckThresholdLoc <- tempfile(fileext = ".csv")
     .pivotConceptLevelThreshold(
       in_path = conceptCheckThresholdExtensionLoc,

@@ -57,7 +57,7 @@ To use the `executeDqChecksOnExtension` function, you need to prepare long-forma
 | pregnancy    | gestational_length_in_day     | plausibleValueHigh      | 1         | 325                |                          |                          |       |
 
 Then provide this table to the `executeDqChecksOnExtension` function as follows:
-```{r}
+```{r eval=False}
 DataQualityDashboard::executeDqChecksOnExtension(
   connectionDetails = connectionDetails,
   cdmDatabaseSchema = cdmDatabaseSchema,
@@ -75,7 +75,7 @@ DataQualityDashboard::executeDqChecksOnExtension(
 This will pivot the long-format threshold files to wide-format, run the DQD checks using those thresholds, and return the results. It will only execute the given checks. So for a full QC, you will also need to run the regular `executeDqChecks` function with the default threshold files for the standard CDM tables and fields. In the future we may add a parameter to run both the standard and extension checks in one go, but for now they need to be run separately.
 
 ## Example
-```{r}
+```{r eval=False}
 library(Eunomia)
 library(DataQualityDashboard)
 connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
@@ -91,9 +91,16 @@ r <- DataQualityDashboard::executeDqChecksOnExtension(
   tableCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.4_Table_Level.csv",
   fieldCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.4_Field_Level.csv",
   conceptCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.4_Concept_Level.csv",
-  checkLevel = c('TABLE', 'FIELD', 'CONCEPT'),
-  sqlOnly = TRUE
+  # checkLevel = c('TABLE'),
+  checkLevel = c('TABLE', 'FIELD'),
+  # checkLevel = c('TABLE', 'FIELD', 'CONCEPT'),
+  writeToTable = FALSE
 )
 
-print(r$Overview)
+print(r)
 ```
+
+
+## Implementation notes
+ - In contrast to the regular threshold files, you cannot specify in which schema each table can be found (CDM, VOCAB or COHORT).
+   The function `executeDqChecksOnExtension` expects the tables are in the `cdmDatabaseSchema`.
