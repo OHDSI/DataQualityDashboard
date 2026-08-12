@@ -338,7 +338,7 @@ executeDqChecks <- function(connectionDetails,
       endTimestamp = endTime,
       executionTime = sprintf("%.0f %s", delta, attr(delta, "units")),
       # new variable executionTimeSeconds added to store execution time in seconds
-      executionTimeSeconds = as.numeric(delta),
+      executionTimeSeconds = as.numeric(delta, units = "secs"),
       CheckResults = checkResults,
       Metadata = metadata,
       Overview = overview
