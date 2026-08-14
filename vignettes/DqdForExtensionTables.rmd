@@ -120,5 +120,4 @@ results$CheckResults |> dplyr::select(cdmTableName, cdmFieldName, checkName, num
    The function `executeDqChecksOnExtension` expects the tables are in the `cdmDatabaseSchema`.
  - The `cdmTable` and `cdmField` checks are implicit. The `cdmTable` check is made explicit by listing all tables with `cdmTable` check name, which makes sure that all tables are at least checked to exist. For field level thresholds, this is still implicit but it is expected that for all fields at least `measureValueCompleteness` is specified.
  - The processer checks if all tables in field-level are in table-level. And all fields in concept-level are in field-level file. If not, an error is thrown.
-
- - For testing, the default thresholds were transformed to the long format useing []`extras/thresholdWideToLong.R`](extras/thresholdWideToLong.R)
+ - For testing, the default thresholds were transformed to the long format using [`extras/thresholdWideToLong.R`](extras/thresholdWideToLong.R)
