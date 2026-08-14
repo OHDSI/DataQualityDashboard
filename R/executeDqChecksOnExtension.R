@@ -184,8 +184,8 @@ executeDqChecksOnExtension <- function(
   tableThresholds <- read_csv(tableCheckThresholdExtensionLoc, show_col_types = FALSE)
   fieldThresholds <- read_csv(fieldCheckThresholdExtensionLoc, show_col_types = FALSE)
 
-  tableNames <- unique(trimws(stats::na.omit(tableThresholds$cdmTableName)))
-  fieldTableNames <- unique(trimws(stats::na.omit(fieldThresholds$cdmTableName)))
+  tableNames <- unique(trimws(stats::na.omit(tableThresholds$tableName)))
+  fieldTableNames <- unique(trimws(stats::na.omit(fieldThresholds$tableName)))
   missingTableNames <- sort(setdiff(fieldTableNames, tableNames))
 
   if (length(missingTableNames) > 0) {
@@ -199,6 +199,51 @@ executeDqChecksOnExtension <- function(
   }
 
   invisible(NULL)
+}
+
+
+#' Generic function for DQD Threshold long to wide format.
+#' @param in_path Input path with long-format thresholds file
+#' @param values_from list of column names to pivot, differs per check level
+#' @return thresholds table in wide format
+#' @importFrom dplyr mutate coalesce select_if all_of rename_with
+#' @importFrom tidyr pivot_wider
+#' @noRd
+.pivot <- function(in_path, values_from) {
+  longLevel <- read_csv(in_path, show_col_types = FALSE)
+
+  if (!('checkParameter' %in% names(longLevel))) {
+    longLevel$checkParameter <- NA
+  }
+
+  wideLevel <- longLevel |>
+    # Allow two versions of column names, consistent (right) and in-line with wide-level threshold (left)
+    rename(any_of(c(
+      cdmTableName = 'tableName',
+      cdmFieldName = 'fieldName',
+      Threshold = 'threshold',
+      Notes = 'notes',
+      checkParameter_TableName = 'yTableName',
+      checkParameter_FieldName = 'yFieldName'
+    ))) |>
+    mutate(
+      checkParameter = coalesce(checkParameter, 'Yes'),
+      Threshold = coalesce(Threshold, 100),
+      Notes = coalesce(Notes, '')
+    ) |>
+    pivot_wider(
+      names_from = checkName,
+      names_glue = '{checkName}{.value}',
+      values_from = all_of(values_from),
+      names_sort = TRUE,
+      values_fill = list(checkParameter = NA, Notes = '')
+    ) |>
+    rename_with(
+      ~ sub('checkParameter_?', '', .x)
+    ) |>
+    select_if(
+      function(x) !(all(is.na(x)))
+    )
 }
 
 
@@ -243,11 +288,12 @@ executeDqChecksOnExtension <- function(
     in_path,
     values_from = c('checkParameter', 'Threshold', 'Notes', 'checkParameter_TableName', 'checkParameter_FieldName')
   ) |>
-  rename(
-    fkTableName = isForeignKeyTableName,
-    fkFieldName = isForeignKeyFieldName,
-    standardConceptFieldName = sourceValueCompletenessFieldName
-  ) |>
+  # Wide level threshold has inconsistent column names (left). Rename only if column exists
+  rename(any_of(c(
+    fkTableName = 'isForeignKeyTableName',
+    fkFieldName = 'isForeignKeyFieldName',
+    standardConceptFieldName = 'sourceValueCompletenessFieldName'
+  ))) |>
   write_csv(
     out_path,
     col_names = TRUE,
@@ -274,41 +320,4 @@ executeDqChecksOnExtension <- function(
     col_names = TRUE,
     na = ""
   )
-}
-
-#' Generic function for DQD Threshold long to wide format.
-#' @param in_path Input path with long-format thresholds file
-#' @param values_from list of column names to pivot, differs per check level
-#' @return thresholds table in wide format
-#' @importFrom dplyr mutate coalesce select_if all_of rename_with
-#' @importFrom tidyr pivot_wider
-#' @noRd
-.pivot <- function(in_path, values_from) {
-  longLevel <- read_csv(in_path, show_col_types = FALSE)
-
-  if (!('checkParameter' %in% names(longLevel))) {
-    longLevel$checkParameter <- NA
-  }
-
-  wideLevel <- longLevel |>
-    mutate(
-      checkParameter = coalesce(checkParameter, 'Yes'),
-      Threshold = coalesce(Threshold, 100),
-      Notes = coalesce(Notes, '')
-    ) |>
-    pivot_wider(
-      names_from = checkName,
-      names_glue = '{checkName}{.value}',
-      values_from = all_of(values_from),
-      names_sort = TRUE,
-      values_fill = list(checkParameter = NA, Notes = '')
-    )
-
-  wideLevel |>
-    rename_with(
-      ~ sub('checkParameter_?', '', .x)
-    ) |>
-    select_if(
-      function(x) !(all(is.na(x)))
-    )
 }

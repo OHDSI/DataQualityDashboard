@@ -16,28 +16,27 @@ vignette: >
 ---
 
 ## Introduction
-The checks in the Data Quality Dashboard are in principle generic and could be applied to any data model.
-It is restricted to the OMOP CDM by the default given Threshold files.
-To run the DQD on an extension, the user needs to provide the appropriate threshold files for the extension tables and fields. 
-This has two issues:
+When you extend your OMOP CDM with custom tables and want to run DQD, then you need to extend the thresholds file.
+A typical use case if you use the extension tables as proposed by the Imaging or Waveform Working Groups. 
+With a few exceptions, the 20+ checks in the Data Quality Dashboard are generic and could be applied to extension tables.
 
-1. This requires downloading the source code and build the package with a custom threshold file.
-2. The threshold file, being a wide-format, is not well suited for editing and maintenance. An excel-like tool is needed to navigate the table and the wide table is very sparse.
+However, the threshold file is not well suited for editing and maintenance in the current wide format.
 
-To solve this, there is a new function `executeDqChecksOnExtension` that takes long-format threshold files for the extension tables and fields, pivots them to wide-format, and then runs the DQD using those thresholds. This allows users to maintain their threshold files in a more user-friendly format and run the DQD on their extensions without needing to modify the package source code.
+The function `executeDqChecksOnExtension` solves this by taking long-format threshold files for the extension tables and fields, pivots them to wide-format, and then runs the DQD using those thresholds.
+This allows users to maintain their threshold files in a more user-friendly format and run the DQD on their extensions without needing to modify the package source code.
 
 ## Usage
-To use the `executeDqChecksOnExtension` function, you need to prepare long-format threshold files. Two examples:
+To use the `executeDqChecksOnExtension` function, you need to prepare long-format threshold files. Two examples below:
 
 ** Table level **
 
 | cdmTableName | checkName                 | Threshold | Notes |
 |--------------|---------------------------|-----------|-------|
-| pregnancy    | isRequired                | 0         |       |
+| pregnancy    | cdmTable                |          |       |
+| infant       | cdmTable                |          |       |
+| pregnancy    | isRequired                |          |       |
 | pregnancy    | measurePersonCompleteness | 100       |       |
 | infant       | measurePersonCompleteness | 100       |       |
-| pregnancy    | noAdditionalField         | 0         |       |
-| infant       | noAdditionalField         | 0         |       |
 
 ** Field level **
 
@@ -62,48 +61,74 @@ DataQualityDashboard::executeDqChecksOnExtension(
   connectionDetails = connectionDetails,
   cdmDatabaseSchema = cdmDatabaseSchema,
   resultsDatabaseSchema = resultsDatabaseSchema,
+  cdmSourceName = 'source_name',
+  outputFolder = './',
   tableCheckThresholdExtensionLoc = "path/to/table_level_thresholds.csv",
   fieldCheckThresholdExtensionLoc = "path/to/field_level_thresholds.csv",
   conceptCheckThresholdExtensionLoc = "path/to/concept_level_thresholds.csv",
-  numThreads = 1,
-  sqlOnly = FALSE,
-  sqlOnlyUnionCount = 1,
-  sqlOnlyIncrementalInsert = FALSE
+  ...
 )
 ```
 
-This will pivot the long-format threshold files to wide-format, run the DQD checks using those thresholds, and return the results. It will only execute the given checks. So for a full QC, you will also need to run the regular `executeDqChecks` function with the default threshold files for the standard CDM tables and fields. In the future we may add a parameter to run both the standard and extension checks in one go, but for now they need to be run separately.
+This will pivot the long-format threshold files to wide-format, run regular DQD using those thresholds, and return the results.
+It will only execute the given checks.
+So for a full QC, you will also need to run the regular `executeDqChecks` function with the default threshold files for the standard CDM tables and fields.
 
 ## Example
+
 ```{r eval=False}
-library(Eunomia)
-library(DataQualityDashboard)
+myTable <- data.frame(id = c(1,2,3,4,5,6), person_id = c(1,NA,1,NA,1,99999))
+tableLevel <- as.data.frame(
+  rbind(
+   c('tableName', 'checkName', 'threshold', 'notes')
+  ,c('person','cdmTable',NA,NA) # Person is referenced in fieldLevel, so should be included here
+  ,c('myTable','cdmTable',NA,NA)
+  ,c('myTable','isRequired',NA,NA)
+  ,c('myTable','measurePersonCompleteness',0,NA)
+))
+fieldLevel <- as.data.frame(rbind(
+  c('tableName', 'fieldName', 'checkName', 'yTableName', 'yFieldName', 'threshold', 'notes')
+  ,c('myTable','id','measureValueCompleteness','','',0,NA)
+  ,c('myTable','person_id','measureValueCompleteness','','',5,NA)
+  ,c('myTable','id','isRequired','','',5,NA)
+  ,c('myTable','id','isPrimaryKey','','',5,NA)
+  ,c('myTable','person_id','isForeignKey','person','person_id',5,NA)
+))
+
+tableLevelLoc <- tempfile(fileext = 'csv')
+fieldLevelLoc <- tempfile(fileext = 'csv')
+readr::write_csv(tableLevel, tableLevelLoc, col_names=FALSE)
+readr::write_csv(fieldLevel, fieldLevelLoc, col_names=FALSE)
+
+# dbPath <- tempfile(fileext = ".sqlite")
+# con <- DBI::dbConnect(RSQLite::SQLite(), dbPath)
+# on.exit(DBI::dbDisconnect(con), add = TRUE)
+
 connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
-cdmDatabaseSchemaEunomia <- "main"
-resultsDatabaseSchemaEunomia <- "main"
+con <- DatabaseConnector::connect(connectionDetailsEunomia)
 
-r <- DataQualityDashboard::executeDqChecksOnExtension(
+DBI::dbWriteTable(con, 'myTable', myTable)
+DBI::dbGetQuery(con, 'select * from main.person;')
+
+DBI::dbDisconnect(con)
+
+results <- DataQualityDashboard::executeDqChecksOnExtension(
   connectionDetails = connectionDetailsEunomia,
-  cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-  resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-  cdmSourceName = "ExtensionExample",
-  outputFolder = "output",
-  tableCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.3_Table_Level.csv",
-  fieldCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.3_Field_Level.csv",
-  conceptCheckThresholdExtensionLoc = "extras/thresholdsLongFormat/long_OMOP_CDMv5.3_Concept_Level.csv",
-  checkLevel = c('CONCEPT'),
-  # checkLevel = c('TABLE', 'FIELD'),
-  # checkLevel = c('TABLE', 'FIELD', 'CONCEPT'),
-  writeToTable = FALSE
+  cdmDatabaseSchema = 'main',
+  resultsDatabaseSchema = 'main',
+  cdmSourceName = 'Eunomia+',
+  outputFolder = tempdir(),
+  tableCheckThresholdExtensionLoc = tableLevelLoc,
+  fieldCheckThresholdExtensionLoc = fieldLevelLoc,
+  checkLevel = c('TABLE', 'FIELD')
 )
-
-print(r)
 ```
 
 
 ## Implementation notes
  - In contrast to the regular threshold files, you cannot specify in which schema each table can be found (CDM, VOCAB or COHORT).
    The function `executeDqChecksOnExtension` expects the tables are in the `cdmDatabaseSchema`.
- - The `cdmTable` and `cdmField` checks were implicit, but made explict in long format threshold file. i.e. start of defining is listing all tables/fields with `cdmTable`/`cdmField` checks.
+ - The `cdmTable` and `cdmField` checks are implicit. The `cdmTable` check is made explicit by listing all tables with `cdmTable` check name, which makes sure that all tables are at least checked to exist. For field level thresholds, this is still implicit but it is expected that for all fields at least `measureValueCompleteness` is specified.
  - The processer checks if all tables in field-level are in table-level. And all fields in concept-level are in field-level file. If not, an error is thrown.
- - For field level thresholds, the expectation is that at least `measureValueCompleteness` is specified. The `cdmField` check is implicit.
+
+ - For testing, the default thresholds were transformed to the long format useing []`extras/thresholdWideToLong.R`](extras/thresholdWideToLong.R)
