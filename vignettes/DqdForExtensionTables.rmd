@@ -26,36 +26,47 @@ The function `executeDqChecksOnExtension` solves this by taking long-format thre
 This allows users to maintain their threshold files in a more user-friendly format and run the DQD on their extensions without needing to modify the package source code.
 
 ## Usage
-To use the `executeDqChecksOnExtension` function, you need to prepare long-format threshold files. Two examples below.
-`executeDqChecksOnExtension` will only execute the provided checks.
+The `executeDqChecksOnExtension` function requires threshold in a long-format, and will only execute the specified checks.
 For a full QC, you will also need to run the regular `executeDqChecks` function with the default threshold files for the standard CDM tables and fields.
 
-** Table level **
+The format for each threshold file are given below. See also [](extras/thresholdWideToLong.R) for a script that transforms existing wide-format thresholds to long-format. For testing, the v5.3 thresholds have been transformed to a long format, see the folder [](tests/testthat/inst).
 
-| cdmTableName | checkName                 | Threshold | Notes |
-|--------------|---------------------------|-----------|-------|
-| pregnancy    | cdmTable                |          |       |
-| infant       | cdmTable                |          |       |
-| pregnancy    | isRequired                |          |       |
-| pregnancy    | measurePersonCompleteness | 100       |       |
-| infant       | measurePersonCompleteness | 100       |       |
+### Table level long format
 
-** Field level **
+| Field        | Description                             | Example1 | Example2                  |
+| ------------ | --------------------------------------- | -------- | ------------------------- |
+| cdmTableName | Table to check                          | person   | person                    |
+| checkName    | Name of the check                       | cdmTable | measurePersonCompleteness |
+| Threshold    | Threshold as percentage                 |          | 5                         |
+| Notes        | Optional note to be displayed in viewer |          |                           |
 
-| cdmTableName | cdmFieldName                  | checkName               | Threshold | checkParameter     | checkParameter_TableName | checkParameter_FieldName | Notes |
-|--------------|-------------------------------|-------------------------|-----------|--------------------|--------------------------|--------------------------|-------|
-| pregnancy    | pregnancy_id                  | isRequired              | 0         |                    |                          |                          |       |
-| pregnancy    | person_id                     | isRequired              | 0         |                    |                          |                          |       |
-| pregnancy    | pregnancy_start_date          | isRequired              | 0         |                    |                          |                          |       |
-| pregnancy    | pregnancy_end_date            | isRequired              | 0         |                    |                          |                          |       |
-| pregnancy    | pregnancy_id                  | measureValueCompleteness | 0         |                    |                          |                          |       |
-| pregnancy    | person_id                     | measureValueCompleteness | 0         |                    |                          |                          |       |
-| pregnancy    | pregnancy_start_date          | measureValueCompleteness | 0         |                    |                          |                          |       |
-| pregnancy    | pregnancy_end_date            | measureValueCompleteness | 0         |                    |                          |                          |       |
-| pregnancy    | pregnancy_start_date          | plausibleValueLow       | 1         | 19500101           |                          |                          |       |
-| pregnancy    | pregnancy_start_date          | plausibleValueHigh      | 1         | DATEADD(dd,1,GETDATE()) |                   |                          |       |
-| pregnancy    | gestational_length_in_day     | plausibleValueLow       | 1         | 0.0000001          |                          |                          |       |
-| pregnancy    | gestational_length_in_day     | plausibleValueHigh      | 1         | 325                |                          |                          |       |
+### Field level long format
+
+| Field          | Description                                         | Example1          | Example2          |
+| -------------- | --------------------------------------------------- | ----------------- | ----------------- |
+| cdmTableName   | Table to check                                      | person            | person            |
+| cdmFieldName   | Field to check                                      | gender_concept_id | year_of_birth     |
+| checkName      | Name of the check                                   | isForeignKey      | plausibleValueLow |
+| Threshold      | Threshold as percentage                             | 0                 | 1                 |
+| checkParameter | e.g. the field type or value limit to check against |                   | 1850              |
+| yTableName     | e.g. table                                          | concept           |                   |
+| yFieldName     | e.g. field                                          | concept_id        |                   |
+| Notes          | Optional note to be displayed in viewer             |                   |                   |
+
+### Concept level long format
+
+| Field           | Description                             | Example1                      | Example2             |
+| --------------- | --------------------------------------- | ----------------------------- | -------------------- |
+| cdmTableName    | Table to check                          | measurement                   | condition_occurrence |
+| cdmFieldName    | Field to check                          | measurement_concept_id        | condition_concept_id |
+| conceptId       | Concept to check                        | 37397989                      | 42709954             |
+| conceptName     | Concept name                            | Serum total cholesterol level | Phimosis             |
+| unitConceptId   | Unit to check                           | 8753                          |                      |
+| unitConceptName | Unit name                               | millimole per liter           |                      |
+| checkName       | Name of the check                       | plausibleValueHigh            | plausibleGender      |
+| Threshold       | Threshold as percentage                 | 5                             | 5                    |
+| checkParameter  | e.g. value to check against             | 15                            | Male                 |
+| Notes           | Optional note to be displayed in viewer |                               |                      |
 
 
 ## Example
@@ -118,6 +129,6 @@ results$CheckResults |> dplyr::select(cdmTableName, cdmFieldName, checkName, num
 ## Implementation notes
  - In contrast to the regular threshold files, you cannot specify in which schema each table can be found (CDM, VOCAB or COHORT).
    The function `executeDqChecksOnExtension` expects the tables are in the `cdmDatabaseSchema`.
- - The `cdmTable` and `cdmField` checks are implicit. The `cdmTable` check is made explicit by listing all tables with `cdmTable` check name, which makes sure that all tables are at least checked to exist. For field level thresholds, this is still implicit but it is expected that for all fields at least `measureValueCompleteness` is specified.
+ - The `cdmTable` check has to be made explicit by listing all tables with `cdmTable` check name. For field level thresholds, the `cdmField` can be specified but is also added implicitly if field has other check listed. Both the `cdmTable` and `cdmField` checks can be assigned a threshold value in the long format, but this is ignored.
  - The processer checks if all tables in field-level are in table-level. And all fields in concept-level are in field-level file. If not, an error is thrown.
  - For testing, the default thresholds were transformed to the long format using [`extras/thresholdWideToLong.R`](extras/thresholdWideToLong.R)
