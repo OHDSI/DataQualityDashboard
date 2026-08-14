@@ -3,16 +3,16 @@ title: "Running DQD on Extension Tables"
 author: "Maxim Moinat"
 date: "`r Sys.Date()`"
 output:
-    pdf_document:
-        number_sections: true
-        toc: true
-    html_document:
-        number_sections: true
-        toc: true
+  pdf_document:
+    number_sections: true
+    toc: true
+  html_document:
+    number_sections: true
+    toc: true
 vignette: >
-    %\VignetteIndexEntry{Running DQD on Extension Tables}
-    %\VignetteEncoding{UTF-8}
-    %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{Running DQD on Extension Tables}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::knitr}
 ---
 
 ## Introduction
@@ -26,7 +26,9 @@ The function `executeDqChecksOnExtension` solves this by taking long-format thre
 This allows users to maintain their threshold files in a more user-friendly format and run the DQD on their extensions without needing to modify the package source code.
 
 ## Usage
-To use the `executeDqChecksOnExtension` function, you need to prepare long-format threshold files. Two examples below:
+To use the `executeDqChecksOnExtension` function, you need to prepare long-format threshold files. Two examples below.
+`executeDqChecksOnExtension` will only execute the provided checks.
+For a full QC, you will also need to run the regular `executeDqChecks` function with the default threshold files for the standard CDM tables and fields.
 
 ** Table level **
 
@@ -55,39 +57,28 @@ To use the `executeDqChecksOnExtension` function, you need to prepare long-forma
 | pregnancy    | gestational_length_in_day     | plausibleValueLow       | 1         | 0.0000001          |                          |                          |       |
 | pregnancy    | gestational_length_in_day     | plausibleValueHigh      | 1         | 325                |                          |                          |       |
 
-Then provide this table to the `executeDqChecksOnExtension` function as follows:
-```{r eval=False}
-DataQualityDashboard::executeDqChecksOnExtension(
-  connectionDetails = connectionDetails,
-  cdmDatabaseSchema = cdmDatabaseSchema,
-  resultsDatabaseSchema = resultsDatabaseSchema,
-  cdmSourceName = 'source_name',
-  outputFolder = './',
-  tableCheckThresholdExtensionLoc = "path/to/table_level_thresholds.csv",
-  fieldCheckThresholdExtensionLoc = "path/to/field_level_thresholds.csv",
-  conceptCheckThresholdExtensionLoc = "path/to/concept_level_thresholds.csv",
-  ...
-)
-```
-
-This will pivot the long-format threshold files to wide-format, run regular DQD using those thresholds, and return the results.
-It will only execute the given checks.
-So for a full QC, you will also need to run the regular `executeDqChecks` function with the default threshold files for the standard CDM tables and fields.
 
 ## Example
 
-```{r eval=False}
+The minimal example below shows how the function and inputs work.
+In actual implementation it is adviced to edit the threshold files directly in csv.
+```{r eval=TRUE}
+# Sample table
 myTable <- data.frame(id = c(1,2,3,4,5,6), person_id = c(1,NA,1,NA,1,99999))
+
+# Two table-level checks
 tableLevel <- as.data.frame(
   rbind(
-   c('tableName', 'checkName', 'threshold', 'notes')
-  ,c('person','cdmTable',NA,NA) # Person is referenced in fieldLevel, so should be included here
+   c('tableName','checkName','threshold','notes')
   ,c('myTable','cdmTable',NA,NA)
-  ,c('myTable','isRequired',NA,NA)
   ,c('myTable','measurePersonCompleteness',0,NA)
 ))
+
+# Seven table-levle checks (note cdmTable does not have to be explicitly set)
 fieldLevel <- as.data.frame(rbind(
-  c('tableName', 'fieldName', 'checkName', 'yTableName', 'yFieldName', 'threshold', 'notes')
+  c('tableName','fieldName','checkName','yTableName','yFieldName','threshold','notes')
+  ,c('myTable','id','cdmField','','',NA,NA)
+  ,c('myTable','person_id','cdmField','','',NA,NA)
   ,c('myTable','id','measureValueCompleteness','','',0,NA)
   ,c('myTable','person_id','measureValueCompleteness','','',5,NA)
   ,c('myTable','id','isRequired','','',5,NA)
@@ -95,22 +86,18 @@ fieldLevel <- as.data.frame(rbind(
   ,c('myTable','person_id','isForeignKey','person','person_id',5,NA)
 ))
 
-tableLevelLoc <- tempfile(fileext = 'csv')
-fieldLevelLoc <- tempfile(fileext = 'csv')
-readr::write_csv(tableLevel, tableLevelLoc, col_names=FALSE)
-readr::write_csv(fieldLevel, fieldLevelLoc, col_names=FALSE)
-
-# dbPath <- tempfile(fileext = ".sqlite")
-# con <- DBI::dbConnect(RSQLite::SQLite(), dbPath)
-# on.exit(DBI::dbDisconnect(con), add = TRUE)
-
+# Add 'custom' table to Eunomia
 connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
 con <- DatabaseConnector::connect(connectionDetailsEunomia)
-
 DBI::dbWriteTable(con, 'myTable', myTable)
-DBI::dbGetQuery(con, 'select * from main.person;')
-
 DBI::dbDisconnect(con)
+
+# Write thresholds to temporary files
+tableLevelLoc <- tempfile(fileext = 'csv')
+readr::write_csv(tableLevel, tableLevelLoc, col_names=FALSE)
+
+fieldLevelLoc <- tempfile(fileext = 'csv')
+readr::write_csv(fieldLevel, fieldLevelLoc, col_names=FALSE)
 
 results <- DataQualityDashboard::executeDqChecksOnExtension(
   connectionDetails = connectionDetailsEunomia,
@@ -120,8 +107,11 @@ results <- DataQualityDashboard::executeDqChecksOnExtension(
   outputFolder = tempdir(),
   tableCheckThresholdExtensionLoc = tableLevelLoc,
   fieldCheckThresholdExtensionLoc = fieldLevelLoc,
-  checkLevel = c('TABLE', 'FIELD')
+  checkLevel = c('TABLE', 'FIELD'),
+  writeToTable = FALSE
 )
+
+results$CheckResults |> dplyr::select(cdmTableName, cdmFieldName, checkName, numViolatedRows, pctViolatedRows, thresholdValue, failed) |> DT::datatable()
 ```
 
 
