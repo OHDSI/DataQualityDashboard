@@ -453,18 +453,27 @@ test_that("Check invalid cdm version", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  expect_error(
-    executeDqChecks(
-      connectionDetails = connectionDetailsEunomia,
-      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-      cdmSourceName = "Eunomia",
-      checkNames = "measurePersonCompleteness",
-      outputFolder = outputFolder,
-      writeToTable = FALSE,
-      cdmVersion = "5.2.3.1"
-    ),
-    regexp = "^cdmVersion must contain a version of the form '5.X'"
-  )
+  for (badVersion in c("5.2.3.1", "5.6", "5.1")) {
+    expect_error(
+      executeDqChecks(
+        connectionDetails = connectionDetailsEunomia,
+        resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+        cdmSourceName = "Eunomia",
+        checkNames = "measurePersonCompleteness",
+        outputFolder = outputFolder,
+        writeToTable = FALSE,
+        cdmVersion = badVersion
+      ),
+      regexp = "^cdmVersion must contain a version of the form '5.X'"
+    )
+  }
+})
+
+test_that("The vocabulary tables added in CDM v5.5 are excluded by default", {
+  defaultExclusions <- eval(formals(executeDqChecks)$tablesToExclude)
+  expect_true(all(
+    c("PACK_CONTENT", "CONCEPT_METADATA", "CONCEPT_RELATIONSHIP_METADATA") %in% defaultExclusions
+  ))
 })
 
 test_that("Execute DQ checks and write to table", {

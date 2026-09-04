@@ -1,3 +1,17 @@
+# DataQualityDashboard (unreleased)
+This release adds support for OMOP CDM v5.5.
+
+### CDM v5.5 support
+
+`cdmVersion = "5.5"` is now accepted, backed by new `OMOP_CDMv5.5_Table_Level.csv`, `OMOP_CDMv5.5_Field_Level.csv`, `OMOP_CDMv5.5_Concept_Level.csv`, and `OMOP_CDMv5.5_Check_Descriptions.csv` threshold files. The v5.5 files are a superset of the v5.4 files, covering the 24 fields and 3 tables that CDM v5.5 adds:
+
+- New fields on existing tables: `MEASUREMENT.value_as_source_concept_id`, `OBSERVATION.value_as_source_concept_id`, `OBSERVATION.unit_source_concept_id`, `OBSERVATION.value_as_date`, `SPECIMEN.visit_occurrence_id`, `SPECIMEN.visit_detail_id`, and `CDM_SOURCE.cdm_release_identifier`
+- New vocabulary tables `PACK_CONTENT`, `CONCEPT_METADATA`, and `CONCEPT_RELATIONSHIP_METADATA`, which have been **added to the default `tablesToExclude`** alongside the other vocabulary tables. Pass your own `tablesToExclude` to run checks on them
+
+Aside from these additions, the v5.5 files carry over the v5.4 thresholds unchanged.
+
+Note that `OBSERVATION.value_as_date` records an observation *value* rather than an event date, so the temporal plausibility checks (`plausibleAfterBirth`, `plausibleBeforeDeath`, `plausibleValueLow`/`High`) are disabled for it by default to avoid false positives on legitimately out-of-lifespan values.
+
 # DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
 This release contains fixes to testthat to comply with CRAN policies.
 
