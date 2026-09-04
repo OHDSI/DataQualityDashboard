@@ -43,7 +43,7 @@ executeDqChecks() → SQL generation (SqlRender) → DB execution (DatabaseConne
 
 ### Check Definition System
 
-Checks are defined in CSV files at `inst/csv/` — one set per CDM version (5.2, 5.3, 5.4). Each CSV row defines a parameterized check (table-level, field-level, or concept-level). The ~24 check types correspond to SQL templates in `inst/sql/sql_server/`. `SqlRender` translates these to the target database dialect at runtime.
+Checks are defined in CSV files at `inst/csv/` — a table-level and field-level set per CDM version (5.3, 5.4, 5.5), plus a single concept-level file shared by all versions. Each CSV row defines a parameterized check (table-level, field-level, or concept-level). The ~24 check types correspond to SQL templates in `inst/sql/sql_server/`. `SqlRender` translates these to the target database dialect at runtime.
 
 ### Public API (6 exported functions)
 
@@ -76,7 +76,7 @@ Snapshot tests live in `tests/testthat/_snaps/`.
 
 ## CDM Version Support
 
-Checks are versioned: `inst/csv/OMOP_CDMv5.2_Check_Descriptions.csv`, `5.3`, `5.4`. When adding or modifying checks, changes typically need to be applied across all relevant CDM version CSVs and their corresponding SQL templates.
+Checks are versioned: `inst/csv/OMOP_CDMv5.3_Check_Descriptions.csv`, `5.4`, `5.5`. When adding or modifying checks, changes typically need to be applied across all relevant CDM version CSVs and their corresponding SQL templates. Concept level thresholds are shared across versions in `inst/csv/OMOP_CDM_Concept_Level.csv`.
 
 ## Linting
 

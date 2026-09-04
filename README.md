@@ -13,7 +13,7 @@ The goal of the Data Quality Dashboard (DQD) project is to design and develop an
 Introduction
 ============
 
-This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.5, v5.4, v5.3 and v5.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way. 
+This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.5, v5.4 and v5.3). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way. 
 
 Overview
 ========
@@ -75,7 +75,7 @@ Requires R (version 3.2.2 or higher). Requires [DatabaseConnector](https://githu
 
 A variety of database platforms are supported, as documented [here](https://ohdsi.github.io/Hades/supportedPlatforms.html). 
 
-Note that while data quality check threshold files are provided for OMOP CDM versions 5.2, 5.3, 5.4, and 5.5, the package is currently only tested against versions 5.3 and 5.4.
+Note that while data quality check threshold files are provided for OMOP CDM versions 5.3, 5.4, and 5.5, the package is currently only tested against versions 5.3 and 5.4.
 
 Installation
 =============
