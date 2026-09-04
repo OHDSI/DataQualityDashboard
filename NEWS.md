@@ -1,5 +1,5 @@
 # DataQualityDashboard (unreleased)
-This release adds support for OMOP CDM v5.5 and consolidates the concept level threshold files.
+This release adds support for OMOP CDM v5.5, consolidates the concept level threshold files, and refreshes the CDM documentation columns in the threshold files.
 
 ### CDM v5.5 support
 
@@ -11,6 +11,10 @@ This release adds support for OMOP CDM v5.5 and consolidates the concept level t
 Aside from these additions, the v5.5 files carry over the v5.4 thresholds unchanged.
 
 Note that `OBSERVATION.value_as_date` records an observation *value* rather than an event date, so the temporal plausibility checks (`plausibleAfterBirth`, `plausibleBeforeDeath`, `plausibleValueLow`/`High`) are disabled for it by default to avoid false positives on legitimately out-of-lifespan values.
+
+### Refreshed CDM documentation columns
+
+The CDM documentation columns in the v5.3, v5.4, and v5.5 threshold files have been updated to match the current [CommonDataModel](https://github.com/OHDSI/CommonDataModel) specification: `userGuidance` and `etlConventions` in both the table and field level files, plus `tableDescription` in the table level files. These columns are documentation only and do not affect which checks run or how they are evaluated. The v5.2 files are unchanged, as CDM v5.2 is no longer published in the CommonDataModel repository.
 
 ### Concept level threshold files
 
