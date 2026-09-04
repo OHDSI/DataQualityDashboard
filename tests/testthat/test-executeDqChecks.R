@@ -94,7 +94,7 @@ test_that("Execute CONCEPT checks on Synthea/Eunomia", {
       checkLevels = "CONCEPT",
       conceptCheckThresholdLoc = system.file(
         "csv",
-        "unittest_OMOP_CDMv5.3_Concept_Level.csv",
+        "unittest_OMOP_CDM_Concept_Level.csv",
         package = "DataQualityDashboard"
       ),
       outputFolder = outputFolder,
@@ -678,7 +678,7 @@ test_that("Execute checks on Synthea/Eunomia to test new variable executionTimeS
       checkNames = "measurePersonCompleteness",
       conceptCheckThresholdLoc = system.file(
         "csv",
-        "unittest_OMOP_CDMv5.3_Concept_Level.csv",
+        "unittest_OMOP_CDM_Concept_Level.csv",
         package = "DataQualityDashboard"
       ),
       outputFolder = outputFolder,

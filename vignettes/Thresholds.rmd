@@ -27,7 +27,7 @@ There is a set of three csv files that underlie the DQD. These files indicate wh
 
 ### Step 1: Find and copy the control files
 
-The control files are located in the R package in the inst/csv folder and can also be downloaded [here](https://github.com/OHDSI/DataQualityDashboard/tree/master/inst/csv). In that location there should be four files per CDM version the DQD supports. These are:
+The control files are located in the R package in the inst/csv folder and can also be downloaded [here](https://github.com/OHDSI/DataQualityDashboard/tree/master/inst/csv). In that location there should be three files per CDM version the DQD supports, plus a single concept level file shared by all CDM versions. These are:
 
 - **OMOP_CDMvx.x.x_Check_Descriptions.csv**: This file contains the check types, their descriptions, and which sql file is associated with each. It does not contain any failure thresholds and should not need to be changed. 
 - **OMOP_CDMvx.x.x_Table_Level.csv**: This file has a list of all tables in the CDM version and any checks to be performed at this level as well as the failure thresholds associated. Right now only the checktype [measurePersonCompleteness](https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#measurepersoncompleteness) is considered a table level check. If you would like to change the failure thresholds for the measurePersonCompleteness check copy this file to a location the R instance can access.
@@ -35,7 +35,7 @@ The control files are located in the R package in the inst/csv folder and can al
 
 ![Figure 1: Field Level Control File Example](images/fieldLevelFile.png)
 
-- **OMOP_CDMvx.x.x_Concept_Level.csv**: This file has a list of all concepts and any checks to be performed on that concept. For example, there are checks that evaluate biologically plausible ranges for measurement values, like [plausibleValueLow](https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#plausiblevaluelow-1). If you would like to change the failure thresholds for any of these checks copy this file to a location the R instance can access.
+- **OMOP_CDM_Concept_Level.csv**: This file has a list of all concepts and any checks to be performed on that concept. Concept level thresholds do not vary by CDM version, so a single file is shared across all supported versions. For example, there are checks that evaluate biologically plausible ranges for measurement values, like [plausibleValueLow](https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#plausiblevaluelow-1). If you would like to change the failure thresholds for any of these checks copy this file to a location the R instance can access.
 
 ### Step 2: Turn On/Off Checks and Change Thresholds
 

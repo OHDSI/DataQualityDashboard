@@ -64,7 +64,7 @@ reEvaluateThresholds <- function(jsonFilePath,
   tableChecks <- .readThresholdFile(tableCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Table_Level.csv", cdmVersion))
   fieldChecks <- .readThresholdFile(fieldCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion))
   fieldChecks$cdmFieldName <- toupper(fieldChecks$cdmFieldName) # Uppercase in results, lowercase in threshold files
-  conceptChecks <- .readThresholdFile(conceptCheckThresholdLoc, defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion))
+  conceptChecks <- .readThresholdFile(conceptCheckThresholdLoc, defaultLoc = "OMOP_CDM_Concept_Level.csv")
   conceptChecks$cdmFieldName <- toupper(conceptChecks$cdmFieldName)
 
   newCheckResults <- .evaluateThresholds(

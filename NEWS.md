@@ -1,3 +1,12 @@
+# DataQualityDashboard (unreleased)
+This release consolidates the concept level threshold files.
+
+**The v5.2, v5.3, and v5.4 concept level threshold files have been replaced by a single file, `OMOP_CDM_Concept_Level.csv`.** Concept level thresholds do not vary by CDM version, and the three files had drifted apart unintentionally. If you pass `conceptCheckThresholdLoc` you are unaffected; if you rely on the default file, note the following changes:
+
+- v5.4 results are unchanged; the consolidated file is identical to the previous v5.4 file
+- v5.2 gains 9 `OBSERVATION.OBSERVATION_CONCEPT_ID` cholesterol and creatinine `plausibleValueLow`/`plausibleValueHigh` checks, which were present for v5.3 and v5.4 but had been dropped from the v5.2 file in error
+- For v5.3, unit concepts 8784 and 8785 have been removed from `plausibleUnitConceptIds` for concept 3019550 (Sodium [Moles/volume] in Serum or Plasma). These are cell count units and are not plausible for a molar concentration measurement; they had been added to the v5.3 file in error and were never present in the v5.2 or v5.4 files
+
 # DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
 This release contains fixes to testthat to comply with CRAN policies.
 

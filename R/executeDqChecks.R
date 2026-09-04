@@ -218,7 +218,7 @@ executeDqChecks <- function(connectionDetails,
 
   conceptChecks <- .readThresholdFile(
     checkThresholdLoc = conceptCheckThresholdLoc,
-    defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion)
+    defaultLoc = "OMOP_CDM_Concept_Level.csv"
   )
   # ensure we use only checks that are intended to be run -----------------------------------------
 

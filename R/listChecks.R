@@ -53,7 +53,7 @@ listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default",
 
   dqChecks$conceptChecks <- .readThresholdFile(
     checkThresholdLoc = conceptCheckThresholdLoc,
-    defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion)
+    defaultLoc = "OMOP_CDM_Concept_Level.csv"
   )
 
   return(dqChecks)
