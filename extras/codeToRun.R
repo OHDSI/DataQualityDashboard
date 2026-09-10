@@ -84,7 +84,7 @@ csvFile <- "" # only needed if writeToCsv is set to TRUE
 checkLevels <- c("TABLE", "FIELD", "CONCEPT")
 
 # which DQ checks to run? ------------------------------------
-checkNames <- c() # Names can be found in inst/csv/OMOP_CDM_v5.3_Check_Descriptions.csv
+checkNames <- c() # Names can be found in inst/csv/OMOP_CDM_Check_Descriptions.csv
 
 # want to EXCLUDE a pre-specified list of checks? run the following code:
 #
