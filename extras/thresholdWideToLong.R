@@ -61,14 +61,12 @@ tableLevelChecks <- checkValue %>%
     by = join_by(cdmTableName, schema, checkName)
   ) %>%
   mutate(
-    checkValue = if_else(checkValue == 'Yes', NA, checkValue)
-  ) %>%
-  select(
     cdmTableName,
     checkName,
     Threshold,
-    checkParameter = checkValue,
-    Notes
+    checkParameter = if_else(checkValue == 'Yes', NA, checkValue),
+    Notes,
+    .keep = 'none'
   )
 
 # Add cdmTable before
@@ -155,17 +153,15 @@ fieldLevelChecks <- checkValue %>%
     by = join_by(cdmTableName, cdmFieldName, checkName)
   ) %>%
   mutate(
-    checkValue = if_else(checkValue == 'Yes', NA, checkValue)
-  ) %>%
-  select(
     cdmTableName,
     cdmFieldName,
     checkName,
     Threshold,
-    checkParameter = checkValue,
+    checkParameter = if_else(checkValue == 'Yes', NA, checkValue),
     checkParameter_TableName = TableName,
     checkParameter_FieldName = FieldName,
-    Notes
+    Notes,
+    .keep = 'none'
   )
 
 # unique(fieldLevelChecks$checkName)
@@ -245,9 +241,6 @@ conceptLevelChecks <- checkValue %>%
     )
   ) %>%
   mutate(
-    checkValue = if_else(checkValue == 'Yes', NA, checkValue)
-  ) %>%
-  select(
     cdmTableName,
     cdmFieldName,
     conceptId,
@@ -256,8 +249,9 @@ conceptLevelChecks <- checkValue %>%
     unitConceptName,
     checkName,
     Threshold,
-    checkParameter = checkValue,
-    Notes
+    checkParameter = if_else(checkValue == 'Yes', NA, checkValue),
+    Notes,
+    .keep = 'none'
   )
 
 # unique(conceptLevelChecks$checkName)
