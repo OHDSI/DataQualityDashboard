@@ -113,7 +113,6 @@ reference:
       Function for running data quality checks
     contents:
       - executeDqChecks
-      - executeDqChecksOnExtension
       - writeJsonResultsToTable
   - title: "View Dashboard"
     desc: >

@@ -22,13 +22,10 @@ With a few exceptions, the 20+ checks in the Data Quality Dashboard are generic 
 
 However, the threshold file is not well suited for editing and maintenance in the current wide format.
 
-The function `executeDqChecksOnExtension` solves this by taking long-format threshold files for the extension tables and fields, pivots them to wide-format, and then runs the DQD using those thresholds.
+Sincd DQD v2.x, `executeDqChecks` can also take a long-format threshold files for the extension tables and fields, pivots them to wide-format, and then runs the DQD using those thresholds.
 This allows users to maintain their threshold files in a more user-friendly format and run the DQD on their extensions without needing to modify the package source code.
 
 ## Usage
-The `executeDqChecksOnExtension` function requires threshold in a long-format, and will only execute the specified checks.
-For a full QC, you will also need to run the regular `executeDqChecks` function with the default threshold files for the standard CDM tables and fields.
-
 The format for each threshold file are given below. See also [](extras/thresholdWideToLong.R) for a script that transforms existing wide-format thresholds to long-format. For testing, the v5.3 thresholds have been transformed to a long format, see the folder [](tests/testthat/inst).
 
 ### Table level long format
@@ -130,7 +127,7 @@ results$CheckResults |>
 
 ## Implementation notes
  - In contrast to the regular threshold files, you cannot specify in which schema each table can be found (CDM, VOCAB or COHORT).
-   The function `executeDqChecksOnExtension` expects the tables are in the `cdmDatabaseSchema`.
+   All tables are expected in the `cdmDatabaseSchema`.
  - The `cdmTable` check has to be made explicit by listing all tables with `cdmTable` check name. For field level thresholds, the `cdmField` can be specified but is also added implicitly if field has other check listed. Both the `cdmTable` and `cdmField` checks can be assigned a threshold value in the long format, but this is ignored.
  - The processer checks if all tables in field-level are in table-level. And all fields in concept-level are in field-level file. If not, an error is thrown.
  - For testing, the default thresholds were transformed to the long format using [`extras/thresholdWideToLong.R`](extras/thresholdWideToLong.R)

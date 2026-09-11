@@ -1,6 +1,6 @@
 library(testthat)
 
-test_that('executeDqChecksOnExtension Table-level matches executeDqChecks for equivalent thresholds', {
+test_that('executeDqChecks with long-format Table-level matches executeDqChecks for equivalent thresholds', {
   testthat::skip_if_not_installed('Eunomia')
 
   connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
@@ -10,7 +10,7 @@ test_that('executeDqChecksOnExtension Table-level matches executeDqChecks for eq
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  r1 <- suppressWarnings(DataQualityDashboard::executeDqChecksOnExtension(
+  r1 <- suppressWarnings(DataQualityDashboard::executeDqChecks(
     connectionDetails = connectionDetailsEunomia,
     cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
@@ -50,7 +50,7 @@ test_that('executeDqChecksOnExtension Table-level matches executeDqChecks for eq
   expect_equal(r1$Overview, r2$Overview)
 })
 
-test_that('executeDqChecksOnExtension Field-level matches executeDqChecks for equivalent thresholds', {
+test_that('executeDqChecks with long-format Field-level matches executeDqChecks for equivalent thresholds', {
   testthat::skip_if_not_installed('Eunomia')
 
   connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
@@ -60,7 +60,7 @@ test_that('executeDqChecksOnExtension Field-level matches executeDqChecks for eq
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  r1 <- suppressWarnings(DataQualityDashboard::executeDqChecksOnExtension(
+  r1 <- suppressWarnings(DataQualityDashboard::executeDqChecks(
     connectionDetails = connectionDetailsEunomia,
     cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
@@ -102,7 +102,7 @@ test_that('executeDqChecksOnExtension Field-level matches executeDqChecks for eq
   expect_equal(r1$Overview, r2$Overview)
 })
 
-test_that('executeDqChecksOnExtension Concept-level matches executeDqChecks for equivalent thresholds', {
+test_that('executeDqChecks with long-format Concept-level threshold matches executeDqChecks for equivalent thresholds', {
   testthat::skip_if_not_installed('Eunomia')
 
   connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
@@ -112,7 +112,7 @@ test_that('executeDqChecksOnExtension Concept-level matches executeDqChecks for 
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  r1 <- suppressWarnings(DataQualityDashboard::executeDqChecksOnExtension(
+  r1 <- suppressWarnings(DataQualityDashboard::executeDqChecks(
     connectionDetails = connectionDetailsEunomia,
     cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
