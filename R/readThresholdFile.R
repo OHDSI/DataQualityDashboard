@@ -40,11 +40,28 @@
     colspec$cols$plausibleUnitConceptIds <- readr::col_character()
   }
 
-  result <- read_csv(
+  result <- readr::read_csv(
     file = thresholdFile,
     col_types = colspec,
     na = c(" ", "")
   )
   result <- as.data.frame(result)
+
+  if (.isLongFormat(result)) {
+    result <- .pivotThresholdWider(result)
+  }
+
   return(result)
+}
+
+#' Internal function to determine a thresholds object is in long format
+#'
+#' @param thresholds The thresholds object
+#'
+#' @return Boolean
+#'
+#' @noRd
+#' @keywords internal
+.isLongFormat <- function(thresholds) {
+  'checkName' %in% names(thresholds)
 }

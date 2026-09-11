@@ -74,7 +74,7 @@ The format for each threshold file are given below. See also [](extras/threshold
 The minimal example below shows how the function and inputs work.
 In actual implementation it is adviced to edit the threshold files directly in csv.
 ```{r eval=TRUE}
-# Sample table
+# Sample table that we want to run DQD against, to add to Eunomia CDM.
 myTable <- data.frame(id = c(1,2,3,4,5,6), person_id = c(1,NA,1,NA,1,99999))
 
 # Two table-level checks
@@ -110,19 +110,21 @@ readr::write_csv(tableLevel, tableLevelLoc, col_names=FALSE)
 fieldLevelLoc <- tempfile(fileext = 'csv')
 readr::write_csv(fieldLevel, fieldLevelLoc, col_names=FALSE)
 
-results <- DataQualityDashboard::executeDqChecksOnExtension(
+results <- DataQualityDashboard::executeDqChecks(
   connectionDetails = connectionDetailsEunomia,
   cdmDatabaseSchema = 'main',
   resultsDatabaseSchema = 'main',
   cdmSourceName = 'Eunomia+',
   outputFolder = tempdir(),
-  tableCheckThresholdExtensionLoc = tableLevelLoc,
-  fieldCheckThresholdExtensionLoc = fieldLevelLoc,
+  tableCheckThresholdLoc = tableLevelLoc,
+  fieldCheckThresholdLoc = fieldLevelLoc,
   checkLevel = c('TABLE', 'FIELD'),
   writeToTable = FALSE
 )
 
-results$CheckResults |> dplyr::select(cdmTableName, cdmFieldName, checkName, numViolatedRows, pctViolatedRows, thresholdValue, failed) |> DT::datatable()
+results$CheckResults |>
+  dplyr::select(cdmTableName, cdmFieldName, checkName, numViolatedRows, pctViolatedRows, thresholdValue, failed) |>
+  DT::datatable()
 ```
 
 
