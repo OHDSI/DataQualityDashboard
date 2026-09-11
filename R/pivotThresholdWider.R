@@ -24,7 +24,6 @@
 #' @keywords internal
 #' @noRd
 .pivotThresholdWider <- function(threshold) {
-
   threshold <- .normalizeNames(threshold)
 
   if ('conceptId' %in% names(threshold)) {
@@ -40,7 +39,7 @@
       values_from = c('checkParameter', 'Threshold', 'Notes', 'checkParameter_TableName', 'checkParameter_FieldName')
     ) |>
     # Wide level field threshold has inconsistent column names (left). Rename only if column exists
-    rename(any_of(c(
+    dplyr::rename(any_of(c(
       fkTableName = 'isForeignKeyTableName',
       fkFieldName = 'isForeignKeyFieldName',
       standardConceptFieldName = 'sourceValueCompletenessFieldName'
@@ -52,11 +51,11 @@
       values_from = c('checkParameter', 'Threshold', 'Notes')
     ) |>
     # remove redundant columns for cdmTable check, these are implicit when processing wide-format
-    select(
+    dplyr::select(
       !c('cdmTable', 'cdmTableThreshold', 'cdmTableNotes')
     ) |>
     # needs schema where to find tables (CDM, COHORT or VOCAB). Here we always set to CDM schema.
-    mutate(
+    dplyr::mutate(
       schema = 'CDM',
       .after = cdmTableName
     )
@@ -78,22 +77,22 @@
   }
 
   threshold |>
-    mutate(
-      checkParameter = coalesce(checkParameter, 'Yes'),
-      Threshold = coalesce(Threshold, 100),
-      Notes = coalesce(Notes, '')
+    dplyr::mutate(
+      checkParameter = dplyr::coalesce(checkParameter, 'Yes'),
+      Threshold = dplyr::coalesce(Threshold, 100),
+      Notes = dplyr::coalesce(Notes, '')
     ) |>
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = checkName,
       names_glue = '{checkName}{.value}',
       values_from = all_of(values_from),
       names_sort = TRUE,
       values_fill = list(checkParameter = NA, Notes = '')
     ) |>
-    rename_with(
+    dplyr::rename_with(
       ~ sub('checkParameter_?', '', .x)
     ) |>
-    select_if(
+    dplyr::select_if(
       function(x) !(all(is.na(x)))
     )
 }
@@ -101,7 +100,7 @@
 .normalizeNames <- function(threshold) {
   # Allow two sets of column names in long format, consistent (right) and in-line with wide-level threshold (left)
   threshold |>
-    rename(any_of(c(
+    dplyr::rename(any_of(c(
       cdmTableName = 'tableName',
       cdmFieldName = 'fieldName',
       Threshold = 'threshold',

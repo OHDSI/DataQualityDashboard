@@ -1,6 +1,6 @@
 library(testthat)
 
-test_that('executeDqChecks with long-format Table-level matches executeDqChecks for equivalent thresholds', {
+test_that('executeDqChecks with long-format table thresholds matches executeDqChecks for equivalent thresholds', {
   testthat::skip_if_not_installed('Eunomia')
 
   connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
@@ -16,9 +16,9 @@ test_that('executeDqChecks with long-format Table-level matches executeDqChecks 
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     cdmSourceName = 'Eunomia',
     outputFolder = outputFolder,
-    tableCheckThresholdExtensionLoc = long_OMOP_CDMv5.3_Table_Level,
-    fieldCheckThresholdExtensionLoc = long_OMOP_CDMv5.3_Field_Level,
-    conceptCheckThresholdExtensionLoc = long_OMOP_CDMv5.3_Concept_Level,
+    tableCheckThresholdLoc = long_OMOP_CDMv5.3_Table_Level,
+    fieldCheckThresholdLoc = long_OMOP_CDMv5.3_Field_Level,
+    conceptCheckThresholdLoc = long_OMOP_CDMv5.3_Concept_Level,
     checkLevel = checkLevel,
     writeToTable = FALSE
   ))
@@ -50,7 +50,7 @@ test_that('executeDqChecks with long-format Table-level matches executeDqChecks 
   expect_equal(r1$Overview, r2$Overview)
 })
 
-test_that('executeDqChecks with long-format Field-level matches executeDqChecks for equivalent thresholds', {
+test_that('executeDqChecks with long-format field thresholds matches executeDqChecks for equivalent thresholds', {
   testthat::skip_if_not_installed('Eunomia')
 
   connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
@@ -66,9 +66,9 @@ test_that('executeDqChecks with long-format Field-level matches executeDqChecks 
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     cdmSourceName = 'Eunomia',
     outputFolder = outputFolder,
-    tableCheckThresholdExtensionLoc = long_OMOP_CDMv5.3_Table_Level,
-    fieldCheckThresholdExtensionLoc = long_OMOP_CDMv5.3_Field_Level,
-    conceptCheckThresholdExtensionLoc = long_OMOP_CDMv5.3_Concept_Level,
+    tableCheckThresholdLoc = long_OMOP_CDMv5.3_Table_Level,
+    fieldCheckThresholdLoc = long_OMOP_CDMv5.3_Field_Level,
+    conceptCheckThresholdLoc = long_OMOP_CDMv5.3_Concept_Level,
     checkLevel = checkLevel,
     checkNames = c("plausibleTemporalAfter", "plausibleAfterBirth", "plausibleBeforeDeath", "plausibleStartBeforeEnd"),
     writeToTable = FALSE
@@ -118,9 +118,9 @@ test_that('executeDqChecks with long-format Concept-level threshold matches exec
     resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
     cdmSourceName = 'Eunomia',
     outputFolder = outputFolder,
-    tableCheckThresholdExtensionLoc = long_OMOP_CDMv5.3_Table_Level,
-    fieldCheckThresholdExtensionLoc = long_OMOP_CDMv5.3_Field_Level,
-    conceptCheckThresholdExtensionLoc = long_OMOP_CDMv5.3_Concept_Level,
+    tableCheckThresholdLoc = long_OMOP_CDMv5.3_Table_Level,
+    fieldCheckThresholdLoc = long_OMOP_CDMv5.3_Field_Level,
+    conceptCheckThresholdLoc = long_OMOP_CDMv5.3_Concept_Level,
     checkLevel = checkLevel,
     writeToTable = FALSE
   ))
