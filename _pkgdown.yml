@@ -48,6 +48,8 @@ navbar:
         href: articles/DqdForCohorts.html
       - text: SQL-only Mode
         href: articles/SqlOnly.html
+      - text: Execute DQD on Extension
+        href: articles/DqdForExtensionTables.html
     checks:
       text: Data Quality Check Types
       menu:

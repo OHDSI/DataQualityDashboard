@@ -105,3 +105,21 @@ verifyConnection <- function(connectionDetails) {
     }
   )
 }
+
+unittest_5.3_concept_level_loc <- test_path(
+  "inst",
+  "unittest_OMOP_CDMv5.3_Concept_Level.csv"
+)
+
+long_OMOP_CDMv5.3_Table_Level <- test_path(
+  'inst',
+  'long_OMOP_CDMv5.3_Table_Level.csv'
+)
+long_OMOP_CDMv5.3_Field_Level <- test_path(
+  'inst',
+  'long_OMOP_CDMv5.3_Field_Level.csv'
+)
+long_OMOP_CDMv5.3_Concept_Level <- test_path(
+  'inst',
+  'long_OMOP_CDMv5.3_Concept_Level.csv'
+)

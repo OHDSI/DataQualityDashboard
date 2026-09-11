@@ -70,5 +70,12 @@ rmarkdown::render("vignettes/SqlOnly.Rmd",
                                           number_sections = TRUE))
 unlink("inst/doc/SqlOnly.tex")
 
+rmarkdown::render("vignettes/DqdForExtensionTables.rmd",
+                  output_file = "../inst/doc/DqdForExtensionTables.pdf",
+                  rmarkdown::pdf_document(latex_engine = "pdflatex",
+                                          toc = TRUE,
+                                          number_sections = TRUE))
+unlink("inst/doc/DqdForExtensionTables.tex")
+
 pkgdown::build_site()
 OhdsiRTools::fixHadesLogo()

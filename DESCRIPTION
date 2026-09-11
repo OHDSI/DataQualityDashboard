@@ -36,7 +36,8 @@ Imports:
     stringr,
     rlang,
     tidyselect,
-    readr
+    readr,
+    tidyr
 Suggests:
     testthat,
     knitr,
@@ -47,5 +48,5 @@ Suggests:
     Eunomia (>= 2.0.0),
     R.utils,
     devtools
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Encoding: UTF-8

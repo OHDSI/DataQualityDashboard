@@ -1,0 +1,133 @@
+---
+title: "Running DQD on Extension Tables"
+author: "Maxim Moinat"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    number_sections: true
+    toc: true
+  html_document:
+    number_sections: true
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Running DQD on Extension Tables}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::knitr}
+---
+
+## Introduction
+When you extend your OMOP CDM with custom tables and want to run DQD, then you need to extend the thresholds file.
+A typical use case if you use the extension tables as proposed by the Imaging or Waveform Working Groups. 
+With a few exceptions, the 20+ checks in the Data Quality Dashboard are generic and could be applied to extension tables.
+
+However, the threshold file is not well suited for editing and maintenance in the current wide format.
+
+Sincd DQD v2.x, `executeDqChecks` can also take a long-format threshold files for the extension tables and fields, pivots them to wide-format, and then runs the DQD using those thresholds.
+This allows users to maintain their threshold files in a more user-friendly format and run the DQD on their extensions without needing to modify the package source code.
+
+## Usage
+The format for each threshold file are given below. See also [](extras/thresholdWideToLong.R) for a script that transforms existing wide-format thresholds to long-format. For testing, the v5.3 thresholds have been transformed to a long format, see the folder [](tests/testthat/inst).
+
+### Table level long format
+
+| Field        | Description                             | Example1 | Example2                  |
+| ------------ | --------------------------------------- | -------- | ------------------------- |
+| cdmTableName | Table to check                          | person   | person                    |
+| checkName    | Name of the check                       | cdmTable | measurePersonCompleteness |
+| Threshold    | Threshold as percentage                 |          | 5                         |
+| Notes        | Optional note to be displayed in viewer |          |                           |
+
+### Field level long format
+
+| Field          | Description                                         | Example1          | Example2          |
+| -------------- | --------------------------------------------------- | ----------------- | ----------------- |
+| cdmTableName   | Table to check                                      | person            | person            |
+| cdmFieldName   | Field to check                                      | gender_concept_id | year_of_birth     |
+| checkName      | Name of the check                                   | isForeignKey      | plausibleValueLow |
+| Threshold      | Threshold as percentage                             | 0                 | 1                 |
+| checkParameter | e.g. the field type or value limit to check against |                   | 1850              |
+| yTableName     | e.g. table                                          | concept           |                   |
+| yFieldName     | e.g. field                                          | concept_id        |                   |
+| Notes          | Optional note to be displayed in viewer             |                   |                   |
+
+### Concept level long format
+
+| Field           | Description                             | Example1                      | Example2             |
+| --------------- | --------------------------------------- | ----------------------------- | -------------------- |
+| cdmTableName    | Table to check                          | measurement                   | condition_occurrence |
+| cdmFieldName    | Field to check                          | measurement_concept_id        | condition_concept_id |
+| conceptId       | Concept to check                        | 37397989                      | 42709954             |
+| conceptName     | Concept name                            | Serum total cholesterol level | Phimosis             |
+| unitConceptId   | Unit to check                           | 8753                          |                      |
+| unitConceptName | Unit name                               | millimole per liter           |                      |
+| checkName       | Name of the check                       | plausibleValueHigh            | plausibleGender      |
+| Threshold       | Threshold as percentage                 | 5                             | 5                    |
+| checkParameter  | e.g. value to check against             | 15                            | Male                 |
+| Notes           | Optional note to be displayed in viewer |                               |                      |
+
+
+## Example
+
+The minimal example below shows how the function and inputs work.
+In actual implementation it is adviced to edit the threshold files directly in csv.
+```{r eval=TRUE}
+# Sample table that we want to run DQD against, to add to Eunomia CDM.
+myTable <- data.frame(id = c(1,2,3,4,5,6), person_id = c(1,NA,1,NA,1,99999))
+
+# Two table-level checks
+tableLevel <- as.data.frame(
+  rbind(
+   c('tableName','checkName','threshold','notes')
+  ,c('myTable','cdmTable',NA,NA)
+  ,c('myTable','measurePersonCompleteness',0,NA)
+))
+
+# Seven table-levle checks (note cdmTable does not have to be explicitly set)
+fieldLevel <- as.data.frame(rbind(
+  c('tableName','fieldName','checkName','yTableName','yFieldName','threshold','notes')
+  ,c('myTable','id','cdmField','','',NA,NA)
+  ,c('myTable','person_id','cdmField','','',NA,NA)
+  ,c('myTable','id','measureValueCompleteness','','',0,NA)
+  ,c('myTable','person_id','measureValueCompleteness','','',5,NA)
+  ,c('myTable','id','isRequired','','',5,NA)
+  ,c('myTable','id','isPrimaryKey','','',5,NA)
+  ,c('myTable','person_id','isForeignKey','person','person_id',5,NA)
+))
+
+# Add 'custom' table to Eunomia
+connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
+con <- DatabaseConnector::connect(connectionDetailsEunomia)
+DBI::dbWriteTable(con, 'myTable', myTable)
+DBI::dbDisconnect(con)
+
+# Write thresholds to temporary files
+tableLevelLoc <- tempfile(fileext = 'csv')
+readr::write_csv(tableLevel, tableLevelLoc, col_names=FALSE)
+
+fieldLevelLoc <- tempfile(fileext = 'csv')
+readr::write_csv(fieldLevel, fieldLevelLoc, col_names=FALSE)
+
+results <- DataQualityDashboard::executeDqChecks(
+  connectionDetails = connectionDetailsEunomia,
+  cdmDatabaseSchema = 'main',
+  resultsDatabaseSchema = 'main',
+  cdmSourceName = 'Eunomia+',
+  outputFolder = tempdir(),
+  tableCheckThresholdLoc = tableLevelLoc,
+  fieldCheckThresholdLoc = fieldLevelLoc,
+  checkLevel = c('TABLE', 'FIELD'),
+  writeToTable = FALSE
+)
+
+results$CheckResults |>
+  dplyr::select(cdmTableName, cdmFieldName, checkName, numViolatedRows, pctViolatedRows, thresholdValue, failed) |>
+  DT::datatable()
+```
+
+
+## Implementation notes
+ - In contrast to the regular threshold files, you cannot specify in which schema each table can be found (CDM, VOCAB or COHORT).
+   All tables are expected in the `cdmDatabaseSchema`.
+ - The `cdmTable` check has to be made explicit by listing all tables with `cdmTable` check name. For field level thresholds, the `cdmField` can be specified but is also added implicitly if field has other check listed. Both the `cdmTable` and `cdmField` checks can be assigned a threshold value in the long format, but this is ignored.
+ - The processer checks if all tables in field-level are in table-level. And all fields in concept-level are in field-level file. If not, an error is thrown.
+ - For testing, the default thresholds were transformed to the long format using [`extras/thresholdWideToLong.R`](extras/thresholdWideToLong.R)

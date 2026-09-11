@@ -64,7 +64,17 @@
     tolower(checkDescription$checkLevel),
     checkDescription$evaluationFilter
   )
-  checks <- eval(parse(text = filterExpression))
+  checks <- tryCatch({
+    eval(parse(text = filterExpression))
+  }, error = function(e) {
+    NULL
+  })
+
+  # If check does not exist in threshold file, or is disabled for all checks.
+  if (is.null(checks) || nrow(checks) == 0) {
+    ParallelLogger::logWarn(sprintf("Evaluation resulted in no checks `%s`", filterExpression))
+    return(data.frame())
+  }
 
   if (length(cohortDefinitionId > 0)) {
     cohort <- TRUE
@@ -72,71 +82,66 @@
     cohort <- FALSE
   }
 
-  if (nrow(checks) > 0) {
-    dfs <- apply(X = checks, MARGIN = 1, function(check) {
-      columns <- lapply(names(check), function(c) {
-        setNames(check[c], c)
-      })
-
-      params <- c(
-        list(dbms = connectionDetails$dbms),
-        list(sqlFilename = checkDescription$sqlFile),
-        list(packageName = "DataQualityDashboard"),
-        list(warnOnMissingParameters = FALSE),
-        list(cdmDatabaseSchema = cdmDatabaseSchema),
-        list(cohortDatabaseSchema = cohortDatabaseSchema),
-        list(cohortTableName = cohortTableName),
-        list(cohortDefinitionId = cohortDefinitionId),
-        list(vocabDatabaseSchema = vocabDatabaseSchema),
-        list(cohort = cohort),
-        unlist(columns, recursive = FALSE)
-      )
-
-      sql <- do.call(SqlRender::loadRenderTranslateSql, params)
-
-      if (sqlOnly && sqlOnlyIncrementalInsert) {
-        checkQuery <- .createSqlOnlyQueries(
-          params,
-          check,
-          tableChecks,
-          fieldChecks,
-          conceptChecks,
-          sql,
-          connectionDetails,
-          checkDescription
-        )
-        data.frame(query = checkQuery)
-      } else if (sqlOnly) {
-        write(x = sql, file = file.path(
-          outputFolder,
-          sprintf("%s.sql", checkDescription$checkName)
-        ), append = TRUE)
-        data.frame()
-      } else {
-        .processCheck(
-          connection = connection,
-          connectionDetails = connectionDetails,
-          check = check,
-          checkDescription = checkDescription,
-          sql = sql,
-          outputFolder = outputFolder
-        )
-      }
+  dfs <- apply(X = checks, MARGIN = 1, function(check) {
+    columns <- lapply(names(check), function(c) {
+      setNames(check[c], c)
     })
 
-    dfs <- do.call(rbind, dfs)
+    params <- c(
+      list(dbms = connectionDetails$dbms),
+      list(sqlFilename = checkDescription$sqlFile),
+      list(packageName = "DataQualityDashboard"),
+      list(warnOnMissingParameters = FALSE),
+      list(cdmDatabaseSchema = cdmDatabaseSchema),
+      list(cohortDatabaseSchema = cohortDatabaseSchema),
+      list(cohortTableName = cohortTableName),
+      list(cohortDefinitionId = cohortDefinitionId),
+      list(vocabDatabaseSchema = vocabDatabaseSchema),
+      list(cohort = cohort),
+      unlist(columns, recursive = FALSE)
+    )
+
+    sql <- do.call(SqlRender::loadRenderTranslateSql, params)
 
     if (sqlOnly && sqlOnlyIncrementalInsert) {
-      sqlToUnion <- dfs$query
-      if (length(sqlToUnion) > 0) {
-        .writeSqlOnlyQueries(sqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
-        return(NULL)
-      }
+      checkQuery <- .createSqlOnlyQueries(
+        params,
+        check,
+        tableChecks,
+        fieldChecks,
+        conceptChecks,
+        sql,
+        connectionDetails,
+        checkDescription
+      )
+      data.frame(query = checkQuery)
+    } else if (sqlOnly) {
+      write(x = sql, file = file.path(
+        outputFolder,
+        sprintf("%s.sql", checkDescription$checkName)
+      ), append = TRUE)
+      data.frame()
     } else {
-      return(dfs)
+      .processCheck(
+        connection = connection,
+        connectionDetails = connectionDetails,
+        check = check,
+        checkDescription = checkDescription,
+        sql = sql,
+        outputFolder = outputFolder
+      )
+    }
+  })
+
+  dfs <- do.call(rbind, dfs)
+
+  if (sqlOnly && sqlOnlyIncrementalInsert) {
+    sqlToUnion <- dfs$query
+    if (length(sqlToUnion) > 0) {
+      .writeSqlOnlyQueries(sqlToUnion, sqlOnlyUnionCount, resultsDatabaseSchema, writeTableName, connectionDetails$dbms, outputFolder, checkDescription)
+      return(NULL)
     }
   } else {
-    ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
-    return(data.frame())
+    return(dfs)
   }
 }
