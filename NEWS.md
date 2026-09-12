@@ -1,28 +1,19 @@
 # DataQualityDashboard (unreleased)
-This release adds support for OMOP CDM v5.5, consolidates the concept level threshold files, and refreshes the CDM documentation columns in the threshold files.
+This release adds support for OMOP CDM v5.5, consolidates the concept level threshold and check description files, and refreshes the CDM documentation columns in the threshold files.
 
 ### CDM v5.5 support
 
-`cdmVersion = "5.5"` is now accepted, backed by new `OMOP_CDMv5.5_Table_Level.csv`, `OMOP_CDMv5.5_Field_Level.csv`, and `OMOP_CDMv5.5_Check_Descriptions.csv` threshold files. The v5.5 files are a superset of the v5.4 files, covering the 24 fields and 3 tables that CDM v5.5 adds:
+`cdmVersion = "5.5"` is now accepted, backed by new `OMOP_CDMv5.5_Table_Level.csv`, `OMOP_CDMv5.5_Field_Level.csv` threshold files. The v5.5 files are a superset of the v5.4 files, covering [the 24 fields and 3 tables that CDM v5.5 adds](https://ohdsi.github.io/CommonDataModel/cdm55Changes.html).
 
-- New fields on existing tables: `MEASUREMENT.value_as_source_concept_id`, `OBSERVATION.value_as_source_concept_id`, `OBSERVATION.unit_source_concept_id`, `OBSERVATION.value_as_date`, `SPECIMEN.visit_occurrence_id`, `SPECIMEN.visit_detail_id`, and `CDM_SOURCE.cdm_release_identifier`
-- New vocabulary tables `PACK_CONTENT`, `CONCEPT_METADATA`, and `CONCEPT_RELATIONSHIP_METADATA`, which have been **added to the default `tablesToExclude`** alongside the other vocabulary tables. Pass your own `tablesToExclude` to run checks on them
-
-Aside from these additions, the v5.5 files carry over the v5.4 thresholds unchanged.
-
-Note that `OBSERVATION.value_as_date` records an observation *value* rather than an event date, so the temporal plausibility checks (`plausibleAfterBirth`, `plausibleBeforeDeath`, `plausibleValueLow`/`High`) are disabled for it by default to avoid false positives on legitimately out-of-lifespan values.
+Note that `observation.value_as_date` records an observation *value* rather than an event date, so the temporal plausibility checks (`plausibleAfterBirth`, `plausibleBeforeDeath`, `plausibleValueLow`/`High`) are disabled for it by default to avoid false positives on legitimately out-of-lifespan values.
 
 ### Refreshed CDM documentation columns
 
-The CDM documentation columns in the v5.3, v5.4, and v5.5 threshold files have been updated to match the current [CommonDataModel](https://github.com/OHDSI/CommonDataModel) specification: `userGuidance` and `etlConventions` in both the table and field level files, plus `tableDescription` in the table level files. These columns are documentation only and do not affect which checks run or how they are evaluated. The v5.2 files are unchanged, as CDM v5.2 is no longer published in the CommonDataModel repository.
+The table/field `userGuidance` and `etlConventions` columns in the v5.3 and v5.4 threshold files have been updated to match the current [CommonDataModel](https://github.com/OHDSI/CommonDataModel) specification.
 
-### Concept level threshold files
+### Consolidated concept level threshold file
 
-**The v5.2, v5.3, and v5.4 concept level threshold files have been replaced by a single file, `OMOP_CDM_Concept_Level.csv`.** Concept level thresholds do not vary by CDM version, and the three files had drifted apart unintentionally. If you pass `conceptCheckThresholdLoc` you are unaffected; if you rely on the default file, note the following changes:
-
-- v5.4 results are unchanged; the consolidated file is identical to the previous v5.4 file
-- v5.2 gains 9 `OBSERVATION.OBSERVATION_CONCEPT_ID` cholesterol and creatinine `plausibleValueLow`/`plausibleValueHigh` checks, which were present for v5.3 and v5.4 but had been dropped from the v5.2 file in error
-- For v5.3, unit concepts 8784 and 8785 have been removed from `plausibleUnitConceptIds` for concept 3019550 (Sodium [Moles/volume] in Serum or Plasma). These are cell count units and are not plausible for a molar concentration measurement; they had been added to the v5.3 file in error and were never present in the v5.2 or v5.4 files
+The v5.2, v5.3, and v5.4 concept level threshold files have been replaced by a single file, `OMOP_CDM_Concept_Level.csv`. Concept level thresholds do not vary by CDM version, and the three files had drifted apart unintentionally. In addition, the concept-level file has been cleaned up, removing an specified checks that were not executed.
 
 # DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
 This release contains fixes to testthat to comply with CRAN policies.
