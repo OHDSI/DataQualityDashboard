@@ -35,7 +35,7 @@ The control files are located in the R package in the inst/csv folder and can al
 
 ![Figure 1: Field Level Control File Example](images/fieldLevelFile.png)
 
-- **OMOP_CDM_Concept_Level.csv**: This file has a list of all concepts and any checks to be performed on that concept. Concept level thresholds do not vary by CDM version, so a single file is shared across all supported versions. For example, there are checks that evaluate biologically plausible ranges for measurement values, like [plausibleValueLow](https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#plausiblevaluelow-1). If you would like to change the failure thresholds for any of these checks copy this file to a location the R instance can access.
+- **OMOP_CDM_Concept_Level.csv**: This file has a list of all concepts and any checks to be performed on that concept. Concept level thresholds do not vary by CDM version, so a single file is shared across all supported versions. For example, there are checks that evaluate plausible units for measurements and plausible gender for conditions. If you would like to change the failure thresholds for any of these checks copy this file to a location the R instance can access.
 
 ### Step 2: Turn On/Off Checks and Change Thresholds
 
