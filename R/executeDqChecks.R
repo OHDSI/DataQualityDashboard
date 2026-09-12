@@ -41,8 +41,9 @@
 #'                                  with the fields cohort_definition_id and subject_id.
 #' @param cohortDatabaseSchema      The schema where the cohort table is located.
 #' @param cohortTableName           The name of the cohort table. Defaults to `cohort`.
-#' @param tablesToExclude           (OPTIONAL) Choose which CDM tables to exclude from the execution.
-#' @param cdmVersion                The CDM version to target for the data source. Options are "5.2", "5.3", or "5.4". By default, "5.3" is used.
+#' @param tablesToExclude           (OPTIONAL) Choose which CDM tables to exclude from the execution. By default the vocabulary tables are excluded, including the
+#'                                  CONCEPT_METADATA, CONCEPT_RELATIONSHIP_METADATA, and PACK_CONTENT tables added in CDM v5.5.
+#' @param cdmVersion                The CDM version to target for the data source. Options are "5.2", "5.3", "5.4", or "5.5". By default, "5.3" is used.
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
@@ -82,7 +83,10 @@ executeDqChecks <- function(connectionDetails,
                             cohortDefinitionId = c(),
                             cohortDatabaseSchema = resultsDatabaseSchema,
                             cohortTableName = "cohort",
-                            tablesToExclude = c("CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN"),
+                            tablesToExclude = c(
+                              "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN",
+                              "PACK_CONTENT", "CONCEPT_METADATA", "CONCEPT_RELATIONSHIP_METADATA"
+                            ),
                             cdmVersion = "5.3",
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
@@ -93,7 +97,7 @@ executeDqChecks <- function(connectionDetails,
   }
 
   if (!str_detect(cdmVersion, regex(acceptedCdmRegex))) {
-    stop("cdmVersion must contain a version of the form '5.X' where X is an integer between 2 and 4 inclusive.")
+    stop("cdmVersion must contain a version of the form '5.X' where X is an integer between 2 and 5 inclusive.")
   }
 
   if (sqlOnlyIncrementalInsert == TRUE && sqlOnly == FALSE) {
@@ -218,7 +222,7 @@ executeDqChecks <- function(connectionDetails,
 
   conceptChecks <- .readThresholdFile(
     checkThresholdLoc = conceptCheckThresholdLoc,
-    defaultLoc = sprintf("OMOP_CDMv%s_Concept_Level.csv", cdmVersion)
+    defaultLoc = "OMOP_CDM_Concept_Level.csv"
   )
   # ensure we use only checks that are intended to be run -----------------------------------------
 
