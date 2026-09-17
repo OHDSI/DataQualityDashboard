@@ -13,7 +13,7 @@ The table/field `userGuidance` and `etlConventions` columns in the v5.3 and v5.4
 
 ### Consolidated concept level threshold file
 
-The v5.2, v5.3, and v5.4 concept level threshold files have been replaced by a single file, `OMOP_CDM_Concept_Level.csv`. Concept level thresholds do not vary by CDM version, and the three files had drifted apart unintentionally. In addition, the concept-level file has been cleaned up, removing an specified checks that were not executed.
+The v5.2, v5.3, and v5.4 concept level threshold files have been replaced by a single file, `OMOP_CDM_Concept_Level.csv`. Concept level thresholds do not vary by CDM version, and the three files had drifted apart unintentionally. In addition, the concept-level file has been cleaned up, removing columns for the following unused concept-level checks: plausibleValueLow, plausibleValueHigh, validPrevalenceLow, validPrevalenceHigh and isTemporallyConstant.
 
 # DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
 This release contains fixes to testthat to comply with CRAN policies.
