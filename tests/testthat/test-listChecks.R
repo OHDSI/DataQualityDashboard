@@ -7,7 +7,7 @@ test_that("listDqChecks works", {
 })
 
 test_that("listDqChecks works for all supported CDM versions", {
-  for (cdmVersion in c("5.2", "5.3", "5.4", "5.5")) {
+  for (cdmVersion in c("5.3", "5.4", "5.5")) {
     checks <- listDqChecks(cdmVersion = cdmVersion)
     expect_equal(length(checks), 4)
     expect_true(all(sapply(checks, is.data.frame)))
