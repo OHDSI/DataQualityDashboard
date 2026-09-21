@@ -244,7 +244,17 @@ executeDqChecks <- function(connectionDetails,
     TRUE ~ cdmDatabaseSchema
   ))
 
-  fieldChecks <- merge(x = fieldChecks, y = tableChecks[, c("cdmTableName", "schema")], by = "cdmTableName", all.x = TRUE)
+  fieldChecks <- merge(x = fieldChecks, y = tableChecks[, c("cdmTableName", "schema", "measurePersonCompleteness")], by = "cdmTableName", all.x = TRUE)
+
+  if (!'runForCohort' %in% names(fieldChecks)) {
+    # If no runForCohort specified, take value from measurePersonCompleteness.
+    # This indicates that the table contains a person_id that the cohort table can be joined on.
+    fieldChecks$runForCohort <- ifelse(
+      fieldChecks$measurePersonCompleteness == 'Yes' | tolower(fieldChecks$cdmTableName) == 'person',
+      'Yes',
+      'No'
+    )
+  }
 
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |
