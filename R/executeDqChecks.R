@@ -44,9 +44,12 @@
 #' @param tablesToExclude           (OPTIONAL) Choose which CDM tables to exclude from the execution.
 #' @param cdmVersion                The CDM version to target for the data source. Options are "5.2", "5.3", or "5.4". By default, "5.3" is used.
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
+#'                                  Supports both original wide, 'by-table', and the long, 'by-check', threshold table.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
+#'                                  Supports both original wide, 'by-field', and the long, 'by-check', threshold table.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
-#'
+#'                                  Supports both original wide, 'by-concept', and the long, 'by-check', threshold table.
+#' 
 #' @return A list object of results
 #'
 #' @importFrom magrittr %>%
@@ -202,7 +205,8 @@ executeDqChecks <- function(connectionDetails,
       "csv",
       sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion),
       package = "DataQualityDashboard"
-    )
+    ),
+    show_col_types = FALSE
   )
   checkDescriptionsDf <- as.data.frame(checkDescriptionsDf)
 
@@ -240,7 +244,17 @@ executeDqChecks <- function(connectionDetails,
     TRUE ~ cdmDatabaseSchema
   ))
 
-  fieldChecks <- merge(x = fieldChecks, y = tableChecks[, c("cdmTableName", "schema")], by = "cdmTableName", all.x = TRUE)
+  fieldChecks <- merge(x = fieldChecks, y = tableChecks[, c("cdmTableName", "schema", "measurePersonCompleteness")], by = "cdmTableName", all.x = TRUE)
+
+  if (!'runForCohort' %in% names(fieldChecks)) {
+    # If no runForCohort specified, take value from measurePersonCompleteness.
+    # This indicates that the table contains a person_id that the cohort table can be joined on.
+    fieldChecks$runForCohort <- ifelse(
+      fieldChecks$measurePersonCompleteness == 'Yes' | tolower(fieldChecks$cdmTableName) == 'person',
+      'Yes',
+      'No'
+    )
+  }
 
   checksToInclude <- checkDescriptionsDf$checkName[sapply(checkDescriptionsDf$checkName, function(check) {
     !is.null(eval(parse(text = sprintf("tableChecks$%s", check)))) |
