@@ -1,3 +1,9 @@
+# DataQualityDashboard (development version)
+
+### Enhancements
+
+- Added a `futureDate` parameter to `executeDqChecks`. `plausibleValueHigh` check thresholds no longer reference `GETDATE()`; they now use a fixed, data-driven reference date (the maximum `observation_period_end_date` in the data by default, or a user-supplied date), so repeated runs over the same data return identical results ([#277](https://github.com/OHDSI/DataQualityDashboard/issues/277)). In `sqlOnly` mode the legacy `GETDATE()` behavior is kept unless `futureDate` is specified.
+
 # DataQualityDashboard 2.9.0 <small class="text-muted">2026-10-05</small>
 This release adds support for OMOP CDM v5.5 and refreshes the CDM documentation columns in the threshold files.
 
@@ -15,7 +21,6 @@ Note that `OBSERVATION.value_as_date` records an observation *value* rather than
 ### Refreshed CDM documentation columns
 
 The CDM documentation columns in the v5.3, v5.4, and v5.5 threshold files have been updated to match the current [CommonDataModel](https://github.com/OHDSI/CommonDataModel) specification: `userGuidance` and `etlConventions` in both the table and field level files, plus `tableDescription` in the table level files. These columns are documentation only and do not affect which checks run or how they are evaluated. The v5.2 files are unchanged, as CDM v5.2 is no longer published in the CommonDataModel repository.
-
 # DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
 This release contains fixes to testthat to comply with CRAN policies.
 
