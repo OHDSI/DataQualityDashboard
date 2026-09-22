@@ -32,7 +32,8 @@ executeDqChecks(
   cdmVersion = "5.3",
   tableCheckThresholdLoc = "default",
   fieldCheckThresholdLoc = "default",
-  conceptCheckThresholdLoc = "default"
+  conceptCheckThresholdLoc = "default",
+  futureDate = NULL
 )
 }
 \arguments{
@@ -90,6 +91,8 @@ with the fields cohort_definition_id and subject_id.}
 \item{fieldCheckThresholdLoc}{The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.}
 
 \item{conceptCheckThresholdLoc}{The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.}
+
+\item{futureDate}{(OPTIONAL) Reference "future" date ('YYYY-MM-DD') for plausibleValueHigh checks. If not specified, the maximum observation_period_end_date in the data is used, making results deterministic across runs (see issue #277). In sqlOnly mode the legacy GETDATE() behavior is kept unless futureDate is specified.}
 }
 \value{
 A list object of results
