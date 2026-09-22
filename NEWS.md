@@ -1,3 +1,9 @@
+# DataQualityDashboard (development version)
+
+### Enhancements
+
+- Added a `futureDate` parameter to `executeDqChecks`. `plausibleValueHigh` check thresholds no longer reference `GETDATE()`; they now use a fixed, data-driven reference date (the maximum `observation_period_end_date` in the data by default, or a user-supplied date), so repeated runs over the same data return identical results ([#277](https://github.com/OHDSI/DataQualityDashboard/issues/277)). In `sqlOnly` mode the legacy `GETDATE()` behavior is kept unless `futureDate` is specified.
+
 # DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
 This release contains fixes to testthat to comply with CRAN policies.
 
