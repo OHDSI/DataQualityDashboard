@@ -453,7 +453,7 @@ test_that("Check invalid cdm version", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  for (badVersion in c("5.2.3.1", "5.6", "5.1")) {
+  for (badVersion in c("5.2.3.1", "5.6", "5.1", "5.2")) {
     expect_error(
       executeDqChecks(
         connectionDetails = connectionDetailsEunomia,

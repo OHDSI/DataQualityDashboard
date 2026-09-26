@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-acceptedCdmRegex <- "^5.[2-5]$"
+acceptedCdmRegex <- "^5.[3-5]$"
