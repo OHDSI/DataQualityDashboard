@@ -237,12 +237,12 @@ In that location there should be four files per CDM version the DQD
 supports. These are:</p>
 <ul>
 <li>
-<strong>OMOP_CDMvx.x.x_Check_Descriptions.csv</strong>: This file
+<strong>OMOP_CDM_Check_Descriptions.csv</strong>: This file
 contains the check types, their descriptions, and which sql file is
 associated with each. It does not contain any failure thresholds and
 should not need to be changed.</li>
 <li>
-<strong>OMOP_CDMvx.x.x_Table_Level.csv</strong>: This file has a
+<strong>OMOP_CDMvx.x_Table_Level.csv</strong>: This file has a
 list of all tables in the CDM version and any checks to be performed at
 this level as well as the failure thresholds associated. Right now only
 the checktype <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html#measurepersoncompleteness">measurePersonCompleteness</a>
@@ -250,7 +250,7 @@ is considered a table level check. If you would like to change the
 failure thresholds for the measurePersonCompleteness check copy this
 file to a location the R instance can access.</li>
 <li>
-<strong>OMOP_CDMvx.x.x_Field_Level.csv</strong>: This file has a
+<strong>OMOP_CDMvx.x_Field_Level.csv</strong>: This file has a
 list of all tables and fields in the CDM version and any checks to be
 performed at this level as well as the failure thresholds associated.
 The majority of the <a href="https://ohdsi.github.io/DataQualityDashboard/articles/CheckTypeDescriptions.html">check

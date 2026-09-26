@@ -34,12 +34,14 @@ listDqChecks <- function(cdmVersion = "5.3", tableCheckThresholdLoc = "default",
   readr::local_edition(1)
 
   dqChecks <- {}
-  dqChecks$checkDescriptions <-
-    read_csv(system.file(
+  dqChecks$checkDescriptions <- read_csv(
+    system.file(
       "csv",
-      sprintf("OMOP_CDMv%s_Check_Descriptions.csv", cdmVersion),
+      "OMOP_CDM_Check_Descriptions.csv",
       package = "DataQualityDashboard"
-    ))
+    ),
+    show_col_types = FALSE
+  )
 
   dqChecks$tableChecks <- .readThresholdFile(
     checkThresholdLoc = tableCheckThresholdLoc,

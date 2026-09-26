@@ -1,5 +1,5 @@
 # Read check descriptions into a dataframe
-checkDescriptions <- read.csv("inst/csv/OMOP_CDMv5.4_Check_Descriptions.csv")
+checkDescriptions <- read.csv("inst/csv/OMOP_CDM_Check_Descriptions.csv")
 
 # Template
 templateText <- paste(readLines('extras/checkDescriptionTemplate.Rmd', encoding = 'UTF-8'), collapse = "\n")
