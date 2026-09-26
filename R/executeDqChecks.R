@@ -84,7 +84,7 @@ executeDqChecks <- function(connectionDetails,
                             cohortDatabaseSchema = resultsDatabaseSchema,
                             cohortTableName = "cohort",
                             tablesToExclude = c(
-                              "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN",
+                              "CONCEPT", "VOCABULARY", "CONCEPT_ANCESTOR", "CONCEPT_RELATIONSHIP", "CONCEPT_CLASS", "CONCEPT_SYNONYM", "RELATIONSHIP", "DOMAIN", "DRUG_STRENGTH",
                               "PACK_CONTENT", "CONCEPT_METADATA", "CONCEPT_RELATIONSHIP_METADATA"
                             ),
                             cdmVersion = "5.3",
