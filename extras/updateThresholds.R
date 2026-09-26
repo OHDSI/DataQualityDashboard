@@ -43,7 +43,7 @@ conceptChecks <- read.csv("C:/Users/mblacke/OneDrive - JNJ/DQD_Thresholds/MDCD/O
                         stringsAsFactors = FALSE, na.strings = c(" ",""))
 
 # if (conceptCheckThresholdLoc == "default"){ 
-#   conceptChecks <- read.csv(system.file("csv", sprintf("OMOP_CDMv%s_Concept_Level.csv", "5.3.1"),
+#   conceptChecks <- read.csv(system.file("csv", "OMOP_CDM_Concept_Level.csv",
 #                                         package = "DataQualityDashboard"), 
 #                             stringsAsFactors = FALSE, na.strings = c(" ",""))} else {conceptChecks <- read.csv(conceptCheckThresholdLoc, 
 #                                                                                                                stringsAsFactors = FALSE, na.strings = c(" ",""))}
