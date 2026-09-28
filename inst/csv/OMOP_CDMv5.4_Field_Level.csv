@@ -103,7 +103,7 @@ DEATH,cause_source_value,,,,varchar(50),0,,,,,,,,,,,,,,,,,,,Yes,100,,,,,,,,Yes,1
 DEATH,death_date,Yes,0,,date,0,,,,,,,,,,,,,,,,,,,Yes,0,,,,,,,,,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,PERSON,BIRTH_DATETIME,1,,,,,,,,,Yes,1,,,,,,,
 DEATH,death_datetime,,,,datetime,0,,,,,,,,,,,,,,,,,,,Yes,100,,,,,,,,,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,PERSON,BIRTH_DATETIME,1,,,,,,,,,Yes,1,,,,,,,
 DEATH,death_type_concept_id,,,,integer,0,,,,,Yes,0,,CONCEPT,CONCEPT_ID,Type Concept,0,,,,,Yes,0,,Yes,100,,Yes,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-DEATH,person_id,Yes,0,,integer,0,,,,,Yes,0,,PERSON,PERSON_ID,,,,,,,,,,Yes,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+DEATH,person_id,Yes,0,,integer,0,,Yes,0,,Yes,0,,PERSON,PERSON_ID,,,,,,,,,,Yes,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 DEVICE_EXPOSURE,device_concept_id,Yes,0,,integer,0,,,,,Yes,0,,CONCEPT,CONCEPT_ID,Device,0,,,,,Yes,0,,Yes,0,,Yes,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 DEVICE_EXPOSURE,device_exposure_end_date,,,,date,0,,,,,,,,,,,,,,,,,,,Yes,100,,,,,,,,,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,DEVICE_EXPOSURE,DEVICE_EXPOSURE_START_DATE,1,,Yes,1,,,,,,Yes,1,,Yes,1,,,,
 DEVICE_EXPOSURE,device_exposure_end_datetime,,,,datetime,0,,,,,,,,,,,,,,,,,,,Yes,100,,,,,,,,,,,,'19500101',1,,"DATEADD(dd,1,GETDATE())",1,,Yes,DEVICE_EXPOSURE,DEVICE_EXPOSURE_START_DATETIME,1,,Yes,1,,,,,,Yes,1,,Yes,1,,,,
