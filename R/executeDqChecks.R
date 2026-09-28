@@ -46,6 +46,7 @@
 #' @param tableCheckThresholdLoc    The location of the threshold file for evaluating the table checks. If not specified the default thresholds will be applied.
 #' @param fieldCheckThresholdLoc    The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.
 #' @param conceptCheckThresholdLoc  The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.
+#' @param futureDate                (OPTIONAL) Reference "future" date ('YYYY-MM-DD') for plausibleValueHigh checks. If not specified, cdm_source.source_release_date is used, making results deterministic across runs (see issue #277). If source_release_date is missing, the affected checks are not executed and are marked not-applicable (never the current date). In sqlOnly mode the legacy GETDATE() behavior is kept unless futureDate is specified.
 #'
 #' @return A list object of results
 #'
@@ -86,7 +87,8 @@ executeDqChecks <- function(connectionDetails,
                             cdmVersion = "5.3",
                             tableCheckThresholdLoc = "default",
                             fieldCheckThresholdLoc = "default",
-                            conceptCheckThresholdLoc = "default") {
+                            conceptCheckThresholdLoc = "default",
+                            futureDate = NULL) {
   # Check input -------------------------------------------------------------------------------------------------------------------
   if (!any(class(connectionDetails) %in% c("connectionDetails", "ConnectionDetails"))) {
     stop("connectionDetails must be an object of class 'connectionDetails' or 'ConnectionDetails'.")
@@ -153,6 +155,30 @@ executeDqChecks <- function(connectionDetails,
       cdmSourceName = cdmSourceName
     )
   }
+
+  # Resolve the reference "future" date for plausibleValueHigh checks (#277) ----
+  # Replaces the non-deterministic GETDATE() thresholds in the field-level control
+  # files with a fixed date so repeated runs over the same data return identical
+  # results. Default is cdm_source.source_release_date (per maintainer feedback).
+  # If the release date is missing, futureDate stays NULL: the checks are then
+  # skipped and marked not-applicable downstream (.runCheck) rather than falling
+  # back to the current date, which would reintroduce run-to-run variance.
+  if (!is.null(futureDate)) {
+    futureDate <- tryCatch(as.Date(futureDate), error = function(e) as.Date(NA))
+    if (is.na(futureDate)) {
+      stop("futureDate must be a valid date, e.g. '2024-01-31'.")
+    }
+    futureDate <- format(futureDate, "%Y-%m-%d")
+  } else if (!sqlOnly) {
+    # `connection` is live here (opened in the metadata block above)
+    futureDate <- .getSourceReleaseDate(
+      connection = connection,
+      connectionDetails = connectionDetails,
+      cdmDatabaseSchema = cdmDatabaseSchema
+    )
+  }
+  # NB: with futureDate = NULL in sqlOnly mode the legacy GETDATE() behavior is
+  # kept (see .runCheck); sqlOnly only generates SQL, it never produces results.
 
   # Setup output folder ------------------------------------------------------------------------------------------------------------
   if (!dir.exists(outputFolder)) {
@@ -309,6 +335,7 @@ executeDqChecks <- function(connectionDetails,
     sqlOnlyUnionCount,
     sqlOnlyIncrementalInsert,
     sqlOnly,
+    futureDate,
     progressBar = TRUE
   )
   ParallelLogger::stopCluster(cluster = cluster)
