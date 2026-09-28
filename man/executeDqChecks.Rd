@@ -92,7 +92,7 @@ with the fields cohort_definition_id and subject_id.}
 
 \item{conceptCheckThresholdLoc}{The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.}
 
-\item{futureDate}{(OPTIONAL) Reference "future" date ('YYYY-MM-DD') for plausibleValueHigh checks. If not specified, the maximum observation_period_end_date in the data is used, making results deterministic across runs (see issue #277). In sqlOnly mode the legacy GETDATE() behavior is kept unless futureDate is specified.}
+\item{futureDate}{(OPTIONAL) Reference "future" date ('YYYY-MM-DD') for plausibleValueHigh checks. If not specified, cdm_source.source_release_date is used, making results deterministic across runs (see issue #277). If source_release_date is missing, the affected checks are not executed and are marked not-applicable (never the current date). In sqlOnly mode the legacy GETDATE() behavior is kept unless futureDate is specified.}
 }
 \value{
 A list object of results

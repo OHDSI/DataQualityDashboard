@@ -68,6 +68,9 @@
     warning = warning,
     error = error,
     checkId = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"]),
+    # Flags checks skipped because cdm_source.source_release_date is missing (#277);
+    # .calculateNotApplicableStatus() marks them not-applicable.
+    futureDateSkipped = FALSE,
     row.names = NULL, stringsAsFactors = FALSE
   )
 

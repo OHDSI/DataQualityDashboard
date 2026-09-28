@@ -42,3 +42,45 @@ test_that("field-level control files no longer reference GETDATE() in plausibleV
     expect_true(length(futureThresholds) > 0)
   }
 })
+
+test_that("future-date checks skipped for missing source_release_date are marked not-applicable (#277)", {
+  skipped <- data.frame(
+    checkName = "plausibleValueHigh",
+    cdmTableName = "OBSERVATION",
+    isError = 0,
+    tableIsMissing = FALSE,
+    fieldIsMissing = FALSE,
+    tableIsEmpty = FALSE,
+    fieldIsEmpty = FALSE,
+    conceptIsMissing = FALSE,
+    conceptAndUnitAreMissing = FALSE,
+    futureDateSkipped = TRUE
+  )
+  expect_equal(DataQualityDashboard:::.applyNotApplicable(skipped), 1)
+
+  # rows that were actually executed are unaffected by the new rule
+  executed <- skipped
+  executed$futureDateSkipped <- FALSE
+  expect_equal(DataQualityDashboard:::.applyNotApplicable(executed), 0)
+
+  # the rule is also safe on result rows predating the futureDateSkipped column
+  legacy <- executed[, names(executed) != "futureDateSkipped"]
+  expect_equal(DataQualityDashboard:::.applyNotApplicable(legacy), 0)
+})
+
+test_that(".recordFutureDateSkipped flags the result row and records no SQL", {
+  check <- c(cdmTableName = "OBSERVATION", cdmFieldName = "observation_date", conceptId = "", unitConceptId = "")
+  checkDescription <- list(
+    checkName = "plausibleValueHigh",
+    checkLevel = "FIELD",
+    checkDescription = "test",
+    sqlFile = "plausible_value_high.sql",
+    kahnCategory = "plausibility",
+    kahnSubcategory = "atemporal",
+    kahnContext = "verification"
+  )
+  result <- DataQualityDashboard:::.recordFutureDateSkipped(check = check, checkDescription = checkDescription)
+  expect_true(result$futureDateSkipped)
+  expect_true(is.na(result$queryText))
+  expect_false(is.na(result$warning))
+})

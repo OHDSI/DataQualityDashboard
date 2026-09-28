@@ -59,6 +59,13 @@
     }
   }
 
+  # Special rule for future-date checks skipped because
+  # cdm_source.source_release_date is missing (#277): never executed, always
+  # not-applicable
+  if (!is.null(x$futureDateSkipped) && isTRUE(x$futureDateSkipped)) {
+    return(1)
+  }
+
   # Special case: cdmTable should never be marked as NA, no matter what
   if (x$checkName == "cdmTable") {
     return(0)
@@ -229,6 +236,7 @@
         .data$notApplicable == 1,
         dplyr::case_when(
           !is.na(.data$notApplicableReason) ~ .data$notApplicableReason,
+          .data$futureDateSkipped ~ "cdm_source.source_release_date is missing; future-date check was not executed.",
           .data$tableIsMissing ~ sprintf("Table %s does not exist.", .data$cdmTableName),
           .data$fieldIsMissing ~ sprintf("Field %s.%s does not exist.", .data$cdmTableName, .data$cdmFieldName),
           .data$tableIsEmpty ~ sprintf("Table %s is empty.", .data$cdmTableName),
@@ -241,7 +249,7 @@
       failed = ifelse(.data$notApplicable == 1, 0, .data$failed),
       passed = ifelse(.data$failed == 0 & .data$isError == 0 & .data$notApplicable == 0, 1, 0)
     ) %>%
-    dplyr::select(-c("tableIsMissing", "fieldIsMissing", "tableIsEmpty", "fieldIsEmpty", "conceptIsMissing", "conceptAndUnitAreMissing"))
+    dplyr::select(-c("tableIsMissing", "fieldIsMissing", "tableIsEmpty", "fieldIsEmpty", "conceptIsMissing", "conceptAndUnitAreMissing", "futureDateSkipped"))
 
   return(checkResults)
 }
