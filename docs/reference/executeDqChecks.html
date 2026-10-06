@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.0</span>
       </span>
     </div>
 
@@ -193,7 +193,8 @@
 <span>  cohortDatabaseSchema <span class="op">=</span> <span class="va">resultsDatabaseSchema</span>,</span>
 <span>  cohortTableName <span class="op">=</span> <span class="st">"cohort"</span>,</span>
 <span>  tablesToExclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CONCEPT"</span>, <span class="st">"VOCABULARY"</span>, <span class="st">"CONCEPT_ANCESTOR"</span>,</span>
-<span>    <span class="st">"CONCEPT_RELATIONSHIP"</span>, <span class="st">"CONCEPT_CLASS"</span>, <span class="st">"CONCEPT_SYNONYM"</span>, <span class="st">"RELATIONSHIP"</span>, <span class="st">"DOMAIN"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"CONCEPT_RELATIONSHIP"</span>, <span class="st">"CONCEPT_CLASS"</span>, <span class="st">"CONCEPT_SYNONYM"</span>, <span class="st">"RELATIONSHIP"</span>, <span class="st">"DOMAIN"</span>,</span>
+<span>    <span class="st">"PACK_CONTENT"</span>, <span class="st">"CONCEPT_METADATA"</span>, <span class="st">"CONCEPT_RELATIONSHIP_METADATA"</span><span class="op">)</span>,</span>
 <span>  cdmVersion <span class="op">=</span> <span class="st">"5.3"</span>,</span>
 <span>  tableCheckThresholdLoc <span class="op">=</span> <span class="st">"default"</span>,</span>
 <span>  fieldCheckThresholdLoc <span class="op">=</span> <span class="st">"default"</span>,</span>
@@ -295,11 +296,12 @@ with the fields cohort_definition_id and subject_id.</p></dd>
 
 
 <dt id="arg-tablestoexclude">tablesToExclude<a class="anchor" aria-label="anchor" href="#arg-tablestoexclude"></a></dt>
-<dd><p>(OPTIONAL) Choose which CDM tables to exclude from the execution.</p></dd>
+<dd><p>(OPTIONAL) Choose which CDM tables to exclude from the execution. By default the vocabulary tables are excluded, including the
+CONCEPT_METADATA, CONCEPT_RELATIONSHIP_METADATA, and PACK_CONTENT tables added in CDM v5.5.</p></dd>
 
 
 <dt id="arg-cdmversion">cdmVersion<a class="anchor" aria-label="anchor" href="#arg-cdmversion"></a></dt>
-<dd><p>The CDM version to target for the data source. Options are "5.2", "5.3", or "5.4". By default, "5.3" is used.</p></dd>
+<dd><p>The CDM version to target for the data source. Options are "5.2", "5.3", "5.4", or "5.5". By default, "5.3" is used.</p></dd>
 
 
 <dt id="arg-tablecheckthresholdloc">tableCheckThresholdLoc<a class="anchor" aria-label="anchor" href="#arg-tablecheckthresholdloc"></a></dt>

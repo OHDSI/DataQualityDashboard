@@ -1,4 +1,4 @@
-# DataQualityDashboard (unreleased)
+# DataQualityDashboard 2.9.0 <small class="text-muted">2026-10-05</small>
 This release adds support for OMOP CDM v5.5 and refreshes the CDM documentation columns in the threshold files.
 
 ### CDM v5.5 support

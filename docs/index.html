@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.0</span>
       </span>
     </div>
 
@@ -197,7 +197,7 @@
 <div class="section level1">
 <h1 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h1>
-<p>This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.4, v5.3 and v5.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way.</p>
+<p>This package will run a series of data quality checks against an OMOP CDM instance (currently supports v5.5, v5.4, v5.3 and v5.2). It systematically runs the checks, evaluates the checks against some pre-specified threshold, and then communicates what was done in a transparent and easily understandable way.</p>
 </div>
 <div class="section level1">
 <h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -232,63 +232,63 @@
 <col width="33%">
 <col width="33%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th>cdmFieldName</th>
 <th>userGuidance</th>
 <th>etlConventions</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>cdm_source_name</td>
 <td>The name of the CDM instance.</td>
 <td>Descriptive name for the source data.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>cdm_source_abbreviation</td>
 <td>The abbreviation of the CDM instance.</td>
 <td>The abbreviation should consistent for different release from the same source.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>cdm_holder</td>
 <td>The holder of the CDM instance.</td>
 <td>The institution that controls access to the data.  If possible include contact information for who to contact to request access to the data.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>source_description</td>
 <td>The description of the CDM instance.</td>
 <td>Add notes, caveats, special characteristics about the source data that would not be assumed from the general descriptive name.  This description intended to help analysts determine if the data is suitable for the problem they are studying.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>source_documentation_reference</td>
 <td>Reference to where one can find documentation about the source data.</td>
 <td>Can include URLs, file name, source data experts contact information (if they agree to it)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>cdm_etl_reference</td>
 <td>Reference to where one can find documentation about the source to ETL into OMOP CDM.</td>
 <td>Assuming there is a document or files (such as Rabbit in the Hat) describing the ETL.  May be the location of the ETL source and documentation repository.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>source_release_date</td>
 <td>The release date of the source data.</td>
 <td>When the source data was made available for ETL’ing.  For sites doing incremental updates, the date the last increment made available.  This implies that for sites doing incremental updates the CDM Source table should be updated to reflect that changes were made to the CDM.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>cdm_release_date</td>
 <td>The release date of the CDM instance.</td>
 <td>When the source data was made available for general use.  For sites doing incremental updates, this implies that the CDM Source table should be updated to reflect that changes were made to the CDM.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>cdm_version</td>
 <td>Identifies the CDM version</td>
 <td>Enter the numeric portion of the version, e.g. 5.4</td>
 </tr>
-<tr class="even">
+<tr>
 <td>cdm_version_concept_id</td>
 <td>The Concept Id representing the version of the CDM.</td>
 <td>SELECT concept_id WHERE domain = Metadata and vocabulary_id = CDM and concept_code like %[numeric portion of the version]%</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>vocabulary_version</td>
 <td>The vocabulary version used in the ETL</td>
 <td>Obtained by SELECT vocabulary_version FROM vocabulary WHERE vocabulary_id = ‘None’</td>
@@ -306,7 +306,7 @@
 </h1>
 <p>Requires R (version 3.2.2 or higher). Requires <a href="https://github.com/OHDSI/DatabaseConnector" class="external-link">DatabaseConnector</a> (version 2.0.2 or higher).</p>
 <p>A variety of database platforms are supported, as documented <a href="https://ohdsi.github.io/Hades/supportedPlatforms.html" class="external-link">here</a>.</p>
-<p>Note that while data quality check threshold files are provided for OMOP CDM versions 5.2, 5.3, and 5.4, the package is currently only tested against versions 5.3 and 5.4.</p>
+<p>Note that while data quality check threshold files are provided for OMOP CDM versions 5.2, 5.3, 5.4, and 5.5, the package is currently only tested against versions 5.3 and 5.4.</p>
 </div>
 <div class="section level1">
 <h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>

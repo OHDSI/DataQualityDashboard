@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.0</span>
       </span>
     </div>
 
@@ -163,6 +163,24 @@
       <small>Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.9.0" id="dataqualitydashboard-290-2026-10-05">DataQualityDashboard 2.9.0 <small class="text-muted">2026-10-05</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-290-2026-10-05"></a></h2>
+<p>This release adds support for OMOP CDM v5.5 and refreshes the CDM documentation columns in the threshold files.</p>
+<div class="section level4">
+<h4 id="cdm-v55-support-2-9-0">CDM v5.5 support<a class="anchor" aria-label="anchor" href="#cdm-v55-support-2-9-0"></a></h4>
+<p><code>cdmVersion = "5.5"</code> is now accepted, backed by new <code>OMOP_CDMv5.5_Table_Level.csv</code>, <code>OMOP_CDMv5.5_Field_Level.csv</code>, <code>OMOP_CDMv5.5_Concept_Level.csv</code>, and <code>OMOP_CDMv5.5_Check_Descriptions.csv</code> threshold files. The v5.5 files are a superset of the v5.4 files, covering the 24 fields and 3 tables that CDM v5.5 adds:</p>
+<ul><li>New fields on existing tables: <code>MEASUREMENT.value_as_source_concept_id</code>, <code>OBSERVATION.value_as_source_concept_id</code>, <code>OBSERVATION.unit_source_concept_id</code>, <code>OBSERVATION.value_as_date</code>, <code>SPECIMEN.visit_occurrence_id</code>, <code>SPECIMEN.visit_detail_id</code>, and <code>CDM_SOURCE.cdm_release_identifier</code>
+</li>
+<li>New vocabulary tables <code>PACK_CONTENT</code>, <code>CONCEPT_METADATA</code>, and <code>CONCEPT_RELATIONSHIP_METADATA</code>, which have been <strong>added to the default <code>tablesToExclude</code></strong> alongside the other vocabulary tables. Pass your own <code>tablesToExclude</code> to run checks on them</li>
+</ul><p>Aside from these additions, the v5.5 files carry over the v5.4 thresholds unchanged.</p>
+<p>Note that <code>OBSERVATION.value_as_date</code> records an observation <em>value</em> rather than an event date, so the temporal plausibility checks (<code>plausibleAfterBirth</code>, <code>plausibleBeforeDeath</code>, <code>plausibleValueLow</code>/<code>High</code>) are disabled for it by default to avoid false positives on legitimately out-of-lifespan values.</p>
+</div>
+<div class="section level4">
+<h4 id="refreshed-cdm-documentation-columns-2-9-0">Refreshed CDM documentation columns<a class="anchor" aria-label="anchor" href="#refreshed-cdm-documentation-columns-2-9-0"></a></h4>
+<p>The CDM documentation columns in the v5.3, v5.4, and v5.5 threshold files have been updated to match the current <a href="https://github.com/OHDSI/CommonDataModel" class="external-link">CommonDataModel</a> specification: <code>userGuidance</code> and <code>etlConventions</code> in both the table and field level files, plus <code>tableDescription</code> in the table level files. These columns are documentation only and do not affect which checks run or how they are evaluated. The v5.2 files are unchanged, as CDM v5.2 is no longer published in the CommonDataModel repository.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.8.9" id="dataqualitydashboard-289-2026-05-17">DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
 <a class="anchor" aria-label="anchor" href="#dataqualitydashboard-289-2026-05-17"></a></h2>

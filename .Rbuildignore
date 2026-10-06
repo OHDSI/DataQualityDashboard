@@ -20,3 +20,4 @@ output/
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
 ^CLAUDE\.md$
+\.vscode
