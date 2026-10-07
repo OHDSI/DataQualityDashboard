@@ -41,6 +41,7 @@ FROM (
                 AND c.cohort_definition_id = @cohortDefinitionId
         }
         WHERE co.concept_id != 0 
+            AND co.standard_concept = 'S'
             AND co.domain_id NOT IN ('@fkDomain')
         /*violatedRowsEnd*/
     ) violated_rows
@@ -49,10 +50,14 @@ FROM (
     SELECT 
         COUNT_BIG(*) AS num_rows
     FROM @schema.@cdmTableName cdmTable
+    LEFT JOIN @vocabDatabaseSchema.concept co
+        ON cdmTable.@cdmFieldName = co.concept_id
     {@cohort & '@runForCohort' == 'Yes'}?{
     JOIN @cohortDatabaseSchema.@cohortTableName c 
         ON cdmTable.PERSON_ID = c.SUBJECT_ID
         AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
     }
+    WHERE co.concept_id != 0
+        AND co.standard_concept = 'S'
 ) denominator
 ;
