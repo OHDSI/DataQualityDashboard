@@ -24,7 +24,7 @@ test_that("@futureDate placeholder keeps legacy GETDATE() behavior when futureDa
 })
 
 test_that("field-level control files no longer reference GETDATE() in plausibleValueHigh thresholds (#277)", {
-  for (cdmVersion in c("5.2", "5.3", "5.4")) {
+  for (cdmVersion in c("5.2", "5.3", "5.4", "5.5")) {
     csvFile <- system.file(
       "csv",
       sprintf("OMOP_CDMv%s_Field_Level.csv", cdmVersion),
