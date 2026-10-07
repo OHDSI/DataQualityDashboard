@@ -33,7 +33,8 @@ executeDqChecks(
   cdmVersion = "5.3",
   tableCheckThresholdLoc = "default",
   fieldCheckThresholdLoc = "default",
-  conceptCheckThresholdLoc = "default"
+  conceptCheckThresholdLoc = "default",
+  futureDate = NULL
 )
 }
 \arguments{
@@ -92,6 +93,8 @@ CONCEPT_METADATA, CONCEPT_RELATIONSHIP_METADATA, and PACK_CONTENT tables added i
 \item{fieldCheckThresholdLoc}{The location of the threshold file for evaluating the field checks. If not specified the default thresholds will be applied.}
 
 \item{conceptCheckThresholdLoc}{The location of the threshold file for evaluating the concept checks. If not specified the default thresholds will be applied.}
+
+\item{futureDate}{(OPTIONAL) Reference "future" date ('YYYY-MM-DD') for plausibleValueHigh checks. If not specified, cdm_source.source_release_date is used, making results deterministic across runs (see issue #277). If source_release_date is missing, the affected checks are not executed and are marked not-applicable (never the current date). In sqlOnly mode the legacy GETDATE() behavior is kept unless futureDate is specified.}
 }
 \value{
 A list object of results

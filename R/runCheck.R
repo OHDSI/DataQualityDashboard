@@ -33,6 +33,7 @@
 #' @param sqlOnlyUnionCount         (OPTIONAL) How many SQL commands to union before inserting them into output table (speeds processing when queries done in parallel). Default is 1.
 #' @param sqlOnlyIncrementalInsert  (OPTIONAL) Boolean to determine whether insert check results and associated metadata into output table.  Default is FALSE (for backwards compatability to <= v2.2.0)
 #' @param sqlOnly                   Should the SQLs be executed (FALSE) or just returned (TRUE)?
+#' @param futureDate                Reference "future" date ('YYYY-MM-DD') for plausibleValueHigh checks. NULL keeps the legacy GETDATE() behavior (sqlOnly mode) or marks the checks not-applicable when cdm_source.source_release_date is missing.
 #'
 #' @return A dataframe containing the check results or SQL queries (NULL if sqlOnlyIncrementalInsert is TRUE)
 #'
@@ -56,7 +57,8 @@
                       outputFolder,
                       sqlOnlyUnionCount,
                       sqlOnlyIncrementalInsert,
-                      sqlOnly) {
+                      sqlOnly,
+                      futureDate) {
   ParallelLogger::logInfo(sprintf("Processing check description: %s", checkDescription$checkName))
 
   filterExpression <- sprintf(
@@ -91,6 +93,26 @@
         list(cohort = cohort),
         unlist(columns, recursive = FALSE)
       )
+
+      # Resolve the @futureDate placeholder in the plausibleValueHigh threshold (#277).
+      # futureDate is a 'YYYY-MM-DD' string; NULL in sqlOnly mode (legacy
+      # GETDATE() behavior) or when cdm_source.source_release_date is missing.
+      # In the latter case the check cannot be evaluated honestly, so it is
+      # skipped and marked not-applicable instead of executed.
+      needsFutureDate <- "plausibleValueHigh" %in% names(params) &&
+        !is.na(params$plausibleValueHigh) &&
+        grepl("@futureDate", params$plausibleValueHigh, fixed = TRUE)
+
+      if (needsFutureDate && !sqlOnly && is.null(futureDate)) {
+        return(.recordFutureDateSkipped(
+          check = check,
+          checkDescription = checkDescription
+        ))
+      }
+
+      if (needsFutureDate) {
+        params$plausibleValueHigh <- .resolveFutureDatePlaceholder(params$plausibleValueHigh, futureDate)
+      }
 
       sql <- do.call(SqlRender::loadRenderTranslateSql, params)
 
@@ -139,4 +161,106 @@
     ParallelLogger::logWarn(paste0("Warning: Evaluation resulted in no checks: ", filterExpression))
     return(data.frame())
   }
+}
+
+#' Resolve the @futureDate placeholder in a check threshold value.
+#'
+#' Replaces the `@futureDate` placeholder used in plausibleValueHigh control-file
+#' thresholds with a deterministic date literal. See issue #277: thresholds that
+#' reference GETDATE() make repeated runs over the same data return different
+#' results depending on the run date.
+#'
+#' @param thresholdValue  The threshold expression from the control file, e.g. "DATEADD(dd,1,@futureDate)"
+#' @param futureDate      A 'YYYY-MM-DD' date string, or NULL to keep the legacy GETDATE() behavior
+#'
+#' @return The threshold expression with the placeholder resolved
+#'
+#' @keywords internal
+.resolveFutureDatePlaceholder <- function(thresholdValue, futureDate) {
+  futureDateSql <- if (is.null(futureDate)) {
+    "CAST(GETDATE() AS DATE)"
+  } else {
+    sprintf("'%s'", futureDate)
+  }
+  gsub("@futureDate", futureDateSql, thresholdValue, fixed = TRUE)
+}
+
+#' Record a future-date check that was not executed (#277).
+#'
+#' Used when cdm_source.source_release_date is missing: without a release date
+#' there is no honest definition of "future", so the check SQL is never
+#' executed. The result row is flagged via `futureDateSkipped` and
+#' .calculateNotApplicableStatus() marks it not-applicable.
+#'
+#' @param check             The data quality check
+#' @param checkDescription  The description of the data quality check
+#'
+#' @return A single-row dataframe with the check marked as skipped
+#'
+#' @keywords internal
+.recordFutureDateSkipped <- function(check, checkDescription) {
+  ParallelLogger::logInfo(sprintf(
+    "Skipping check %s on %s.%s: cdm_source.source_release_date is missing, no reference future date available (#277).",
+    checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"]
+  ))
+  result <- .recordResult(
+    check = check,
+    checkDescription = checkDescription,
+    sql = NA,
+    warning = paste0(
+      "Check not executed: cdm_source.source_release_date is missing, ",
+      "so no reference future date is available. Supply futureDate explicitly to run this check."
+    )
+  )
+  result$futureDateSkipped <- TRUE
+  result
+}
+
+#' Determine the default reference "future" date from the CDM source (#277).
+#'
+#' Used as the default `futureDate` for plausibleValueHigh checks: the
+#' `cdm_source.source_release_date`, so check results are deterministic across
+#' runs. Returns NULL when the release date is missing or cannot be determined;
+#' callers must then skip the affected checks and mark them not-applicable
+#' rather than falling back to the current date (which would reintroduce
+#' run-to-run variance, defeating the purpose of #277).
+#'
+#' @param connection          A live DatabaseConnector connection to the CDM database
+#' @param connectionDetails   A connectionDetails object for connecting to the CDM database
+#' @param cdmDatabaseSchema   The fully qualified database name of the CDM schema
+#'
+#' @return A 'YYYY-MM-DD' date string, or NULL when the release date is unavailable
+#'
+#' @keywords internal
+.getSourceReleaseDate <- function(connection, connectionDetails, cdmDatabaseSchema) {
+  sql <- SqlRender::render(
+    sql = "SELECT MAX(source_release_date) AS release_date FROM @cdmDatabaseSchema.cdm_source;",
+    cdmDatabaseSchema = cdmDatabaseSchema
+  )
+  sql <- SqlRender::translate(sql = sql, targetDialect = connectionDetails$dbms)
+  result <- tryCatch(
+    DatabaseConnector::querySql(connection = connection, sql = sql),
+    error = function(e) {
+      warning("Could not query CDM_SOURCE for source_release_date (#277); future-date checks will be skipped. Details: ", e$message)
+      NULL
+    }
+  )
+  rawDate <- if (!is.null(result) && nrow(result) > 0) result[[1]][1] else NA
+  releaseDate <- tryCatch(
+    {
+      if (inherits(rawDate, "Date")) {
+        rawDate
+      } else if (is.numeric(rawDate)) {
+        as.Date(rawDate, origin = "1970-01-01")
+      } else {
+        as.Date(as.character(rawDate))
+      }
+    },
+    error = function(e) as.Date(NA)
+  )
+  if (is.na(releaseDate)) {
+    warning("CDM_SOURCE contains no usable source_release_date; future-date checks will be skipped and marked not-applicable (#277).")
+    return(NULL)
+  }
+  format(releaseDate, "%Y-%m-%d")
 }
