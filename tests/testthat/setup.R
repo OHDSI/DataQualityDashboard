@@ -81,6 +81,9 @@ if (requireNamespace("Eunomia", quietly = TRUE)) {
 
   # Separate connection details for observation period overlap test
   connectionDetailsEunomiaOverlap <- Eunomia::getEunomiaConnectionDetails()
+
+  # Separate connection details for fkClass test
+  connectionDetailsEunomiaFkClass <- Eunomia::getEunomiaConnectionDetails()
 }
 
 # Helper function to verify database connection
