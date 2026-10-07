@@ -39,7 +39,13 @@ FROM
                     ON cdmTable.person_id = c.subject_id
                     AND c.COHORT_DEFINITION_ID = @cohortDefinitionId
             }
-        JOIN @cdmDatabaseSchema.death de 
+        JOIN (
+            SELECT 
+                person_id, 
+                MIN(death_date) AS death_date 
+            FROM @cdmDatabaseSchema.death 
+            GROUP BY person_id
+        ) de 
             ON cdmTable.person_id = de.person_id
         WHERE CAST(cdmTable.@cdmFieldName AS DATE) > DATEADD(day, 60, CAST(de.death_date AS DATE))
         /*violatedRowsEnd*/
