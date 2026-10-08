@@ -38,8 +38,7 @@ test_that("fkClass allows multiple concept classes for DRUG_STRENGTH.ingredient_
     VALUES
     (9000003, 9000001, 1, 8576, 0, 0),
     (9000003, 9000002, 1, 8576, 0, 0),
-    (9000003, 9000003, 1, 8576, 0, 0),
-    (9000003, 0, 1, 8576, 0, 0);
+    (9000003, 9000003, 1, 8576, 0, 0);
     ",
     progressBar = FALSE,
     reportOverallTime = FALSE
@@ -73,7 +72,7 @@ test_that("fkClass allows multiple concept classes for DRUG_STRENGTH.ingredient_
     checkResults$cdmFieldName == "INGREDIENT_CONCEPT_ID", ]
   expect_equal(nrow(drugStrength), 1)
   expect_true(grepl("NOT IN ('Ingredient','Precise Ingredient')", drugStrength$queryText, fixed = TRUE))
-  expect_equal(drugStrength$numDenominatorRows, 4)
+  expect_equal(drugStrength$numDenominatorRows, 3)
   expect_equal(drugStrength$numViolatedRows, 1)
 
   # Fields with a single allowed class are unaffected

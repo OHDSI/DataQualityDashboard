@@ -94,7 +94,8 @@
 
       # fkClass may hold a comma-separated list of allowed concept classes; render it as a
       # quoted SQL list so that field_fk_class.sql can use it in a NOT IN clause
-      if (!is.null(params[["fkClass"]]) && !is.na(params[["fkClass"]])) {
+      if (!is.null(params[["fkClass"]]) && !is.na(params[["fkClass"]]) &&
+        nzchar(trimws(params[["fkClass"]]))) {
         params[["fkClass"]] <- .formatSqlStringList(params[["fkClass"]])
       }
 
