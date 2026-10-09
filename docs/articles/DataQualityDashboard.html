@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.9</span>
       </span>
     </div>
 
@@ -189,7 +189,7 @@
                         <h4 data-toc-skip class="author">Clair
 Blacketer</h4>
             
-            <h4 data-toc-skip class="date">2026-01-22</h4>
+            <h4 data-toc-skip class="date">2026-05-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/DataQualityDashboard/blob/HEAD/vignettes/DataQualityDashboard.rmd" class="external-link"><code>vignettes/DataQualityDashboard.rmd</code></a></small>
       <div class="hidden name"><code>DataQualityDashboard.rmd</code></div>
@@ -201,7 +201,11 @@ Blacketer</h4>
 <div class="section level2">
 <h2 id="r-installation">R Installation<a class="anchor" aria-label="anchor" href="#r-installation"></a>
 </h2>
+<p>Install from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DataQualityDashboard"</span><span class="op">)</span></span></code></pre></div>
+<p>To install from GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"OHDSI/DataQualityDashboard"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -218,7 +222,7 @@ prior to running the DQD.</p>
 <div class="section level2">
 <h2 id="executing-data-quality-checks">Executing Data Quality Checks<a class="anchor" aria-label="anchor" href="#executing-data-quality-checks"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># fill out the connection details -----------------------------------------------------------------------</span></span>
 <span><span class="va">connectionDetails</span> <span class="op">&lt;-</span> <span class="fu">DatabaseConnector</span><span class="fu">::</span><span class="fu"><a href="https://ohdsi.github.io/DatabaseConnector/reference/createConnectionDetails.html" class="external-link">createConnectionDetails</a></span><span class="op">(</span></span>
@@ -339,7 +343,7 @@ prior to running the DQD.</p>
 <h2 id="viewing-results">Viewing Results<a class="anchor" aria-label="anchor" href="#viewing-results"></a>
 </h2>
 <p><strong>Launching Dashboard as Shiny App</strong></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Use the fully-qualified path to the JSON results file</span></span>
 <span><span class="fu">DataQualityDashboard</span><span class="fu">::</span><span class="fu"><a href="../reference/viewDqDashboard.html">viewDqDashboard</a></span><span class="op">(</span><span class="va">jsonFilePath</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Launching on a web server</strong></p>

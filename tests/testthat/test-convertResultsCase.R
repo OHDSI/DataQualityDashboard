@@ -1,6 +1,7 @@
 library(testthat)
 
 test_that("Camel correctly converted to snake and back", {
+  testthat::skip_if_not_installed("Eunomia")
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 

@@ -1,3 +1,6 @@
+news:
+  cran_dates: false
+
 template:
   params:
     bootswatch: cosmo

@@ -1,6 +1,7 @@
 library(testthat)
 
 test_that("Write DB results to json", {
+  testthat::skip_if_not_installed("Eunomia")
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
   connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()

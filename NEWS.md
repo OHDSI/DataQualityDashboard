@@ -1,25 +1,68 @@
-DataQualityDashboard 2.8.6
-==========================
+# DataQualityDashboard (unreleased)
+This release adds support for OMOP CDM v5.5, drops support for OMOP CDM v5.2, consolidates the concept level threshold files, and refreshes the CDM documentation columns in the threshold files.
+
+### Removed CDM v5.2 support
+
+**`cdmVersion = "5.2"` is no longer accepted, and the `OMOP_CDMv5.2_Table_Level.csv`, `OMOP_CDMv5.2_Field_Level.csv`, and `OMOP_CDMv5.2_Check_Descriptions.csv` files have been removed.** CDM v5.2 is no longer published in the [CommonDataModel](https://github.com/OHDSI/CommonDataModel) repository, so its threshold files could not be kept in step with the specification, and the package was never tested against it. Sites still on v5.2 should either remain on an earlier release of this package or pass their own threshold files via `tableCheckThresholdLoc` and `fieldCheckThresholdLoc`.
+
+### CDM v5.5 support
+
+`cdmVersion = "5.5"` is now accepted, backed by new `OMOP_CDMv5.5_Table_Level.csv`, `OMOP_CDMv5.5_Field_Level.csv`, and `OMOP_CDMv5.5_Check_Descriptions.csv` threshold files. The v5.5 files are a superset of the v5.4 files, covering the 24 fields and 3 tables that CDM v5.5 adds:
+
+- New fields on existing tables: `MEASUREMENT.value_as_source_concept_id`, `OBSERVATION.value_as_source_concept_id`, `OBSERVATION.unit_source_concept_id`, `OBSERVATION.value_as_date`, `SPECIMEN.visit_occurrence_id`, `SPECIMEN.visit_detail_id`, and `CDM_SOURCE.cdm_release_identifier`
+- New vocabulary tables `PACK_CONTENT`, `CONCEPT_METADATA`, and `CONCEPT_RELATIONSHIP_METADATA`, which have been **added to the default `tablesToExclude`** alongside the other vocabulary tables. Pass your own `tablesToExclude` to run checks on them
+
+Aside from these additions, the v5.5 files carry over the v5.4 thresholds unchanged.
+
+Note that `OBSERVATION.value_as_date` records an observation *value* rather than an event date, so the temporal plausibility checks (`plausibleAfterBirth`, `plausibleBeforeDeath`, `plausibleValueLow`/`High`) are disabled for it by default to avoid false positives on legitimately out-of-lifespan values.
+
+### Refreshed CDM documentation columns
+
+The CDM documentation columns in the v5.3, v5.4, and v5.5 threshold files have been updated to match the current [CommonDataModel](https://github.com/OHDSI/CommonDataModel) specification: `userGuidance` and `etlConventions` in both the table and field level files, plus `tableDescription` in the table level files. These columns are documentation only and do not affect which checks run or how they are evaluated.
+
+### Concept level threshold files
+
+**The per-version concept level threshold files have been replaced by a single file, `OMOP_CDM_Concept_Level.csv`.** Concept level thresholds do not vary by CDM version, and the three files had drifted apart unintentionally. If you pass `conceptCheckThresholdLoc` you are unaffected; if you rely on the default file, note the following changes:
+
+- v5.4 results are unchanged; the consolidated file is identical to the previous v5.4 file
+- For v5.3, unit concepts 8784 and 8785 have been removed from `plausibleUnitConceptIds` for concept 3019550 (Sodium [Moles/volume] in Serum or Plasma). These are cell count units and are not plausible for a molar concentration measurement; they had been added to the v5.3 file in error and were never present in the v5.4 file
+
+# DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
+This release contains fixes to testthat to comply with CRAN policies.
+
+# DataQualityDashboard 2.8.8 <small class="text-muted">2026-05-17</small>
+This release contains the following fixes and enhancements:
+
+### Bugfixes
+
+- Fixed an issue where running `executeDqChecks` with `checkSeverity = "fatal"` (or any subset of severities that excludes `characterization`) caused all passed check counts to display as zero in the Shiny app. The fix was to *skip calculating Not Applicable status* when the requisite checks to do so are not included in the DQD run
+- Fixed the warning about missing Not Applicable checks so that it fires based on the checks that will actually be executed (after all filtering)
+- Fixed a database connection bug causing multi-threaded runs to fail
+
+### Enhancements
+
+- Added release dates to NEWS.md
+- Remote database tests and JDBC driver downloads are now skipped on CRAN
+
+# DataQualityDashboard 2.8.7 <small class="text-muted">2026-03-23</small>
+This release contains a bugfix for an issue in calculation of the "Not Applicable" status, which caused errors to be thrown in some scenarios.  More missing plausible units were also added to the `plausibleUnitConceptIds` check.
+
+# DataQualityDashboard 2.8.6 <small class="text-muted">2026-01-24</small>
 This release contains minor changes needed to support CRAN submission.
 
-DataQualityDashboard 2.8.5
-==========================
+# DataQualityDashboard 2.8.5 <small class="text-muted">2026-01-17</small>
 This release contains updates to the GitHub Actions workflow files to resolve some issues with workflow errors.
 
-DataQualityDashboard 2.8.4
-==========================
+# DataQualityDashboard 2.8.4 <small class="text-muted">2026-01-09</small>
 This release contains minor changes needed to support CRAN submission.
 
-DataQualityDashboard 2.8.3
-==========================
+# DataQualityDashboard 2.8.3 <small class="text-muted">2025-12-26</small>
 This release adds missing plausible units to the `plausibleUnitConceptIds` check.
 
-DataQualityDashboard 2.8.2
-==========================
+# DataQualityDashboard 2.8.2 <small class="text-muted">2025-12-23</small>
 This release contains an update to the GitHub Actions workflow file to resolve an issue pushing the package to drat.
 
-DataQualityDashboard 2.8.1
-==========================
+# DataQualityDashboard 2.8.1 <small class="text-muted">2025-12-23</small>
 This release contains some minor bug fixes:
 
 - Adds missing plausible units to the `plausibleUnitConceptIds` check
@@ -27,12 +70,10 @@ This release contains some minor bug fixes:
 
 It also contains some changes to enable CRAN submission.
 
-DataQualityDashboard 2.8.0
-==========================
+# DataQualityDashboard 2.8.0 <small class="text-muted">2025-09-24</small>
 This release includes a bugfix in the `isStandardValidConcept` check.  Previously, this check was not flagging records with a valid, non-standard concept in the concept ID field.  It was only flagging classification concepts and invalid concepts.
 
-DataQualityDashboard 2.7.0
-==========================
+# DataQualityDashboard 2.7.0 <small class="text-muted">2025-08-28</small>
 This release includes:
 
 ### New Checks
@@ -45,11 +86,11 @@ This release includes:
 
 - Corrected [measureConditionEraCompleteness](https://ohdsi.github.io/DataQualityDashboard/articles/checks/measureConditionEraCompleteness.html) logic such that persons with no non-zero `condition_concept_id`s will *not* fail the check (it is not required or recommended to create a condition era for unmapped condition occurrences)
 - Improved [standardConceptRecordCompleteness](https://ohdsi.github.io/DataQualityDashboard/articles/checks/standardConceptRecordCompleteness.html) and [sourceConceptRecordCompleteness](https://ohdsi.github.io/DataQualityDashboard/articles/checks/sourceConceptRecordCompleteness.html) logic:
-  - Expanded numerator *for non-required concept ID fields* to include records with NULL concept ID and non-NULL source value 
+  - Expanded numerator *for non-required concept ID fields* to include records with NULL concept ID and non-NULL source value
     - Previously, missing source value mappings - a critical error - were not checked for non-required concept ID fields
     - NULL required concept ID fields are already checked in `isRequired`
   - Limited denominator to non-NULL concept ID for required fields, and to non-NULL concept ID *or* non-NULL source value for non-required fields
-  - Removed the exception which only checked `unit_concept_id` fields if `value_as_number` was non-NULL (a missing numeric value does not necessarily mean that a value of 0 is acceptable for the unit concept) 
+  - Removed the exception which only checked `unit_concept_id` fields if `value_as_number` was non-NULL (a missing numeric value does not necessarily mean that a value of 0 is acceptable for the unit concept)
   - These changes discourage use of 0 as placeholder for missing units/statuses/etc.  For non-required fields, concept ID of 0 should only be used if a source value is available
 - Refined `isStandardValidConcept`, adding non-NULL requirements for numerator and denominator in order to remove the overlap between this check and `isRequired`
 - Refined `plausibleUnitConceptIds` logic:
@@ -73,13 +114,11 @@ This release includes:
 - Added automated tests on DuckDB and IRIS databases
 - Minor documentation updates
 
-DataQualityDashboard 2.6.3
-==========================
+# DataQualityDashboard 2.6.3 <small class="text-muted">2024-12-25</small>
 This release includes a patch bugfix for the `standardConceptFieldName` update described below. The added field names had previously been added in the wrong column of the threshold file; this has now been fixed.
 
-DataQualityDashboard 2.6.2
-==========================
-This release includes: 
+# DataQualityDashboard 2.6.2 <small class="text-muted">2024-12-22</small>
+This release includes:
 
 ### Bugfixes
 
@@ -98,9 +137,8 @@ There is now a parameter, `checkSeverity`, which can be used to limit the execut
 - We added 2 more check documentation pages - all DQ checks now have documentation!  Check out the newly added pages [here](https://ohdsi.github.io/DataQualityDashboard/articles/checkIndex.html) and please reach out with feedback as we continue improving our documentation!
 - We fixed a bug in the exclude checks sample code in CodeToRun.R
 
-DataQualityDashboard 2.6.1
-==========================
-This release includes: 
+# DataQualityDashboard 2.6.1 <small class="text-muted">2024-07-13</small>
+This release includes:
 
 ### Bugfixes
 
@@ -130,9 +168,8 @@ We have continued (and nearly completed) our initiative to add more comprehensiv
 
 Check out the newly added pages [here](https://ohdsi.github.io/DataQualityDashboard/articles/checkIndex.html) and please reach out with feedback as we continue improving our documentation!
 
-DataQualityDashboard 2.6.0
-==========================
-This release includes: 
+# DataQualityDashboard 2.6.0 <small class="text-muted">2024-02-22</small>
+This release includes:
 
 ### New Checks
 4 new data quality check types have been added in this release:
@@ -155,9 +192,8 @@ We have begun an initiative to add more comprehensive user documentation at the 
 
 9 pages have been added so far, and the rest will come in a future release.  Check them out [here](https://ohdsi.github.io/DataQualityDashboard/articles/checkIndex.html) and please reach out with feedback as we continue improving our documentation!
 
-DataQualityDashboard 2.5.0
-==========================
-This release includes: 
+# DataQualityDashboard 2.5.0 <small class="text-muted">2023-11-04</small>
+This release includes:
 
 ### New Feature
 A new function `writeDBResultsToJson` which can be used to write DQD results previously written to a database table (by setting `writeToTable` = TRUE in `executeDqChecks` or by using the `writeJsonResultsToTable` function) into a JSON file in the standard DQD JSON format.
@@ -167,16 +203,14 @@ A new function `writeDBResultsToJson` which can be used to write DQD results pre
 - Fixed additional field level checks (fkDomain, fkClass, plausibleTemporalAfter) to incorporate user-specified `vocabDatabaseSchema` where appropriate
 - Additional minor bugfixes & refactors
 
-DataQualityDashboard 2.4.1
-==========================
-This release includes: 
+# DataQualityDashboard 2.4.1 <small class="text-muted">2023-10-19</small>
+This release includes:
 
 - Minor documentation updates
 - A patch for an issue in one of DQD's transitive dependencies, `vroom`
 - Test suite upgrades to run remote DB tests against OMOP v5.4, and to add Redshift to remote DB tests
 
-DataQualityDashboard 2.4.0
-==========================
+# DataQualityDashboard 2.4.0 <small class="text-muted">2023-07-27</small>
 This release includes:
 
 ### Threshold file updates
@@ -195,8 +229,7 @@ This release includes:
 
 Some minor refactoring of testthat files and package build configuration and some minor documentation updates were also added in this release.
 
-DataQualityDashboard 2.3.0
-==========================
+# DataQualityDashboard 2.3.0 <small class="text-muted">2023-05-21</small>
 This release includes:
 
 ### New features
@@ -209,8 +242,7 @@ This release includes:
 - In the v2.1.0 release, all DQD variables were converted from snakecase to camelcase, including those in the results JSON file. This resulted in errors for users trying to view results files generated by older DQD versions in DQD v2.1.0+. This issue has now been fixed. `viewDqDashboard` will now automatically convert the case of pre-v2.1.0 results files to camelcase so that older results files may be viewed in v2.3.0+
 
 
-DataQualityDashboard 2.2.0
-==========================
+# DataQualityDashboard 2.2.0 <small class="text-muted">2023-05-05</small>
 This release includes:
 
 ### New features
@@ -228,21 +260,18 @@ This release includes:
   - Fixed field level checks to incorporate user-specified `vocabDatabaseSchema` and `cohortDatabaseSchema` where appropriate
 - Removed `outputFile` parameter from DQD setup vignette (variable not set in script)
 - Removed hidden BOM character from several threshold csv files, and updated csv read method to account for BOM character moving forward. This character caused an error on some operating systems
-  
+
 And some minor documentation updates for clarity/accuracy.
 
-DataQualityDashboard 2.1.2
-==========================
+# DataQualityDashboard 2.1.2 <small class="text-muted">2023-03-16</small>
 
 1. Fixing bug in cdmDatatype check SQL that was causing NULL values to fail the check.
 
-DataQualityDashboard 2.1.1
-==========================
+# DataQualityDashboard 2.1.1 <small class="text-muted">2023-02-28</small>
 
 1. Updating author list in DESCRIPTION.
 
-DataQualityDashboard 2.1.0
-==========================
+# DataQualityDashboard 2.1.0 <small class="text-muted">2023-02-21</small>
 This release includes:
 
 ### Bugfixes
@@ -256,8 +285,7 @@ This release includes:
   - All snakecase variables updated to camelcase
   - Global variable binding R Check note resolved
 
-DataQualityDashboard 2.0.0
-===========================
+# DataQualityDashboard 2.0.0 <small class="text-muted">2022-12-08</small>
 This release includes:
 
 ### New check statuses
@@ -277,44 +305,37 @@ This release includes:
 
 ### Removal of measurement plausibility checks
 
-  - Most plausibleValueLow and plausibleValueHigh measurement values were removed from the concept check threshold files, due to feedback from the community that many of these ranges included plausible values and as such were causing unexpected check failures. An initiative is planned to reinterrogate these ranges and add them back once the team has higher confidence that they will only flag legitimately implausible values 
+  - Most plausibleValueLow and plausibleValueHigh measurement values were removed from the concept check threshold files, due to feedback from the community that many of these ranges included plausible values and as such were causing unexpected check failures. An initiative is planned to reinterrogate these ranges and add them back once the team has higher confidence that they will only flag legitimately implausible values
 
 ### Integrated testing was also added and the package was refactored on the backend
 
-DataQualityDashboard 1.4.1
-===========================
-No material changes from v1.4, this adds a correct `DESCRIPTION` file 
+# DataQualityDashboard 1.4.1 <small class="text-muted">2022-05-05</small>
+No material changes from v1.4, this adds a correct `DESCRIPTION` file
 with the correct DQD version
 
-DataQualityDashboard 1.4
-===========================
-This release provides support for `CDM v5.4` and incorporates minor bug fixes 
+# DataQualityDashboard 1.4 <small class="text-muted">2022-03-04</small>
+This release provides support for `CDM v5.4` and incorporates minor bug fixes
 related to incorrectly assigned checks in the control files.
 
-DataQualityDashboard 1.3.1
-===========================
-This fixes a small bug and removes a duplicate record in the concept level checks 
+# DataQualityDashboard 1.3.1 <small class="text-muted">2020-10-16</small>
+This fixes a small bug and removes a duplicate record in the concept level checks
 that was throwing an error.
 
-DataQualityDashboard 1.3
-===========================
-This release includes additional concept level checks to support 
-the OHDSI Symposium 2020 study-a-thon and bug fixes to the `writeJSONToTable` function. 
+# DataQualityDashboard 1.3 <small class="text-muted">2020-10-12</small>
+This release includes additional concept level checks to support
+the OHDSI Symposium 2020 study-a-thon and bug fixes to the `writeJSONToTable` function.
 This is the release that study-a-thon data partners should use.
 
-DataQualityDashboard 1.2
-===========================
-This is a bug fix release that updates how notes are viewed in the UI and adds 
+# DataQualityDashboard 1.2 <small class="text-muted">2020-08-12</small>
+This is a bug fix release that updates how notes are viewed in the UI and adds
 CDM table, field, and check name to the final table.
 
-DataQualityDashboard 1.1
-===========================
+# DataQualityDashboard 1.1 <small class="text-muted">2020-08-07</small>
 This release of the Data Quality Dashboard incorporates the following features:
 - Addition of notes fields in the threshold files
 - Addition of notes to the UI
 - Functionality to run the DQD on a cohort
 - Fixes the `writeToTable`, `writeJsonToTable` functions
 
-DataQualityDashboard 1.0
-===========================
+# DataQualityDashboard 1.0 <small class="text-muted">2020-01-31</small>
 This is the first release of the OHDSI Data Quality Dashboard tool.

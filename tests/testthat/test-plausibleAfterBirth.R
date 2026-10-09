@@ -1,6 +1,7 @@
 library(testthat)
 
 test_that("plausibleAfterBirth allows events on same day as birth (issue #561)", {
+  testthat::skip_if_not_installed("Eunomia")
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 

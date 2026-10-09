@@ -41,6 +41,7 @@ test_that("measurePersonCompleteness should be marked as not applicable when tab
 })
 
 test_that("Not Applicable status Table Empty", {
+  testthat::skip_if_not_installed("Eunomia")
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
@@ -74,6 +75,7 @@ test_that("Not Applicable status Table Empty", {
 })
 
 test_that("measureConditionEraCompleteness Not Applicable if condition_occurrence empty", {
+  testthat::skip_if_not_installed("Eunomia")
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
@@ -111,6 +113,7 @@ test_that("measureConditionEraCompleteness Not Applicable if condition_occurrenc
 })
 
 test_that("measureConditionEraCompleteness Fails if condition_era empty", {
+  testthat::skip_if_not_installed("Eunomia")
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
@@ -148,6 +151,7 @@ test_that("measureConditionEraCompleteness Fails if condition_era empty", {
 })
 
 test_that("measurePersonCompleteness NOT marked as Not Applicable when table is empty", {
+  testthat::skip_if_not_installed("Eunomia")
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 

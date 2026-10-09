@@ -176,6 +176,8 @@
 
   if (.hasNAchecks(checkResults)) {
     checkResults <- .calculateNotApplicableStatus(checkResults)
+  } else {
+    checkResults$passed <- as.integer(checkResults$failed == 0 & checkResults$isError == 0)
   }
 
   checkResults

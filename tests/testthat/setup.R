@@ -55,7 +55,9 @@ if (sqlFile == "") {
   stop("Cannot find SQL files. Make sure the package is properly loaded.")
 }
 
-if (Sys.getenv("DONT_DOWNLOAD_JDBC_DRIVERS", "") == "TRUE") {
+if (!identical(Sys.getenv("NOT_CRAN"), "true")) {
+  jdbcDriverFolder <- ""
+} else if (Sys.getenv("DONT_DOWNLOAD_JDBC_DRIVERS", "") == "TRUE") {
   jdbcDriverFolder <- Sys.getenv("DATABASECONNECTOR_JAR_FOLDER")
 } else {
   jdbcDriverFolder <- tempfile("jdbcDrivers")
@@ -66,18 +68,20 @@ if (Sys.getenv("DONT_DOWNLOAD_JDBC_DRIVERS", "") == "TRUE") {
   DatabaseConnector::downloadJdbcDrivers("redshift", jdbcDriverFolder)
 }
 
-connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
-cdmDatabaseSchemaEunomia <- "main"
-resultsDatabaseSchemaEunomia <- "main"
+if (requireNamespace("Eunomia", quietly = TRUE)) {
+  connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
+  cdmDatabaseSchemaEunomia <- "main"
+  resultsDatabaseSchemaEunomia <- "main"
 
-# Separate connection details for NA tests, as this requires removing records
-connectionDetailsEunomiaNaChecks <- Eunomia::getEunomiaConnectionDetails()
+  # Separate connection details for NA tests, as this requires removing records
+  connectionDetailsEunomiaNaChecks <- Eunomia::getEunomiaConnectionDetails()
 
-# Separate connection details for plausibleAfterBirth test
-connectionDetailsPlausibleAfterBirth <- Eunomia::getEunomiaConnectionDetails()
+  # Separate connection details for plausibleAfterBirth test
+  connectionDetailsPlausibleAfterBirth <- Eunomia::getEunomiaConnectionDetails()
 
-# Separate connection details for observation period overlap test
-connectionDetailsEunomiaOverlap <- Eunomia::getEunomiaConnectionDetails()
+  # Separate connection details for observation period overlap test
+  connectionDetailsEunomiaOverlap <- Eunomia::getEunomiaConnectionDetails()
+}
 
 # Helper function to verify database connection
 verifyConnection <- function(connectionDetails) {

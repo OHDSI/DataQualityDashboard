@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DataQualityDashboard</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.9</span>
       </span>
     </div>
 
@@ -164,38 +164,72 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.8.6" id="dataqualitydashboard-286">DataQualityDashboard 2.8.6<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-286"></a></h2>
+<h2 class="page-header" data-toc-text="2.8.9" id="dataqualitydashboard-289-2026-05-17">DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-289-2026-05-17"></a></h2>
+<p>This release contains fixes to testthat to comply with CRAN policies.</p>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.8.8" id="dataqualitydashboard-288-2026-05-17">DataQualityDashboard 2.8.8 <small class="text-muted">2026-05-17</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-288-2026-05-17"></a></h2>
+<p>This release contains the following fixes and enhancements:</p>
+<div class="section level4">
+<h4 id="bugfixes-2-8-8">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-2-8-8"></a></h4>
+<ul><li>Fixed an issue where running <code>executeDqChecks</code> with <code>checkSeverity = "fatal"</code> (or any subset of severities that excludes <code>characterization</code>) caused all passed check counts to display as zero in the Shiny app. The fix was to <em>skip calculating Not Applicable status</em> when the requisite checks to do so are not included in the DQD run</li>
+<li>Fixed the warning about missing Not Applicable checks so that it fires based on the checks that will actually be executed (after all filtering)</li>
+<li>Fixed a database connection bug causing multi-threaded runs to fail</li>
+</ul></div>
+<div class="section level4">
+<h4 id="enhancements-2-8-8">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-2-8-8"></a></h4>
+<ul><li>Added release dates to NEWS.md</li>
+<li>Remote database tests and JDBC driver downloads are now skipped on CRAN</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.8.7" id="dataqualitydashboard-287-2026-03-23">DataQualityDashboard 2.8.7 <small class="text-muted">2026-03-23</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-287-2026-03-23"></a></h2>
+<p>This release contains a bugfix for an issue in calculation of the “Not Applicable” status, which caused errors to be thrown in some scenarios. More missing plausible units were also added to the <code>plausibleUnitConceptIds</code> check.</p>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.8.6" id="dataqualitydashboard-286-2026-01-24">DataQualityDashboard 2.8.6 <small class="text-muted">2026-01-24</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-286-2026-01-24"></a></h2>
 <p>This release contains minor changes needed to support CRAN submission.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.8.5" id="dataqualitydashboard-285">DataQualityDashboard 2.8.5<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-285"></a></h2>
+<h2 class="page-header" data-toc-text="2.8.5" id="dataqualitydashboard-285-2026-01-17">DataQualityDashboard 2.8.5 <small class="text-muted">2026-01-17</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-285-2026-01-17"></a></h2>
 <p>This release contains updates to the GitHub Actions workflow files to resolve some issues with workflow errors.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.8.4" id="dataqualitydashboard-284">DataQualityDashboard 2.8.4<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-284"></a></h2>
+<h2 class="page-header" data-toc-text="2.8.4" id="dataqualitydashboard-284-2026-01-09">DataQualityDashboard 2.8.4 <small class="text-muted">2026-01-09</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-284-2026-01-09"></a></h2>
 <p>This release contains minor changes needed to support CRAN submission.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.8.3" id="dataqualitydashboard-283">DataQualityDashboard 2.8.3<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-283"></a></h2>
+<h2 class="page-header" data-toc-text="2.8.3" id="dataqualitydashboard-283-2025-12-26">DataQualityDashboard 2.8.3 <small class="text-muted">2025-12-26</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-283-2025-12-26"></a></h2>
 <p>This release adds missing plausible units to the <code>plausibleUnitConceptIds</code> check.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.8.2" id="dataqualitydashboard-282">DataQualityDashboard 2.8.2<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-282"></a></h2>
+<h2 class="page-header" data-toc-text="2.8.2" id="dataqualitydashboard-282-2025-12-23">DataQualityDashboard 2.8.2 <small class="text-muted">2025-12-23</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-282-2025-12-23"></a></h2>
 <p>This release contains an update to the GitHub Actions workflow file to resolve an issue pushing the package to drat.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.8.1" id="dataqualitydashboard-281">DataQualityDashboard 2.8.1<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-281"></a></h2>
+<h2 class="page-header" data-toc-text="2.8.1" id="dataqualitydashboard-281-2025-12-23">DataQualityDashboard 2.8.1 <small class="text-muted">2025-12-23</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-281-2025-12-23"></a></h2>
 <p>This release contains some minor bug fixes:</p>
 <ul><li>Adds missing plausible units to the <code>plausibleUnitConceptIds</code> check</li>
 <li>Fixes schema references causing errors for users with cohort and/or vocabulary tables stored outside the CDM schema</li>
 </ul><p>It also contains some changes to enable CRAN submission.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.8.0" id="dataqualitydashboard-280">DataQualityDashboard 2.8.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-280"></a></h2>
+<h2 class="page-header" data-toc-text="2.8.0" id="dataqualitydashboard-280-2025-09-24">DataQualityDashboard 2.8.0 <small class="text-muted">2025-09-24</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-280-2025-09-24"></a></h2>
 <p>This release includes a bugfix in the <code>isStandardValidConcept</code> check. Previously, this check was not flagging records with a valid, non-standard concept in the concept ID field. It was only flagging classification concepts and invalid concepts.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.7.0" id="dataqualitydashboard-270">DataQualityDashboard 2.7.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-270"></a></h2>
+<h2 class="page-header" data-toc-text="2.7.0" id="dataqualitydashboard-270-2025-08-28">DataQualityDashboard 2.7.0 <small class="text-muted">2025-08-28</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-270-2025-08-28"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
 <h4 id="new-checks-2-7-0">New Checks<a class="anchor" aria-label="anchor" href="#new-checks-2-7-0"></a></h4>
@@ -244,11 +278,13 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.6.3" id="dataqualitydashboard-263">DataQualityDashboard 2.6.3<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-263"></a></h2>
+<h2 class="page-header" data-toc-text="2.6.3" id="dataqualitydashboard-263-2024-12-25">DataQualityDashboard 2.6.3 <small class="text-muted">2024-12-25</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-263-2024-12-25"></a></h2>
 <p>This release includes a patch bugfix for the <code>standardConceptFieldName</code> update described below. The added field names had previously been added in the wrong column of the threshold file; this has now been fixed.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.6.2" id="dataqualitydashboard-262">DataQualityDashboard 2.6.2<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-262"></a></h2>
+<h2 class="page-header" data-toc-text="2.6.2" id="dataqualitydashboard-262-2024-12-22">DataQualityDashboard 2.6.2 <small class="text-muted">2024-12-22</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-262-2024-12-22"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
 <h4 id="bugfixes-2-6-2">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-2-6-2"></a></h4>
@@ -269,7 +305,8 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.6.1" id="dataqualitydashboard-261">DataQualityDashboard 2.6.1<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-261"></a></h2>
+<h2 class="page-header" data-toc-text="2.6.1" id="dataqualitydashboard-261-2024-07-13">DataQualityDashboard 2.6.1 <small class="text-muted">2024-07-13</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-261-2024-07-13"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
 <h4 id="bugfixes-2-6-1">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-2-6-1"></a></h4>
@@ -306,7 +343,8 @@
 </div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.6.0" id="dataqualitydashboard-260">DataQualityDashboard 2.6.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-260"></a></h2>
+<h2 class="page-header" data-toc-text="2.6.0" id="dataqualitydashboard-260-2024-02-22">DataQualityDashboard 2.6.0 <small class="text-muted">2024-02-22</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-260-2024-02-22"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
 <h4 id="new-checks-2-6-0">New Checks<a class="anchor" aria-label="anchor" href="#new-checks-2-6-0"></a></h4>
@@ -334,7 +372,8 @@
 </div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.5.0" id="dataqualitydashboard-250">DataQualityDashboard 2.5.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-250"></a></h2>
+<h2 class="page-header" data-toc-text="2.5.0" id="dataqualitydashboard-250-2023-11-04">DataQualityDashboard 2.5.0 <small class="text-muted">2023-11-04</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-250-2023-11-04"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
 <h4 id="new-feature-2-5-0">New Feature<a class="anchor" aria-label="anchor" href="#new-feature-2-5-0"></a></h4>
@@ -348,7 +387,8 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.4.1" id="dataqualitydashboard-241">DataQualityDashboard 2.4.1<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-241"></a></h2>
+<h2 class="page-header" data-toc-text="2.4.1" id="dataqualitydashboard-241-2023-10-19">DataQualityDashboard 2.4.1 <small class="text-muted">2023-10-19</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-241-2023-10-19"></a></h2>
 <p>This release includes:</p>
 <ul><li>Minor documentation updates</li>
 <li>A patch for an issue in one of DQD’s transitive dependencies, <code>vroom</code>
@@ -356,7 +396,8 @@
 <li>Test suite upgrades to run remote DB tests against OMOP v5.4, and to add Redshift to remote DB tests</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.4.0" id="dataqualitydashboard-240">DataQualityDashboard 2.4.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-240"></a></h2>
+<h2 class="page-header" data-toc-text="2.4.0" id="dataqualitydashboard-240-2023-07-27">DataQualityDashboard 2.4.0 <small class="text-muted">2023-07-27</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-240-2023-07-27"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
 <h4 id="threshold-file-updates-2-4-0">Threshold file updates<a class="anchor" aria-label="anchor" href="#threshold-file-updates-2-4-0"></a></h4>
@@ -377,7 +418,8 @@
 </div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.3.0" id="dataqualitydashboard-230">DataQualityDashboard 2.3.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-230"></a></h2>
+<h2 class="page-header" data-toc-text="2.3.0" id="dataqualitydashboard-230-2023-05-21">DataQualityDashboard 2.3.0 <small class="text-muted">2023-05-21</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-230-2023-05-21"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
 <h4 id="new-features-2-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-2-3-0"></a></h4>
@@ -392,7 +434,8 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.2.0" id="dataqualitydashboard-220">DataQualityDashboard 2.2.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-220"></a></h2>
+<h2 class="page-header" data-toc-text="2.2.0" id="dataqualitydashboard-220-2023-05-05">DataQualityDashboard 2.2.0 <small class="text-muted">2023-05-05</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-220-2023-05-05"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
 <h4 id="new-features-2-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-2-2-0"></a></h4>
@@ -415,15 +458,18 @@
 </div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.1.2" id="dataqualitydashboard-212">DataQualityDashboard 2.1.2<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-212"></a></h2>
+<h2 class="page-header" data-toc-text="2.1.2" id="dataqualitydashboard-212-2023-03-16">DataQualityDashboard 2.1.2 <small class="text-muted">2023-03-16</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-212-2023-03-16"></a></h2>
 <ol style="list-style-type: decimal"><li>Fixing bug in cdmDatatype check SQL that was causing NULL values to fail the check.</li>
 </ol></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.1.1" id="dataqualitydashboard-211">DataQualityDashboard 2.1.1<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-211"></a></h2>
+<h2 class="page-header" data-toc-text="2.1.1" id="dataqualitydashboard-211-2023-02-28">DataQualityDashboard 2.1.1 <small class="text-muted">2023-02-28</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-211-2023-02-28"></a></h2>
 <ol style="list-style-type: decimal"><li>Updating author list in DESCRIPTION.</li>
 </ol></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.1.0" id="dataqualitydashboard-210">DataQualityDashboard 2.1.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-210"></a></h2>
+<h2 class="page-header" data-toc-text="2.1.0" id="dataqualitydashboard-210-2023-02-21">DataQualityDashboard 2.1.0 <small class="text-muted">2023-02-21</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-210-2023-02-21"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
 <h4 id="bugfixes-2-1-0">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-2-1-0"></a></h4>
@@ -438,7 +484,8 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.0.0" id="dataqualitydashboard-200">DataQualityDashboard 2.0.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-200"></a></h2>
+<h2 class="page-header" data-toc-text="2.0.0" id="dataqualitydashboard-200-2022-12-08">DataQualityDashboard 2.0.0 <small class="text-muted">2022-12-08</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-200-2022-12-08"></a></h2>
 <p>This release includes:</p>
 <div class="section level4">
 <h4 id="new-check-statuses-2-0-0">New check statuses<a class="anchor" aria-label="anchor" href="#new-check-statuses-2-0-0"></a></h4>
@@ -470,31 +517,38 @@
 </div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.4.1" id="dataqualitydashboard-141">DataQualityDashboard 1.4.1<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-141"></a></h2>
+<h2 class="page-header" data-toc-text="1.4.1" id="dataqualitydashboard-141-2022-05-05">DataQualityDashboard 1.4.1 <small class="text-muted">2022-05-05</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-141-2022-05-05"></a></h2>
 <p>No material changes from v1.4, this adds a correct <code>DESCRIPTION</code> file with the correct DQD version</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.4" id="dataqualitydashboard-14">DataQualityDashboard 1.4<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-14"></a></h2>
+<h2 class="page-header" data-toc-text="1.4" id="dataqualitydashboard-14-2022-03-04">DataQualityDashboard 1.4 <small class="text-muted">2022-03-04</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-14-2022-03-04"></a></h2>
 <p>This release provides support for <code>CDM v5.4</code> and incorporates minor bug fixes related to incorrectly assigned checks in the control files.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.3.1" id="dataqualitydashboard-131">DataQualityDashboard 1.3.1<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-131"></a></h2>
+<h2 class="page-header" data-toc-text="1.3.1" id="dataqualitydashboard-131-2020-10-16">DataQualityDashboard 1.3.1 <small class="text-muted">2020-10-16</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-131-2020-10-16"></a></h2>
 <p>This fixes a small bug and removes a duplicate record in the concept level checks that was throwing an error.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.3" id="dataqualitydashboard-13">DataQualityDashboard 1.3<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-13"></a></h2>
+<h2 class="page-header" data-toc-text="1.3" id="dataqualitydashboard-13-2020-10-12">DataQualityDashboard 1.3 <small class="text-muted">2020-10-12</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-13-2020-10-12"></a></h2>
 <p>This release includes additional concept level checks to support the OHDSI Symposium 2020 study-a-thon and bug fixes to the <code>writeJSONToTable</code> function. This is the release that study-a-thon data partners should use.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.2" id="dataqualitydashboard-12">DataQualityDashboard 1.2<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-12"></a></h2>
+<h2 class="page-header" data-toc-text="1.2" id="dataqualitydashboard-12-2020-08-12">DataQualityDashboard 1.2 <small class="text-muted">2020-08-12</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-12-2020-08-12"></a></h2>
 <p>This is a bug fix release that updates how notes are viewed in the UI and adds CDM table, field, and check name to the final table.</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.1" id="dataqualitydashboard-11">DataQualityDashboard 1.1<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-11"></a></h2>
+<h2 class="page-header" data-toc-text="1.1" id="dataqualitydashboard-11-2020-08-07">DataQualityDashboard 1.1 <small class="text-muted">2020-08-07</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-11-2020-08-07"></a></h2>
 <p>This release of the Data Quality Dashboard incorporates the following features: - Addition of notes fields in the threshold files - Addition of notes to the UI - Functionality to run the DQD on a cohort - Fixes the <code>writeToTable</code>, <code>writeJsonToTable</code> functions</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.0" id="dataqualitydashboard-10">DataQualityDashboard 1.0<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-10"></a></h2>
+<h2 class="page-header" data-toc-text="1.0" id="dataqualitydashboard-10-2020-01-31">DataQualityDashboard 1.0 <small class="text-muted">2020-01-31</small>
+<a class="anchor" aria-label="anchor" href="#dataqualitydashboard-10-2020-01-31"></a></h2>
 <p>This is the first release of the OHDSI Data Quality Dashboard tool.</p>
 </div>
   </div>

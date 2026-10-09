@@ -131,6 +131,7 @@
     )
 
   # Look up empty tables and add variable tableIsEmpty to checkResults
+  # One row per table: table is empty if any measureValueCompleteness check has numDenominatorRows == 0
   emptyTables <- checkResults %>%
     dplyr::filter(
       .data$checkName == "measureValueCompleteness"
@@ -141,6 +142,20 @@
       .keep = "none"
     ) %>%
     dplyr::distinct()
+
+  # Each table should appear at most once; duplicates indicate a deeper bug
+  duplicateMissing <- missingTables %>%
+    dplyr::count(.data$cdmTableName) %>%
+    dplyr::filter(.data$n > 1)
+  if (nrow(duplicateMissing) > 0) {
+    stop("Duplicate table names in missingTables indicates an issue with check execution - cdmTable ran more than once for the same table: ", paste(duplicateMissing$cdmTableName, collapse = ", "))
+  }
+  duplicateEmpty <- emptyTables %>%
+    dplyr::count(.data$cdmTableName) %>%
+    dplyr::filter(.data$n > 1)
+  if (nrow(duplicateEmpty) > 0) {
+    stop("Duplicate table names in emptyTables indicates an issue with check execution - measureValueCompleteness had different denominator counts for the same table: ", paste(duplicateEmpty$cdmTableName, collapse = ", "))
+  }
 
   # Look up empty fields and add variable fieldIsEmpty to checkResults
   emptyFields <- checkResults %>%
@@ -186,10 +201,14 @@
 
   conditionOccurrenceIsMissing <- missingTables %>%
     dplyr::filter(.data$cdmTableName == "CONDITION_OCCURRENCE") %>%
-    dplyr::pull(.data$tableIsMissing)
+    dplyr::mutate(conditionOccurrenceIsMissing = dplyr::coalesce(.data$tableIsMissing, FALSE)) %>%
+    dplyr::pull(.data$conditionOccurrenceIsMissing)
+
   conditionOccurrenceIsEmpty <- emptyTables %>%
     dplyr::filter(.data$cdmTableName == "CONDITION_OCCURRENCE") %>%
-    dplyr::pull(.data$tableIsEmpty)
+    dplyr::mutate(conditionOccurrenceIsEmpty = dplyr::coalesce(.data$tableIsEmpty, FALSE)) %>%
+    dplyr::pull(.data$conditionOccurrenceIsEmpty)
+
   for (i in seq_len(nrow(checkResults))) {
     # Special rule for measureConditionEraCompleteness, which should be notApplicable if CONDITION_OCCURRENCE is empty
     if (checkResults[i, "checkName"] == "measureConditionEraCompleteness") {

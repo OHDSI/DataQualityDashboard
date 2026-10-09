@@ -1,6 +1,7 @@
 library(testthat)
 
 test_that("Write JSON results", {
+  testthat::skip_if_not_installed("Eunomia")
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
@@ -47,6 +48,7 @@ test_that("Write JSON results", {
 })
 
 test_that("Write JSON results with singleTable parameter", {
+  testthat::skip_if_not_installed("Eunomia")
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
