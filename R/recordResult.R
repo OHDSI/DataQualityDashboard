@@ -65,6 +65,7 @@
     category = checkDescription$kahnCategory,
     subcategory = checkDescription$kahnSubcategory,
     context = checkDescription$kahnContext,
+    severity = checkDescription$severity,
     warning = warning,
     error = error,
     checkId = .getCheckId(checkDescription$checkLevel, checkDescription$checkName, check["cdmTableName"], check["cdmFieldName"], check["conceptId"], check["unitConceptId"]),

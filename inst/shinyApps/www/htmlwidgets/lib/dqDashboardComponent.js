@@ -493,3 +493,196 @@ class DqDashboard extends HTMLElement {
 }
 
 customElements.define('dq-dashboard', DqDashboard);
+
+const isPassingCheck = c => (c.hasOwnProperty("passed") ? c.passed == 1 || c.notApplicable == 1 : c.failed == 0);
+const isFailingCheck = c => (c.hasOwnProperty("passed") ? c.failed == 1 || c.isError == 1 : c.failed == 1);
+const formatDimensionValue = value => value === undefined || value === null || value === "" ? "None" : value;
+const formatSeverityLabel = value => {
+  const severity = formatDimensionValue(value);
+  return severity === "None" ? severity : severity.charAt(0).toUpperCase() + severity.slice(1);
+};
+
+function buildSeverityTableSummary(results) {
+  const severityTableCounts = results.reduce((summaryRows, check) => {
+    const tableKey = formatDimensionValue(check.cdmTableName);
+    const severityKey = formatSeverityLabel(check.severity);
+
+    if (!summaryRows[tableKey]) {
+      summaryRows[tableKey] = {
+        cdmTableName: tableKey,
+        Fatal: 0,
+        Convention: 0,
+        Characterization: 0,
+        None: 0
+      };
+    }
+
+    if (isFailingCheck(check)) {
+      summaryRows[tableKey][severityKey] += 1;
+    }
+
+    return summaryRows;
+  }, {});
+
+  // Sum up the total counts for each severity across all tables
+  severityTableCounts["Total"] = {
+    cdmTableName: "Total",
+    Fatal: 0,
+    Convention: 0,
+    Characterization: 0,
+    None: 0
+  };
+
+  Object.values(severityTableCounts).forEach(row => {
+    if (row.cdmTableName === "Total") return; // Skip the total row itself
+    severityTableCounts["Total"].Fatal += row.Fatal;
+    severityTableCounts["Total"].Convention += row.Convention;
+    severityTableCounts["Total"].Characterization += row.Characterization;
+    severityTableCounts["Total"].None += row.None;
+  });
+
+  const rows = Object.values(severityTableCounts)
+    .map(row => ({
+      cdmTableName: row.cdmTableName,
+      Fatal: row.Fatal,
+      Convention: row.Convention,
+      Characterization: row.Characterization,
+      None: row.None,
+      Total: row.Fatal + row.Convention + row.Characterization + row.None
+    }))
+    .filter(row => row.Total > 0)
+    .sort((left, right) => {
+      if (left.cdmTableName === "Total") {
+        return 1; // Move "Total" row to the bottom
+      }
+      if (right.cdmTableName === "Total") {
+        return -1; // Move "Total" row to the bottom
+      }
+      if (left.Total !== right.Total) {
+        return right.Total - left.Total;
+      }
+
+      return left.cdmTableName.localeCompare(right.cdmTableName);
+    });
+
+  return {
+    rows: rows
+  };
+}
+
+class DqDashboardSeverity extends HTMLElement {
+  static getTemplate() {
+    return `
+    <style>
+        .table-title {
+          color: #20425a;
+          font-size: 22px;
+          font-weight: bold;
+          margin: 0 0 8px 0;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        table thead tr td {
+            text-align: center;
+            color: #fff;
+            background-color: #20425a;
+            border: 1px solid #ddd;
+        }
+
+        table tbody tr:nth-child(even){
+          background-color: #f2f2f2;
+        }
+
+        table tbody tr td {
+            text-align: right;
+            border: 1px solid #ddd;
+        }
+
+        td.dimension {
+          text-align: left;
+          color: #fff;
+          background-color:#20425a;
+        }
+
+        td {
+            color: #000;
+            padding: 3px 7px 3px 7px;
+            font-size: 20px;
+        }
+
+        td.fail {
+          color: #C00;
+          font-weight:bold;
+        }
+    </style>
+
+    <div class="table-title">Failing Checks by Table and Severity</div>
+    <table>
+      <thead>
+        <tr>
+          <td>Table</td>
+          <td>Fatal</td>
+          <td>Convention</td>
+          <td>Characterization</td>
+          <td>Total</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#if rows.length}}
+          {{#each rows}}
+          <tr>
+            <td class="dimension">{{cdmTableName}}</td>
+            <td {{#if Fatal}}class="fail"{{/if}}>{{Fatal}}</td>
+            <td {{#if Convention}}class="fail"{{/if}}>{{Convention}}</td>
+            <td {{#if Characterization}}class="fail"{{/if}}>{{Characterization}}</td>
+            <td {{#if Total}}class="fail"{{/if}}>{{Total}}</td>
+          </tr>
+          {{/each}}
+        {{else}}
+          <tr>
+            <td class="dimension">None</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+        {{/if}}
+      </tbody>
+    </table>
+    `;
+  }
+
+  connectedCallback() {
+    this.root = this.attachShadow({ mode: 'open' });
+    this.render();
+  }
+
+  static get observedAttributes() {
+    return ['data-results'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (this.root && oldValue !== newValue) {
+      this.render();
+    }
+  }
+
+  get results() {
+    return JSON.parse(this.getAttribute('data-results'));
+  }
+
+  render() {
+    if (!this.results || !Array.isArray(this.results))
+      return;
+
+    const hbTemplate = Handlebars.compile(DqDashboardSeverity.getTemplate());
+    const html = hbTemplate(buildSeverityTableSummary(this.results));
+    this.root.innerHTML = html;
+  }
+}
+
+customElements.define('dq-dashboard-severity', DqDashboardSeverity);

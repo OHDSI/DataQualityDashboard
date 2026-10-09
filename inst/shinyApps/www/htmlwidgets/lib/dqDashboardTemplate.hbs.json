@@ -64,5 +64,33 @@
             "Total": 100,
             "PercentPassing": "10%"
         }
+    },
+    "SeverityTableSummary": {
+        "rows": [
+            {
+                "cdmTableName": "PERSON",
+                "Fatal": 3,
+                "Convention": 1,
+                "Characterization": 0,
+                "None": 0,
+                "Total": 4
+            },
+            {
+                "cdmTableName": "MEASUREMENT",
+                "Fatal": 0,
+                "Convention": 0,
+                "Characterization": 4,
+                "None": 1,
+                "Total": 5
+            },
+            {
+                "cdmTableName": "VISIT_OCCURRENCE",
+                "Fatal": 0,
+                "Convention": 2,
+                "Characterization": 1,
+                "None": 0,
+                "Total": 3
+            }
+        ]
     }
 }

@@ -122,7 +122,7 @@
                                  "checkName", "checkDescription",
                                  "thresholdValue", "notesValue",
                                  "checkLevel", "category",
-                                 "subcategory", "context",
+                                 "subcategory", "context", "severity",
                                  "checkLevel", "cdmTableName",
                                  "cdmFieldName", "conceptId",
                                  "unitConceptId", "numViolatedRows",

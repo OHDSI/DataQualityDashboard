@@ -4,6 +4,8 @@ class DqCheckRenderer extends HTMLElement {
         {{#each checks}}
           <div><b>Check Details</b></div>        
           <div>{{this.checkName}} - {{this.checkLevel}} - {{this.CDM_TABLE}} - {{this.CDM_FIELD}}</div>
+          <div><b>Check Severity</b></div>
+          <div>{{this.severity}}</div>
           <div><b>Check Description</b></div>
           <div>{{this.checkDescription}}</div>
           <div><b>Violated Rows</b></div>
