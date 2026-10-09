@@ -4,9 +4,9 @@ server <- function(input, output, session) {
     jsonPath <- Sys.getenv("jsonPath")
     results <- DataQualityDashboard::convertJsonResultsFileCase(jsonPath, writeToFile = FALSE, targetCase = "camel")
     
+    # Add severity for each check if missing
     if (!('severity' %in% names(results$CheckResults))) {
       tryCatch({
-        # Read checkDescription to get severity status for each check
         cdmVersion <- results$Metadata$cdmVersion
         checkDescriptionsDf <- readr::read_csv(
           file = system.file(
@@ -19,7 +19,7 @@ server <- function(input, output, session) {
 
         results$CheckResults <- results$CheckResults |>
           dplyr::left_join(
-            checkDescriptionsDf,
+            checkDescriptionsDf |> dplyr::select(checkLevel, checkName, severity),
             dplyr::join_by('checkLevel', 'checkName')
           )
       }, error = function(e) {
