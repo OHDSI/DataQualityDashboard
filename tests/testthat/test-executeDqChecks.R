@@ -651,7 +651,7 @@ test_that("Multiple cdm_source rows triggers warning.", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  connectionDetailsEunomiaCS <- Eunomia::getEunomiaConnectionDetails()
+  connectionDetailsEunomiaCS <- getEunomia53ConnectionDetails()
   connection <- DatabaseConnector::connect(connectionDetailsEunomiaCS)
   on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
   DatabaseConnector::renderTranslateExecuteSql(connection, "INSERT INTO @database_schema.cdm_source VALUES ('foo',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);", database_schema = cdmDatabaseSchemaEunomia)
@@ -743,7 +743,9 @@ test_that("Execute a single DQ check on DuckDB", {
   # Get Eunomia database file in DuckDB format
   eunomiaDbPath <- Eunomia::getDatabaseFile(
     datasetName = "GiBleed",
-    dbms = "duckdb"
+    cdmVersion = "5.3",
+    dbms = "duckdb",
+    overwrite = FALSE
   )
 
   # Create DuckDB connection details using the Eunomia database file
