@@ -1,1 +1,1 @@
-This is a minor update. See NEWS.md for details.
+Addresses failing R CMD check on CRAN caused by a dependency on the `Eunomia` package.

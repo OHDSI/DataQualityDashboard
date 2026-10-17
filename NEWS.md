@@ -1,3 +1,6 @@
+# DataQualityDashboard 2.9.1 <small class="text-muted">2026-10-17</small>
+Patch fix for Eunomia bug; only impacts testthat tests.
+
 # DataQualityDashboard 2.9.0 <small class="text-muted">2026-10-05</small>
 This release adds support for OMOP CDM v5.5 and refreshes the CDM documentation columns in the threshold files.
 

@@ -1,8 +1,8 @@
 Package: DataQualityDashboard
 Type: Package
 Title: Execute and View Data Quality Checks on OMOP CDM Database
-Version: 2.9.0
-Date: 2026-10-05
+Version: 2.9.1
+Date: 2026-10-17
 Authors@R: c(
   person("Katy", "Sadowski", email = "sadowski@ohdsi.org", role = c("aut", "cre")),
   person("Clair", "Blacketer", role = c("aut")),
