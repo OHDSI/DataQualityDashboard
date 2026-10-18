@@ -404,7 +404,7 @@ MEASUREMENT,MEASUREMENT_CONCEPT_ID,3013429,Basophils [#/volume] in Blood by Auto
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3023599,MCV [Entitic volume] by Automated count,,,,,,,,8583,5,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3036588,Neutrophil cytoplasmic Ab.perinuclear [Presence] in Serum,,,,,,,,"8525,-1",5,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,4298431,White blood cell count,,,,,,,,"8848,8961,9444,8784,8785",5,
-MEASUREMENT,MEASUREMENT_CONCEPT_ID,3017732,Neutrophils [#/volume] in Blood,,,,,,,,"8848,8961,9444",5,
+MEASUREMENT,MEASUREMENT_CONCEPT_ID,3017732,Neutrophils [#/volume] in Blood,,,,,,,,"8848,8961,9444,8647",5,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3024561,Albumin [Mass/volume] in Serum or Plasma,,,,,,,,"8636,8713",5,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3034639,Hemoglobin A1c [Mass/volume] in Blood,,,,,,,,"8713,8840,9579,8923",5,
 MEASUREMENT,MEASUREMENT_CONCEPT_ID,3013650,Neutrophils [#/volume] in Blood by Automated count,,,,,,,,"8784,8848,8961,9444,8647,8785",5,
