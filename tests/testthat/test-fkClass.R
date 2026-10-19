@@ -10,6 +10,10 @@ test_that("fkClass values are rendered as a quoted SQL list", {
     DataQualityDashboard:::.formatSqlStringList("Ingredient, Precise Ingredient"),
     "'Ingredient','Precise Ingredient'"
   )
+  expect_true(is.na(DataQualityDashboard:::.formatSqlStringList("")))
+  expect_true(is.na(DataQualityDashboard:::.formatSqlStringList("  ")))
+  expect_true(is.na(DataQualityDashboard:::.formatSqlStringList(",")))
+  expect_true(is.na(DataQualityDashboard:::.formatSqlStringList(" , ,")))
 })
 
 test_that("fkClass allows multiple concept classes for DRUG_STRENGTH.ingredient_concept_id (issue #624)", {

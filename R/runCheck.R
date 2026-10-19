@@ -94,8 +94,7 @@
 
       # fkClass may hold a comma-separated list of allowed concept classes; render it as a
       # quoted SQL list so that field_fk_class.sql can use it in a NOT IN clause
-      if (!is.null(params[["fkClass"]]) && !is.na(params[["fkClass"]]) &&
-        nzchar(trimws(params[["fkClass"]]))) {
+      if (!is.null(params[["fkClass"]]) && !is.na(params[["fkClass"]])) {
         params[["fkClass"]] <- .formatSqlStringList(params[["fkClass"]])
       }
 
@@ -152,7 +151,8 @@
 #'
 #' @param x A single string containing one or more comma-separated values
 #'
-#' @return A string of single-quoted, comma-separated values suitable for use in a SQL IN clause
+#' @return A string of single-quoted, comma-separated values suitable for use in a SQL IN clause,
+#'   or NA if \code{x} contains no non-empty values
 #'
 #' @noRd
 #' @keywords internal
@@ -160,5 +160,8 @@
 .formatSqlStringList <- function(x) {
   values <- trimws(strsplit(x, ",", fixed = TRUE)[[1]])
   values <- values[values != ""]
+  if (length(values) == 0) {
+    return(NA_character_)
+  }
   paste0("'", gsub("'", "''", values, fixed = TRUE), "'", collapse = ",")
 }
