@@ -27,6 +27,10 @@ The CDM documentation columns in the v5.3, v5.4, and v5.5 threshold files have b
 - v5.4 results are unchanged; the consolidated file is identical to the previous v5.4 file
 - For v5.3, unit concepts 8784 and 8785 have been removed from `plausibleUnitConceptIds` for concept 3019550 (Sodium [Moles/volume] in Serum or Plasma). These are cell count units and are not plausible for a molar concentration measurement; they had been added to the v5.3 file in error and were never present in the v5.4 file
 
+### Bugfixes
+
+- The `fkClass` column of the field level threshold files now accepts a comma-separated list of allowed concept classes. `DRUG_STRENGTH.ingredient_concept_id` now allows both `Ingredient` and `Precise Ingredient` in the v5.4 and v5.5 files, as the vocabulary uses Precise Ingredient concepts in this field; previously every Precise Ingredient row was counted as an `fkClass` failure
+
 # DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
 This release contains fixes to testthat to comply with CRAN policies.
 
