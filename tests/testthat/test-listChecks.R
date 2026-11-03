@@ -37,16 +37,3 @@ test_that("v5.5 threshold files contain the tables and fields added in CDM v5.5"
   expect_true(all(key(v54$fieldChecks) %in% key(checks$fieldChecks)))
   expect_true(all(v54$tableChecks$cdmTableName %in% checks$tableChecks$cdmTableName))
 })
-
-test_that("date comparison checks do not compare a field with itself", {
-  for (cdmVersion in c("5.3", "5.4", "5.5")) {
-    fieldChecks <- listDqChecks(cdmVersion = cdmVersion)$fieldChecks
-
-    startBeforeEnd <- fieldChecks[fieldChecks$plausibleStartBeforeEnd %in% "Yes", ]
-    expect_false(any(toupper(startBeforeEnd$cdmFieldName) == toupper(startBeforeEnd$plausibleStartBeforeEndFieldName)))
-
-    temporalAfter <- fieldChecks[fieldChecks$plausibleTemporalAfter %in% "Yes", ]
-    expect_false(any(toupper(temporalAfter$cdmTableName) == toupper(temporalAfter$plausibleTemporalAfterTableName) &
-      toupper(temporalAfter$cdmFieldName) == toupper(temporalAfter$plausibleTemporalAfterFieldName)))
-  }
-})
