@@ -332,6 +332,14 @@ executeDqChecks <- function(connectionDetails,
   if (!sqlOnly) {
     checkResults <- do.call(rbind, resultsList)
 
+    if (is.null(checkResults) || nrow(checkResults) == 0) {
+      stop(paste(
+        "No data quality checks were executed.",
+        "Verify that checkNames, checkLevels, checkSeverity, tablesToExclude and the threshold files",
+        "select at least one check."
+      ))
+    }
+
     # evaluate thresholds-------------------------------------------------------------------
     checkResults <- .evaluateThresholds(
       checkResults = checkResults,
