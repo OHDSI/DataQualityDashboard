@@ -61,6 +61,7 @@ This article will detail each check type, its name, check level, description, de
 - [plausibleValueLow](checks/plausibleValueLow.html)
 - [plausibleValueHigh](checks/plausibleValueHigh.html)
 - [withinVisitDates](checks/withinVisitDates.html)
+- [withinObservationPeriod](checks/withinObservationPeriod.html)
 - [plausibleAfterBirth](checks/plausibleAfterBirth.html)
 - [plausibleBeforeDeath](checks/plausibleBeforeDeath.html)
 - [plausibleStartBeforeEnd](checks/plausibleStartBeforeEnd.html)

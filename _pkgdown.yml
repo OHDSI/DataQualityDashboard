@@ -93,6 +93,8 @@ navbar:
         href: articles/checks/plausibleValueLow.html
       - text: withinVisitDates
         href: articles/checks/withinVisitDates.html
+      - text: withinObservationPeriod
+        href: articles/checks/withinObservationPeriod.html
       - text: measureConditionEraCompleteness
         href: articles/checks/measureConditionEraCompleteness.html
       - text: measureObservationPeriodOverlap
