@@ -1,0 +1,57 @@
+---
+title: "expectedConceptPresence"
+author: "Daijiro Wachi"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## Summary
+
+**Level**: CONCEPT\
+**Context**: Validation\
+**Category**: Plausibility\
+**Subcategory**: Atemporal\
+**Severity**: Characterization &#10004;
+
+
+## Description
+The number and percent of records in the **cdmTableName** table where **cdmFieldName** is not CONCEPT_ID **conceptId**. A failure means the expected concept is under-represented.
+
+
+## Definition
+
+- *Numerator*: The number of rows in the table where the field is NULL or holds a value other than the expected concept.
+- *Denominator*: The total number of rows in the table.
+- *Related CDM Convention(s)*: None. This check is meant for source-specific expectations, e.g. that a status or type concept which is known to be common in the source data has been carried over by the ETL.
+- *CDM Fields/Tables*: Any concept field. There are no default rows; the check only runs for the rows you add to a custom concept threshold file.
+- *Default Threshold Value*: None (the check does not run by default).
+
+Because the numerator counts records **without** the expected concept, the threshold is the maximum acceptable percent of records without it. To require that at least *X*% of records carry the concept, set the threshold to *100 - X*. For example, a threshold of 95 makes the check fail when fewer than 5% of records have the concept.
+
+
+## User Guidance
+Some data quality problems only show up as a concept being *missing*: for example, when an ETL drops a flag that is common in the source, every record still passes the other checks. If you know that a concept should make up at least a certain share of a field, add a row to your concept threshold file and pass it via `conceptCheckThresholdLoc`:
+
+| cdmTableName | cdmFieldName | conceptId | conceptName | expectedConceptPresence | expectedConceptPresenceThreshold | expectedConceptPresenceNotes |
+|---|---|---|---|---|---|---|
+| CONDITION_OCCURRENCE | condition_status_concept_id | *your status concept* | *name* | Yes | 95 | Suspected diagnoses should be at least 5% of records |
+
+The concept threshold file must contain all the other columns of the default `OMOP_CDM_Concept_Level.csv` file; start from a copy of the default file and append your rows.
+
+### Violated rows query
+```sql
+SELECT
+  cdmTable.*
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+WHERE cdmTable.@cdmFieldName IS NULL
+  OR cdmTable.@cdmFieldName != @conceptId
+```
+
+### ETL Developers
+If this check fails, verify that the source field carrying this information is mapped by the ETL and that the mapping to the expected concept is applied. Compare the share of the concept in the CDM to the share of the corresponding value in the source data.
+
+### Data Users
+A failure means that analyses relying on this concept (for example, excluding suspected diagnoses from a phenotype) may not behave as intended, since most records do not carry it. Confirm with your ETL team whether the information exists in the source data before relying on it.
