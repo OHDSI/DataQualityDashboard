@@ -99,6 +99,8 @@ navbar:
         href: articles/checks/measureObservationPeriodOverlap.html
       - text: plausibleUnitConceptIds
         href: articles/checks/plausibleUnitConceptIds.html
+      - text: expectedConceptPresence
+        href: articles/checks/expectedConceptPresence.html
       - text: plausibleGenderUseDescendants
         href: articles/checks/plausibleGenderUseDescendants.html
     hades:
