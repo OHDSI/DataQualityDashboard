@@ -27,6 +27,10 @@ The CDM documentation columns in the v5.3, v5.4, and v5.5 threshold files have b
 - v5.4 results are unchanged; the consolidated file is identical to the previous v5.4 file
 - For v5.3, unit concepts 8784 and 8785 have been removed from `plausibleUnitConceptIds` for concept 3019550 (Sodium [Moles/volume] in Serum or Plasma). These are cell count units and are not plausible for a molar concentration measurement; they had been added to the v5.3 file in error and were never present in the v5.4 file
 
+### New checks
+
+- `withinObservationPeriod` (field level): the number and percent of event records whose start date does not fall within any observation period of the person. Since the CDM allows data outside of observation periods, the default threshold is 100% (informational only); set a lower threshold in a custom field threshold file to make it fail. See `vignette("checks/withinObservationPeriod")`
+
 # DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
 This release contains fixes to testthat to comply with CRAN policies.
 

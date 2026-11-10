@@ -1,0 +1,56 @@
+---
+title: "withinObservationPeriod"
+author: "Daijiro Wachi"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+## Summary
+
+**Level**: FIELD\
+**Context**: Verification\
+**Category**: Plausibility\
+**Subcategory**: Temporal\
+**Severity**: Characterization &#10004;
+
+
+## Description
+The number and percent of records with a date value in the **cdmFieldName** field of the **cdmTableName** table that does not fall within any observation period of the person.
+
+
+## Definition
+
+- *Numerator*: The number of rows with a non-null date in the field whose date is not between the `observation_period_start_date` and `observation_period_end_date` (inclusive) of any `OBSERVATION_PERIOD` record of the same person.
+- *Denominator*: The number of rows with a non-null date in the field.
+- *Related CDM Convention(s)*: The CDM allows clinical data to exist outside of an observation period, so records outside of observation periods are not by themselves a violation of the specification (see [issue #143](https://github.com/OHDSI/DataQualityDashboard/issues/143)). However, most OHDSI analytic tools only consider data that falls within an observation period, so such records are silently excluded from analyses. This check characterizes how much data that affects.
+- *CDM Fields/Tables*: This check runs on the start date (or the only date) of the event tables: `CONDITION_OCCURRENCE.condition_start_date`, `DRUG_EXPOSURE.drug_exposure_start_date`, `PROCEDURE_OCCURRENCE.procedure_date`, `DEVICE_EXPOSURE.device_exposure_start_date`, `MEASUREMENT.measurement_date`, `OBSERVATION.observation_date`, `VISIT_OCCURRENCE.visit_start_date`, `VISIT_DETAIL.visit_detail_start_date` (CDM v5.3+), `SPECIMEN.specimen_date`, and `NOTE.note_date`. `DEATH` is intentionally excluded, as death is commonly recorded after the end of observation.
+- *Default Threshold Value*: 100% (informational only; the check never fails with the default thresholds). Set a lower threshold in a custom field threshold file to make the check fail for your data source.
+
+
+## User Guidance
+The proportion of data outside of observation periods depends heavily on the source data and on how observation periods are derived. For example, in claims data where observation periods are derived from insurance enrollment, events that are dated to the first day of the month (because the source only records the month) can fall before an enrollment that starts mid-month. If you know what proportion is acceptable for your source, set the threshold accordingly via `fieldCheckThresholdLoc`.
+
+### Violated rows query
+```sql
+SELECT
+  '@cdmTableName.@cdmFieldName' AS violating_field,
+  cdmTable.*
+FROM @cdmDatabaseSchema.@cdmTableName cdmTable
+WHERE cdmTable.@cdmFieldName IS NOT NULL
+  AND NOT EXISTS (
+    SELECT 1
+    FROM @cdmDatabaseSchema.observation_period op
+    WHERE op.person_id = cdmTable.person_id
+      AND cdmTable.@cdmFieldName >= op.observation_period_start_date
+      AND cdmTable.@cdmFieldName <= op.observation_period_end_date
+  )
+```
+
+### ETL Developers
+Investigate whether the failing records cluster just before the start or just after the end of observation periods, or whether they belong to persons without any observation period. Records close to the boundaries often indicate that the observation period derivation (e.g. from enrollment data) does not align with how event dates are assigned (e.g. month-level dates). Persons with events but no observation period at all usually indicate an ETL bug. Consider whether the observation period logic should be extended to cover the data, or whether the event dates themselves are wrong.
+
+### Data Users
+Records outside of observation periods are excluded by most OHDSI analytic tools. A high proportion means that a substantial part of the data will not be used in analyses, and that incidence or prevalence estimates may be biased if the excluded data is not random (for example, if it is concentrated at the start of enrollment). Discuss the cause with your ETL team before using the data.
