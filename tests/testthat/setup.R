@@ -68,19 +68,33 @@ if (!identical(Sys.getenv("NOT_CRAN"), "true")) {
   DatabaseConnector::downloadJdbcDrivers("redshift", jdbcDriverFolder)
 }
 
+getEunomia53ConnectionDetails <- function() {
+  databaseFile <- Eunomia::getDatabaseFile(
+    datasetName = "GiBleed",
+    cdmVersion = "5.3",
+    dbms = "sqlite",
+    overwrite = FALSE
+  )
+
+  DatabaseConnector::createConnectionDetails(
+    dbms = "sqlite",
+    server = databaseFile
+  )
+}
+
 if (requireNamespace("Eunomia", quietly = TRUE)) {
-  connectionDetailsEunomia <- Eunomia::getEunomiaConnectionDetails()
+  connectionDetailsEunomia <- getEunomia53ConnectionDetails()
   cdmDatabaseSchemaEunomia <- "main"
   resultsDatabaseSchemaEunomia <- "main"
 
   # Separate connection details for NA tests, as this requires removing records
-  connectionDetailsEunomiaNaChecks <- Eunomia::getEunomiaConnectionDetails()
+  connectionDetailsEunomiaNaChecks <- getEunomia53ConnectionDetails()
 
   # Separate connection details for plausibleAfterBirth test
-  connectionDetailsPlausibleAfterBirth <- Eunomia::getEunomiaConnectionDetails()
+  connectionDetailsPlausibleAfterBirth <- getEunomia53ConnectionDetails()
 
   # Separate connection details for observation period overlap test
-  connectionDetailsEunomiaOverlap <- Eunomia::getEunomiaConnectionDetails()
+  connectionDetailsEunomiaOverlap <- getEunomia53ConnectionDetails()
 }
 
 # Helper function to verify database connection
