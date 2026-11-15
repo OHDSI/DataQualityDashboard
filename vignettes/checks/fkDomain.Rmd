@@ -22,8 +22,8 @@ The number and percent of records that have a value in the **cdmFieldName** fiel
 ## Definition
 It is often the case that standard concept fields in the OMOP CDM should belong to a certain domain. All possible domains are listed in the vocabulary table DOMAIN and the expected domain for CDM fields are listed as part of the CDM documentation. For example, all concepts in the field PERSON.gender_concept_id should conform to the [*gender* domain](http://athena.ohdsi.org/search-terms/terms?standardConcept=Standard&domain=Gender&page=1&pageSize=15&query=).
 
-- *Numerator*: The number of rows in the table where the standard concept ID field contains a concept that does not conform to the specified `domain_id`. This numerator specifically excludes concept_id 0
-- *Denominator*: The total number of rows in the table. This denominator includes rows with concept_id 0
+- *Numerator*: The number of rows in the table where the standard concept ID field contains a concept that does not conform to the specified `domain_id`. This numerator specifically excludes concept_id 0 and non-standard concepts
+- *Denominator*: The number of rows in the table whose standard concept ID field holds a non-zero concept_id that resolves to a standard concept in the vocabulary. Rows with concept_id 0, non-standard concepts, and concept IDs missing from the vocabulary are excluded from the denominator
 - *Related CDM Convention(s)*: FK Domain flag in [CDM table specs](https://ohdsi.github.io/CommonDataModel/index.html)
 - *CDM Fields/Tables*: This check runs on all standard concept ID fields (e.g. `condition_concept_id`; `gender_concept_id`; etc.)
 - *Default Threshold Value*: 0%
