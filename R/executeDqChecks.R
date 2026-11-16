@@ -272,8 +272,24 @@ executeDqChecks <- function(connectionDetails,
     checkDescriptionsDf <- checkDescriptionsDf[checkDescriptionsDf$checkName %in% checkNames, ]
   }
 
+  # drop check descriptions whose evaluation filter matches no row of the threshold files,
+  # e.g. because tablesToExclude removed every table the check runs on
+  hasChecksToRun <- vapply(seq_len(nrow(checkDescriptionsDf)), function(i) {
+    filterExpression <- sprintf(
+      "%sChecks %%>%% dplyr::filter(%s)",
+      tolower(checkDescriptionsDf$checkLevel[i]),
+      checkDescriptionsDf$evaluationFilter[i]
+    )
+    nrow(eval(parse(text = filterExpression))) > 0
+  }, logical(1))
+  checkDescriptionsDf <- checkDescriptionsDf[hasChecksToRun, ]
+
   if (nrow(checkDescriptionsDf) == 0) {
-    stop("No checks are available based on excluded tables. Please review tablesToExclude.")
+    stop(paste(
+      "No checks are available to run.",
+      "Verify that checkNames, checkLevels, checkSeverity, tablesToExclude and the threshold files",
+      "select at least one check."
+    ))
   }
 
   if (!.containsNAchecks(checkDescriptionsDf$checkName)) {
@@ -331,14 +347,6 @@ executeDqChecks <- function(connectionDetails,
 
   if (!sqlOnly) {
     checkResults <- do.call(rbind, resultsList)
-
-    if (is.null(checkResults) || nrow(checkResults) == 0) {
-      stop(paste(
-        "No data quality checks were executed.",
-        "Verify that checkNames, checkLevels, checkSeverity, tablesToExclude and the threshold files",
-        "select at least one check."
-      ))
-    }
 
     # evaluate thresholds-------------------------------------------------------------------
     checkResults <- .evaluateThresholds(

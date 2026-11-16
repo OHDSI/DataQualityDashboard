@@ -29,7 +29,7 @@ The CDM documentation columns in the v5.3, v5.4, and v5.5 threshold files have b
 
 ### Bugfixes
 
-- `executeDqChecks` now stops with a clear error when the selected options result in no checks being executed (e.g. when `tablesToExclude` excludes every table a requested check runs on). Previously it failed with the cryptic error `replacement has 1 row, data has 0`
+- `executeDqChecks` now stops with a clear error before running any check when the selected options leave no checks to run (e.g. when `tablesToExclude` excludes every table a requested check runs on). Previously it ran the checks and then failed with the cryptic error `replacement has 1 row, data has 0`
 
 # DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
 This release contains fixes to testthat to comply with CRAN policies.

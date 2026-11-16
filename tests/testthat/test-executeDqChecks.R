@@ -476,25 +476,18 @@ test_that("A clear error is raised when no checks are selected", {
 
   # The only measureConditionEraCompleteness check runs on CONDITION_ERA, which is excluded
   expect_error(
-    withCallingHandlers(
-      executeDqChecks(
-        connectionDetails = connectionDetailsEunomia,
-        cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
-        resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
-        cdmSourceName = "Eunomia",
-        cdmVersion = "5.3",
-        checkNames = "measureConditionEraCompleteness",
-        tablesToExclude = c("CONDITION_ERA", "CONCEPT", "VOCABULARY"),
-        outputFolder = outputFolder,
-        writeToTable = FALSE
-      ),
-      warning = function(w) {
-        if (grepl("^Missing check names", w$message)) {
-          invokeRestart("muffleWarning")
-        }
-      }
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomia,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      cdmVersion = "5.3",
+      checkNames = "measureConditionEraCompleteness",
+      tablesToExclude = c("CONDITION_ERA", "CONCEPT", "VOCABULARY"),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
     ),
-    regexp = "^No data quality checks were executed"
+    regexp = "^No checks are available to run"
   )
 })
 
