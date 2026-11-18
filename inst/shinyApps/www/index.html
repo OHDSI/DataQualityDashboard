@@ -48,6 +48,9 @@
           <a class="nav-link js-scroll-trigger" href="#results">Results</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#visualisations">Overview by Severity</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link js-scroll-trigger" href="#about">About</a>
         </li>
       </ul>
@@ -78,8 +81,12 @@
     <section class="resume-section p-3 p-lg-5" id="results">
       <h2 class="mb-5">Results</h2>
       <dq-metadata-heading></dq-metadata-heading>
-      <table id="dt-results" class="display" width="100%">
-      </table>
+      <table id="dt-results" class="display" width="100%"></table>
+    </section>
+
+    <section class="resume-section p-3 p-lg-5" id="visualisations">
+      <h2 class="mb-4">Results by Severity</h3>
+      <dq-dashboard-severity></dq-dashboard-severity>
     </section>
 
     <section class="resume-section p-3 p-lg-5" id="about">
@@ -113,6 +120,8 @@
 
         <hr class="m-0">
         Apache 2.0 Open Source Software - Brought to you by <a href="http://www.ohdsi.org">OHDSI</a>
+        <br>
+        App Version: <span id="appVersion"></span>
       </div>
     </section>
 

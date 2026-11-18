@@ -80,6 +80,7 @@
     sqlFile = checkDescription$sqlFile,
     category = resultShell$category,
     subcategory = resultShell$subcategory,
+    severity = checkDescription$severity,
     context = resultShell$context,
     checkId = resultShell$checkId,
     thresholdValue = thresholdValue
