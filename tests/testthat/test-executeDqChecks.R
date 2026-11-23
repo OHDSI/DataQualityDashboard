@@ -469,6 +469,28 @@ test_that("Check invalid cdm version", {
   }
 })
 
+test_that("A clear error is raised when no checks are selected", {
+  testthat::skip_if_not_installed("Eunomia")
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+
+  # The only measureConditionEraCompleteness check runs on CONDITION_ERA, which is excluded
+  expect_error(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomia,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      cdmVersion = "5.3",
+      checkNames = "measureConditionEraCompleteness",
+      tablesToExclude = c("CONDITION_ERA", "CONCEPT", "VOCABULARY"),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    regexp = "^No checks are available to run"
+  )
+})
+
 test_that("The vocabulary tables added in CDM v5.5 are excluded by default", {
   defaultExclusions <- eval(formals(executeDqChecks)$tablesToExclude)
   expect_true(all(
