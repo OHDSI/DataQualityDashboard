@@ -469,6 +469,28 @@ test_that("Check invalid cdm version", {
   }
 })
 
+test_that("A clear error is raised when no checks are selected", {
+  testthat::skip_if_not_installed("Eunomia")
+  outputFolder <- tempfile("dqd_")
+  on.exit(unlink(outputFolder, recursive = TRUE))
+
+  # The only measureConditionEraCompleteness check runs on CONDITION_ERA, which is excluded
+  expect_error(
+    executeDqChecks(
+      connectionDetails = connectionDetailsEunomia,
+      cdmDatabaseSchema = cdmDatabaseSchemaEunomia,
+      resultsDatabaseSchema = resultsDatabaseSchemaEunomia,
+      cdmSourceName = "Eunomia",
+      cdmVersion = "5.3",
+      checkNames = "measureConditionEraCompleteness",
+      tablesToExclude = c("CONDITION_ERA", "CONCEPT", "VOCABULARY"),
+      outputFolder = outputFolder,
+      writeToTable = FALSE
+    ),
+    regexp = "^No checks are available to run"
+  )
+})
+
 test_that("The vocabulary tables added in CDM v5.5 are excluded by default", {
   defaultExclusions <- eval(formals(executeDqChecks)$tablesToExclude)
   expect_true(all(
@@ -651,7 +673,7 @@ test_that("Multiple cdm_source rows triggers warning.", {
   outputFolder <- tempfile("dqd_")
   on.exit(unlink(outputFolder, recursive = TRUE))
 
-  connectionDetailsEunomiaCS <- Eunomia::getEunomiaConnectionDetails()
+  connectionDetailsEunomiaCS <- getEunomia53ConnectionDetails()
   connection <- DatabaseConnector::connect(connectionDetailsEunomiaCS)
   on.exit(DatabaseConnector::disconnect(connection), add = TRUE)
   DatabaseConnector::renderTranslateExecuteSql(connection, "INSERT INTO @database_schema.cdm_source VALUES ('foo',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);", database_schema = cdmDatabaseSchemaEunomia)
@@ -743,7 +765,9 @@ test_that("Execute a single DQ check on DuckDB", {
   # Get Eunomia database file in DuckDB format
   eunomiaDbPath <- Eunomia::getDatabaseFile(
     datasetName = "GiBleed",
-    dbms = "duckdb"
+    cdmVersion = "5.3",
+    dbms = "duckdb",
+    overwrite = FALSE
   )
 
   # Create DuckDB connection details using the Eunomia database file

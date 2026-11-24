@@ -29,6 +29,7 @@ The CDM documentation columns in the v5.3, v5.4, and v5.5 threshold files have b
 
 ### Bugfixes
 
+- `executeDqChecks` now stops with a clear error before running any check when the selected options leave no checks to run (e.g. when `tablesToExclude` excludes every table a requested check runs on). Previously it ran the checks and then failed with the cryptic error `replacement has 1 row, data has 0`
 - The `fkClass` column of the field level threshold files now accepts a comma-separated list of allowed concept classes. `DRUG_STRENGTH.ingredient_concept_id` now allows both `Ingredient` and `Precise Ingredient` in the v5.4 and v5.5 files, as the vocabulary uses Precise Ingredient concepts in this field; previously every Precise Ingredient row was counted as an `fkClass` failure
 
 # DataQualityDashboard 2.8.9 <small class="text-muted">2026-05-17</small>
