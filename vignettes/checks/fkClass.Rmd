@@ -22,10 +22,12 @@ The number and percent of records that have a value in the **cdmFieldName** fiel
 ## Definition
 There is the occasional field in the OMOP CDM that expects not only concepts of a certain domain, but of a certain concept class as well. The best example is the `drug_concept_id` field in the `DRUG_ERA` table. Drug eras represent the span of time a person was exposed to a particular drug *ingredient*, so all concepts in `DRUG_ERA.drug_concept_id` must be of the drug domain and ingredient class.
 
-- *Numerator*: The number of rows in the table where the standard concept ID field contains a concept that does not conform to the specified concept_class_id. This numerator specifically excludes concept_id 0 
+A field may accept more than one concept class. In that case the allowed classes are listed in the `fkClass` column of the field level threshold file, separated by commas. For example, the vocabulary uses both 'Ingredient' and 'Precise Ingredient' concepts in `DRUG_STRENGTH.ingredient_concept_id`, so the `fkClass` for that field is `Ingredient,Precise Ingredient`.
+
+- *Numerator*: The number of rows in the table where the standard concept ID field contains a concept whose concept_class_id is not one of the specified classes. This numerator specifically excludes concept_id 0 
 - *Denominator*: The total number of rows in the specified cdm table. This denominator includes rows with concept_id 0
-- *Related CDM Convention(s)*: This check is specific to [DRUG_ERA](http://ohdsi.github.io/CommonDataModel/cdm54.html#DRUG_ERA) and [DOSE_ERA](http://ohdsi.github.io/CommonDataModel/cdm54.html#DOSE_ERA) as the `drug_concept_id`s in these tables must be ingredients, which are denoted by the concept class ‘ingredient’
-- *CDM Fields/Tables*: This check is designed to be run on the `drug_concept_id` field in the DRUG_ERA and DOSE_ERA tables 
+- *Related CDM Convention(s)*: This check is specific to [DRUG_ERA](http://ohdsi.github.io/CommonDataModel/cdm54.html#DRUG_ERA) and [DOSE_ERA](http://ohdsi.github.io/CommonDataModel/cdm54.html#DOSE_ERA), as the `drug_concept_id`s in these tables must be ingredients, which are denoted by the concept class ‘ingredient’, and to [DRUG_STRENGTH](http://ohdsi.github.io/CommonDataModel/cdm54.html#DRUG_STRENGTH), whose `ingredient_concept_id`s must be ingredients or precise ingredients
+- *CDM Fields/Tables*: This check is designed to be run on the `drug_concept_id` field in the DRUG_ERA and DOSE_ERA tables and on the `ingredient_concept_id` field in the DRUG_STRENGTH table 
 - *Default Threshold Value*: 0%
 
 ## User Guidance
@@ -35,7 +37,8 @@ This check identifies whether records with the correct concepts were written to 
 You may inspect the violating rows using the following query:
 
 ```sql
--- @cdmTableName.@cdmFieldName is either drug_era.drug_concept_id or dose_era.drug_concept_id
+-- @cdmTableName.@cdmFieldName is drug_era.drug_concept_id, dose_era.drug_concept_id or drug_strength.ingredient_concept_id
+-- @fkClass is the quoted, comma-separated list of allowed classes, e.g. 'Ingredient' or 'Ingredient','Precise Ingredient'
 
 SELECT 
   '@cdmTableName.@cdmFieldName' AS violating_field, 
@@ -44,7 +47,7 @@ SELECT
 FROM @cdmDatabaseSchema.@cdmTableName cdmTable
 	LEFT JOIN @vocabDatabaseSchema.concept co ON cdmTable.@cdmFieldName = co.concept_id
 WHERE co.concept_id != 0 
-  AND (co.concept_class_id != 'ingredient') 
+  AND co.concept_class_id NOT IN (@fkClass) 
 ```
 
 ### ETL Developers

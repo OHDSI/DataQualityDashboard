@@ -3,7 +3,9 @@
 FK_CLASS
 
 Check that drug concepts in DRUG_ERA.drug_concept_id, DOSE_ERA.drug_concept_id, 
-and DRUG_STRENGTH.ingredient_concept_id are of class 'Ingredient'. 
+and DRUG_STRENGTH.ingredient_concept_id are of the expected concept class(es). 
+fkClass is rendered as a quoted, comma-separated list of allowed classes,
+e.g. 'Ingredient' or 'Ingredient','Precise Ingredient'.
 
 Parameters used in this template:
 schema = @schema
@@ -43,7 +45,7 @@ FROM (
                     AND c.cohort_definition_id = @cohortDefinitionId
             }
         WHERE co.concept_id != 0 
-            AND (co.concept_class_id != '@fkClass') 
+            AND co.concept_class_id NOT IN (@fkClass) 
         /*violatedRowsEnd*/
     ) violated_rows
 ) violated_row_count,
