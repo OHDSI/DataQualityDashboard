@@ -44,6 +44,7 @@ Suggests:
     markdown,
     shiny,
     ggplot2,
+    RSQLite,
     Eunomia (>= 2.0.0),
     R.utils,
     devtools

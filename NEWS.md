@@ -1,6 +1,8 @@
 # DataQualityDashboard (unreleased)
 This release adds support for OMOP CDM v5.5, drops support for OMOP CDM v5.2, consolidates the concept level threshold files, and refreshes the CDM documentation columns in the threshold files.
 
+- Added `8647` (per microliter, `/uL`) to the plausible units for blood neutrophil count concept `3017732` (LOINC `26499-4`), fixing false unit violations (#698).
+
 ### Removed CDM v5.2 support
 
 **`cdmVersion = "5.2"` is no longer accepted, and the `OMOP_CDMv5.2_Table_Level.csv`, `OMOP_CDMv5.2_Field_Level.csv`, and `OMOP_CDMv5.2_Check_Descriptions.csv` files have been removed.** CDM v5.2 is no longer published in the [CommonDataModel](https://github.com/OHDSI/CommonDataModel) repository, so its threshold files could not be kept in step with the specification, and the package was never tested against it. Sites still on v5.2 should either remain on an earlier release of this package or pass their own threshold files via `tableCheckThresholdLoc` and `fieldCheckThresholdLoc`.
