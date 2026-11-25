@@ -46,6 +46,7 @@ dfNonZero <- sqldf('SELECT CASE WHEN checkName = "cdmField" THEN 0 else numViola
                   category,
                   subcategory,
                   context,
+                  severity,
                   checkId,
                   CASE WHEN checkName = \'cdmField\' THEN 0 else failed end as failed,
                   thresholdValue,
